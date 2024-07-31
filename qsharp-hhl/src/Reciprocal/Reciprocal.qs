@@ -8,6 +8,7 @@ namespace Reciprocal {
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Arrays;
+    open Microsoft.Quantum.Unstable.StatePreparation;
 
     function GetYRotationAngle(reciprocalVal : Double) : Double {
         mutable angle = 0.0;
@@ -50,6 +51,45 @@ namespace Reciprocal {
             }
 
         }
+    }
+
+    operation ReciprocalUnitTest() : Unit {
+
+        // clock qubits : |01> represent 0.10 (1/2)
+        // scaling : 0.25
+        // negVal : false
+        //
+        // Anticipate :
+        // Basis | Amplitude      | Probability | Phase
+        // -----------------------------------------------
+        // |010⟩ |  0.8660+0.0000𝑖 |    75.0000% |   0.0000
+        // |011⟩ |  0.5000+0.0000𝑖 |    25.0000% |   0.0000
+        // use clockQubits = Qubit[2];
+        // use anciliaQubit = Qubit();
+        // let clockState = [0.0, 1.0, 0.0, 0.0]; // |01> represent -1
+        // PreparePureStateD(clockState, clockQubits); // Big endien
+        // ApplyReciprocal(0.25, false, clockQubits, anciliaQubit);
+        // DumpMachine();
+        // ResetAll(clockQubits + [anciliaQubit]);
+
+        // clock qubits : |011> represent - 0.10 (- 1/2)
+        // scaling : 0.25
+        // negVal : false
+        //
+        // Anticipate :
+        // Basis | Amplitude      | Probability | Phase
+        // -----------------------------------------------
+        // |010⟩ |  0.8660+0.0000𝑖 |    75.0000% |   0.0000
+        // |011⟩ |  - 0.5000+0.0000𝑖 |    25.0000% |   0.0000
+        use clockQubits = Qubit[3];
+        use anciliaQubit = Qubit();
+        let clockState = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0]; // |01> represent -1
+        PreparePureStateD(clockState, clockQubits); // Big endien
+        ApplyReciprocal(0.25, true, clockQubits, anciliaQubit);
+        DumpMachine();
+        ResetAll(clockQubits + [anciliaQubit]);
+
+
     }
 
 }

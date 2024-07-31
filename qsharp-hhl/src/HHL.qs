@@ -23,7 +23,7 @@ namespace HHL {
         return 0.25; // implement later
     }
 
-    operation ApplyHHL(unitaryA : (Qubit[], Int) => Unit is Adj + Ctl, targetRegister : Qubit[]) : Unit {
+    operation ApplyHHL(unitaryA : (Int, Qubit[]) => Unit is Adj + Ctl, targetRegister : Qubit[]) : Unit {
 
         let numClockQubits = CalculateNumClockQubits();
         use clockRegister = Qubit[numClockQubits];
@@ -38,75 +38,11 @@ namespace HHL {
             } apply {
                 ApplyReciprocal(scaling, negVal, clockRegister, anciliaRegister);
             }
-
+            DumpMachine();
             set postSelect = M(anciliaRegister);
             ResetAll(clockRegister);
             Reset(anciliaRegister);
         } until postSelect == One;
-
-    }
-
-
-    operation PhaseEstimationUnitTest() : Unit {
-
-        // hermitian matrix : exp(iX_pi/4)
-        // eigenState : [1/sqrt(2), 1/sqrt(2)]
-        //
-        // anticipate :
-        //
-        //  Basis | Amplitude      | Probability | Phase
-        // -----------------------------------------------
-        // |100⟩ |  0.7071+0.0000𝑖 |    50.0000% |  -0.0000
-        // |101⟩ |  0.7071+0.0000𝑖 |    50.0000% |  -0.0000
-        use clockQubits = Qubit[2];
-        use phiQubits = Qubit[1];
-        let eigenstateVector = [1.0 / Sqrt(2.0), 1.0 / Sqrt(2.0)];
-        PreparePureStateD(eigenstateVector, phiQubits);
-        operation UnitaryExp_i_X_2piDiv4(qubits : Qubit[], power : Int) : Unit is Adj + Ctl {
-            Rx(- IntAsDouble(power) * 2.0 * 2.0 * PI() / 4.0, qubits[0]);
-        }
-        ApplyPhaseEstimation(UnitaryExp_i_X_2piDiv4, clockQubits, phiQubits);
-        DumpMachine();
-        ResetAll(clockQubits + phiQubits);
-
-    }
-
-    operation ReciprocalUnitTest() : Unit {
-
-        // clock qubits : |01> represent 0.10 (1/2)
-        // scaling : 0.25
-        // negVal : false
-        //
-        // Anticipate :
-        // Basis | Amplitude      | Probability | Phase
-        // -----------------------------------------------
-        // |010⟩ |  0.8660+0.0000𝑖 |    75.0000% |   0.0000
-        // |011⟩ |  0.5000+0.0000𝑖 |    25.0000% |   0.0000
-        // use clockQubits = Qubit[2];
-        // use anciliaQubit = Qubit();
-        // let clockState = [0.0, 1.0, 0.0, 0.0]; // |01> represent -1
-        // PreparePureStateD(clockState, clockQubits); // Big endien
-        // ApplyReciprocal(0.25, false, clockQubits, anciliaQubit);
-        // DumpMachine();
-        // ResetAll(clockQubits + [anciliaQubit]);
-
-        // clock qubits : |011> represent - 0.10 (- 1/2)
-        // scaling : 0.25
-        // negVal : false
-        //
-        // Anticipate :
-        // Basis | Amplitude      | Probability | Phase
-        // -----------------------------------------------
-        // |010⟩ |  0.8660+0.0000𝑖 |    75.0000% |   0.0000
-        // |011⟩ |  - 0.5000+0.0000𝑖 |    25.0000% |   0.0000
-        use clockQubits = Qubit[3];
-        use anciliaQubit = Qubit();
-        let clockState = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0]; // |01> represent -1
-        PreparePureStateD(clockState, clockQubits); // Big endien
-        ApplyReciprocal(0.25, true, clockQubits, anciliaQubit);
-        DumpMachine();
-        ResetAll(clockQubits + [anciliaQubit]);
-
 
     }
 
@@ -116,16 +52,36 @@ namespace HHL {
         // Basis | Amplitude      | Probability | Phase
         // -----------------------------------------------
         // |0⟩ |  1.0000+0.0000𝑖 |   100.0000% |  -0.0000
-        let vector = [1.0, 3.0];
+        // let vector = [1.0, 3.0];
+        // let matrix = [
+        //     [0.0, 1.0],
+        //     [1.0, 0.0]
+        // ];
+        // use stateVectorb = Qubit[1];
+        // PreparePureStateD(vector, stateVectorb);
+        // ApplyHHL(HamiltonianEvolutionSample1, stateVectorb);
+        // DumpMachine();
+        // Reset(stateVectorb[0]);
+
+        // Anticipate :
+        // Basis | Amplitude      | Probability | Phase
+        // -----------------------------------------------
+        // |00⟩ |  0.7303+0.0000𝑖 |    53.3333% |  -0.0000
+        // |01⟩ |  0.3651+0.0000𝑖 |    13.3333% |  -0.0000
+        // |10⟩ |  0.1826+0.0000𝑖 |     3.3333% |  -0.0000
+        // |11⟩ |  0.5477+0.0000𝑖 |    30.0000% |  -0.0000
+        let vector = [1.0, 3.0, 4.0, 2.0];
         let matrix = [
-            [0.0, 1.0],
-            [1.0, 0.0]
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0]
         ];
-        use stateVectorb = Qubit[1];
+        use stateVectorb = Qubit[2];
         PreparePureStateD(vector, stateVectorb);
-        ApplyHHL(HamiltonianEvolutionSample1, stateVectorb);
+        ApplyHHL(HamiltonianEvolutionSample2, stateVectorb);
         DumpMachine();
-        Reset(stateVectorb[0]);
+        ResetAll(stateVectorb);
 
     }
 
