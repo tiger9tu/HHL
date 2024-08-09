@@ -7,6 +7,7 @@ namespace HamiltonianEvolution {
     }
 
     operation HamiltonianEvolutionSample2(power : Int, targetRegister : Qubit[]) : Unit is Adj + Ctl {
+
         Exp([PauliX, PauliX], 1.0 * IntAsDouble(power) * 2.0 * PI() / 4.0, targetRegister); // exp(i*2pi*X)
     }
 
