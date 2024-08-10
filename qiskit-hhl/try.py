@@ -1,10 +1,12 @@
 import numpy as np
 from functools import reduce
+from qiskit.quantum_info import SparsePauliOp
+import itertools
 
 X = np.array([[0, 1], [1, 0]])
 Y = np.array([[0, -1j], [1j, 0]])
 Z = np.array([[1, 0], [0, -1]])
-I = np.eye(2)
+L = np.array([1, 0], [0, 1])
 
 
 def tensor(*matrices):
@@ -115,15 +117,6 @@ def reduce_Uf(Uf, sizeA, maxi, maxval):
                     no_more_val = True
 
     return A
-
-
-from qiskit.quantum_info import SparsePauliOp
-
-# Uf_as_paulis = SparsePauliOp.from_operator(Uf)
-# print(Uf_as_paulis)
-# print(Uf_as_paulis.size)
-
-import itertools
 
 
 def get2x2A(Aconfig):

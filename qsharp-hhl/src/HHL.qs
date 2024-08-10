@@ -10,16 +10,17 @@ namespace HHL {
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Unstable.StatePreparation;
 
-    open HamiltonianEvolution;
     open PhaseEstimation;
+    open HamiltonianEvolution;
     open Reciprocal;
+    open HamiltonianEvolution.SuzukiTrotter;
 
 
-    internal operation CalculateNumClockQubits() : Int {
+    internal function CalculateNumClockQubits() : Int {
         return 3; // implement later
     }
 
-    internal operation CalculateScaling() : Double {
+    internal function CalculateScaling() : Double {
         return 0.25; // implement later
     }
 
@@ -87,9 +88,9 @@ namespace HHL {
 
     @EntryPoint()
     operation Main() : Unit {
-
+        SuzukiTrotterUnitTest();
         // PhaseEstimationUnitTest();
         // ReciprocalUnitTest();
-        HHLUnitTest();
+        // HHLUnitTest();
     }
 }
