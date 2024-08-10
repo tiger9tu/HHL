@@ -129,63 +129,63 @@ def get2x2A(Aconfig):
 
 ## find best config:
 
-# at the moment, fix the following super parameters
-sizeA = 2
-maxi = 2
-maxval = 4
-sizeUf = 8
+########################## 2x2 case ########################
+# # at the moment, fix the following super parameters
+# sizeA = 2
+# maxi = 2
+# maxval = 4
+# sizeUf = 8
 
-# find best config for A
-values = [i for i in range(maxval)]
-# number of free entry is 3, since A[0,1] == A[1,0]
-Aconfigs = list(itertools.product(values, repeat=3))
+# # find best config for A
+# values = [i for i in range(maxval)]
+# # number of free entry is 3, since A[0,1] == A[1,0]
+# Aconfigs = list(itertools.product(values, repeat=3))
 
-orders = [i for i in range(sizeUf - maxi * sizeA)]
-fillUf_configs = list(itertools.permutations(orders))
+# orders = [i for i in range(sizeUf - maxi * sizeA)]
+# fillUf_configs = list(itertools.permutations(orders))
 
-configs = list(itertools.product(Aconfigs, fillUf_configs))
+# configs = list(itertools.product(Aconfigs, fillUf_configs))
 
-least_pauli_num = 99
-best_config = None
-for config in configs:
-    Aconfig, fillUf_config = config
-    A = get2x2A(Aconfig)
-    Uf = get_Uf(A, maxi, maxval, fillUf_config)
-    Uf_as_paulis = SparsePauliOp.from_operator(Uf)
-    if Uf_as_paulis.size < least_pauli_num:
-        least_pauli_num = Uf_as_paulis.size
-        best_config = config
+# least_pauli_num = 99
+# best_config = None
+# for config in configs:
+#     Aconfig, fillUf_config = config
+#     A = get2x2A(Aconfig)
+#     Uf = get_Uf(A, maxi, maxval, fillUf_config)
+#     Uf_as_paulis = SparsePauliOp.from_operator(Uf)
+#     if Uf_as_paulis.size < least_pauli_num:
+#         least_pauli_num = Uf_as_paulis.size
+#         best_config = config
 
-print("least_pauli_num = ", least_pauli_num)
+# print("least_pauli_num = ", least_pauli_num)
+# print("best config: ", best_config)
 
-print("best config: ", best_config)
+# # least_pauli_num =  4
+# # best config:  ((0, 3, 0), (2, 1, 0, 3))
 
-# least_pauli_num =  4
-# best config:  ((0, 3, 0), (2, 1, 0, 3))
+# A = np.array([[0, 3], [3, 0]])
+# sizeA = A.shape[0]
+# maxi = 2
+# maxval = 4
+# permutation = [2, 1, 0, 3]
 
-A = np.array([[0, 3], [3, 0]])
-sizeA = A.shape[0]
-maxi = 2
-maxval = 4
-permutation = [2, 1, 0, 3]
-
-# Uf = get_Uf(A, maxi, maxval)
-half_Uf, has_one_rows = get_half_Uf(A, maxi, maxval)
-Uf = fill_Uf(half_Uf, sizeA * maxi, has_one_rows, permutation)
-print(Uf)
-
-rUf = reduce_Uf(Uf, sizeA, maxi, maxval)
-assert np.array_equal(rUf, A)
-
-Uf_as_paulis = SparsePauliOp.from_operator(Uf)
-print(Uf)
-
-# LCUf = (
-#     tensor(I, I, X)
-#     + tensor(X, I, X)
-#     + np.dot(tensor(i_I, I, I), tensor(Y, I, X))
-#     + tensor(Z, I, X),
-# )
-# print(np.real(LCUf))
-# print()
+# # Uf = get_Uf(A, maxi, maxval)
+# half_Uf, has_one_rows = get_half_Uf(A, maxi, maxval)
+# Uf = fill_Uf(half_Uf, sizeA * maxi, has_one_rows, permutation)
 # print(Uf)
+
+# rUf = reduce_Uf(Uf, sizeA, maxi, maxval)
+# assert np.array_equal(rUf, A)
+
+# Uf_as_paulis = SparsePauliOp.from_operator(Uf)
+# print(Uf)
+
+########################## 4x4 case ########################
+# A = 0 0 0 1
+#     0 1 0 0
+#     0 0 1 0
+#     1 0 0 0
+sizeA = 4
+maxi = 4
+maxval = 2
+sizeUf = 16

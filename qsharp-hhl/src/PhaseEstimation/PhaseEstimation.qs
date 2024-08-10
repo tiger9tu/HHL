@@ -6,19 +6,7 @@ namespace PhaseEstimation {
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Unstable.StatePreparation;
     open Microsoft.Quantum.Convert;
-
-    operation PrepareUniform(qubits : Qubit[]) : Unit is Adj + Ctl {
-        for q in qubits {
-            H(q);
-        }
-    }
-
-    operation ReverseQubits(qubits : Qubit[]) : Unit is Ctl + Adj {
-        let n = Length(qubits);
-        for i in 0..n / 2 - 1 {
-            SWAP(qubits[i], qubits[n - i - 1]);
-        }
-    }
+    open CommonOperation;
 
     operation ApplyPhaseEstimation(unitary : ((Int, Qubit[]) => Unit is Adj + Ctl), clockQubits : Qubit[], phiQubits : Qubit[]) : Unit is Adj + Ctl {
         PrepareUniform(clockQubits);

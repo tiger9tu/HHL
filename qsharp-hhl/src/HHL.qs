@@ -12,32 +12,52 @@ namespace HHL {
 
     open PhaseEstimation;
     open HamiltonianEvolution;
-    open Reciprocal;
+    open CommonOperation;
     open HamiltonianEvolution.SuzukiTrotter;
 
 
-    internal function CalculateNumClockQubits() : Int {
+    internal function _CalculateNumClockQubits_() : Int {
         return 3; // implement later
     }
 
-    internal function CalculateScaling() : Double {
+    internal function _CalculateScaling_() : Double {
         return 0.25; // implement later
+    }
+
+    internal function _ReciprocalAngle_(scaling : Double, nAbsClock : Int, i : Int) : Double {
+        let reciprocalVal = scaling * IntAsDouble(nAbsClock) / IntAsDouble(i);
+        mutable angle = 0.0;
+        if reciprocalVal == 1.0 {
+            set angle = PI();
+        } elif reciprocalVal < 1.0 {
+            set angle = 2.0 * ArcSin(reciprocalVal);
+        }
+        return angle;
+    }
+
+    internal operation _ApplyCReciprocal_(scaling : Double, negVal : Bool, clockQubits : Qubit[], anciliaQubit : Qubit) : Unit {
+        mutable nAbsClock = Length(clockQubits);
+        if negVal {
+            set nAbsClock -= 1;
+        }
+        ApplyCRotation(negVal, _ReciprocalAngle_(scaling, nAbsClock, _), clockQubits, anciliaQubit);
+
     }
 
     operation ApplyHHL(unitaryA : (Int, Qubit[]) => Unit is Adj + Ctl, targetRegister : Qubit[]) : Unit {
 
-        let numClockQubits = CalculateNumClockQubits();
+        let numClockQubits = _CalculateNumClockQubits_();
         use clockRegister = Qubit[numClockQubits];
         use anciliaRegister = Qubit();
         mutable postSelect : Result = Zero;
-        let scaling = CalculateScaling();
+        let scaling = _CalculateScaling_();
         let negVal = true;
 
         repeat {
             within {
                 ApplyPhaseEstimation(unitaryA, clockRegister, targetRegister);
             } apply {
-                ApplyReciprocal(scaling, negVal, clockRegister, anciliaRegister);
+                _ApplyCReciprocal_(scaling, negVal, clockRegister, anciliaRegister);
             }
             DumpMachine();
             set postSelect = M(anciliaRegister);
@@ -88,9 +108,9 @@ namespace HHL {
 
     @EntryPoint()
     operation Main() : Unit {
-        SuzukiTrotterUnitTest();
+        // SuzukiTrotterUnitTest();
         // PhaseEstimationUnitTest();
-        // ReciprocalUnitTest();
-        // HHLUnitTest();
+        // CRotationUnitTest();
+        HHLUnitTest();
     }
 }

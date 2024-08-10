@@ -1,7 +1,7 @@
 // HHL Algorithm
 
 
-namespace Reciprocal {
+namespace CommonOperation {
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Canon;
@@ -10,18 +10,7 @@ namespace Reciprocal {
     open Microsoft.Quantum.Arrays;
     open Microsoft.Quantum.Unstable.StatePreparation;
 
-    function GetYRotationAngle(reciprocalVal : Double) : Double {
-        mutable angle = 0.0;
-        if reciprocalVal == 1.0 {
-            set angle = PI();
-        } elif reciprocalVal < 1.0 {
-            set angle = 2.0 * ArcSin(reciprocalVal);
-        }
-        return angle;
-    }
-
-
-    operation ApplyReciprocal(scaling : Double, negVal : Bool, clockQubits : Qubit[], anciliaQubit : Qubit) : Unit {
+    operation ApplyCRotation(negVal : Bool, angleFunc : Int -> Double, clockQubits : Qubit[], anciliaQubit : Qubit) : Unit {
         mutable negValInt = 0;
         if negVal {
             set negValInt = 1;
@@ -34,16 +23,13 @@ namespace Reciprocal {
         let nAbsVal = 2^nAbsClock;
 
         for i in 1..nAbsVal- 1 {
-            let cDivLambda = scaling * IntAsDouble(nAbsVal) / IntAsDouble(i);
-            let angle = GetYRotationAngle(cDivLambda);
+            let angle = angleFunc(i);
             ApplyControlledOnInt(i, Ry(angle, _), clockQubits[0..nAbsClock - 1], anciliaQubit);
         }
 
         if negVal {
             for i in 1..nAbsVal -1 {
-
-                let cDivLambda = scaling * IntAsDouble(nAbsVal) / IntAsDouble(i);
-                let negAngle = - GetYRotationAngle(cDivLambda);
+                let negAngle = - angleFunc(i);
                 // counteract
                 Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Ry(negAngle, _), clockQubits[0..nAbsClock - 1], anciliaQubit));
                 // Apply negative phase
@@ -53,7 +39,8 @@ namespace Reciprocal {
         }
     }
 
-    operation ReciprocalUnitTest() : Unit {
+
+    operation CRotationUnitTest() : Unit {
 
         // clock qubits : |01> represent 0.10 (1/2)
         // scaling : 0.25
@@ -81,15 +68,28 @@ namespace Reciprocal {
         // -----------------------------------------------
         // |010⟩ |  0.8660+0.0000𝑖 |    75.0000% |   0.0000
         // |011⟩ |  - 0.5000+0.0000𝑖 |    25.0000% |   0.0000
-        use clockQubits = Qubit[3];
-        use anciliaQubit = Qubit();
-        let clockState = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0]; // |01> represent -1
-        PreparePureStateD(clockState, clockQubits); // Big endien
-        ApplyReciprocal(0.25, true, clockQubits, anciliaQubit);
-        DumpMachine();
-        ResetAll(clockQubits + [anciliaQubit]);
-
+        // use clockQubits = Qubit[3];
+        // use anciliaQubit = Qubit();
+        // let clockState = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0]; // |01> represent -1
+        // PreparePureStateD(clockState, clockQubits); // Big endien
+        // ApplyCReciprocal(0.25, true, clockQubits, anciliaQubit);
+        // DumpMachine();
+        // ResetAll(clockQubits + [anciliaQubit]);
 
     }
+
+    operation PrepareUniform(qubits : Qubit[]) : Unit is Adj + Ctl {
+        for q in qubits {
+            H(q);
+        }
+    }
+
+    operation ReverseQubits(qubits : Qubit[]) : Unit is Ctl + Adj {
+        let n = Length(qubits);
+        for i in 0..n / 2 - 1 {
+            SWAP(qubits[i], qubits[n - i - 1]);
+        }
+    }
+
 
 }
