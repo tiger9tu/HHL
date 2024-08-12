@@ -11,9 +11,10 @@ namespace HHL {
     open Microsoft.Quantum.Unstable.StatePreparation;
 
     open PhaseEstimation;
-    open HamiltonianEvolution;
+    open HamiltonianSimulation;
     open CommonOperation;
-    open HamiltonianEvolution.SuzukiTrotter;
+    open HamiltonianSimulation.TrotterSuzuki;
+    open HamiltonianSimulation.Oracle;
 
 
     internal function _CalculateNumClockQubits_() : Int {
@@ -35,20 +36,19 @@ namespace HHL {
         return angle;
     }
 
-    internal operation _ApplyCReciprocal_(scaling : Double, negVal : Bool, clockQubits : Qubit[], anciliaQubit : Qubit) : Unit {
+    internal operation _ApplyCReciprocal_(scaling : Double, negVal : Bool, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
         mutable nAbsClock = Length(clockQubits);
         if negVal {
             set nAbsClock -= 1;
         }
-        ApplyCRotation(negVal, _ReciprocalAngle_(scaling, nAbsClock, _), clockQubits, anciliaQubit);
-
+        CyRotation(negVal, _ReciprocalAngle_(scaling, nAbsClock, _), clockQubits, ancillaQubit);
     }
 
     operation ApplyHHL(unitaryA : (Int, Qubit[]) => Unit is Adj + Ctl, targetRegister : Qubit[]) : Unit {
 
         let numClockQubits = _CalculateNumClockQubits_();
         use clockRegister = Qubit[numClockQubits];
-        use anciliaRegister = Qubit();
+        use ancillaRegister = Qubit();
         mutable postSelect : Result = Zero;
         let scaling = _CalculateScaling_();
         let negVal = true;
@@ -57,12 +57,10 @@ namespace HHL {
             within {
                 ApplyPhaseEstimation(unitaryA, clockRegister, targetRegister);
             } apply {
-                _ApplyCReciprocal_(scaling, negVal, clockRegister, anciliaRegister);
+                _ApplyCReciprocal_(scaling, negVal, clockRegister, ancillaRegister);
             }
-            DumpMachine();
-            set postSelect = M(anciliaRegister);
-            ResetAll(clockRegister);
-            Reset(anciliaRegister);
+            set postSelect = M(ancillaRegister);
+            ResetAll(clockRegister + [ancillaRegister]);
         } until postSelect == One;
 
     }
@@ -80,7 +78,7 @@ namespace HHL {
         // ];
         // use stateVectorb = Qubit[1];
         // PreparePureStateD(vector, stateVectorb);
-        // ApplyHHL(HamiltonianEvolutionSample1, stateVectorb);
+        // ApplyHHL(HamiltonianSimulationSample1, stateVectorb);
         // DumpMachine();
         // Reset(stateVectorb[0]);
 
@@ -91,24 +89,49 @@ namespace HHL {
         // |01⟩ |  0.3651+0.0000𝑖 |    13.3333% |  -0.0000
         // |10⟩ |  0.1826+0.0000𝑖 |     3.3333% |  -0.0000
         // |11⟩ |  0.5477+0.0000𝑖 |    30.0000% |  -0.0000
-        let vector = [1.0, 3.0, 4.0, 2.0];
+        // let vector = [1.0, 3.0, 4.0, 2.0];
+
+        // let matrix = [
+        //     [0.0, 0.0, 1.0, 0.0],
+        //     [0.0, 0.0, 0.0, 1.0],
+        //     [1.0, 0.0, 0.0, 0.0],
+        //     [0.0, 1.0, 0.0, 0.0]
+        // ];
+
+        let vector = [1.0, 2.0, 0.0, -1.0];
         let matrix = [
-            [0.0, 0.0, 1.0, 0.0],
             [0.0, 0.0, 0.0, 1.0],
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0]
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0]
         ];
         use stateVectorb = Qubit[2];
+        use yQubits = Qubit[2];
+        use aQubit = Qubit();
         PreparePureStateD(vector, stateVectorb);
-        ApplyHHL(HamiltonianEvolutionSample2, stateVectorb);
         DumpMachine();
-        ResetAll(stateVectorb);
+        ApplyHHL(Oracle11HamiltonianSimulationExample(_, _, yQubits, aQubit), stateVectorb);
+        DumpMachine();
+        ResetAll(stateVectorb + yQubits + [aQubit]);
 
     }
 
+    operation ShowEndien() : Unit {
+        use q0 = Qubit();
+        use q1 = Qubit();
+        X(q1);
+        // |01>
+        let a = 0;
+
+    }
     @EntryPoint()
     operation Main() : Unit {
-        // SuzukiTrotterUnitTest();
+        // Oracle11HamiltonianSimulationExampleUnitTest();
+        // OracleExample11UnitTest();
+        // ShowEndien();
+        // WGateUnitTest();
+        // U3UnitTest();
+        // TrotterSuzukiUnitTest();
         // PhaseEstimationUnitTest();
         // CRotationUnitTest();
         HHLUnitTest();

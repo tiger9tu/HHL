@@ -1,4 +1,4 @@
-namespace HamiltonianEvolution.SuzukiTrotter {
+namespace HamiltonianSimulation.TrotterSuzuki {
     import Microsoft.Quantum.Math.PI;
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Diagnostics;
@@ -33,7 +33,7 @@ namespace HamiltonianEvolution.SuzukiTrotter {
     }
 
 
-    operation ApplySuzukiTrotter(order : Int, reps : Int, time : Double, pauliCoefLists : PaulisWithCoef[], qubits : Qubit[]) : Unit is Adj + Ctl {
+    operation ApplyTrotterSuzuki(order : Int, reps : Int, time : Double, pauliCoefLists : PaulisWithCoef[], qubits : Qubit[]) : Unit is Adj + Ctl {
         let singleRepCoef = _TrotterStepCoef_(order, time / IntAsDouble(reps), pauliCoefLists);
         for rep in 0..reps-1 {
             for i in 0..Length(singleRepCoef) - 1 {
@@ -43,7 +43,7 @@ namespace HamiltonianEvolution.SuzukiTrotter {
         }
     }
 
-    operation SuzukiTrotterUnitTest() : Unit {
+    operation TrotterSuzukiUnitTest() : Unit {
         //  Expect:
         //  Basis | Amplitude      | Probability | Phase
         //  -----------------------------------------------
@@ -53,7 +53,7 @@ namespace HamiltonianEvolution.SuzukiTrotter {
         let eigenstateVector = [1.0, 0.0];
         PreparePureStateD(eigenstateVector, [targetQubit]);
         let pauliCoefZaddI = [PaulisWithCoef([PauliZ], PI() / 2.0), PaulisWithCoef([PauliI], PI() / 2.0)];
-        ApplySuzukiTrotter(2, 14, 1.0, pauliCoefZaddI, [targetQubit]);
+        ApplyTrotterSuzuki(2, 14, 1.0, pauliCoefZaddI, [targetQubit]);
 
         // operation ExpiItdiv2_ExpiXt_ExpIdiv2(t : Double, qubit : Qubit) : Unit {
         //     Exp([PauliI], t / 2.0, [qubit]);

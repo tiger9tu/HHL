@@ -1,12 +1,12 @@
 import numpy as np
 from functools import reduce
-from qiskit.quantum_info import SparsePauliOp
+from qiskit.quantum_info import SparsePauliOp, Statevector, Operator
 import itertools
 
 X = np.array([[0, 1], [1, 0]])
 Y = np.array([[0, -1j], [1j, 0]])
 Z = np.array([[1, 0], [0, -1]])
-L = np.array([1, 0], [0, 1])
+L = np.array([[1, 0], [0, 1]])
 
 
 def tensor(*matrices):
@@ -180,12 +180,104 @@ def get2x2A(Aconfig):
 # Uf_as_paulis = SparsePauliOp.from_operator(Uf)
 # print(Uf)
 
+W = np.array(
+    [
+        [1, 0, 0, 0],
+        [0, 1 / np.sqrt(2), 1 / np.sqrt(2), 0],
+        [0, 1 / np.sqrt(2), -1 / np.sqrt(2), 0],
+        [0, 0, 0, 1],
+    ]
+)
+
+
+# W_as_paulis = SparsePauliOp.from_operator(W)
+# print(W_as_paulis)
+
 ########################## 4x4 case ########################
 # A = 0 0 0 1
 #     0 1 0 0
 #     0 0 1 0
 #     1 0 0 0
-sizeA = 4
-maxi = 4
-maxval = 2
-sizeUf = 16
+# sizeA = 4
+# maxi = 4
+# maxval = 2
+# sizeUf = 16
+
+from qiskit.synthesis import qs_decomposition
+from scipy.stats import unitary_group
+import numpy as np
+
+from IPython.display import display
+
+# Construct a random unitary:
+# num_qubits = 4
+# unitary = unitary_group.rvs(2**num_qubits)
+# print(unitary)
+
+# Decompose it:
+
+import qiskit.qasm3 as qs
+from qiskit.synthesis import TwoQubitBasisDecomposer
+# circ = qs_decomposition(W)
+
+
+# circ_qasm3 = qs.dumps(circ)
+# print(circ_qasm3)
+
+# qsm = qs.dumps(circ)
+# print(qsm)
+from qiskit import QuantumCircuit, QuantumRegister
+
+
+def dump_machine(qc):
+    sv = Statevector(qc)
+    print(sv)
+
+
+def dump_unitary(qc):
+    unitary_matrix = Operator(qc).data
+    print(unitary_matrix)
+
+
+# dump_machine(circ)
+
+qc = QuantumCircuit()
+q = QuantumRegister(2, "q")
+
+qc.add_register(q)
+
+qc.x(q[1])
+
+print(qc)
+
+print(Statevector(qc))  # |10>
+
+# qc.u(np.pi, 0.32175055439664213, 0.32175055439664213, q[0])
+# qc.u(1.4512678518986009, np.pi / 2, -np.pi, q[1])
+# qc.cx(q[0], q[1])
+# qc.u(np.pi / 4, -np.pi / 2, np.pi / 2, q[0])
+# qc.u(0.1688370309450062, -2.359774761217599, -2.3597747612176105, q[1])
+# qc.cx(q[0], q[1])
+# qc.u(np.pi / 4, 0, -np.pi / 2, q[0])
+# qc.u(1.4521247316971555, 1.4504171294224673, -3.1272723037036005, q[1])
+# qc.cx(q[0], q[1])
+# qc.u(np.pi, -0.4982443934561056, 1.0725519333387918, q[0])
+# qc.u(3.0220641786934994, 0, np.pi / 2, q[1])
+
+
+# dump_machine(qc)
+# dump_unitary(qc)
+
+
+# |x>|0> -> |x>|m(x)>
+def construct_oracle_u(s1_d1_hermitian):
+    size_m = len(s1_d1_hermitian)
+    oracle_u = np.zeros((size_m**2, size_m**2), dtype=int)
+
+    for y in size_m:
+        for x in size_m:
+            if s1_d1_hermitian[x, y] == 1:
+                # [x*size_m + y][x*size_m]
+                oracle_u[x * size_m + y, x * size_m] = 1
+                break
+    return oracle_u
