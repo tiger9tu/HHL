@@ -61,6 +61,7 @@ namespace HHL {
             }
             set postSelect = M(ancillaRegister);
             ResetAll(clockRegister + [ancillaRegister]);
+            Message("one circle");
         } until postSelect == One;
 
     }
@@ -98,19 +99,70 @@ namespace HHL {
         //     [0.0, 1.0, 0.0, 0.0]
         // ];
 
+        // let vector = [4.0, 2.0, 3.0, -1.0];
+        // let matrix = [
+        //     [0.0, 0.0, 0.0, 1.0],
+        //     [0.0, 1.0, 0.0, 0.0],
+        //     [0.0, 0.0, 1.0, 0.0],
+        //     [1.0, 0.0, 0.0, 0.0]
+        // ];
+        // use stateVectorb = Qubit[2];
+        // use yQubits = Qubit[2];
+        // use aQubit = Qubit();
+        // PreparePureStateD(vector, stateVectorb);
+        // DumpMachine();
+
+        // internal operation _UnitaryA_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+        //     OracleHamiltonianSimulation(IntAsDouble(power) * 2.0 * PI() / 4.0, OracleExample1, xqubits, yQubits, aQubit);
+        // }
+
+        // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
+        // DumpMachine();
+        // ResetAll(stateVectorb + yQubits + [aQubit]);
+
+
+        // let vector = [4.0, 2.0, 3.0, -1.0];
+        // let matrix = [
+        //     [0.0, 1.0, 0.0, 0.0],
+        //     [1.0, 0.0, 0.0, 0.0],
+        //     [0.0, 0.0, 1.0, 0.0],
+        //     [0.0, 0.0, 0.0, 1.0]
+        // ];
+        // use stateVectorb = Qubit[2];
+        // use yQubits = Qubit[2];
+        // use aQubit = Qubit();
+        // PreparePureStateD(vector, stateVectorb);
+        // DumpMachine();
+
+        // internal operation _UnitaryA_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+        //     OracleHamiltonianSimulation(IntAsDouble(power) * 2.0 * PI() / 4.0, OracleExample0, xqubits, yQubits, aQubit);
+        // }
+
+        // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
+        // DumpMachine();
+        // ResetAll(stateVectorb + yQubits + [aQubit]);
+
         let vector = [4.0, 2.0, 3.0, -1.0];
         let matrix = [
-            [0.0, 0.0, 0.0, 1.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [1.0, 0.0, 0.0, 0.0]
+            [0.0, 1.0, 0.0, 1.0],
+            [1.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 2.0, 0.0],
+            [1.0, 0.0, 0.0, 1.0]
         ];
         use stateVectorb = Qubit[2];
         use yQubits = Qubit[2];
         use aQubit = Qubit();
         PreparePureStateD(vector, stateVectorb);
-        DumpMachine();
-        ApplyHHL(Oracle11HamiltonianSimulationExample(_, _, yQubits, aQubit), stateVectorb);
+
+        internal operation _Oracle0add1HamiltonianSimulation_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+            let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample0, _, yQubits, aQubit), IntAsDouble(power) * 2.0 * PI() / 4.0);
+            let hsO1 = Coef(OracleHamiltonianSimulation(_, OracleExample1, _, yQubits, aQubit), IntAsDouble(power) * 2.0 * PI() / 4.0);
+
+            // ApplyTrotterSuzuki(2, 4, [hsO0, hsO1], xqubits);
+            ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
+        }
+
+        ApplyHHL(_Oracle0add1HamiltonianSimulation_(_, _, yQubits, aQubit), stateVectorb);
         DumpMachine();
         ResetAll(stateVectorb + yQubits + [aQubit]);
 
@@ -126,8 +178,9 @@ namespace HHL {
     }
     @EntryPoint()
     operation Main() : Unit {
-        // Oracle11HamiltonianSimulationExampleUnitTest();
-        // OracleExample11UnitTest();
+        // OracleExample1UnitTest()
+        // OracleExample0HamiltonianSimulationUnitTest();
+        // OracleExample0UnitTest();
         // ShowEndien();
         // WGateUnitTest();
         // U3UnitTest();

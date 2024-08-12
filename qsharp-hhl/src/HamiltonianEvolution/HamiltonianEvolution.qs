@@ -8,12 +8,12 @@ namespace HamiltonianSimulation {
     open HamiltonianSimulation.Oracle;
     open Microsoft.Quantum.Unstable.StatePreparation;
 
-    operation HamiltonianSimulationSample1(power : Int, targetRegister : Qubit[]) : Unit is Adj + Ctl {
-        Rx(- 2.0 * IntAsDouble(power) * 2.0 * PI() / 4.0, targetRegister[0]) // exp(i*2pi*X)
+    operation HamiltonianSimulationSample1(time : Double, targetRegister : Qubit[]) : Unit is Adj + Ctl {
+        Rx(- 2.0 * time * 2.0 * PI() / 4.0, targetRegister[0]) // exp(i*2pi*X)
     }
 
-    operation HamiltonianSimulationSample2(power : Int, targetRegister : Qubit[]) : Unit is Adj + Ctl {
-        Exp([PauliX, PauliX], 1.0 * IntAsDouble(power) * 2.0 * PI() / 4.0, targetRegister); // exp(i*2pi*X)
+    operation HamiltonianSimulationSample2(time : Double, targetRegister : Qubit[]) : Unit is Adj + Ctl {
+        Exp([PauliX, PauliX], 1.0 * time * 2.0 * PI() / 4.0, targetRegister); // exp(i*2pi*X)
     }
 
     internal operation _PreCompiledWGate_(qubits : Qubit[]) : Unit is Adj + Ctl {
@@ -77,25 +77,25 @@ namespace HamiltonianSimulation {
         }
     }
 
-    operation Oracle11HamiltonianSimulationExample(power : Int, xQubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+    operation OracleHamiltonianSimulation(time : Double, oracle : Qubit[] => Unit is Adj, xQubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
         within {
-            OracleExample11(xQubits + yQubits);
+            oracle(xQubits + yQubits);
             ZipOp(_PreCompiledWGate_, xQubits, yQubits);
             ZipOp(_CNNOT_(_, aQubit), xQubits, yQubits);
         } apply {
-            Rz(- 2.0 * IntAsDouble(power) * 2.0 * PI() / 4.0, aQubit);
+            Rz(- 2.0 * time, aQubit);
         }
     }
 
-    operation Oracle11HamiltonianSimulationExampleUnitTest() : Unit {
+
+    operation OracleExample0HamiltonianSimulationUnitTest() : Unit {
         use xQubits = Qubit[2];
         let eigenstateVector = [0.0, 1.0, 0.0, 0.0];
         PreparePureStateD(eigenstateVector, xQubits);
         use yQubits = Qubit[2];
         use aQubit = Qubit();
-        Oracle11HamiltonianSimulationExample(1, xQubits, yQubits, aQubit);
+        OracleHamiltonianSimulation(1.0 / 4.0, OracleExample0, xQubits, yQubits, aQubit);
         DumpMachine();
-
         ResetAll(xQubits);
     }
 

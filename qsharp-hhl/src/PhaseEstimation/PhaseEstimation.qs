@@ -14,11 +14,9 @@ namespace PhaseEstimation {
         let nClock = Length(clockQubits);
         for i in 0..nClock - 1 {
             let power = 2^i; // little-endian, first qubits present less significant bits
-            DumpMachine();
             Controlled unitary([clockQubits[i]], (power, phiQubits));
-            DumpMachine();
         }
-
+        
         Adjoint ApplyQFT(Reversed(clockQubits));
         ReverseQubits(clockQubits);
     }
