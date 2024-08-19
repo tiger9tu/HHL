@@ -1,6 +1,6 @@
 import numpy as np
 
-matrix = np.array(
+matrix0 = np.array(
     [
         [0.0, 0.0, 0.0, 1.0],
         [0.0, 1.0, 0.0, 0.0],
@@ -9,8 +9,20 @@ matrix = np.array(
     ]
 )
 
+
+matrix1 = np.array(
+    [
+        [0.0, 1.0, 0.0, 0.0],
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0],
+    ]
+)
+
+matrix0add1 = matrix0 + matrix1
+
 # 对角化矩阵
-diag_matrix, eig_vectors = np.linalg.eig(matrix)
+diag_matrix, eig_vectors = np.linalg.eig(matrix0add1)
 
 print("diagnal matrix")
 print(diag_matrix)

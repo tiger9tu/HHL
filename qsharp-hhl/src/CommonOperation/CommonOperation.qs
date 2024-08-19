@@ -12,6 +12,7 @@ namespace CommonOperation {
     open Microsoft.Quantum.Unstable.StatePreparation;
 
     operation CRotation(negVal : Bool, angleFunc : Int -> Double, Rn : (Double, Qubit) => Unit is Adj + Ctl, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
+        // little endien
         mutable negValInt = 0;
         if negVal {
             set negValInt = 1;
@@ -30,11 +31,11 @@ namespace CommonOperation {
 
         if negVal {
             for i in 1..nAbsVal -1 {
-                let negAngle = - angleFunc(i);
+                let negDoubleAngle = - 2. * angleFunc(i);
                 // counteract
-                Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
+                Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negDoubleAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
                 // Apply negative phase
-                Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
+                // Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
             }
 
         }
@@ -54,7 +55,7 @@ namespace CommonOperation {
         // clock qubits : |01> represent 0.10 (1/2)
         // scaling : 0.25
         // negVal : false
-        //
+
         // Anticipate :
         // Basis | Amplitude      | Probability | Phase
         // -----------------------------------------------
@@ -67,6 +68,8 @@ namespace CommonOperation {
         // ApplyReciprocal(0.25, false, clockQubits, ancillaQubit);
         // DumpMachine();
         // ResetAll(clockQubits + [ancillaQubit]);
+
+
         // clock qubits : |011> represent - 0.10 (- 1/2)
         // scaling : 0.25
         // negVal : false
@@ -126,5 +129,18 @@ namespace CommonOperation {
         for i in 0..Length(qubits1)-1 {
             Op([qubits1[i], qubits2[i]]);
         }
+    }
+
+    function BoolAsInt(b : Bool) : Int {
+        mutable ib = 0;
+        if b {
+            set ib = ib + 1;
+        }
+        ib
+    }
+
+    function Log2(x : Double) : Double {
+        //log2(x) = Ln(x) / Ln(2)
+        Log(x) / LogOf2()
     }
 }

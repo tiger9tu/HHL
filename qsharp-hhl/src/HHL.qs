@@ -16,42 +16,79 @@ namespace HHL {
     open HamiltonianSimulation.TrotterSuzuki;
     open HamiltonianSimulation.Oracle;
 
-
-    internal function _CalculateNumClockQubits_() : Int {
-        return 3; // implement later
-    }
-
-    internal function _CalculateScaling_() : Double {
-        return 0.25; // implement later
-    }
-
-    internal function _ReciprocalAngle_(scaling : Double, nAbsClock : Int, i : Int) : Double {
-        let reciprocalVal = scaling * IntAsDouble(nAbsClock) / IntAsDouble(i);
+    internal function _ReciprocalAngle_(scaling : Double, nClock : Int, i : Int) : Double {
+        let reciprocalVal = scaling * (2.^IntAsDouble(nClock)) / IntAsDouble(i);
         mutable angle = 0.0;
         if reciprocalVal == 1.0 {
             set angle = PI();
         } elif reciprocalVal < 1.0 {
             set angle = 2.0 * ArcSin(reciprocalVal);
         }
+
+        // Message($"nAbsClock = {nAbsClock}, i = {i}, reciprocalVal = {reciprocalVal}");
         return angle;
     }
 
     internal operation _ApplyCReciprocal_(scaling : Double, negVal : Bool, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
-        mutable nAbsClock = Length(clockQubits);
-        if negVal {
-            set nAbsClock -= 1;
-        }
-        CyRotation(negVal, _ReciprocalAngle_(scaling, nAbsClock, _), clockQubits, ancillaQubit);
+        mutable nClock = Length(clockQubits);
+
+        CyRotation(negVal, _ReciprocalAngle_(scaling, nClock, _), clockQubits, ancillaQubit);
+    }
+
+    operation CReciprocalUnitTest() : Unit {
+        use clockQubits = Qubit[2];
+        use ancillaQubit = Qubit();
+        let clockState = [0.0, 1.0, 0.0, 0.0]; // |01> represent -1
+        PreparePureStateD(clockState, clockQubits); // Big endien
+        _ApplyCReciprocal_(0.25, false, clockQubits, ancillaQubit);
+        DumpMachine();
+        ResetAll(clockQubits + [ancillaQubit]);
+    }
+
+    internal function _DefMinAbsEigenVal_() : Double {
+        1.
+    }
+
+    internal function _DefMaxAbsEigenVal_() : Double {
+        2.
+    }
+
+    internal function _GetKappa_() : Double {
+        _DefMaxAbsEigenVal_() / _DefMinAbsEigenVal_()
+    }
+
+    internal function _DefNegVal_() : Bool {
+        true
+    }
+
+    internal function _GetNumClockQubits_() : Int {
+        let kappa = _GetKappa_();
+        let negVal = _DefNegVal_();
+        Ceiling(Log2(kappa + 1.)) + BoolAsInt(negVal)
+    }
+
+    internal function _GetScaling_() : Double {
+        let lambdaMin = _DefMinAbsEigenVal_();
+        let n = 2^_GetNumClockQubits_();
+        lambdaMin / IntAsDouble(n)
+    }
+
+    internal function _GetT0_() : Double {
+        let nc = _GetNumClockQubits_();
+        // let negVal = _DefNegVal_();
+        // let nAbsC = nc - BoolAsInt(negVal);
+        2. * PI() / (2.^IntAsDouble(nc))
     }
 
     operation ApplyHHL(unitaryA : (Int, Qubit[]) => Unit is Adj + Ctl, targetRegister : Qubit[]) : Unit {
+        let kappa = _GetKappa_();
+        let negVal = _DefNegVal_();
+        let numClockQubits = _GetNumClockQubits_();
+        let scaling = _GetScaling_();
 
-        let numClockQubits = _CalculateNumClockQubits_();
         use clockRegister = Qubit[numClockQubits];
         use ancillaRegister = Qubit();
         mutable postSelect : Result = Zero;
-        let scaling = _CalculateScaling_();
-        let negVal = true;
 
         repeat {
             within {
@@ -91,42 +128,22 @@ namespace HHL {
         // |10⟩ |  0.1826+0.0000𝑖 |     3.3333% |  -0.0000
         // |11⟩ |  0.5477+0.0000𝑖 |    30.0000% |  -0.0000
         // let vector = [1.0, 3.0, 4.0, 2.0];
-
-        // let matrix = [
+        //         let matrix = [
         //     [0.0, 0.0, 1.0, 0.0],
         //     [0.0, 0.0, 0.0, 1.0],
         //     [1.0, 0.0, 0.0, 0.0],
         //     [0.0, 1.0, 0.0, 0.0]
         // ];
 
-        // let vector = [4.0, 2.0, 3.0, -1.0];
+
+        //////////////////////////////////Test Case 1////////////////////////////////////
+
+        // let vector = [0.0, 1.0, 0.0, 0.0];
         // let matrix = [
         //     [0.0, 0.0, 0.0, 1.0],
         //     [0.0, 1.0, 0.0, 0.0],
         //     [0.0, 0.0, 1.0, 0.0],
         //     [1.0, 0.0, 0.0, 0.0]
-        // ];
-        // use stateVectorb = Qubit[2];
-        // use yQubits = Qubit[2];
-        // use aQubit = Qubit();
-        // PreparePureStateD(vector, stateVectorb);
-        // DumpMachine();
-
-        // internal operation _UnitaryA_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
-        //     OracleHamiltonianSimulation(IntAsDouble(power) * 2.0 * PI() / 4.0, OracleExample1, xqubits, yQubits, aQubit);
-        // }
-
-        // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
-        // DumpMachine();
-        // ResetAll(stateVectorb + yQubits + [aQubit]);
-
-
-        // let vector = [4.0, 2.0, 3.0, -1.0];
-        // let matrix = [
-        //     [0.0, 1.0, 0.0, 0.0],
-        //     [1.0, 0.0, 0.0, 0.0],
-        //     [0.0, 0.0, 1.0, 0.0],
-        //     [0.0, 0.0, 0.0, 1.0]
         // ];
         // use stateVectorb = Qubit[2];
         // use yQubits = Qubit[2];
@@ -142,7 +159,38 @@ namespace HHL {
         // DumpMachine();
         // ResetAll(stateVectorb + yQubits + [aQubit]);
 
-        let vector = [4.0, 2.0, 3.0, -1.0];
+        //////////////////////////////////Test Case 2////////////////////////////////////
+        // let vector = [4.0, 2.0, 3.0, -1.0];
+        // let matrix = [
+        //     [0.0, 1.0, 0.0, 0.0],
+        //     [1.0, 0.0, 0.0, 0.0],
+        //     [0.0, 0.0, 1.0, 0.0],
+        //     [0.0, 0.0, 0.0, 1.0]
+        // ];
+        // use stateVectorb = Qubit[2];
+        // use yQubits = Qubit[2];
+        // use aQubit = Qubit();
+        // PreparePureStateD(vector, stateVectorb);
+        // DumpMachine();
+
+        // internal operation _UnitaryA_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+        //     let t0 = _GetT0_();
+        //     OracleHamiltonianSimulation(IntAsDouble(power) * t0, OracleExample1, xqubits, yQubits, aQubit);
+        // }
+
+        // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
+        // // DumpMachine();
+        // DumpRegister(stateVectorb);
+        // ResetAll(stateVectorb + yQubits + [aQubit]);
+
+        //////////////////////////////////Test Case 3////////////////////////////////////
+        // let vector = [4.0, 2.0, 3.0, -1.0];
+        // let vector = [2., -1., 0., -1.];
+
+        // all the eigenvectors are fine, but for the non eigenvectors, there are problems
+        // it is suprising because non eigenvectors are just linear combination of eigenvectors
+        // so when eigenvectors work fine, then should it also be for non-eigenvectors
+        let vector = [2., -1., 0., -1.];
         let matrix = [
             [0.0, 1.0, 0.0, 1.0],
             [1.0, 1.0, 0.0, 0.0],
@@ -155,13 +203,15 @@ namespace HHL {
         PreparePureStateD(vector, stateVectorb);
 
         internal operation _Oracle0add1HamiltonianSimulation_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
-            let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample0, _, yQubits, aQubit), IntAsDouble(power) * 2.0 * PI() / 4.0);
-            let hsO1 = Coef(OracleHamiltonianSimulation(_, OracleExample1, _, yQubits, aQubit), IntAsDouble(power) * 2.0 * PI() / 4.0);
+            let t0 = _GetT0_();
+            let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample0, _, yQubits, aQubit), IntAsDouble(power) * t0);
+            let hsO1 = Coef(OracleHamiltonianSimulation(_, OracleExample1, _, yQubits, aQubit), IntAsDouble(power) * t0);
 
-            // ApplyTrotterSuzuki(2, 4, [hsO0, hsO1], xqubits);
             ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
+            // ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
         }
 
+        // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
         ApplyHHL(_Oracle0add1HamiltonianSimulation_(_, _, yQubits, aQubit), stateVectorb);
         DumpMachine();
         ResetAll(stateVectorb + yQubits + [aQubit]);
@@ -174,8 +224,8 @@ namespace HHL {
         X(q1);
         // |01>
         let a = 0;
-
     }
+
     @EntryPoint()
     operation Main() : Unit {
         // OracleExample1UnitTest()
@@ -188,5 +238,6 @@ namespace HHL {
         // PhaseEstimationUnitTest();
         // CRotationUnitTest();
         HHLUnitTest();
+        // CReciprocalUnitTest();
     }
 }

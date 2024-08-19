@@ -8,6 +8,11 @@ namespace PhaseEstimation {
     open Microsoft.Quantum.Convert;
     open CommonOperation;
 
+    operation ApplyQFTWithReverse(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyQFT(qs);
+        ReverseQubits(qs);
+    }
+
     operation ApplyPhaseEstimation(unitary : ((Int, Qubit[]) => Unit is Adj + Ctl), clockQubits : Qubit[], phiQubits : Qubit[]) : Unit is Adj + Ctl {
         PrepareUniform(clockQubits);
 
@@ -16,9 +21,10 @@ namespace PhaseEstimation {
             let power = 2^i; // little-endian, first qubits present less significant bits
             Controlled unitary([clockQubits[i]], (power, phiQubits));
         }
-        
-        Adjoint ApplyQFT(Reversed(clockQubits));
-        ReverseQubits(clockQubits);
+
+        Adjoint ApplyQFTWithReverse(clockQubits);
+        // Adjoint ApplyQFT(Reversed(clockQubits));
+        // ReverseQubits(clockQubits);
     }
 
     operation PhaseEstimationUnitTest() : Unit {

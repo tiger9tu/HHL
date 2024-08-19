@@ -90,7 +90,7 @@ namespace HamiltonianSimulation {
 
     operation OracleExample0HamiltonianSimulationUnitTest() : Unit {
         use xQubits = Qubit[2];
-        let eigenstateVector = [0.0, 1.0, 0.0, 0.0];
+        let eigenstateVector = [-1.0 / Sqrt(2.0), 0.0, 0.0, 1.0 / Sqrt(2.0)];
         PreparePureStateD(eigenstateVector, xQubits);
         use yQubits = Qubit[2];
         use aQubit = Qubit();
