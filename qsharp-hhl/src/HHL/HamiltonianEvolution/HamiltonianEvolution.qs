@@ -1,11 +1,11 @@
-namespace HamiltonianSimulation {
+namespace HHL.HamiltonianSimulation {
     import Microsoft.Quantum.Diagnostics.DumpRegister;
     import Microsoft.Quantum.Arrays.Zipped;
     import Microsoft.Quantum.Diagnostics.DumpMachine;
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Math;
-    open CommonOperation;
-    open HamiltonianSimulation.Oracle;
+    open HHL.CommonOperation;
+    open HHL.HamiltonianSimulation.Oracle;
     open Microsoft.Quantum.Unstable.StatePreparation;
 
     operation HamiltonianSimulationSample1(time : Double, targetRegister : Qubit[]) : Unit is Adj + Ctl {
@@ -52,22 +52,6 @@ namespace HamiltonianSimulation {
         Exp([PauliI, PauliI], - 2.9085, qubits);
     }
 
-    operation WGateUnitTest() : Unit {
-        DumpMachine();
-        use q2 = Qubit[2];
-        _PreCompiledWGate_(q2);
-        DumpMachine();
-        // expect |00>
-        X(q2[1]); // prepare |01>
-        _PreCompiledWGate_(q2);
-        DumpMachine();
-        //  Expect :
-        //  Basis | Amplitude      | Probability | Phase
-        //  -----------------------------------------------
-        //   |01⟩ | −0.7071+0.0000𝑖 |    50.0000% |   3.1416
-        //   |10⟩ |  0.7071+0.0000𝑖 |    50.0000% |  -0.0000
-        ResetAll(q2);
-    }
 
     internal operation _CNNOT_(cnQubits : Qubit[], tQubit : Qubit) : Unit is Adj + Ctl {
         within {
@@ -88,15 +72,6 @@ namespace HamiltonianSimulation {
     }
 
 
-    operation OracleExample0HamiltonianSimulationUnitTest() : Unit {
-        use xQubits = Qubit[2];
-        let eigenstateVector = [-1.0 / Sqrt(2.0), 0.0, 0.0, 1.0 / Sqrt(2.0)];
-        PreparePureStateD(eigenstateVector, xQubits);
-        use yQubits = Qubit[2];
-        use aQubit = Qubit();
-        OracleHamiltonianSimulation(1.0 / 4.0, OracleExample0, xQubits, yQubits, aQubit);
-        DumpMachine();
-        ResetAll(xQubits);
-    }
+
 
 }

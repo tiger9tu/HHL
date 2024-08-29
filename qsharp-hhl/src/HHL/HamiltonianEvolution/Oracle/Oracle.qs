@@ -1,4 +1,4 @@
-namespace HamiltonianSimulation.Oracle {
+namespace HHL.HamiltonianSimulation.Oracle {
     // Precompiled by qiskit qs_decomposition
 
     import Microsoft.Quantum.Diagnostics.DumpMachine;
@@ -6,7 +6,7 @@ namespace HamiltonianSimulation.Oracle {
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Convert;
-    open CommonOperation;
+    open HHL.CommonOperation;
 
     internal operation _Circuit30418_(qubits : Qubit[]) : Unit is Adj + Ctl {
         U3(PI() / 2.0, -PI() / 2.0, 3.0 * PI() / 4.0, qubits[0]);
@@ -306,22 +306,7 @@ namespace HamiltonianSimulation.Oracle {
         SwapReverseRegister(qubits);
     }
 
-    operation OracleExample0UnitTest() : Unit {
-        // use xQubit = Qubit[2];
-        // use yQubit = Qubit[2];
-        // OracleExample(xQubit + yQubit);
-        // // Expect |0011⟩ |  1.0000+0.0000𝑖 |   100.0000% |   0.0000
-        // DumpMachine();
-        // ResetAll(xQubit + yQubit);
 
-        use xQubit = Qubit[2];
-        use yQubit = Qubit[2];
-        X(xQubit[1]);
-        OracleExample0(xQubit + yQubit);
-        // Expect |0011⟩ |  1.0000+0.0000𝑖 |   100.0000% |   0.0000
-        DumpMachine();
-        ResetAll(xQubit + yQubit);
-    }
 
 
     /////////////////////////////////Oracle 2///////////////////////////////////////
@@ -329,7 +314,7 @@ namespace HamiltonianSimulation.Oracle {
     // 1 0 0 0
     // 0 0 1 0
     // 0 0 0 1
-    internal operation _Circuit31080_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31080_(qubits : Qubit[]) : Unit is Adj + Ctl {
         U3(0.8005038404950419, 1.398714349375565, -2.896999746190743, qubits[0]);
         U3(1.4681193178462442, -0.8197390205625688, 1.9457669637968023, qubits[1]);
         CNOT(qubits[0], qubits[1]);
@@ -341,7 +326,7 @@ namespace HamiltonianSimulation.Oracle {
 
     }
 
-    internal operation _Circuit31083_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31083_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(0.33893274669405543, -2.087205280306609, 1.2230731160503021, qubits[0]);
         U3(0.8308051844331109, 1.3902332927141803, 2.1692173304006026, qubits[1]);
@@ -355,7 +340,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31086_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31086_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(PI(), 0.02641722145558223, -0.0734673634260159, qubits[0]);
         U3(1.6903248016911914, -PI() / 2.0, -PI(), qubits[1]);
@@ -369,7 +354,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31089_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31089_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(PI(), 0.05702113096365968, -1.5430801682949262, qubits[0]);
         U3(1.4512678518986006, PI() / 2.0, -3.105420962816651, qubits[1]);
@@ -383,7 +368,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31092_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31092_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(0.906006121531952, -1.1161834126326995, 1.4243749409306083, qubits[0]);
         U3(2.250420319653723, 1.110370726292027, -1.23399645587542, qubits[1]);
@@ -397,7 +382,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31095_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31095_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(0.9060061215319515, 1.1161834126327026, 1.4759319048947805, qubits[0]);
         U3(2.4584970518646214, -2.150213775473686, 1.2968886788074219, qubits[1]);
@@ -411,7 +396,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31098_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31098_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(1.460612469449348, -2.839889168879239, -1.1228326568433804, qubits[0]);
         U3(2.3736957504049343, -2.0594107435964535, -2.2757093958689154, qubits[1]);
@@ -425,7 +410,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31101_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31101_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(2.22466269124712, -0.6862547323927055, 2.168538149114351, qubits[0]);
         U3(2.0117781390610046, 0.8243769595909249, -2.291936644448966, qubits[1]);
@@ -439,7 +424,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31104_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31104_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(PI(), 0.1699184547270609, -1.400877872067836, qubits[0]);
         U3(1.690324801691192, -PI() / 2.0, -PI(), qubits[1]);
@@ -453,7 +438,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31107_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31107_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(1.6838376359198337, -0.1262369478149079, -2.4149933725452737, qubits[0]);
         U3(1.6903248016911914, -PI() / 2.0, -PI(), qubits[1]);
@@ -467,7 +452,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31110_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31110_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(0.7550704300944633, 0.889577386579214, -2.608294793314319, qubits[0]);
         U3(1.690324801691193, -PI() / 2.0, -PI(), qubits[1]);
@@ -481,7 +466,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31113_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31113_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(2.311923064035886, -0.289039561328293, -1.9856934446488212, qubits[0]);
         U3(1.451267851898601, PI() / 2.0, -PI(), qubits[1]);
@@ -495,7 +480,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31116_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31116_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(1.283847717867271, 1.091607425089716, -2.9955839178879087, qubits[0]);
         U3(1.4512678518985997, PI() / 2.0, -PI(), qubits[1]);
@@ -509,7 +494,7 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31119_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31119_(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         U3(0.0, 3.090170118268813, 1.6222188621158766, qubits[0]);
         U3(1.690324801691192, -PI() / 2.0, -PI(), qubits[1]);
@@ -523,12 +508,12 @@ namespace HamiltonianSimulation.Oracle {
     }
 
 
-    internal operation _Circuit31122_(qubits : Qubit[]) : Unit is Adj {
+    internal operation _Circuit31122_(qubits : Qubit[]) : Unit is Adj + Ctl {
         U3(0.0, -PI(), -PI(), qubits[0]);
         U3(PI(), PI() / 2.0, -PI() / 2.0, qubits[1]);
     }
 
-    operation OracleExample1(qubits : Qubit[]) : Unit is Adj {
+    operation OracleExample1(qubits : Qubit[]) : Unit is Adj + Ctl {
 
         SwapReverseRegister(qubits);
         _Circuit31080_([qubits[0], qubits[1]]);
@@ -694,26 +679,7 @@ namespace HamiltonianSimulation.Oracle {
         SwapReverseRegister(qubits);
     }
 
-    operation OracleExample1UnitTest() : Unit {
-        // 0 1 0 0
-        // 1 0 0 0
-        // 0 0 1 0
-        // 0 0 0 1
-        // use xQubit = Qubit[2];
-        // use yQubit = Qubit[2];
-        // OracleExample(xQubit + yQubit);
-        // // Expect |0011⟩ |  1.0000+0.0000𝑖 |   100.0000% |   0.0000
-        // DumpMachine();
-        // ResetAll(xQubit + yQubit);
 
-        use xQubit = Qubit[2];
-        use yQubit = Qubit[2];
-        // X(xQubit[1]);
-        OracleExample1(xQubit + yQubit);
-        // Expect |0001⟩ |  1.0000+0.0000𝑖 |   100.0000% |   0.0000
-        DumpMachine();
-        ResetAll(xQubit + yQubit);
-    }
 
     operation OracleExample2Large(qubits : Qubit[]) : Unit is Adj + Ctl {}
 }

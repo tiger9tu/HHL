@@ -1,7 +1,7 @@
 // HHL Algorithm
 
 
-namespace CommonOperation {
+namespace HHL.CommonOperation {
     import Microsoft.Quantum.Random.DrawRandomDouble;
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Intrinsic;
@@ -49,45 +49,6 @@ namespace CommonOperation {
         CRotation(negVal, angleFunc, Rx(_, _), clockQubits, ancillaQubit);
     }
 
-
-    operation CRotationUnitTest() : Unit {
-
-        // clock qubits : |01> represent 0.10 (1/2)
-        // scaling : 0.25
-        // negVal : false
-
-        // Anticipate :
-        // Basis | Amplitude      | Probability | Phase
-        // -----------------------------------------------
-        // |010⟩ |  0.8660+0.0000𝑖 |    75.0000% |   0.0000
-        // |011⟩ |  0.5000+0.0000𝑖 |    25.0000% |   0.0000
-        // use clockQubits = Qubit[2];
-        // use ancillaQubit = Qubit();
-        // let clockState = [0.0, 1.0, 0.0, 0.0]; // |01> represent -1
-        // PreparePureStateD(clockState, clockQubits); // Big endien
-        // ApplyReciprocal(0.25, false, clockQubits, ancillaQubit);
-        // DumpMachine();
-        // ResetAll(clockQubits + [ancillaQubit]);
-
-
-        // clock qubits : |011> represent - 0.10 (- 1/2)
-        // scaling : 0.25
-        // negVal : false
-        //
-        // Anticipate :
-        // Basis | Amplitude      | Probability | Phase
-        // -----------------------------------------------
-        // |010⟩ |  0.8660+0.0000𝑖 |    75.0000% |   0.0000
-        // |011⟩ |  - 0.5000+0.0000𝑖 |    25.0000% |   0.0000
-        // use clockQubits = Qubit[3];
-        // use ancillaQubit = Qubit();
-        // let clockState = [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0]; // |01> represent -1
-        // PreparePureStateD(clockState, clockQubits); // Big endien
-        // ApplyCReciprocal(0.25, true, clockQubits, ancillaQubit);
-        // DumpMachine();
-        // ResetAll(clockQubits + [ancillaQubit]);
-
-    }
 
     operation PrepareUniform(qubits : Qubit[]) : Unit is Adj + Ctl {
         for q in qubits {
