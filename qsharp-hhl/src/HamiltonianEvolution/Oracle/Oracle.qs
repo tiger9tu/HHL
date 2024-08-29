@@ -524,11 +524,10 @@ namespace HamiltonianSimulation.Oracle {
 
 
     internal operation _Circuit31122_(qubits : Qubit[]) : Unit is Adj {
-
         U3(0.0, -PI(), -PI(), qubits[0]);
         U3(PI(), PI() / 2.0, -PI() / 2.0, qubits[1]);
-
     }
+
     operation OracleExample1(qubits : Qubit[]) : Unit is Adj {
 
         SwapReverseRegister(qubits);
@@ -716,4 +715,5 @@ namespace HamiltonianSimulation.Oracle {
         ResetAll(xQubit + yQubit);
     }
 
+    operation OracleExample2Large(qubits : Qubit[]) : Unit is Adj + Ctl {}
 }

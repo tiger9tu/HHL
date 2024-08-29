@@ -143,4 +143,14 @@ namespace CommonOperation {
         //log2(x) = Ln(x) / Ln(2)
         Log(x) / LogOf2()
     }
+
+    operation UNothing(qubits : Qubit[]) : Unit is Ctl + Adj {
+        for q in qubits {
+            X(q);
+        }
+
+        for q in qubits {
+            X(q);
+        }
+    }
 }

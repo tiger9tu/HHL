@@ -45,6 +45,12 @@ namespace HHL {
         ResetAll(clockQubits + [ancillaQubit]);
     }
 
+
+
+    internal function _DefNumVecQubits_() : Int {
+        2
+    }
+
     internal function _DefMinAbsEigenVal_() : Double {
         1.
     }
@@ -53,31 +59,37 @@ namespace HHL {
         2.
     }
 
-    internal function _GetKappa_() : Double {
-        _DefMaxAbsEigenVal_() / _DefMinAbsEigenVal_()
-    }
-
     internal function _DefNegVal_() : Bool {
         true
     }
 
+    internal function _DefVector_() : Double[] {
+        [4.0, 2.0, 3.0, -1.0]
+    }
+
+    internal function _GetKappa_() : Double {
+        _DefMaxAbsEigenVal_() / _DefMinAbsEigenVal_()
+    }
+
     internal function _GetNumClockQubits_() : Int {
+        let n = _DefNumVecQubits_();
         let kappa = _GetKappa_();
         let negVal = _DefNegVal_();
-        Ceiling(Log2(kappa + 1.)) + BoolAsInt(negVal)
+        Max([n, Ceiling(Log2(kappa + 1.))]) + BoolAsInt(negVal)
     }
 
     internal function _GetScaling_() : Double {
         let lambdaMin = _DefMinAbsEigenVal_();
-        let n = 2^_GetNumClockQubits_();
-        lambdaMin / IntAsDouble(n)
+        let negVal = _DefNegVal_();
+        let nAbsC = 2^(_GetNumClockQubits_() - BoolAsInt(negVal));
+        lambdaMin / IntAsDouble(nAbsC)
     }
 
     internal function _GetT0_() : Double {
         let nc = _GetNumClockQubits_();
-        // let negVal = _DefNegVal_();
-        // let nAbsC = nc - BoolAsInt(negVal);
-        2. * PI() / (2.^IntAsDouble(nc))
+        let negVal = _DefNegVal_();
+        let nAbsC = nc - BoolAsInt(negVal);
+        2. * PI() / (2.^IntAsDouble(nAbsC)) // the Abs is because if CRotation implementation
     }
 
     operation ApplyHHL(unitaryA : (Int, Qubit[]) => Unit is Adj + Ctl, targetRegister : Qubit[]) : Unit {
@@ -160,14 +172,16 @@ namespace HHL {
         // ResetAll(stateVectorb + yQubits + [aQubit]);
 
         //////////////////////////////////Test Case 2////////////////////////////////////
-        // let vector = [4.0, 2.0, 3.0, -1.0];
+        // let nv = _DefNumVecQubits_();
+        // let vector = _DefVector_();
         // let matrix = [
         //     [0.0, 1.0, 0.0, 0.0],
         //     [1.0, 0.0, 0.0, 0.0],
         //     [0.0, 0.0, 1.0, 0.0],
         //     [0.0, 0.0, 0.0, 1.0]
         // ];
-        // use stateVectorb = Qubit[2];
+
+        // use stateVectorb = Qubit[nv];
         // use yQubits = Qubit[2];
         // use aQubit = Qubit();
         // PreparePureStateD(vector, stateVectorb);
@@ -184,8 +198,6 @@ namespace HHL {
         // ResetAll(stateVectorb + yQubits + [aQubit]);
 
         //////////////////////////////////Test Case 3////////////////////////////////////
-        // let vector = [4.0, 2.0, 3.0, -1.0];
-        // let vector = [2., -1., 0., -1.];
 
         // all the eigenvectors are fine, but for the non eigenvectors, there are problems
         // it is suprising because non eigenvectors are just linear combination of eigenvectors
@@ -216,6 +228,38 @@ namespace HHL {
         DumpMachine();
         ResetAll(stateVectorb + yQubits + [aQubit]);
 
+        ////////////////////////////////////Test Case4 - Scale Up////////////////////////////////
+        // let n = _DefNumVecQubits_();
+        // use stateVectorb = Qubit[n];
+        // let nclock = _GetNumClockQubits_();
+        // use yQubits = Qubit[nclock];
+        // use aQubit = Qubit();
+        // // PreparePureStateD(vector, stateVectorb);
+
+        // internal operation _Oracle2HamiltonianSimulation_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+        //     let t0 = _GetT0_();
+        //     let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample2Large, _, yQubits, aQubit), IntAsDouble(power) * t0);
+        //     ApplyTrotterSuzuki(2, 14, [hsO0], xqubits);
+        // }
+
+        // // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
+        // ApplyHHL(_Oracle2HamiltonianSimulation_(_, _, yQubits, aQubit), stateVectorb);
+        // DumpMachine();
+        // ResetAll(stateVectorb + yQubits + [aQubit]);
+    }
+
+    operation HHLGateCountTest(size : Int) : Unit {
+        use qb = Qubit[size];
+        use qc = Qubit[size];
+        use qy = Qubit[size];
+        use qa = Qubit();
+        internal operation _FakeOracleHS_(power : Int, phiQ : Qubit[], qy : Qubit[], qa : Qubit) : Unit is Adj + Ctl {
+            // OracleHamiltonianSimulation(1., OracleExample2Large, phiQ, qy, qa);
+            let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample2Large, _, qy, qa), 1.);
+            ApplyTrotterSuzuki(2, 14, [hsO0], phiQ);
+        }
+
+        ApplyHHL(_FakeOracleHS_(_, _, qy, qa), qb);
     }
 
     operation ShowEndien() : Unit {
@@ -237,7 +281,11 @@ namespace HHL {
         // TrotterSuzukiUnitTest();
         // PhaseEstimationUnitTest();
         // CRotationUnitTest();
-        HHLUnitTest();
+        // let depth = EstimateDepth();
+        // HHLUnitTest();
         // CReciprocalUnitTest();
+
+        // PhaseEstimationDepthTest(2, 1);
+        HHLGateCountTest(20);
     }
 }

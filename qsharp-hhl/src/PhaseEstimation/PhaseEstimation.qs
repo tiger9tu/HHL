@@ -62,6 +62,14 @@ namespace PhaseEstimation {
 
     }
 
+    operation PhaseEstimationDepthTest(nClock : Int, nPhi : Int) : Unit {
+        use clockQubits = Qubit[nClock];
+        use phiQubits = Qubit[nPhi];
 
+        operation PowerUNoting(power : Int, qubits : Qubit[]) : Unit is Ctl + Adj {
+            UNothing(qubits);
+        }
+        ApplyPhaseEstimation(PowerUNoting, clockQubits, phiQubits);
+    }
 
 }
