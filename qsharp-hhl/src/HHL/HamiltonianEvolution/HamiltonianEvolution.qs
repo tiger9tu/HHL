@@ -1,4 +1,5 @@
 namespace HHL.HamiltonianSimulation {
+    import HHLUnitTest.TrotterSuzukiUnitTest;
     import Microsoft.Quantum.Diagnostics.DumpRegister;
     import Microsoft.Quantum.Arrays.Zipped;
     import Microsoft.Quantum.Diagnostics.DumpMachine;
@@ -6,7 +7,9 @@ namespace HHL.HamiltonianSimulation {
     open Microsoft.Quantum.Math;
     open HHL.CommonOperation;
     open HHL.HamiltonianSimulation.Oracle;
-    open Microsoft.Quantum.Unstable.StatePreparation;
+
+    open TrotterSuzuki;
+
 
     operation HamiltonianSimulationSample1(time : Double, targetRegister : Qubit[]) : Unit is Adj + Ctl {
         Rx(- 2.0 * time * 2.0 * PI() / 4.0, targetRegister[0]) // exp(i*2pi*X)
@@ -71,7 +74,36 @@ namespace HHL.HamiltonianSimulation {
         }
     }
 
+    newtype HSConfig = (
+        real : Bool,
+        sparsity : Int,
+        epsilon : Double,
+        // for bounding the error of trotter
+        maxH : Double,
+        cTrotter : Double,
+        verticeQueries : Int,
+    );
 
+    operation OracleSparseHamiltonianSimulationFake(hsConfig : HSConfig, time : Double, oracle : Qubit[] => Unit is Adj + Ctl, xQubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+        let simulateGraphColoredOracle = repeatOp(hsConfig.verticeQueries, oracle, _);
+        
+        let singleHSCoef = Coef(OracleHamiltonianSimulation(_,  simulateGraphColoredOracle, _ ,yQubits, aQubit), time);
+
+        let sparseHSCoef = Repeated(singleHSCoef, 6*hsConfig.sparsity*hsConfig.sparsity);
+        let trotterReps = Ceiling(hsConfig.cTrotter * (time * time* hsConfig.maxH / hsConfig.epsilon)); // according to paper's sclalign
+        ApplyTrotterSuzuki(2, trotterReps, sparseHSCoef, xQubits);
+
+    }
+
+    operation OracleSparseHamiltonianSimulation(hsConfig : HSConfig, time : Double, oracle : Qubit[] => Unit is Adj + Ctl, xQubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+        if(hsConfig.real) {
+            Message("real");
+            OracleHamiltonianSimulation(time, oracle,xQubits,yQubits,aQubit);
+        }
+        else {
+            OracleSparseHamiltonianSimulationFake(hsConfig, time, oracle, xQubits, yQubits, aQubit);
+        }
+    }
 
 
 }

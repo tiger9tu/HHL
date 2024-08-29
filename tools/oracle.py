@@ -145,10 +145,12 @@ def reduce_Uf11(Uf):
 
 H = np.array([[0, 1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
 half_Uf11 = get_half_Uf11(H)
-assert np.array_equal(reduce_Uf11(half_Uf11), H)
-opt_circ = find_optimal_circ(half_Uf11, 300)
-qasm_code = qs2.dump(opt_circ, "oracle.qasm2")
+U = fill_Uf(half_Uf11)
+print(U)
+# assert np.array_equal(reduce_Uf11(half_Uf11), H)
+# opt_circ = find_optimal_circ(half_Uf11, 300)
+# qasm_code = qs2.dump(opt_circ, "oracle.qasm2")
 
-# print(qasm_code)
+# # print(qasm_code)
 
-print("\n circ size: ", opt_circ.size())
+# print("\n circ size: ", opt_circ.size())

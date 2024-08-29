@@ -21,24 +21,50 @@ namespace HHLGateCountTest {
         operation PowerUNoting(power : Int, qubits : Qubit[]) : Unit is Ctl + Adj {
             UNothing(qubits);
         }
+
+        // let myOp = q => UNothing(q);
+        StartCountingOperation(Controlled UNothing);
         ApplyPhaseEstimation(PowerUNoting, clockQubits, phiQubits);
+        let UCount = StopCountingOperation(Controlled UNothing);
+
+        Message($"controlled unitary calls : {UCount}");
     }
 
     // function GetTrotterRep
 
-    operation HHLGateCountTest(qbSize : Int, qcSize : Int, trotterReps : Int) : Unit {
-        use qb = Qubit[qbSize];
-        use qc = Qubit[qcSize];
-        use qy = Qubit[qbSize];
-        use qa = Qubit();
+    operation HHLGateCountTest() : Unit {
+        
+        // newtype HHLConfig = (
+        //     N : Int,
+        //     sparsity : Int,
+        //     kappa : Double,
+        //     C : Double, 
+    
+        //     epsilon : Double,
+        //     negVal : Bool,
+        //     repeatitive : Bool,
 
-        internal operation _FakeOracleHS_(trotterReps : Int, power : Int, phiQ : Qubit[], qy : Qubit[], qa : Qubit) : Unit is Adj + Ctl {
-            // OracleHamiltonianSimulation(1., OracleExample2Large, phiQ, qy, qa);
-            let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample2Large, _, qy, qa), 1.);
-            ApplyTrotterSuzuki(2, trotterReps, [hsO0], phiQ);
-        }
+        //     // for bounding the error of trotter
+        //     maxH : Double,
+        //     cTrotter : Double,
+        //     verticeQueries : Int, // calls to simulate one sparse hamiltonian
 
-        // ApplyHHL(_FakeOracleHS_(trotterReps, _, _, qy, qa), qb);
+        //     cQPE : Double,
+
+        // );
+
+        let config = HHLConfig(2^3, 5,4.,0., 0.1, false, false, 3., 0.1, 7, 0.1);
+        let n = Ceiling(Lg(IntAsDouble(config.N)));
+
+        use yQubits = Qubit[n];
+        use bQubits = Qubit[n];
+        use aQubit = Qubit();
+
+        StartCountingOperation(OracleEmpty);
+        ApplyHHL(config, OracleEmpty, bQubits);
+
+        let oracleCalls = StopCountingOperation(OracleEmpty);
+        Message($"Oracle calls = {oracleCalls}");
     }
 
 

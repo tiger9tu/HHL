@@ -11,6 +11,7 @@ namespace HHL.CommonOperation {
     open Microsoft.Quantum.Arrays;
     open Microsoft.Quantum.Unstable.StatePreparation;
 
+
     operation CRotation(negVal : Bool, angleFunc : Int -> Double, Rn : (Double, Qubit) => Unit is Adj + Ctl, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
         // little endien
         mutable negValInt = 0;
@@ -92,17 +93,18 @@ namespace HHL.CommonOperation {
         }
     }
 
+    operation repeatOp(reps : Int, Op : (Qubit[] => Unit is Adj + Ctl), qubits : Qubit[]) : Unit is Adj + Ctl {
+        for i in 0..reps {
+            Op(qubits);
+        }
+    }
+
     function BoolAsInt(b : Bool) : Int {
         mutable ib = 0;
         if b {
             set ib = ib + 1;
         }
         ib
-    }
-
-    function Log2(x : Double) : Double {
-        //log2(x) = Ln(x) / Ln(2)
-        Log(x) / LogOf2()
     }
 
     operation UNothing(qubits : Qubit[]) : Unit is Ctl + Adj {

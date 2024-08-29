@@ -14,7 +14,10 @@ namespace Test {
         // PhaseEstimationUnitTest();
         // CRotationUnitTest();
         // let depth = EstimateDepth();
-        HHLUnitTest();
+        // HHLUnitTest();
+        // HHLGateCountTest();
+        PhaseEstimationGateCountTest(10, 5);
+        
         // CReciprocalUnitTest();
 
         // PhaseEstimationDepthTest(2, 1);

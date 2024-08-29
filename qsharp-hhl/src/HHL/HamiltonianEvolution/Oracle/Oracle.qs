@@ -8,6 +8,10 @@ namespace HHL.HamiltonianSimulation.Oracle {
     open Microsoft.Quantum.Convert;
     open HHL.CommonOperation;
 
+    // operation QRAMOracle(UnitaryMatrix : Int[][], qubits: Qubit[]) : Unit is Adj + Ctl {
+
+    // }
+
     internal operation _Circuit30418_(qubits : Qubit[]) : Unit is Adj + Ctl {
         U3(PI() / 2.0, -PI() / 2.0, 3.0 * PI() / 4.0, qubits[0]);
         U3(0.835788143228214, PI() / 2.0, PI() / 4.0, qubits[1]);
@@ -681,5 +685,7 @@ namespace HHL.HamiltonianSimulation.Oracle {
 
 
 
-    operation OracleExample2Large(qubits : Qubit[]) : Unit is Adj + Ctl {}
+    operation OracleEmpty(qubits : Qubit[]) : Unit is Adj + Ctl {}
+
+
 }

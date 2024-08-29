@@ -255,15 +255,9 @@ namespace HHLUnitTest {
         PreparePureStateD(vector, stateVectorb);
         DumpMachine();
 
-        // internal operation _UnitaryA_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
-        //     let t0 = _GetT0_();
-        //     OracleHamiltonianSimulation(IntAsDouble(power) * t0, OracleExample1, xqubits, yQubits, aQubit);
-        // }
-
-        let config = HHLConfig(4,1,1.,0.25,0.1,true, true);
+        let config = HHLConfig(4,1,1.,0.25,0.1,true, true, 0.1, 1., 1, 0.05);
 
         ApplyHHL(config, OracleExample1, stateVectorb);
-        // DumpMachine();
         DumpRegister(stateVectorb);
         ResetAll(stateVectorb + yQubits + [aQubit]);
 
@@ -285,7 +279,7 @@ namespace HHLUnitTest {
         // PreparePureStateD(vector, stateVectorb);
 
         // internal operation _Oracle0add1HamiltonianSimulation_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
-        //     let t0 = _GetT0_();
+        //     let t0 = GetT0();
         //     let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample0, _, yQubits, aQubit), IntAsDouble(power) * t0);
         //     let hsO1 = Coef(OracleHamiltonianSimulation(_, OracleExample1, _, yQubits, aQubit), IntAsDouble(power) * t0);
 
@@ -308,8 +302,8 @@ namespace HHLUnitTest {
         // // PreparePureStateD(vector, stateVectorb);
 
         // internal operation _Oracle2HamiltonianSimulation_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
-        //     let t0 = _GetT0_();
-        //     let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample2Large, _, yQubits, aQubit), IntAsDouble(power) * t0);
+        //     let t0 = GetT0();
+        //     let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleEmpty, _, yQubits, aQubit), IntAsDouble(power) * t0);
         //     ApplyTrotterSuzuki(2, 14, [hsO0], xqubits);
         // }
 
