@@ -13,6 +13,26 @@ namespace HHLGateCountTest {
     open HHL.CommonOperation;
     open HHL.HamiltonianSimulation.TrotterSuzuki;
     open HHL.HamiltonianSimulation.Oracle;
+
+    operation ReciprocalGateCountTest(nc : Int) : Unit {
+        use qc = Qubit[nc];
+        use qa = Qubit();
+        ApplyCReciprocal(0.1,true, qc,qa);
+    }
+
+    // operation tcontrol(q : Qubit[]) : Unit is Ctl {
+    //     H(q[0]);
+    //     H(q[1]);
+    //     X(q[1]);
+    // }
+
+    // operation test(qc : Qubit, q2 : Qubit[]) : Unit {
+    //     // use qc = Qubit();
+    //     // use q2 = Qubit[2];
+    //     // Controlled H([qc],q2[0]);
+    //     Controlled tcontrol([qc],(q2));
+    // }
+
     
     operation PhaseEstimationGateCountTest(nClock : Int, nPhi : Int) : Unit {
         use clockQubits = Qubit[nClock];
@@ -28,6 +48,31 @@ namespace HHLGateCountTest {
         let UCount = StopCountingOperation(Controlled UNothing);
 
         Message($"controlled unitary calls : {UCount}");
+    }
+
+    operation HamiltonianSimulationGateCountTest(nx : Int) : Unit {
+    //     newtype HSConfig = (
+    //     real : Bool,
+    //     sparsity : Int,
+    //     epsilon : Double,
+    //     // for bounding the error of trotter
+    //     maxH : Double,
+    //     cTrotter : Double,
+    //     verticeQueries : Int,
+    // );
+        // let nqx = 8;
+        // use qx = Qubit[nqx];
+        // use qy = Qubit[nqx];
+        // use qa = Qubit();
+        // let hsConfig = HSConfig(false, 10, 0.1, 2.,0.1,7);
+        // let time = 2. *PI() * 0.5;
+        // let simulateSparseOracle = repeatOp(hsConfig.verticeQueries, OracleEmpty, _);
+        // OracleSparseHamiltonianSimulationFake(hsConfig, time, simulateSparseOracle,qx,qy,qa);
+        use qx = Qubit[nx];
+        use qy = Qubit[nx];
+        use qa = Qubit();
+        OracleHamiltonianSimulation(0.2, OracleEmpty, qx,qy,qa);
+
     }
 
     // function GetTrotterRep

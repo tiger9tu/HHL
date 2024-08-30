@@ -32,7 +32,7 @@ namespace HHL {
         return angle;
     }
 
-    internal operation _ApplyCReciprocal_(C : Double, negVal : Bool, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
+    operation ApplyCReciprocal(C : Double, negVal : Bool, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
         mutable nClock = Length(clockQubits);
 
         CyRotation(negVal, _ReciprocalAngle_(C, nClock, _), clockQubits, ancillaQubit);
@@ -105,7 +105,7 @@ namespace HHL {
             within {
                 ApplyPhaseEstimation(unitaryA, qc, qb);
             } apply {
-                _ApplyCReciprocal_(config.C, config.negVal, qc, qa);
+                ApplyCReciprocal(config.C, config.negVal, qc, qa);
             }
             set postSelect = M(qa);
             ResetAll(qc + [qa]);

@@ -108,12 +108,6 @@ namespace HHL.CommonOperation {
     }
 
     operation UNothing(qubits : Qubit[]) : Unit is Ctl + Adj {
-        for q in qubits {
-            X(q);
-        }
-
-        for q in qubits {
-            X(q);
-        }
+        
     }
 }

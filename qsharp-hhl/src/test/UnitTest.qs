@@ -178,7 +178,7 @@ namespace HHLUnitTest {
         use ancillaQubit = Qubit();
         let clockState = [0.0, 1.0, 0.0, 0.0]; // |01> represent -1
         PreparePureStateD(clockState, clockQubits); // Big endien
-        _ApplyCReciprocal_(0.25, false, clockQubits, ancillaQubit);
+        ApplyCReciprocal(0.25, false, clockQubits, ancillaQubit);
         DumpMachine();
         ResetAll(clockQubits + [ancillaQubit]);
     }

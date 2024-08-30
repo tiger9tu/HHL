@@ -16,7 +16,10 @@ namespace Test {
         // let depth = EstimateDepth();
         // HHLUnitTest();
         // HHLGateCountTest();
-        PhaseEstimationGateCountTest(10, 5);
+        // PhaseEstimationGateCountTest(24, 8);
+        
+        // HamiltonianSimulationGateCountTest(24);
+        ReciprocalGateCountTest(4);
         
         // CReciprocalUnitTest();
 
