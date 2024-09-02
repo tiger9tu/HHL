@@ -19,7 +19,8 @@ namespace Test {
         // PhaseEstimationGateCountTest(24, 8);
         
         // HamiltonianSimulationGateCountTest(24);
-        ReciprocalGateCountTest(4);
+        // ReciprocalGateCountTest(12);
+        HamiltonianSimulationGateCountTest(0.02, 24,1, 0.1, 2.,3);
         
         // CReciprocalUnitTest();
 

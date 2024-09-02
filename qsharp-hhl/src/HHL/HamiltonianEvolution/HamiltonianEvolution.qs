@@ -80,18 +80,29 @@ namespace HHL.HamiltonianSimulation {
         epsilon : Double,
         // for bounding the error of trotter
         maxH : Double,
-        cTrotter : Double,
+        // cTrotter : Double,
         verticeQueries : Int,
     );
+
+    function log5(x : Double) : Double {
+        Lg(x) / Lg(5.)
+    }
 
     operation OracleSparseHamiltonianSimulationFake(hsConfig : HSConfig, time : Double, oracle : Qubit[] => Unit is Adj + Ctl, xQubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
         let simulateGraphColoredOracle = repeatOp(hsConfig.verticeQueries, oracle, _);
         
         let singleHSCoef = Coef(OracleHamiltonianSimulation(_,  simulateGraphColoredOracle, _ ,yQubits, aQubit), time);
 
-        let sparseHSCoef = Repeated(singleHSCoef, 6*hsConfig.sparsity*hsConfig.sparsity);
-        let trotterReps = Ceiling(hsConfig.cTrotter * (time * time* hsConfig.maxH / hsConfig.epsilon)); // according to paper's sclalign
-        ApplyTrotterSuzuki(2, trotterReps, sparseHSCoef, xQubits);
+        let m = 6* hsConfig.sparsity*hsConfig.sparsity;
+
+        let sparseHSCoef = Repeated(singleHSCoef, m);
+        let k = Round((1./2.)*(Sqrt(log5(IntAsDouble(m)*hsConfig.maxH*time / hsConfig.epsilon ) + 1.)));
+        Message($"k = {k}");
+        // let sparseHSCoef = Repeated(singleHSCoef, 1);
+        let trotterReps = Ceiling((4.*5.^(IntAsDouble(k) - 1./2.))*(IntAsDouble(m)*hsConfig.maxH*time)^(1.+1./(2.*IntAsDouble(k))) / (hsConfig.epsilon^(1./(2.*IntAsDouble(k))))); // according to paper's sclalign
+        Message($"trotterReps = {trotterReps}");
+        // ApplyTrotterSuzuki(2, 1, sparseHSCoef, xQubits);
+        ApplyTrotterSuzuki(k, trotterReps, sparseHSCoef, xQubits);
 
     }
 

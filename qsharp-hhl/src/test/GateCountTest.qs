@@ -20,6 +20,8 @@ namespace HHLGateCountTest {
         ApplyCReciprocal(0.1,true, qc,qa);
     }
 
+    
+
     // operation tcontrol(q : Qubit[]) : Unit is Ctl {
     //     H(q[0]);
     //     H(q[1]);
@@ -50,7 +52,7 @@ namespace HHLGateCountTest {
         Message($"controlled unitary calls : {UCount}");
     }
 
-    operation HamiltonianSimulationGateCountTest(nx : Int) : Unit {
+    operation HamiltonianSimulationGateCountTest(time : Double, nx : Int , s: Int, epsilon : Double,maxH : Double, cTrotter : Double, verticeQueries : Int ) : Unit {
     //     newtype HSConfig = (
     //     real : Bool,
     //     sparsity : Int,
@@ -64,14 +66,15 @@ namespace HHLGateCountTest {
         // use qx = Qubit[nqx];
         // use qy = Qubit[nqx];
         // use qa = Qubit();
-        // let hsConfig = HSConfig(false, 10, 0.1, 2.,0.1,7);
+        let hsConfig = HSConfig(false, s, epsilon, maxH,verticeQueries);
         // let time = 2. *PI() * 0.5;
         // let simulateSparseOracle = repeatOp(hsConfig.verticeQueries, OracleEmpty, _);
         // OracleSparseHamiltonianSimulationFake(hsConfig, time, simulateSparseOracle,qx,qy,qa);
         use qx = Qubit[nx];
         use qy = Qubit[nx];
         use qa = Qubit();
-        OracleHamiltonianSimulation(0.2, OracleEmpty, qx,qy,qa);
+        // OracleHamiltonianSimulation(0.2, OracleEmpty, qx,qy,qa);
+        OracleSparseHamiltonianSimulation(hsConfig,time,OracleEmpty,qx,qy,qa );
 
     }
 

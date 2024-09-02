@@ -96,7 +96,7 @@ namespace HHL {
         use qwa = Qubit();
 
         // let unitaryA = _OracleHamiltonianSimulationUnitary_(t0,config,_,[oracleA],_,qwy,qwa);
-        let hsConfig = HSConfig(config.repeatitive, config.sparsity, config.epsilon,config.maxH, config.cTrotter, config.verticeQueries);
+        let hsConfig = HSConfig(config.repeatitive, config.sparsity, config.epsilon,config.maxH,  config.verticeQueries);
         let HS = OracleSparseHamiltonianSimulation(hsConfig,_,oracleA, _,_,_);
         let unitaryA = _HS2Unitary_(t0, _, HS, _,qwy,qwa);
         
