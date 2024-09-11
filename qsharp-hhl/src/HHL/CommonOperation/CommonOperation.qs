@@ -12,7 +12,7 @@ namespace HHL.CommonOperation {
     open Microsoft.Quantum.Unstable.StatePreparation;
 
 
-    operation CRotation(negVal : Bool, angleFunc : Int -> Double, Rn : (Double, Qubit) => Unit is Adj + Ctl, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
+    operation CRotation(negVal : Bool, angleFunc : (Int, Bool) -> Double, Rn : (Double, Qubit) => Unit is Adj + Ctl, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
         // little endien
         mutable negValInt = 0;
         if negVal {
@@ -26,15 +26,15 @@ namespace HHL.CommonOperation {
         let nAbsVal = 2^nAbsClock;
 
         for i in 1..nAbsVal- 1 {
-            let angle = angleFunc(i);
+            let angle = angleFunc(i, false);
             ApplyControlledOnInt(i, Rn(angle, _), clockQubits[0..nAbsClock - 1], ancillaQubit);
         }
 
         if negVal {
             for i in 1..nAbsVal -1 {
-                let negDoubleAngle = - 2. * angleFunc(i);
+                let negAngle = angleFunc(i, true) -  angleFunc(i, false);
                 // counteract
-                Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negDoubleAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
+                Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
                 // Apply negative phase
                 // Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
             }
@@ -42,11 +42,11 @@ namespace HHL.CommonOperation {
         }
     }
 
-    operation CyRotation(negVal : Bool, angleFunc : Int -> Double, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
+    operation CyRotation(negVal : Bool, angleFunc : (Int, Bool) -> Double, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
         CRotation(negVal, angleFunc, Ry(_, _), clockQubits, ancillaQubit);
     }
 
-    operation CxRotation(negVal : Bool, angleFunc : Int -> Double, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
+    operation CxRotation(negVal : Bool, angleFunc : (Int, Bool) -> Double, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
         CRotation(negVal, angleFunc, Rx(_, _), clockQubits, ancillaQubit);
     }
 

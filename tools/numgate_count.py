@@ -25,11 +25,12 @@ one_sparse_const = 0
 tofflike_const = 3
 # t0_const = 1
 graph_coloring_const = 1
+c_const = 10
 
 
 delta = d_const * epsilon / kappa
-nc = logN / delta
-t0 = 2* 3 # we use simplified version of QPE, t0  - 2pi
+# nc = logN / delta
+# t0 = 2* 3 # we use simplified version of QPE, t0  - 2pi
 oracle_m = o_query_const * iter_log_const * oracle + graph_coloring_const * logN * iter_log_const**2
 one_sparse = 2 * (w_const * logN + tofflike_const * logN  + oracle_m) + one_sparse_const # include r-controlled and other, r-controlled is modest so I assume it is small
 
@@ -39,15 +40,29 @@ m = 6 * s**2 # in the detailed paper , it has to multiply by 6, but we ignore it
 # # trotter_reps = tr_const * (i * t0 * maxh)**2 / epsilon # This is not optimal
 time = t0 * i
 # trotter_reps = 4*5**(k - 1/2)*(m * maxh * time)**(1 + 1/(2*k)) / epsilon**(1/(2*k)) # let k = 1, we do not discuss the case where k > 1 
-nexp = 2*m*5**(2*k)*(m*maxh*time)#**(1 + (1/(2*k))) / epsilon**(1/(2*k)) # this is an upper bound
+nexp = 2*m*5**(2*k)*(m*maxh*time)**(1 + (1/(2*k))) / epsilon**(1/(2*k)) # this is an upper bound
 s_sparse = nexp * one_sparse
-
 uss = sp.summation(s_sparse, (i, 1, nc))
-cus = 10 * uss
+
+t0_const = 1
+t0 = t0_const * kappa / epsilon
+T_const = 1
+T = T_const * logN * s**2*t0
+time2 = 2**i * t0 / T
+nc = sp.log(T)
+
+tau = maxh * time2
+s_bb = iter_log_const * s**2 * 5**(2*k) * (s**2 * tau)# **(1 + 1/(2*k)) / (epsilon**(1/(2*k)))
+ussb = sp.summation(s_bb, (i, 1, nc))
+
+
+cus = c_const * uss
 qft = 3 * nc**2
 qpe = nc + cus + qft
 total = k_const * kappa * (2 * qpe + crx)
 
 # print(nexp)
-print(total)
+print(ussb)
 # print(qpe)
+
+

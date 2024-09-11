@@ -1,6 +1,7 @@
 namespace Test {
-    open HHLGateCountTest;
+    // open HHLGateCountTest;
     open HHLUnitTest;
+    open Microsoft.Quantum.Math;
 
     @EntryPoint()
     operation Main() : Unit {
@@ -14,16 +15,18 @@ namespace Test {
         // PhaseEstimationUnitTest();
         // CRotationUnitTest();
         // let depth = EstimateDepth();
-        // HHLUnitTest();
+        HHLUnitTest();
         // HHLGateCountTest();
         // PhaseEstimationGateCountTest(24, 8);
         
         // HamiltonianSimulationGateCountTest(24);
         // ReciprocalGateCountTest(12);
-        HamiltonianSimulationGateCountTest(0.02, 24,1, 0.1, 2.,3);
+        // HamiltonianSimulationGateCountTest(0.02, 4,3, 0.1, 2.,3);
+        // PhaseEstimationGateCountTest(4, 4, 0.02);
+        // OracleExample0HamiltonianSimulationUnitTest();
         
         // CReciprocalUnitTest();
-
+        // OracleHamiltonianSimulationUnitTest(2. * PI()  / 2.^3.);
         // PhaseEstimationDepthTest(2, 1);
         // HHLGateCountTest(20);
     }

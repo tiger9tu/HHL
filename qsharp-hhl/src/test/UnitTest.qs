@@ -76,7 +76,7 @@ namespace HHLUnitTest {
         PreparePureStateD(eigenstateVector, xQubits);
         use yQubits = Qubit[2];
         use aQubit = Qubit();
-        OracleHamiltonianSimulation(1.0 / 4.0, OracleExample0, xQubits, yQubits, aQubit);
+        // OracleHamiltonianSimulation(1.0 / 4.0, OracleExample0, xQubits);
         DumpMachine();
         ResetAll(xQubits);
     }
@@ -145,13 +145,14 @@ namespace HHLUnitTest {
         // -----------------------------------------------
         // |010⟩ |  0.8660+0.0000𝑖 |    75.0000% |   0.0000
         // |011⟩ |  0.5000+0.0000𝑖 |    25.0000% |   0.0000
-        // use clockQubits = Qubit[2];
-        // use ancillaQubit = Qubit();
-        // let clockState = [0.0, 1.0, 0.0, 0.0]; // |01> represent -1
+        use clockQubits = Qubit[4];
+        use ancillaQubit = Qubit();
+        // let clockState = [0.0, 0.0, 1.0, 0.0]; // |01> represent -1
+        X(clockQubits[1]);
         // PreparePureStateD(clockState, clockQubits); // Big endien
-        // ApplyReciprocal(0.25, false, clockQubits, ancillaQubit);
-        // DumpMachine();
-        // ResetAll(clockQubits + [ancillaQubit]);
+        ApplyCReciprocal(0.125, true, clockQubits, ancillaQubit);
+        DumpMachine();
+        ResetAll(clockQubits + [ancillaQubit]);
 
 
         // clock qubits : |011> represent - 0.10 (- 1/2)
@@ -249,17 +250,16 @@ namespace HHLUnitTest {
         ];
         
         let vector = [1.0, 2.0, -3.0, 1.0];
+        // let vector = [1.0, -1.0, 0.0, 0.0];
         use stateVectorb = Qubit[2];
-        use yQubits = Qubit[2];
-        use aQubit = Qubit();
+
         PreparePureStateD(vector, stateVectorb);
         DumpMachine();
 
-        let config = HHLConfig(4,1,1.,0.25,0.1,true, true, 0.1, 1., 1, 0.05);
+        // let config = HHLConfig(4,1,1.,0.25,0.1,true, true, 0.1, 1., 1, 0.05);
 
-        ApplyHHL(config, OracleExample1, stateVectorb);
-        DumpRegister(stateVectorb);
-        ResetAll(stateVectorb + yQubits + [aQubit]);
+        ApplyHHL(OracleExample1, stateVectorb);
+        ResetAll(stateVectorb);
 
         //////////////////////////////////Test Case 3////////////////////////////////////
 
@@ -313,5 +313,16 @@ namespace HHLUnitTest {
         // ResetAll(stateVectorb + yQubits + [aQubit]);
     }
 
+    operation OracleHamiltonianSimulationUnitTest(time : Double) : Unit {
+        use qx = Qubit[2];
+        // use qa = Qubit();
+        let state = [1.,-1.,0.,0.];
+        PreparePureStateD(state, qx);
+        OracleHamiltonianSimulation(time, OracleExample1, qx);
 
+        // DumpRegister(qx);
+        // DumpRegister([qa]);
+        DumpMachine();
+        ResetAll(qx);
+    }
 }

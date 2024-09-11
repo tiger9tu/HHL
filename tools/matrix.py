@@ -22,7 +22,7 @@ matrix1 = np.array(
 matrix0add1 = matrix0 + matrix1
 
 # 对角化矩阵
-diag_matrix, eig_vectors = np.linalg.eig(matrix0add1)
+diag_matrix, eig_vectors = np.linalg.eig(matrix1)
 
 print("diagnal matrix")
 print(diag_matrix)
