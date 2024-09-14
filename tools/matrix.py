@@ -24,7 +24,11 @@ matrix0add1 = matrix0 + matrix1
 # 对角化矩阵
 diag_matrix, eig_vectors = np.linalg.eig(matrix1)
 
-print("diagnal matrix")
-print(diag_matrix)
-print("\neigenmatrix")
-print(eig_vectors)
+# print("diagnal matrix")
+# print(diag_matrix)
+# print("\neigenmatrix")
+# print(eig_vectors)
+
+v = np.array([2,2,-3,0])
+
+print(np.dot(matrix0add1, v) )

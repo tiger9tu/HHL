@@ -123,5 +123,34 @@ namespace HHL {
 
     }
 
+        operation ApplyHHLU(UA : (Int, Qubit[]) => Unit is Adj + Ctl, qb : Qubit[]) : Unit {
+        // let nc = _GetNumClockQubits_(config);
+        let nc = 4;
+
+
+        // Message($"nc = {nc}");
+        // let t0 = GetT0(config);
+
+        let C = 1.;
+        // let trotterReps = GetTrotterReps(config);
+
+        use qc = Qubit[nc];
+        use qa = Qubit();
+
+        mutable postSelect : Result = Zero;
+        repeat {
+            within {
+                ApplyPhaseEstimation(UA, qc, qb);
+            } apply {
+                ApplyCReciprocal(C, true, qc, qa);
+            }
+            set postSelect = M(qa);
+            ResetAll(qc + [qa]);
+            Message("one circle");
+            DumpMachine();
+        } until postSelect == One;
+
+    }
+
 
 }

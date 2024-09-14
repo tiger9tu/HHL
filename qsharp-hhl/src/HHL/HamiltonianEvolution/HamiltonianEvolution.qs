@@ -77,6 +77,7 @@ namespace HHL.HamiltonianSimulation {
         }
     }
 
+
     // newtype HSConfig = (
     //     real : Bool,
     //     sparsity : Int,

@@ -242,56 +242,54 @@ namespace HHLUnitTest {
         // ResetAll(stateVectorb + yQubits + [aQubit]);
 
         //////////////////////////////////Test Case 2////////////////////////////////////
-        let matrix = [
-            [0.0, 1.0, 0.0, 0.0],
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0]
-        ];
+        // let matrix = [
+        //     [0.0, 1.0, 0.0, 0.0],
+        //     [1.0, 0.0, 0.0, 0.0],
+        //     [0.0, 0.0, 1.0, 0.0],
+        //     [0.0, 0.0, 0.0, 1.0]
+        // ];
         
-        let vector = [1.0, 2.0, -3.0, 1.0];
-        // let vector = [1.0, -1.0, 0.0, 0.0];
-        use stateVectorb = Qubit[2];
+        // let vector = [1.0, 2.0, -3.0, 1.0];
+        // // let vector = [1.0, -1.0, 0.0, 0.0];
+        // use stateVectorb = Qubit[2];
 
-        PreparePureStateD(vector, stateVectorb);
-        DumpMachine();
+        // PreparePureStateD(vector, stateVectorb);
+        // DumpMachine();
 
-        // let config = HHLConfig(4,1,1.,0.25,0.1,true, true, 0.1, 1., 1, 0.05);
+        // // let config = HHLConfig(4,1,1.,0.25,0.1,true, true, 0.1, 1., 1, 0.05);
 
-        ApplyHHL(OracleExample1, stateVectorb);
-        ResetAll(stateVectorb);
+        // ApplyHHL(OracleExample1, stateVectorb);
+        // ResetAll(stateVectorb);
 
         //////////////////////////////////Test Case 3////////////////////////////////////
 
         // all the eigenvectors are fine, but for the non eigenvectors, there are problems
         // it is suprising because non eigenvectors are just linear combination of eigenvectors
         // so when eigenvectors work fine, then should it also be for non-eigenvectors
-        // let vector = [2., -1., 0., -1.];
-        // let matrix = [
-        //     [0.0, 1.0, 0.0, 1.0],
-        //     [1.0, 1.0, 0.0, 0.0],
-        //     [0.0, 0.0, 2.0, 0.0],
-        //     [1.0, 0.0, 0.0, 1.0]
-        // ];
-        // use stateVectorb = Qubit[2];
-        // use yQubits = Qubit[2];
-        // use aQubit = Qubit();
-        // PreparePureStateD(vector, stateVectorb);
+        let vector = [1.0, 2.0, -3.0, 1.0];
+        let matrix = [
+            [0.0, 1.0, 0.0, 1.0],
+            [1.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 2.0, 0.0],
+            [1.0, 0.0, 0.0, 1.0]
+        ];
+        use stateVectorb = Qubit[2];
+        PreparePureStateD(vector, stateVectorb);
 
-        // internal operation _Oracle0add1HamiltonianSimulation_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
-        //     let t0 = GetT0();
-        //     let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample0, _, yQubits, aQubit), IntAsDouble(power) * t0);
-        //     let hsO1 = Coef(OracleHamiltonianSimulation(_, OracleExample1, _, yQubits, aQubit), IntAsDouble(power) * t0);
+        internal operation _Oracle0add1HamiltonianSimulation_(power : Int, xqubits : Qubit[]) : Unit is Adj + Ctl {
+            let t0 = 2. * PI()  / 2.^4.;
+            let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample0, _), IntAsDouble(power) * t0);
+            let hsO1 = Coef(OracleHamiltonianSimulation(_, OracleExample1, _), IntAsDouble(power) * t0);
 
-        //     ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
-        //     // ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
-        // }
+            ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
+            // ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
+        }
 
         // let config = HHLConfig(2, 2., 0.25, 4, 0.1, true, false);
         // // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
-        // ApplyHHL(_Oracle0add1HamiltonianSimulation_(_, _, yQubits, aQubit), stateVectorb);
+        ApplyHHLU(_Oracle0add1HamiltonianSimulation_(_, _), stateVectorb);
         // DumpMachine();
-        // ResetAll(stateVectorb + yQubits + [aQubit]);
+        ResetAll(stateVectorb);
 
         ////////////////////////////////////Test Case4 - Scale Up////////////////////////////////
         // let n = _DefNumVecQubits_();
