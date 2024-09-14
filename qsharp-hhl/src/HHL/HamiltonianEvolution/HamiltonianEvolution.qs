@@ -26,17 +26,6 @@ namespace HHL.HamiltonianSimulation {
         //     [0, 0, 0, 1]]
         //     big endien: |01> -> |1> -> 1/sqrt(2) (|01> + |10>)
         //     qsharp
-        // U3(PI(), 0.32175055439664213, 0.32175055439664213, qubits[0]);
-        // U3(1.4512678518986009, PI() / 2.0, -PI(), qubits[1]);
-        // CNOT(qubits[0], qubits[1]);
-        // U3(PI() / 4.0, -PI() / 2.0, PI() / 2.0, qubits[0]);
-        // U3(0.1688370309450062, -2.359774761217599, -2.3597747612176105, qubits[1]);
-        // CNOT(qubits[0], qubits[1]);
-        // U3(PI() / 4.0, 0.0, -PI() / 2.0, qubits[0]);
-        // U3(1.4521247316971555, 1.4504171294224673, -3.1272723037036005, qubits[1]);
-        // CNOT(qubits[0], qubits[1]);
-        // U3(PI(), -0.4982443934561056, 1.0725519333387918, qubits[0]);
-        // U3(3.0220641786934994, 0.0, PI() / 2.0, qubits[1]);
 
         U3(PI(), 0.32175055439664213, 0.32175055439664213, qubits[1]);
         U3(1.4512678518986009, PI() / 2.0, -PI(), qubits[0]);
@@ -49,7 +38,6 @@ namespace HHL.HamiltonianSimulation {
         CNOT(qubits[1], qubits[0]);
         U3(PI(), -0.4982443934561056, 1.0725519333387918, qubits[1]);
         U3(3.0220641786934994, 0.0, PI() / 2.0, qubits[0]);
-
 
         // adjust global phase
         Exp([PauliI, PauliI], - 2.9085, qubits);
@@ -64,14 +52,27 @@ namespace HHL.HamiltonianSimulation {
         }
     }
 
-    operation OracleHamiltonianSimulation(time : Double, oracle : Qubit[] => Unit is Adj, xQubits : Qubit[] ) : Unit is Adj + Ctl {
-        use yQubits = Qubit[Length(xQubits)];
+    operation OracleHamiltonianSimulation(time : Double, oracle : Qubit[] => Unit is Adj, qx : Qubit[]) : Unit is Adj + Ctl {
+        use qy = Qubit[Length(qx)];
         use aQubit = Qubit();
-        
+
         within {
-            oracle(xQubits + yQubits);
-            ZipOp(_PreCompiledWGate_, xQubits, yQubits);
-            ZipOp(_CNNOT_(_, aQubit), xQubits, yQubits);
+            oracle(qx + qy);
+            ZipOp(_PreCompiledWGate_, qx, qy);
+            ZipOp(_CNNOT_(_, aQubit), qx, qy);
+        } apply {
+            Rz(- 2.0 * time, aQubit);
+        }
+    }
+
+    operation QRAMOracleHamiltonianSimulation(time : Double, oracle : (Qubit[], Qubit[]) => Unit is Adj, qx : Qubit[]) : Unit is Adj + Ctl {
+        use qy = Qubit[Length(qx)];
+        use aQubit = Qubit();
+
+        within {
+            oracle(qx, qy);
+            ZipOp(_PreCompiledWGate_, qx, qy);
+            ZipOp(_CNNOT_(_, aQubit), qx, qy);
         } apply {
             Rz(- 2.0 * time, aQubit);
         }
@@ -92,9 +93,9 @@ namespace HHL.HamiltonianSimulation {
     //     Lg(x) / Lg(5.)
     // }
 
-    // operation OracleSparseHamiltonianSimulationFake(hsConfig : HSConfig, time : Double, oracle : Qubit[] => Unit is Adj + Ctl, xQubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+    // operation OracleSparseHamiltonianSimulationFake(hsConfig : HSConfig, time : Double, oracle : Qubit[] => Unit is Adj + Ctl, qx : Qubit[], qy : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
     //     let simulateGraphColoredOracle = repeatOp(hsConfig.verticeQueries, oracle, _);
-        
+
     //     let singleHSCoef = Coef(OracleHamiltonianSimulation(_,  simulateGraphColoredOracle, _ ), time);
 
     //     let m = 6* hsConfig.sparsity*hsConfig.sparsity;
@@ -105,18 +106,18 @@ namespace HHL.HamiltonianSimulation {
     //     // let sparseHSCoef = Repeated(singleHSCoef, 1);
     //     let trotterReps = Ceiling((4.*5.^(IntAsDouble(k) - 1./2.))*(IntAsDouble(m)*hsConfig.maxH*time)^(1.+1./(2.*IntAsDouble(k))) / (hsConfig.epsilon^(1./(2.*IntAsDouble(k))))); // according to paper's sclalign
     //     Message($"trotterReps = {trotterReps}");
-    //     // ApplyTrotterSuzuki(k, 1, sparseHSCoef, xQubits);
-    //     ApplyTrotterSuzuki(k, trotterReps, sparseHSCoef, xQubits);
+    //     // ApplyTrotterSuzuki(k, 1, sparseHSCoef, qx);
+    //     ApplyTrotterSuzuki(k, trotterReps, sparseHSCoef, qx);
 
     // }
 
-    // operation OracleSparseHamiltonianSimulation(hsConfig : HSConfig, time : Double, oracle : Qubit[] => Unit is Adj + Ctl, xQubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+    // operation OracleSparseHamiltonianSimulation(hsConfig : HSConfig, time : Double, oracle : Qubit[] => Unit is Adj + Ctl, qx : Qubit[], qy : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
     //     if(hsConfig.real) {
     //         Message("real");
-    //         OracleHamiltonianSimulation(time, oracle,xQubits);
+    //         OracleHamiltonianSimulation(time, oracle,qx);
     //     }
     //     else {
-    //         OracleSparseHamiltonianSimulationFake(hsConfig, time, oracle, xQubits, yQubits, aQubit);
+    //         OracleSparseHamiltonianSimulationFake(hsConfig, time, oracle, qx, qy, aQubit);
     //     }
     // }
 

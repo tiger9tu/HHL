@@ -64,6 +64,33 @@ namespace HHL.CommonOperation {
         }
     }
 
+    operation ChangeEndien(op : Qubit[] => Unit is Adj + Ctl, qubits : Qubit[]) : Unit is Adj + Ctl {
+        within {
+            ReverseQubits(qubits);
+        } apply {
+            op(qubits);
+        }
+    }
+
+    operation SwapRegs(reg1 : Qubit[], reg2 : Qubit[]) : Unit is Adj + Ctl {
+        let length = Length(reg1);
+        for i in 0..length - 1 {
+            SWAP(reg1[i], reg2[i]);
+        }
+    }
+
+    operation SwapHalfReg(reg : Qubit[]) : Unit is Adj + Ctl {
+        let mid = Length(reg) / 2;
+        Message($"mid = {mid}");
+        SwapRegs(reg[0..mid-1], reg[mid..Length(reg) -1]);
+    }
+
+    operation Clone(target : Qubit[], source : Qubit[]) : Unit is Adj + Ctl {
+        for i in 0..Length(source)-1 {
+            Controlled X([source[i]], target[i]);
+        }
+    }
+
     operation U3(theta : Double, phi : Double, lambda : Double, qubit : Qubit) : Unit is Adj + Ctl {
         Rz(lambda, qubit);
         Ry(theta, qubit);
@@ -107,7 +134,19 @@ namespace HHL.CommonOperation {
         ib
     }
 
-    operation UNothing(qubits : Qubit[]) : Unit is Ctl + Adj {
-        
+    // little-endian
+    function IntToBinaryVector(n : Int, numBits : Int) : Int[] {
+        mutable binaryVector = Repeated(0, numBits);
+        mutable temp = n;
+
+        for i in 0..numBits - 1 {
+            set binaryVector w/= i <- (temp % 2);
+            set temp = temp / 2;
+        }
+        return binaryVector;
     }
+
+
+    operation UNothing(qubits : Qubit[]) : Unit is Ctl + Adj {}
+
 }

@@ -1,6 +1,9 @@
 namespace HHL.HamiltonianSimulation.Oracle {
     // Precompiled by qiskit qs_decomposition
 
+    import Microsoft.Quantum.Arrays.Mapped;
+    import HHL.ApplyCReciprocal;
+    import Microsoft.Quantum.Unstable.StatePreparation.PreparePureStateD;
     import Microsoft.Quantum.Diagnostics.DumpMachine;
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Canon;
@@ -11,6 +14,74 @@ namespace HHL.HamiltonianSimulation.Oracle {
     // operation QRAMOracle(UnitaryMatrix : Int[][], qubits: Qubit[]) : Unit is Adj + Ctl {
 
     // }
+
+
+
+    // operation QRAMOracle(hermitian : Double[][], qx2y : Qubit[], qj2w : Qubit[], qa : Qubit[]) : Unit is Adj + Ctl {
+    //     use qxClone = Qubit[Length(qx2y)];
+    //     Clone(qxClone, qx2y);
+
+
+    //     use qaj = Qubit[Length(qj2w)];
+    //     for s in 0..Length(qj2w)-1 {
+    //         SWAP(qaj[s], qj2w[s]);
+    //     }
+
+    //     use qax = Qubit[Length(qx2y)];
+    //     // Message($"Length(hermitian)- 1 = {Length(hermitian)- 1}");
+
+    //     for x in 0..Length(hermitian)- 1 {
+    //         mutable j = 0;
+    //         for y in 0..Length(hermitian) -1 {
+    //             let w = hermitian[x][y];
+    //             if w != 0. {
+    //                 let cint = x + j * 2^(Length(qx2y));
+    //                 let vy = IntToBinaryVector(y, Length(qx2y));
+    //                 // Message($"int y = {y}; vy = {vy}");
+    //                 let vw = IntToBinaryVector(Ceiling(w), Length(qj2w)); // for now , w is a int
+
+    //                 ApplyControlledOnInt(cint, PreparePureStateD(Mapped(IntAsDouble, vy), _), qxClone + qaj, qax);
+    //                 ApplyControlledOnInt(cint, SwapHalfReg(_), qxClone + qaj, qx2y + qax);
+    //                 ApplyControlledOnInt(cint, PreparePureStateD(Mapped(IntAsDouble, vw), _), qxClone + qaj, qj2w);
+    //             }
+    //         }
+    //     }
+    // }
+
+    internal function getJ(HRow : Double[], y : Int) : Int {
+        // can't set mutable inside a adjoint operation..
+        mutable j = 0;
+        for i in 0..y-1 {
+            if HRow[i] != 0. {
+                set j = j + 1;
+            }
+        }
+        j
+    }
+
+    operation QRAMOracle(H : Double[][], qx : Qubit[], qj : Qubit[], qy : Qubit[], qr : Qubit[]) : Unit is Adj + Ctl {
+        within {
+            ReverseQubits(qx);
+            ReverseQubits(qj);
+            ReverseQubits(qy);
+            ReverseQubits(qr);
+        } apply {
+            for x in 0..Length(H)- 1 {
+                ApplyControlledOnInt(x, ApplyXorInPlace(x, _), qx, qy);
+                for y in 0..Length(H) -1 {
+                    let j = getJ(H[x][0..Length(H)-1], y);
+                    let cint = x + j * 2^(Length(qx));
+                    let w = H[x][y];
+                    if w != 0. {
+                        // little endien
+                        ApplyControlledOnInt(cint, ApplyXorInPlace(x, _), qx + qj, qy); // cancel the previous effect
+                        ApplyControlledOnInt(cint, ApplyXorInPlace(y, _), qx + qj, qy);
+                        ApplyControlledOnInt(cint, ApplyXorInPlace(Ceiling(w), _), qx + qj, qr);
+                    }
+                }
+            }
+        }
+    }
 
     internal operation _Circuit30418_(qubits : Qubit[]) : Unit is Adj + Ctl {
         U3(PI() / 2.0, -PI() / 2.0, 3.0 * PI() / 4.0, qubits[0]);

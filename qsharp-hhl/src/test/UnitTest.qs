@@ -71,14 +71,14 @@ namespace HHLUnitTest {
 
 
     operation OracleExample0HamiltonianSimulationUnitTest() : Unit {
-        use xQubits = Qubit[2];
+        use qx = Qubit[2];
         let eigenstateVector = [-1.0 / Sqrt(2.0), 0.0, 0.0, 1.0 / Sqrt(2.0)];
-        PreparePureStateD(eigenstateVector, xQubits);
-        use yQubits = Qubit[2];
+        PreparePureStateD(eigenstateVector, qx);
+        use qy = Qubit[2];
         use aQubit = Qubit();
-        // OracleHamiltonianSimulation(1.0 / 4.0, OracleExample0, xQubits);
+        // OracleHamiltonianSimulation(1.0 / 4.0, OracleExample0, qx);
         DumpMachine();
-        ResetAll(xQubits);
+        ResetAll(qx);
     }
 
     operation TrotterSuzukiUnitTest() : Unit {
@@ -221,34 +221,34 @@ namespace HHLUnitTest {
         //////////////////////////////////Test Case 1////////////////////////////////////
 
         // let vector = [0.0, 1.0, 0.0, 0.0];
-        // let matrix = [
-        //     [0.0, 0.0, 0.0, 1.0],
-        //     [0.0, 1.0, 0.0, 0.0],
-        //     [0.0, 0.0, 1.0, 0.0],
-        //     [1.0, 0.0, 0.0, 0.0]
-        // ];
+        let matrix0 = [
+            [0.0, 0.0, 0.0, 1.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0]
+        ];
         // use stateVectorb = Qubit[2];
-        // use yQubits = Qubit[2];
+        // use qy = Qubit[2];
         // use aQubit = Qubit();
         // PreparePureStateD(vector, stateVectorb);
         // DumpMachine();
 
-        // internal operation _UnitaryA_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
-        //     OracleHamiltonianSimulation(IntAsDouble(power) * 2.0 * PI() / 4.0, OracleExample0, xqubits, yQubits, aQubit);
+        // internal operation _UnitaryA_(power : Int, qx : Qubit[], qy : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+        //     OracleHamiltonianSimulation(IntAsDouble(power) * 2.0 * PI() / 4.0, OracleExample0, qx, qy, aQubit);
         // }
 
-        // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
+        // ApplyHHL(_UnitaryA_(_, _, qy, aQubit), stateVectorb);
         // DumpMachine();
-        // ResetAll(stateVectorb + yQubits + [aQubit]);
+        // ResetAll(stateVectorb + qy + [aQubit]);
 
         //////////////////////////////////Test Case 2////////////////////////////////////
-        // let matrix = [
-        //     [0.0, 1.0, 0.0, 0.0],
-        //     [1.0, 0.0, 0.0, 0.0],
-        //     [0.0, 0.0, 1.0, 0.0],
-        //     [0.0, 0.0, 0.0, 1.0]
-        // ];
-        
+        let matrix1 = [
+            [0.0, 1.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0]
+        ];
+
         // let vector = [1.0, 2.0, -3.0, 1.0];
         // // let vector = [1.0, -1.0, 0.0, 0.0];
         // use stateVectorb = Qubit[2];
@@ -276,18 +276,26 @@ namespace HHLUnitTest {
         use stateVectorb = Qubit[2];
         PreparePureStateD(vector, stateVectorb);
 
-        internal operation _Oracle0add1HamiltonianSimulation_(power : Int, xqubits : Qubit[]) : Unit is Adj + Ctl {
-            let t0 = 2. * PI()  / 2.^4.;
-            let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample0, _), IntAsDouble(power) * t0);
-            let hsO1 = Coef(OracleHamiltonianSimulation(_, OracleExample1, _), IntAsDouble(power) * t0);
+        use qj = Qubit[2];
+        use qr = Qubit[2];
 
-            ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
-            // ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], xqubits);
+        internal operation _Oracle0add1HamiltonianSimulation_(power : Int, qx : Qubit[], qj : Qubit[], qr : Qubit[], matrix0 : Double[][], matrix1 : Double[][]) : Unit is Adj + Ctl {
+            let t0 = 2. * PI() / 2.^4.;
+            let hsO0 = Coef(QRAMOracleHamiltonianSimulation(_, QRAMOracle(matrix0, _, qj, _, qr), _), IntAsDouble(power) * t0);
+            let hsO1 = Coef(QRAMOracleHamiltonianSimulation(_, QRAMOracle(matrix1, _, qj, _, qr), _), IntAsDouble(power) * t0);
+            // let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleExample0, _), IntAsDouble(power) * t0);
+            // let hsO1 = Coef(OracleHamiltonianSimulation(_, OracleExample1, _), IntAsDouble(power) * t0);
+
+            // ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], qx);
+            ApplyTrotterSuzuki(2, 7, [hsO0, hsO1], qx);
+            // DumpRegister(qj);
+            // DumpRegister(qr);
+            // ApplyTrotterSuzuki(2, 14, [hsO0, hsO1], qx);
         }
 
         // let config = HHLConfig(2, 2., 0.25, 4, 0.1, true, false);
-        // // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
-        ApplyHHLU(_Oracle0add1HamiltonianSimulation_(_, _), stateVectorb);
+        // // ApplyHHL(_UnitaryA_(_, _, qy, aQubit), stateVectorb);
+        ApplyHHLU(_Oracle0add1HamiltonianSimulation_(_, _, qj, qr, matrix0, matrix1), stateVectorb);
         // DumpMachine();
         ResetAll(stateVectorb);
 
@@ -295,26 +303,26 @@ namespace HHLUnitTest {
         // let n = _DefNumVecQubits_();
         // use stateVectorb = Qubit[n];
         // let nclock = _GetNumClockQubits_();
-        // use yQubits = Qubit[nclock];
+        // use qy = Qubit[nclock];
         // use aQubit = Qubit();
         // // PreparePureStateD(vector, stateVectorb);
 
-        // internal operation _Oracle2HamiltonianSimulation_(power : Int, xqubits : Qubit[], yQubits : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
+        // internal operation _Oracle2HamiltonianSimulation_(power : Int, qx : Qubit[], qy : Qubit[], aQubit : Qubit) : Unit is Adj + Ctl {
         //     let t0 = GetT0();
-        //     let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleEmpty, _, yQubits, aQubit), IntAsDouble(power) * t0);
-        //     ApplyTrotterSuzuki(2, 14, [hsO0], xqubits);
+        //     let hsO0 = Coef(OracleHamiltonianSimulation(_, OracleEmpty, _, qy, aQubit), IntAsDouble(power) * t0);
+        //     ApplyTrotterSuzuki(2, 14, [hsO0], qx);
         // }
 
-        // // ApplyHHL(_UnitaryA_(_, _, yQubits, aQubit), stateVectorb);
-        // ApplyHHL(_Oracle2HamiltonianSimulation_(_, _, yQubits, aQubit), stateVectorb);
+        // // ApplyHHL(_UnitaryA_(_, _, qy, aQubit), stateVectorb);
+        // ApplyHHL(_Oracle2HamiltonianSimulation_(_, _, qy, aQubit), stateVectorb);
         // DumpMachine();
-        // ResetAll(stateVectorb + yQubits + [aQubit]);
+        // ResetAll(stateVectorb + qy + [aQubit]);
     }
 
     operation OracleHamiltonianSimulationUnitTest(time : Double) : Unit {
         use qx = Qubit[2];
         // use qa = Qubit();
-        let state = [1.,-1.,0.,0.];
+        let state = [1.,-1., 0., 0.];
         PreparePureStateD(state, qx);
         OracleHamiltonianSimulation(time, OracleExample1, qx);
 
@@ -322,5 +330,52 @@ namespace HHLUnitTest {
         // DumpRegister([qa]);
         DumpMachine();
         ResetAll(qx);
+
+        // use qx = Qubit[2];
+        // use qj = Qubit[2];
+        // use qr = Qubit[2];
+
+        // let state = [1.,-1., 0., 0.];
+        // PreparePureStateD(state, qx);
+        // let h = [
+        //     [0.0, 1.0, 0.0, 0.0],
+        //     [1.0, 0.0, 0.0, 0.0],
+        //     [0.0, 0.0, 1.0, 0.0],
+        //     [0.0, 0.0, 0.0, 1.0]
+        // ];
+        // DumpMachine();
+        // QRAMOracleHamiltonianSimulation(time, QRAMOracle(h, _, qj, _, qr), qx);
+        // DumpMachine();
+        // ResetAll(qx);
+    }
+
+    operation QRAMOracleUnitTest() : Unit {
+        use qx = Qubit[2];
+        use qj = Qubit[2];
+
+        use qy = Qubit[2];
+        use qr = Qubit[2];
+
+        ApplyXorInPlace(2, qx);
+
+        let matrix = [
+            [0.0, 1.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0]
+        ];
+
+        QRAMOracle(matrix, qx, qj, qy, qr);
+        DumpMachine();
+        ResetAll(qj + qy + qr);
+        //  ApplyXorInPlace(2, qx);
+        within {
+            ReverseQubits(qx);
+            ReverseQubits(qy);
+        } apply {
+            OracleExample1(qx + qy);
+        }
+        DumpMachine();
+        ResetAll(qx + qj + qy + qr);
     }
 }

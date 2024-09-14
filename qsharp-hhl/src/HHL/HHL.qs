@@ -19,17 +19,16 @@ namespace HHL {
 
     internal function _ReciprocalAngle_(C : Double, nClock : Int, i : Int, neg : Bool) : Double {
         mutable reciprocalVal = 0.0;
-        if not neg{
-            set reciprocalVal =  C * 1. / IntAsDouble(i);
-        } 
-        else {
+        if not neg {
+            set reciprocalVal = C * 1. / IntAsDouble(i);
+        } else {
             set reciprocalVal = - C * (1. / (2.^IntAsDouble(nClock) - IntAsDouble(i + 2^(nClock - 1))));
         }
-       
-        
+
+
         mutable angle = 0.0;
 
-        
+
         if reciprocalVal == 1.0 {
             set angle = PI();
         } elif reciprocalVal < 1.0 {
@@ -49,8 +48,8 @@ namespace HHL {
     //     N : Int,
     //     sparsity : Int,
     //     kappa : Double,
-    //     C : Double, 
- 
+    //     C : Double,
+
     //     epsilon : Double,
     //     negVal : Bool,
     //     repeatitive : Bool,
@@ -84,8 +83,8 @@ namespace HHL {
     // }
 
 
-    operation HS2U(t0 : Double, power : Int, HS : (Double, Qubit[]) => Unit is Adj + Ctl, xqubits : Qubit[]) : Unit is Adj + Ctl {
-        HS(IntAsDouble(power) * t0, xqubits);
+    operation HS2U(t0 : Double, power : Int, HS : (Double, Qubit[]) => Unit is Adj + Ctl, qx : Qubit[]) : Unit is Adj + Ctl {
+        HS(IntAsDouble(power) * t0, qx);
     }
 
     operation ApplyHHL(oracleA : (Qubit[]) => Unit is Adj + Ctl, qb : Qubit[]) : Unit {
@@ -96,7 +95,7 @@ namespace HHL {
         // Message($"nc = {nc}");
         // let t0 = GetT0(config);
 
-        let t0 = 2. * PI()  / 2.^4.;
+        let t0 = 2. * PI() / 2.^4.;
         let C = 1.;
         // let trotterReps = GetTrotterReps(config);
 
@@ -107,7 +106,7 @@ namespace HHL {
         // let hsConfig = HSConfig(config.repeatitive, config.sparsity, config.epsilon,config.maxH,  config.verticeQueries);
         let HS = OracleHamiltonianSimulation(_, oracleA, _);
         let unitaryA = HS2U(t0, _, HS, _);
-        
+
         mutable postSelect : Result = Zero;
         repeat {
             within {
@@ -123,7 +122,7 @@ namespace HHL {
 
     }
 
-        operation ApplyHHLU(UA : (Int, Qubit[]) => Unit is Adj + Ctl, qb : Qubit[]) : Unit {
+    operation ApplyHHLU(UA : (Int, Qubit[]) => Unit is Adj + Ctl, qb : Qubit[]) : Unit {
         // let nc = _GetNumClockQubits_(config);
         let nc = 4;
 
@@ -144,10 +143,12 @@ namespace HHL {
             } apply {
                 ApplyCReciprocal(C, true, qc, qa);
             }
+DumpMachine();
             set postSelect = M(qa);
             ResetAll(qc + [qa]);
             Message("one circle");
             DumpMachine();
+
         } until postSelect == One;
 
     }

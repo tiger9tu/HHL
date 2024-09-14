@@ -20,7 +20,7 @@
 //         ApplyCReciprocal(0.1,true, qc,qa);
 //     }
 
-    
+
 
 //     // operation tcontrol(q : Qubit[]) : Unit is Ctl {
 //     //     H(q[0]);
@@ -35,7 +35,7 @@
 //     //     Controlled tcontrol([qc],(q2));
 //     // }
 
-    
+
 //     operation PhaseEstimationGateCountTest(nClock : Int, nPhi : Int, t0 : Double) : Unit {
 //         use clockQubits = Qubit[nClock];
 //         use phiQubits = Qubit[nPhi];
@@ -46,13 +46,13 @@
 
 //         use qy = Qubit[nPhi];
 //         use qa = Qubit();
-        
+
 //         operation u(t0 : Double, power: Int, qx: Qubit[],qy : Qubit[], qa : Qubit) : Unit is Adj  + Ctl {
 //             let hsc = HSConfig(false, 2, 0.1,2.,3);
 //             let time = IntAsDouble(power) * t0;
 //             OracleSparseHamiltonianSimulation(hsc,time,OracleEmpty,qx,qy,qa );
 //         }
-//         let ua = u(t0, _ ,_,qy,qa ); 
+//         let ua = u(t0, _ ,_,qy,qa );
 
 //         // let myOp = q => UNothing(q);
 //         // StartCountingOperation(Controlled UNothing);
@@ -93,13 +93,13 @@
 //     // function GetTrotterRep
 
 //     operation HHLGateCountTest() : Unit {
-        
+
 //         // newtype HHLConfig = (
 //         //     N : Int,
 //         //     sparsity : Int,
 //         //     kappa : Double,
-//         //     C : Double, 
-    
+//         //     C : Double,
+
 //         //     epsilon : Double,
 //         //     negVal : Bool,
 //         //     repeatitive : Bool,
@@ -116,7 +116,7 @@
 //         let config = HHLConfig(2^3, 5,4.,0., 0.1, false, false, 3., 0.1, 7, 0.1);
 //         let n = Ceiling(Lg(IntAsDouble(config.N)));
 
-//         use yQubits = Qubit[n];
+//         use qy = Qubit[n];
 //         use bQubits = Qubit[n];
 //         use aQubit = Qubit();
 
