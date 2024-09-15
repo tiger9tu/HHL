@@ -122,9 +122,10 @@ namespace HHL {
 
     }
 
-    operation ApplyHHLU(UA : (Int, Qubit[]) => Unit is Adj + Ctl, qb : Qubit[]) : Unit {
+    operation ApplyHHLU(UA : (Int, Qubit[]) => Unit is Adj + Ctl, vb : Double[]) : Unit {
         // let nc = _GetNumClockQubits_(config);
         let nc = 4;
+        let n = 2;
 
 
         // Message($"nc = {nc}");
@@ -133,23 +134,35 @@ namespace HHL {
         let C = 1.;
         // let trotterReps = GetTrotterReps(config);
 
+        use qb = Qubit[n];
         use qc = Qubit[nc];
         use qa = Qubit();
-
         mutable postSelect : Result = Zero;
         repeat {
+
+            PreparePureStateD(vb, qb);
+
             within {
                 ApplyPhaseEstimation(UA, qc, qb);
             } apply {
                 ApplyCReciprocal(C, true, qc, qa);
             }
-DumpMachine();
+            DumpMachine();
             set postSelect = M(qa);
             ResetAll(qc + [qa]);
-            Message("one circle");
-            DumpMachine();
 
+            if postSelect != One {
+                ResetAll(qb);
+            }
+            Message("dump register");
+            // DumpMachine();
+            // DumpRegister(qb);
         } until postSelect == One;
+        Message($"post select = {postSelect}");
+
+        DumpMachine();
+
+        ResetAll(qb);
 
     }
 

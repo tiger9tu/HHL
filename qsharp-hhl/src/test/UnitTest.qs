@@ -273,8 +273,8 @@ namespace HHLUnitTest {
             [0.0, 0.0, 2.0, 0.0],
             [1.0, 0.0, 0.0, 1.0]
         ];
-        use stateVectorb = Qubit[2];
-        PreparePureStateD(vector, stateVectorb);
+        // use stateVectorb = Qubit[2];
+        // PreparePureStateD(vector, stateVectorb);
 
         use qj = Qubit[2];
         use qr = Qubit[2];
@@ -295,9 +295,12 @@ namespace HHLUnitTest {
 
         // let config = HHLConfig(2, 2., 0.25, 4, 0.1, true, false);
         // // ApplyHHL(_UnitaryA_(_, _, qy, aQubit), stateVectorb);
-        ApplyHHLU(_Oracle0add1HamiltonianSimulation_(_, _, qj, qr, matrix0, matrix1), stateVectorb);
+        ApplyHHLU(_Oracle0add1HamiltonianSimulation_(_, _, qj, qr, matrix0, matrix1), vector);
         // DumpMachine();
-        ResetAll(stateVectorb);
+
+        ResetAll(qj + qr);
+        // ResetAll(stateVectorb);
+
 
         ////////////////////////////////////Test Case4 - Scale Up////////////////////////////////
         // let n = _DefNumVecQubits_();
