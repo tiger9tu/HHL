@@ -29,6 +29,6 @@ diag_matrix, eig_vectors = np.linalg.eig(matrix1)
 # print("\neigenmatrix")
 # print(eig_vectors)
 
-v = np.array([2,2,-3,0])
+v = np.array([2, 2, -3, 0])
 
-print(np.dot(matrix0add1, v) )
+print(np.dot(matrix0add1, v))

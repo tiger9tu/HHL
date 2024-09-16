@@ -2,7 +2,10 @@
 
 
 namespace HHL {
+    import HHL.CommonOperation.ReverseQubits;
     import HHL.HamiltonianSimulation.OracleHamiltonianSimulation;
+    import HHL.HamiltonianSimulation.Oracle.Oracle;
+
     open Microsoft.Quantum.Arrays;
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Intrinsic;
@@ -17,7 +20,7 @@ namespace HHL {
     open HamiltonianSimulation.TrotterSuzuki;
     open HamiltonianSimulation.Oracle;
 
-    internal function _ReciprocalAngle_(C : Double, nClock : Int, i : Int, neg : Bool) : Double {
+    internal function ReciprocalAngle(C : Double, nClock : Int, i : Int, neg : Bool) : Double {
         mutable reciprocalVal = 0.0;
         if not neg {
             set reciprocalVal = C * 1. / IntAsDouble(i);
@@ -25,9 +28,7 @@ namespace HHL {
             set reciprocalVal = - C * (1. / (2.^IntAsDouble(nClock) - IntAsDouble(i + 2^(nClock - 1))));
         }
 
-
         mutable angle = 0.0;
-
 
         if reciprocalVal == 1.0 {
             set angle = PI();
@@ -41,127 +42,51 @@ namespace HHL {
     operation ApplyCReciprocal(C : Double, negVal : Bool, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
         mutable nClock = Length(clockQubits);
 
-        CyRotation(negVal, _ReciprocalAngle_(C, nClock, _, _), clockQubits, ancillaQubit);
+        CyRotation(negVal, ReciprocalAngle(C, nClock, _, _), clockQubits, ancillaQubit);
     }
 
-    // newtype HHLConfig = (
-    //     N : Int,
-    //     sparsity : Int,
-    //     kappa : Double,
-    //     C : Double,
-
-    //     epsilon : Double,
-    //     negVal : Bool,
-    //     repeatitive : Bool,
-
-    //     // for bounding the error of trotter
-    //     maxH : Double,
-    //     cTrotter : Double,
-    //     verticeQueries : Int,
-
-    //     cQPE : Double,
-
-    // );
-
-    // internal function _GetNumClockQubits_(config : HHLConfig) : Int {
-    //     let QPEAcurracy = (1. /  config.cQPE) * config.epsilon / config.kappa;
-    //     // if QPE as a subroutine then we don not need to consider success probability.
-    //     Max([Ceiling(Lg(IntAsDouble(config.N))), Ceiling(Lg(1. / QPEAcurracy))]) + BoolAsInt(config.negVal)
-    // }
-
-    // // internal function _GetC_(config : HHLConfig) : Double {
-    // //     let lambdaMin = _DefMinAbsEigenVal_();
-    // //     let negVal = _DefNegVal_();
-    // //     let nAbsC = 2^(_GetNumClockQubits_() - BoolAsInt(negVal));
-    // //     lambdaMin / IntAsDouble(nAbsC)
-    // // }
-
-    // function GetT0(config : HHLConfig) : Double {
-    //     let nc = _GetNumClockQubits_(config);
-    //     let nAbsC = nc - BoolAsInt(config.negVal);
-    //     2. * PI() / (2.^IntAsDouble(nAbsC)) // the Abs is because if CRotation implementation
-    // }
-
-
-    operation HS2U(t0 : Double, power : Int, HS : (Double, Qubit[]) => Unit is Adj + Ctl, qx : Qubit[]) : Unit is Adj + Ctl {
+    operation HSPower(t0 : Double, power : Int, HS : (Double, Qubit[]) => Unit is Adj + Ctl, qx : Qubit[]) : Unit is Adj + Ctl {
         HS(IntAsDouble(power) * t0, qx);
     }
 
-    operation ApplyHHL(oracleA : (Qubit[]) => Unit is Adj + Ctl, qb : Qubit[]) : Unit {
-        // let nc = _GetNumClockQubits_(config);
-        let nc = 4;
+    operation HHLSimulation(A : Double[][], b : Double[]) : Unit {
+
+        let N = Length(A);
+        let nb = Ceiling(Lg(IntAsDouble(N)));
+
+        // these parameters depends on other stuff, but we will come to that later..
+        let nc = 4; // num clock qubits
+        let C = 1.;  // scaling of ancilla rotation
+        let ntrotter = 14;
+        let t0 = 2. * PI() / 2.^IntAsDouble(nc);
 
 
-        // Message($"nc = {nc}");
-        // let t0 = GetT0(config);
-
-        let t0 = 2. * PI() / 2.^4.;
-        let C = 1.;
-        // let trotterReps = GetTrotterReps(config);
-
+        use qb = Qubit[nb];
         use qc = Qubit[nc];
         use qa = Qubit();
 
-        // let unitaryA = _OracleHamiltonianSimulationUnitary_(t0,config,_,[oracleA],_,qwy,qwa);
-        // let hsConfig = HSConfig(config.repeatitive, config.sparsity, config.epsilon,config.maxH,  config.verticeQueries);
-        let HS = OracleHamiltonianSimulation(_, oracleA, _);
-        let unitaryA = HS2U(t0, _, HS, _);
+        let oA = Oracle(A, _, _, _, _);
+        let eiAt = OracleHamiltonianSimulation(_, oA, _);
+        let eiAtPower = HSPower(t0, _, eiAt, _);
 
         mutable postSelect : Result = Zero;
+
         repeat {
+            PreparePureStateDL(b, qb);
             within {
-                ApplyPhaseEstimation(unitaryA, qc, qb);
+                ApplyPhaseEstimation(eiAtPower, qc, qb);
             } apply {
                 ApplyCReciprocal(C, true, qc, qa);
             }
             set postSelect = M(qa);
             ResetAll(qc + [qa]);
-            Message("one circle");
-            DumpMachine();
-        } until postSelect == One;
+        } until postSelect == One
+        fixup {
+            ResetAll(qb);
+        }
 
-    }
-
-    operation ApplyHHLU(UA : (Int, Qubit[]) => Unit is Adj + Ctl, vb : Double[]) : Unit {
-        // let nc = _GetNumClockQubits_(config);
-        let nc = 4;
-        let n = 2;
-
-
-        // Message($"nc = {nc}");
-        // let t0 = GetT0(config);
-
-        let C = 1.;
-        // let trotterReps = GetTrotterReps(config);
-
-        use qb = Qubit[n];
-        use qc = Qubit[nc];
-        use qa = Qubit();
-        mutable postSelect : Result = Zero;
-        repeat {
-
-            PreparePureStateD(vb, qb);
-
-            within {
-                ApplyPhaseEstimation(UA, qc, qb);
-            } apply {
-                ApplyCReciprocal(C, true, qc, qa);
-            }
-            DumpMachine();
-            set postSelect = M(qa);
-            ResetAll(qc + [qa]);
-
-            if postSelect != One {
-                ResetAll(qb);
-            }
-            Message("dump register");
-            // DumpMachine();
-            // DumpRegister(qb);
-        } until postSelect == One;
-        Message($"post select = {postSelect}");
-
+        ReverseQubits(qb); // represents big-endian
         DumpMachine();
-
         ResetAll(qb);
 
     }

@@ -1,12 +1,15 @@
 namespace Test {
     // open HHLGateCountTest;
+    import Microsoft.Quantum.Diagnostics.DumpMachine;
+    import HHL.CommonOperation.PreparePureStateDL;
     open HHLUnitTest;
     open Microsoft.Quantum.Math;
 
     @EntryPoint()
     operation Main() : Unit {
 
-
+        HHLSimulationUnitTest();
+        // OracleHamiltonianSimulationUnitTest(0.4);
         // OracleExample1UnitTest()
         // OracleExample0HamiltonianSimulationUnitTest();
         // OracleExample0UnitTest();
@@ -17,10 +20,11 @@ namespace Test {
         // PhaseEstimationUnitTest();
         // CRotationUnitTest();
         // let depth = EstimateDepth();
-        HHLUnitTest();
+        // HHLUnitTest();
         // OracleExample1UnitTest();
         // QRAMOracleUnitTest();
         // OracleHamiltonianSimulationUnitTest(0.4);
+
         // HHLGateCountTest();
         // PhaseEstimationGateCountTest(24, 8);
 

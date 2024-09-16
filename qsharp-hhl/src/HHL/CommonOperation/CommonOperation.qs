@@ -13,7 +13,7 @@ namespace HHL.CommonOperation {
 
 
     operation CRotation(negVal : Bool, angleFunc : (Int, Bool) -> Double, Rn : (Double, Qubit) => Unit is Adj + Ctl, clockQubits : Qubit[], ancillaQubit : Qubit) : Unit {
-        // little endien
+        // little-endian
         mutable negValInt = 0;
         if negVal {
             set negValInt = 1;
@@ -32,13 +32,10 @@ namespace HHL.CommonOperation {
 
         if negVal {
             for i in 1..nAbsVal -1 {
+                // counteract the previous rotation, and rotates negative angle.
                 let negAngle = angleFunc(i, true) -  angleFunc(i, false);
-                // counteract
                 Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
-                // Apply negative phase
-                // Controlled ApplyControlledOnInt([Tail(clockQubits)], (i, Rn(negAngle, _), clockQubits[0..nAbsClock - 1], ancillaQubit));
             }
-
         }
     }
 
@@ -50,6 +47,20 @@ namespace HHL.CommonOperation {
         CRotation(negVal, angleFunc, Rx(_, _), clockQubits, ancillaQubit);
     }
 
+    operation ReverseQubits(qubits : Qubit[]) : Unit is Adj + Ctl {
+        let length = Length(qubits);
+        for i in 0..length / 2 - 1 {
+            SWAP(qubits[i], qubits[length - i - 1]);
+        }
+    }
+
+    operation SwapRegs(reg1 : Qubit[], reg2 : Qubit[]) : Unit is Adj + Ctl {
+        let length = Length(reg1);
+        Fact(length == Length(reg2), "SwapRegs: regs must be with the same length.");
+        for i in 0..length - 1 {
+            SWAP(reg1[i], reg2[i]);
+        }
+    }
 
     operation PrepareUniform(qubits : Qubit[]) : Unit is Adj + Ctl {
         for q in qubits {
@@ -57,39 +68,16 @@ namespace HHL.CommonOperation {
         }
     }
 
-    operation ReverseQubits(qubits : Qubit[]) : Unit is Adj + Ctl {
-        let n = Length(qubits);
-        for i in 0..n / 2 - 1 {
-            SWAP(qubits[i], qubits[n - i - 1]);
-        }
-    }
-
-    operation ChangeEndien(op : Qubit[] => Unit is Adj + Ctl, qubits : Qubit[]) : Unit is Adj + Ctl {
+    // little-endian
+    operation PreparePureStateDL(coefficients : Double[], qubits : Qubit[]) : Unit is Adj + Ctl {
         within {
             ReverseQubits(qubits);
         } apply {
-            op(qubits);
+            PreparePureStateD(coefficients, qubits);
         }
     }
 
-    operation SwapRegs(reg1 : Qubit[], reg2 : Qubit[]) : Unit is Adj + Ctl {
-        let length = Length(reg1);
-        for i in 0..length - 1 {
-            SWAP(reg1[i], reg2[i]);
-        }
-    }
 
-    operation SwapHalfReg(reg : Qubit[]) : Unit is Adj + Ctl {
-        let mid = Length(reg) / 2;
-        Message($"mid = {mid}");
-        SwapRegs(reg[0..mid-1], reg[mid..Length(reg) -1]);
-    }
-
-    operation Clone(target : Qubit[], source : Qubit[]) : Unit is Adj + Ctl {
-        for i in 0..Length(source)-1 {
-            Controlled X([source[i]], target[i]);
-        }
-    }
 
     operation U3(theta : Double, phi : Double, lambda : Double, qubit : Qubit) : Unit is Adj + Ctl {
         Rz(lambda, qubit);
@@ -98,31 +86,12 @@ namespace HHL.CommonOperation {
         R(PauliI, - (phi + lambda), qubit);
     }
 
-    operation U3UnitTest() : Unit {
-        // expect that U3Rx is identical to Rx
-        operation U3Rx(theta : Double, qubit : Qubit) : Unit {
-            U3(theta, - PI() / 2.0, PI() / 2.0, qubit);
-        }
-
-        use q = Qubit();
-        let theta = DrawRandomDouble(0.0, PI());
-        U3Rx(theta, q);
-        DumpMachine();
-        Rx(- theta, q);
-        DumpMachine();
-        Reset(q);
-
-    }
 
     operation ZipOp(Op : (Qubit[] => Unit is Adj + Ctl), qubits1 : Qubit[], qubits2 : Qubit[]) : Unit is Adj + Ctl {
-        for i in 0..Length(qubits1)-1 {
+        let length = Length(qubits1);
+        Fact(length == Length(qubits2), "ZipOp: qubits1 and qubits2 must be with the same length.");
+        for i in 0..length-1 {
             Op([qubits1[i], qubits2[i]]);
-        }
-    }
-
-    operation repeatOp(reps : Int, Op : (Qubit[] => Unit is Adj + Ctl), qubits : Qubit[]) : Unit is Adj + Ctl {
-        for i in 0..reps {
-            Op(qubits);
         }
     }
 
@@ -146,7 +115,5 @@ namespace HHL.CommonOperation {
         return binaryVector;
     }
 
-
-    operation UNothing(qubits : Qubit[]) : Unit is Ctl + Adj {}
 
 }

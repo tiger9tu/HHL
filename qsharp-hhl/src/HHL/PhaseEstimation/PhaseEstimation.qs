@@ -13,7 +13,6 @@ namespace HHL.PhaseEstimation {
         ReverseQubits(qs);
     }
 
-    
     operation ApplyPhaseEstimation(unitary : ((Int, Qubit[]) => Unit is Adj + Ctl), clockQubits : Qubit[], phiQubits : Qubit[]) : Unit is Adj + Ctl {
         PrepareUniform(clockQubits);
 
@@ -24,8 +23,6 @@ namespace HHL.PhaseEstimation {
         }
 
         Adjoint ApplyQFTWithReverse(clockQubits);
-        // Adjoint ApplyQFT(Reversed(clockQubits));
-        // ReverseQubits(clockQubits);
     }
 
 }
