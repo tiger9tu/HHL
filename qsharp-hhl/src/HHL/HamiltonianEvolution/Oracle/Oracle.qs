@@ -9,6 +9,7 @@ namespace HHL.HamiltonianSimulation.Oracle {
     open Microsoft.Quantum.Canon;
     open Microsoft.Quantum.Math;
     open Microsoft.Quantum.Convert;
+    open Microsoft.Quantum.Diagnostics;
     open HHL.CommonOperation;
 
     internal function GetJ(HRow : Double[], y : Int) : Int {
@@ -22,7 +23,30 @@ namespace HHL.HamiltonianSimulation.Oracle {
         j
     }
 
+    internal function GetRegRInt(a : Double, n : Int) : Int {
+        // real value - > sign(1 bit)--fraction(2n bits)--integer(n bits)
+        // little-endian
+
+        let sign = a < 0.;
+
+        let absA = AbsD(a);
+
+        let aInt = Floor(absA); // Integer part of a
+        let rIntBin = IntToBinaryVector(aInt, n);
+
+        let aFrac = absA - IntAsDouble(aInt); // Fractional part of a
+        let rFracBin = FracToBinaryVector(aFrac, 2 * n);
+
+        // Message($"bin = {[sign] + rFracBin + rIntBin}");
+        BinaryVecToInt(rFracBin + rIntBin + [sign])
+    }
+
+    // internal function RealToBinary
     operation Oracle(H : Double[][], qx : Qubit[], qj : Qubit[], qy : Qubit[], qr : Qubit[]) : Unit is Adj + Ctl {
+        let lengthr = Length(qr);
+        Fact((lengthr - 1) % 3 == 0, "Length(qr) must be 3r + 1.");
+        let nr = (lengthr - 1) / 3;
+
         for x in 0..Length(H)- 1 {
             ApplyControlledOnInt(x, ApplyXorInPlace(x, _), qx, qy);
             for y in 0..Length(H) -1 {
@@ -33,10 +57,10 @@ namespace HHL.HamiltonianSimulation.Oracle {
                     // little-endian
                     ApplyControlledOnInt(cint, ApplyXorInPlace(x, _), qx + qj, qy); // cancel the previous effect
                     ApplyControlledOnInt(cint, ApplyXorInPlace(y, _), qx + qj, qy);
-                    ApplyControlledOnInt(cint, ApplyXorInPlace(Ceiling(w), _), qx + qj, qr);
+                    ApplyControlledOnInt(cint, ApplyXorInPlace(GetRegRInt(w, nr), _), qx + qj, qr);
                 }
             }
         }
-
     }
+
 }

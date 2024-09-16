@@ -104,16 +104,41 @@ namespace HHL.CommonOperation {
     }
 
     // little-endian
-    function IntToBinaryVector(n : Int, numBits : Int) : Int[] {
-        mutable binaryVector = Repeated(0, numBits);
+    function IntToBinaryVector(n : Int, numBits : Int) : Bool[] {
+        mutable bin = Repeated(false, numBits);
         mutable temp = n;
 
         for i in 0..numBits - 1 {
-            set binaryVector w/= i <- (temp % 2);
+            set bin w/= i <- (temp % 2 == 1);
             set temp = temp / 2;
         }
-        return binaryVector;
+        bin
     }
 
+    // little-endian
+    function FracToBinaryVector(frac : Double, numBits : Int) : Bool[] {
+        mutable fracBin = Repeated(false, numBits);
+        mutable fracValue = frac;
+        for i in 0..numBits - 1 {
+            set fracValue = fracValue * 2.0;
+            let bit = fracValue >= 1.0;
+            set fracBin w/= numBits - 1 - i <- bit;
+            if bit {
+                set fracValue = fracValue - 1.0;
+            }
+        }
+        fracBin
+    }
+
+    // little-endian
+    function BinaryVecToInt(bin : Bool[]) : Int {
+        mutable n = 0;
+        for i in 0..Length(bin) - 1 {
+            if bin[i] {
+                set n += 1 <<< i;
+            }
+        }
+        n
+    }
 
 }

@@ -2,8 +2,8 @@
 
 
 namespace HHL {
+    import HHL.HamiltonianSimulation.ApplyHamiltonianSimulation;
     import HHL.CommonOperation.ReverseQubits;
-    import HHL.HamiltonianSimulation.OracleHamiltonianSimulation;
     import HHL.HamiltonianSimulation.Oracle.Oracle;
 
     open Microsoft.Quantum.Arrays;
@@ -59,14 +59,14 @@ namespace HHL {
         let C = 1.;  // scaling of ancilla rotation
         let ntrotter = 14;
         let t0 = 2. * PI() / 2.^IntAsDouble(nc);
-
+        let nr = 10; // represent number of bits in r register of oracle
 
         use qb = Qubit[nb];
         use qc = Qubit[nc];
         use qa = Qubit();
 
-        let oA = Oracle(A, _, _, _, _);
-        let eiAt = OracleHamiltonianSimulation(_, oA, _);
+        // let eiAt = OracleHamiltonianSimulation(_, nr, oA, _);
+        let eiAt = ApplyHamiltonianSimulation(_, A, nr, _);
         let eiAtPower = HSPower(t0, _, eiAt, _);
 
         mutable postSelect : Result = Zero;

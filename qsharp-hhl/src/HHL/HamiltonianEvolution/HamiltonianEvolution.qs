@@ -1,15 +1,20 @@
 namespace HHL.HamiltonianSimulation {
+    import Microsoft.Quantum.Arrays.Tail;
     import HHLUnitTest.TrotterSuzukiUnitTest;
     import Microsoft.Quantum.Diagnostics.DumpRegister;
     import Microsoft.Quantum.Arrays.Zipped;
     import Microsoft.Quantum.Diagnostics.DumpMachine;
+    open Microsoft.Quantum.Diagnostics;
+
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Math;
     open HHL.CommonOperation;
     open HHL.HamiltonianSimulation.Oracle;
     open TrotterSuzuki;
 
+
     internal operation WGate(qubits : Qubit[]) : Unit is Adj + Ctl {
+        // Compiled with qsharp
         //    [[1, 0, 0, 0],
         //     [0, 1/sqrt(2),  1/sqrt(2), 0],
         //     [0, 1/sqrt(2), -1/sqrt(2), 0],
@@ -32,7 +37,6 @@ namespace HHL.HamiltonianSimulation {
         Exp([PauliI, PauliI], - 2.9085, qubits);
     }
 
-
     internal operation CNNOT(cnQubits : Qubit[], tQubit : Qubit) : Unit is Adj + Ctl {
         within {
             X(cnQubits[0]);
@@ -41,22 +45,53 @@ namespace HHL.HamiltonianSimulation {
         }
     }
 
+    internal operation U1Gate(theta : Double, qubit : Qubit) : Unit is Adj + Ctl {
+        Exp([PauliI], theta / 2., [qubit]);
+        Rz(theta, qubit);
+    }
 
-    operation OracleHamiltonianSimulation(time : Double, oracle : (Qubit[], Qubit[], Qubit[], Qubit[]) => Unit is Adj, qx : Qubit[]) : Unit is Adj + Ctl {
+    operation eZZFtGate(time : Double, pQubit : Qubit, rQubits : Qubit[]) : Unit is Adj + Ctl {
+
+        let length = Length(rQubits);
+        Fact((length - 1) % 3 == 0, "eZZFtGate: (Length(rQubits) - 1) % 3 == 0.");
+        let nr = (length - 1) / 3;
+        let deo = 2^(2 * nr);
+
+        use parityQubit = Qubit();
+        within {
+            CNOT(pQubit, parityQubit);
+            CNOT(Tail(rQubits), parityQubit);
+        } apply {
+            for i in 0..length-2 {
+                let theta = - time * 2.^IntAsDouble(i) / IntAsDouble(deo); // little-endian
+                Controlled U1Gate([parityQubit], (theta, rQubits[i]));
+            }
+
+            within {
+                X(parityQubit); // controll: operate on zero
+            } apply {
+                for i in 0..length-2 {
+                    let theta = time * 2.^IntAsDouble(i) / IntAsDouble(deo); // little-endian
+                    Controlled U1Gate([parityQubit], (theta, rQubits[i]));
+                }
+            }
+        }
+
+    }
+
+    operation ApplyHamiltonianSimulation(time : Double, h : Double[][], numBits : Int, qx : Qubit[]) : Unit is Adj + Ctl {
         let nx = Length(qx);
         use qy = Qubit[nx];
         use qj = Qubit[nx];
-        use qr = Qubit[nx];
-
-        use aQubit = Qubit();
+        use qr = Qubit[numBits];
+        use qa = Qubit();
 
         within {
-            oracle(qx, qj, qy, qr);
+            Oracle(h, qx, qj, qy, qr);
             ZipOp(WGate, qx, qy);
-            ZipOp(CNNOT(_, aQubit), qx, qy);
+            ZipOp(CNNOT(_, qa), qx, qy);
         } apply {
-            Rz(- 2.0 * time, aQubit);
+            eZZFtGate(time, qa, qr);
         }
     }
-
 }
