@@ -2,6 +2,7 @@
 
 
 namespace HHL.CommonOperation {
+    import Microsoft.Quantum.Unstable.Arithmetic.ApplyIfEqualL;
     import Microsoft.Quantum.Random.DrawRandomDouble;
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Intrinsic;
@@ -95,6 +96,34 @@ namespace HHL.CommonOperation {
         }
     }
 
+    operation ApplyBitwiseCNOT(cQubits : Qubit[], tQubits : Qubit[]) : Unit is Adj + Ctl {
+        let length = Length(cQubits);
+        Fact(length == Length(tQubits), "ApplyBitwiseCNOT: two input qubits must be with the same length");
+        for i in 0..length-1 {
+            CNOT(cQubits[i], tQubits[i]);
+        }
+    }
+
+
+    operation ApplyBitwiseXOR(qubits1 : Qubit[], qubits2 : Qubit[], tQubits : Qubit[]) : Unit is Adj + Ctl {
+        let length = Length(qubits1);
+        Fact(length == Length(qubits2), "ApplyBitwiseXOR: two input qubits must be with the same length");
+
+        ApplyBitwiseCNOT(qubits1, tQubits);
+        ApplyBitwiseCNOT(qubits2, tQubits);
+    }
+
+    operation ApplyGetEqualty(qubits1 : Qubit[], qubits2 : Qubit[], tQubit : Qubit) : Unit is Adj + Ctl {
+        // if equal, set tQubit = |1>
+        let length = Length(qubits1);
+        Fact(length == Length(qubits2), "ApplyGetEqualty: two input qubits must be with the same length");
+        use aQubits = Qubit[Length(qubits1)];
+
+        ApplyBitwiseXOR(qubits1, qubits2, aQubits);
+        ApplyControlledOnInt(0, X(_), aQubits, tQubit);
+    }
+
+
     function BoolAsInt(b : Bool) : Int {
         mutable ib = 0;
         if b {
@@ -139,6 +168,12 @@ namespace HHL.CommonOperation {
             }
         }
         n
+    }
+
+    function SumIntArray(intArr : Int[]) : Int {
+        let add = (x, y) -> x + y;
+        let total = Fold(add, 0, intArr);
+        total
     }
 
 }

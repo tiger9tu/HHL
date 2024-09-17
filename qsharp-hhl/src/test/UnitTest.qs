@@ -1,4 +1,5 @@
 namespace HHLUnitTest {
+    import HHL.HamiltonianSimulation.GraphColoring.GetLabel;
     open Microsoft.Quantum.Arrays;
     open Microsoft.Quantum.Diagnostics;
     open Microsoft.Quantum.Intrinsic;
@@ -31,7 +32,6 @@ namespace HHLUnitTest {
 
     }
 
-
     operation HamiltonianSimulationUnitTest() : Unit {
         let time = 0.2;
         use qx = Qubit[2];
@@ -51,13 +51,17 @@ namespace HHLUnitTest {
 
     operation HHLSimulationUnitTest() : Unit {
         let A = [
-            [0.0, 1.0, 0.0, 0.0],
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0]
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+            [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
         ];
 
-        let b = [2., -3., 1., 0.];
+        let b = [2., -3., 1., 1., 2., 1., 0.,-2.];
 
         HHLSimulation(A, b);
     }

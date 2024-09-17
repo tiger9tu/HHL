@@ -2,7 +2,6 @@ namespace HHL.HamiltonianSimulation.TrotterSuzuki {
     import Microsoft.Quantum.Math.PI;
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Diagnostics;
-    open Microsoft.Quantum.Unstable.StatePreparation;
 
     newtype Coef = (HamiltonianSimulator : (Double, Qubit[]) => Unit is Adj + Ctl, time : Double);
 
