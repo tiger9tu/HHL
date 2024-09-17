@@ -124,6 +124,11 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
 
     }
 
+    internal function GetXiStartIdx(lenXiList : Int[], i : Int) : Int {
+        mutable idx = 0;
+        // let
+        for r in 0..i {}
+    }
 
 
     internal operation DeterministicCoinTossing(oracle : (Qubit[], Qubit[], Qubit[]) => Unit is Adj + Ctl, xQubits : Qubit[], yQubits : Qubit[], cQubits : Qubit[]) : Unit is Adj + Ctl {
@@ -149,8 +154,10 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
             FindNextNodeInPath(oracle, xIterQubits, yIterQubits, cQubits, zIterQubits);
         }
 
-
-        for i in 1..logStarN {}
+        for i in 1..logStarN {
+            let numXiRegs = logStarN + 1 - i;
+            let xiRegStartIdx = GetXiStartIdx CoinTossingStep(lenXiList[i-1], lenXiList[i], )
+        }
 
 
     }
