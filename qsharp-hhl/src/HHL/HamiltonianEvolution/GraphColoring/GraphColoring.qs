@@ -1,4 +1,5 @@
 namespace HHL.HamiltonianSimulation.GraphColoring {
+    import HHL.CommonOperation.SliceArray;
     import HHL.CommonOperation.ApplyBitwiseCNOT;
     import HHL.CommonOperation.SwapRegs;
     import HHL.CommonOperation.ApplyGetEqualty;
@@ -70,11 +71,19 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
         num
     }
 
-    internal operation CoinTossingStep(preVertocesRegs : Qubit[][], verticesRegs : Qubit[][]) : Unit is Adj + Ctl {
-        let lenVertices = Length(verticesRegs);
-        Fact(Length(preVertocesRegs) == lenVertices + 1, "CoinTossingStep: each step the number of vertices must reduce by 1.");
-        for i in 0..lenVertices {
-            GetLabel(preVertocesRegs[i], preVertocesRegs[i + 1], verticesRegs[i]);
+
+    internal operation CoinTossingStep(preRegLen : Int, regLen : Int, preVerticesRegs : Qubit[], verticesRegs : Qubit[]) : Unit is Adj + Ctl {
+        let numVertices = Length(verticesRegs) / regLen;
+
+        Fact(Length(verticesRegs) % regLen == 0, "ConTossingStep: the regLen must divide verticesRegs.");
+        Fact(Length(preVerticesRegs) % regLen == 0, "ConTossingStep: the preRegLen must divide preVerticesRegs.");
+        Fact(Length(preVerticesRegs) == numVertices + 1, "CoinTossingStep: each step the number of vertices must reduce by 1.");
+
+        for i in 0..numVertices {
+            let preXiQubits = SliceArray(preVerticesRegs, i, preRegLen);
+            let preYiQubits = SliceArray(preVerticesRegs, i + 1, preRegLen);
+            let xiQubits = SliceArray(verticesRegs, i, regLen);
+            GetLabel(preXiQubits, preYiQubits, xiQubits);
         }
     }
 
@@ -115,6 +124,8 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
 
     }
 
+
+
     internal operation DeterministicCoinTossing(oracle : (Qubit[], Qubit[], Qubit[]) => Unit is Adj + Ctl, xQubits : Qubit[], yQubits : Qubit[], cQubits : Qubit[]) : Unit is Adj + Ctl {
         // prepare the color qubits
         // the color qubits is initially |j>|k>|000>
@@ -132,18 +143,14 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
         // for the first round, find all the vertices connected in the path
         let numVertices = logStarN + 1;
         for i in 2..numVertices {
-            let xIterQubits = totalQubits[(i-2) * lenX0Reg..(i-1) * lenX0Reg-1];
-            let yIterQubits = totalQubits[(i-1) * lenX0Reg..i * lenX0Reg-1];
-            let zIterQubits = totalQubits[i * lenX0Reg..(i + 1) * lenX0Reg-1];
+            let xIterQubits = SliceArray(totalQubits, i-2, lenX0Reg);
+            let yIterQubits = SliceArray(totalQubits, i-1, lenX0Reg);
+            let zIterQubits = SliceArray(totalQubits, i, lenX0Reg);
             FindNextNodeInPath(oracle, xIterQubits, yIterQubits, cQubits, zIterQubits);
         }
 
 
-        for i in 1..logStarN {
-            
-
-
-        }
+        for i in 1..logStarN {}
 
 
     }

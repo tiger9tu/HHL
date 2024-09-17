@@ -176,4 +176,10 @@ namespace HHL.CommonOperation {
         total
     }
 
+    function SliceArray<'T>(arr : 'T[], i : Int, stepSize : Int) : 'T[] {
+        let startIndex = i * stepSize;
+        let endIndex = (i + 1) * stepSize - 1;
+        return arr[startIndex..endIndex];
+    }
+
 }
