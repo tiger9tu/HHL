@@ -24,7 +24,7 @@ namespace HHL.HamiltonianSimulation.Oracle {
     }
 
     internal function GetRegRInt(a : Double, n : Int) : Int {
-        // real value - > sign(1 bit)--fraction(2n bits)--integer(n bits)
+        // real value - > fraction(2n bits)--integer(n bits)--sign(1 bit)
         // little-endian
 
         let sign = a < 0.;
