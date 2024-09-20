@@ -13,7 +13,7 @@ namespace HHL.HamiltonianSimulation.Oracle {
     open HHL.CommonOperation;
 
     internal function GetJ(HRow : Double[], y : Int) : Int {
-        // can't set mutable inside a adjoint operation..
+        // we need this function because we can't set mutable inside a adjoint operation..
         mutable j = 0;
         for i in 0..y-1 {
             if HRow[i] != 0. {
@@ -58,6 +58,25 @@ namespace HHL.HamiltonianSimulation.Oracle {
                     ApplyControlledOnInt(cint, ApplyXorInPlace(x, _), qx + qj, qy); // cancel the previous effect
                     ApplyControlledOnInt(cint, ApplyXorInPlace(y, _), qx + qj, qy);
                     ApplyControlledOnInt(cint, ApplyXorInPlace(GetRegRInt(w, nr), _), qx + qj, qr);
+                }
+            }
+        }
+    }
+
+    operation UnweightedOracle(H : Double[][], qx : Qubit[], qj : Qubit[], qy : Qubit[], qr : Qubit) : Unit is Adj + Ctl {
+        // of course we can construct unweighted oracle from the full oracle, but it would be more expensive
+        // if the entry is not 0, then qr = |1>
+        for x in 0..Length(H)- 1 {
+            ApplyControlledOnInt(x, ApplyXorInPlace(x, _), qx, qy);
+            for y in 0..Length(H) -1 {
+                let j = GetJ(H[x][0..Length(H)-1], y);
+                let cint = x + j * 2^(Length(qx));
+                let w = H[x][y];
+                if w != 0. {
+                    // little-endian
+                    ApplyControlledOnInt(cint, ApplyXorInPlace(x, _), qx + qj, qy); // cancel the previous effect
+                    ApplyControlledOnInt(cint, ApplyXorInPlace(y, _), qx + qj, qy);
+                    ApplyControlledOnInt(cint, X(_), qx + qj, qr);
                 }
             }
         }

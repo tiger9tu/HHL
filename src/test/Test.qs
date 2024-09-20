@@ -10,7 +10,10 @@ namespace Test {
 
     @EntryPoint()
     operation Main() : Unit {
-        DeterministicCoinTossingUnitTest();
+        // FindNextNodeInPathUnitTest();
+        // DeterministicCoinTossingUnitTest();
+        GraphColoringUnitTest();
+
         // let
         // OracleUnitTest();
         // let id = GetXiStartIdx([9, 4, 3], 2);

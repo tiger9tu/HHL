@@ -108,21 +108,9 @@ namespace HHL.CommonOperation {
     operation ApplyBitwiseXOR(qubits1 : Qubit[], qubits2 : Qubit[], tQubits : Qubit[]) : Unit is Adj + Ctl {
         let length = Length(qubits1);
         Fact(length == Length(qubits2), "ApplyBitwiseXOR: two input qubits must be with the same length");
-
         ApplyBitwiseCNOT(qubits1, tQubits);
         ApplyBitwiseCNOT(qubits2, tQubits);
     }
-
-    operation ApplyGetEqualty(qubits1 : Qubit[], qubits2 : Qubit[], tQubit : Qubit) : Unit is Adj + Ctl {
-        // if equal, set tQubit = |1>
-        let length = Length(qubits1);
-        Fact(length == Length(qubits2), "ApplyGetEqualty: two input qubits must be with the same length");
-        use aQubits = Qubit[Length(qubits1)];
-
-        ApplyBitwiseXOR(qubits1, qubits2, aQubits);
-        ApplyControlledOnInt(0, X(_), aQubits, tQubit);
-    }
-
 
     function BoolAsInt(b : Bool) : Int {
         mutable ib = 0;

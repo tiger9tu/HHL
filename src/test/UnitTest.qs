@@ -1,4 +1,6 @@
 namespace HHLUnitTest {
+    import HHL.HamiltonianSimulation.GraphColoring.FindNextNodeInPath;
+    import HHL.HamiltonianSimulation.GraphColoring.GraphColoringOracle;
     import HHL.HamiltonianSimulation.GraphColoring.DeterministicCoinTossing;
     import HHL.HamiltonianSimulation.GraphColoring.GetLabel;
     open Microsoft.Quantum.Arrays;
@@ -62,6 +64,48 @@ namespace HHLUnitTest {
         ResetAll(qx + qj + qy + qr);
     }
 
+    operation FindNextNodeInPathUnitTest() : Unit {
+        let H = [
+            [0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 1., 0., 1., 1., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.],
+            [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
+        ];
+
+        use qx = Qubit[4];
+
+        use qj = Qubit[4];
+        use qk = Qubit[4];
+        use qcolor = Qubit[3];
+
+        use qy = Qubit[4];
+
+        ApplyXorInPlace(5, qx);
+        ApplyXorInPlace(1, qj);
+        ApplyXorInPlace(0, qk); // just to clearify
+
+        let qc = qj + qk + qcolor;
+
+        let o = UnweightedOracle(H, _, _, _, _);
+        FindNextNodeInPath(o, qx, qc, qy);
+        DumpRegister(qy);
+
+        ResetAll(qx + qy + qc);
+
+    }
+
     operation DeterministicCoinTossingUnitTest() : Unit {
         let H = [
             [0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
@@ -82,27 +126,71 @@ namespace HHLUnitTest {
             [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
         ];
         use qx = Qubit[4];
-        use qj = Qubit[4];
         use qy = Qubit[4];
-        use qrTrash = Qubit[4]; // qw is not useful in coin tossing
-        use qj = Qubit[3];
-        use qk = Qubit[3];
+        use qj = Qubit[4];
+        use qk = Qubit[4];
         use qcolor = Qubit[3];
 
         ApplyXorInPlace(3, qx);
-        ApplyXorInPlace(13, qy);
+        ApplyXorInPlace(4, qy);
         ApplyXorInPlace(1, qj);
         ApplyXorInPlace(0, qk); // just to clearify
 
         let qc = qj + qk + qcolor;
 
-
-        let oHp = Oracle(H, _, _, _, qrTrash);
+        let oHp = UnweightedOracle(H, _, _, _, _);
+        DumpMachine();
         DeterministicCoinTossing(oHp, qx, qy, qc);
         DumpMachine();
+        DumpRegister(qc);
 
-        ResetAll(qx + qj + qy + qrTrash + qc);
+        ResetAll(qx + qy + qc);
     }
+
+    operation GraphColoringUnitTest() : Unit {
+        let H = [
+            [0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 1., 0., 1., 1., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0.],
+            [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
+        ];
+        use qx = Qubit[4];
+        use qj = Qubit[4];
+        use qk = Qubit[4];
+        use qcolor = Qubit[3];
+
+        use qy = Qubit[4];
+        use qr = Qubit[4]; // qw is not useful in coin tossing
+
+        ApplyXorInPlace(3, qx);
+        ApplyXorInPlace(0, qy); // just to clearify
+        ApplyXorInPlace(2, qj);
+        ApplyXorInPlace(1, qk);
+        ApplyXorInPlace(5, qcolor);
+
+        let qc = qj + qk + qcolor;
+
+        let O = Oracle(H, _, _, _, _);
+        let uwO = UnweightedOracle(H, _, _, _, _);
+
+        GraphColoringOracle(O, uwO, qx, qc, qy, qr);
+        DumpMachine();
+        DumpRegister(qy);
+        ResetAll(qx + qj + qk + qcolor + qy + qr);
+    }
+
 
     operation HamiltonianSimulationUnitTest() : Unit {
         let time = 0.2;
@@ -110,9 +198,9 @@ namespace HHLUnitTest {
         let state = [1.,-1., 0., 0.];
         PreparePureStateDL(state, qx);
         let h = [
-            [0.0, 2.5, 0.0, 0.0],
+            [0.0, 2.5, 1.0, 0.0],
             [2.5, 0.0, 0.0, 0.0],
-            [0.0, 0.0, 2.5, 0.0],
+            [1.0, 0.0, 2.5, 0.0],
             [0.0, 0.0, 0.0, 2.5]
         ];
         DumpMachine();
