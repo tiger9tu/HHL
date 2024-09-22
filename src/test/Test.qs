@@ -12,7 +12,9 @@ namespace Test {
     operation Main() : Unit {
         // FindNextNodeInPathUnitTest();
         // DeterministicCoinTossingUnitTest();
-        GraphColoringUnitTest();
+        // GraphColoringUnitTest();
+        // ColorHamiltonianSimulationUnitTest();
+        SparseHamiltonianSimulationUnitTest();
 
         // let
         // OracleUnitTest();
@@ -26,5 +28,10 @@ namespace Test {
         // WeightedOracleHamiltonianSimulationUnitTest();
         // RealOracleHamiltonianSimulationUnitTest();
         // HHLSimulationUnitTest();
+        // FailedUnitTest();
+        // OracleTest();
+        // ColorOracleTest();
+        // WGateFailedTest();
+
     }
 }

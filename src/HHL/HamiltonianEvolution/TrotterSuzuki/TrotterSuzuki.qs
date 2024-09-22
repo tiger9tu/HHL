@@ -39,6 +39,7 @@ namespace HHL.HamiltonianSimulation.TrotterSuzuki {
             for i in 0..Length(singleRepCoef) - 1 {
                 let (ha, time) = singleRepCoef[i]!;
                 // Message($"time = {time}");
+                Message($"i = {i}");
                 ha(time, qubits);
             }
         }

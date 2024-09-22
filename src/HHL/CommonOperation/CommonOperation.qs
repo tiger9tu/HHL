@@ -87,10 +87,18 @@ namespace HHL.CommonOperation {
         R(PauliI, - (phi + lambda), qubit);
     }
 
-
-    operation ZipOp(Op : (Qubit[] => Unit is Adj + Ctl), qubits1 : Qubit[], qubits2 : Qubit[]) : Unit is Adj + Ctl {
+    operation Zip4Op(Op : (Qubit[] => Unit is Adj + Ctl), qubits1 : Qubit[], qubits2 : Qubit[], qubits3 : Qubit[], qubits4 : Qubit[]) : Unit is Adj + Ctl {
         let length = Length(qubits1);
-        Fact(length == Length(qubits2), "ZipOp: qubits1 and qubits2 must be with the same length.");
+        Fact(length == Length(qubits2) and length == Length(qubits3) and length == Length(qubits4), "Zip4Op: qubits must be with the same length.");
+        for i in 0..length-1 {
+            Op([qubits1[i], qubits2[i], qubits3[i], qubits4[i]]);
+        }
+    }
+
+
+    operation Zip2Op(Op : (Qubit[] => Unit is Adj + Ctl), qubits1 : Qubit[], qubits2 : Qubit[]) : Unit is Adj + Ctl {
+        let length = Length(qubits1);
+        Fact(length == Length(qubits2), "Zip2Op: qubits must be with the same length.");
         for i in 0..length-1 {
             Op([qubits1[i], qubits2[i]]);
         }

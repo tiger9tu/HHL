@@ -1,8 +1,6 @@
 // HHL Algorithm
 
-
 namespace HHL {
-    import HHL.HamiltonianSimulation.ApplyHamiltonianSimulation;
     import HHL.CommonOperation.ReverseQubits;
     import HHL.HamiltonianSimulation.Oracle.Oracle;
 
@@ -60,14 +58,19 @@ namespace HHL {
         let ntrotter = 14;
         let t0 = 2. * PI() / 2.^IntAsDouble(nc);
         let nr = 10; // represent number of bits in r register of oracle
+        let s = 2;
+
 
         use qb = Qubit[nb];
         use qc = Qubit[nc];
         use qa = Qubit();
 
         // let eiAt = OracleHamiltonianSimulation(_, nr, oA, _);
-        let eiAt = ApplyHamiltonianSimulation(_, A, nr, _);
+        // let eiAt = ApplySparseHamiltonianSimulation(_, A, nr, _);
+        // let eiAtPower = HSPower(t0, _, eiAt, _);
+        let eiAt = ApplySparseHamiltonianSimulation(_, 2, A, nr, _);
         let eiAtPower = HSPower(t0, _, eiAt, _);
+
 
         mutable postSelect : Result = Zero;
 

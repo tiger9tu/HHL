@@ -1,4 +1,5 @@
 namespace HHL.HamiltonianSimulation.GraphColoring {
+    import Microsoft.Quantum.Math.MaxI;
     open Microsoft.Quantum.Unstable.Arithmetic;
     import HHL.HamiltonianSimulation.Oracle.Oracle;
     import HHL.CommonOperation.ApplyBitwiseXOR;
@@ -11,7 +12,6 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
     import Microsoft.Quantum.Arrays.Fold;
     import Microsoft.Quantum.Math.Lg;
     import Microsoft.Quantum.Math.Ceiling;
-    import HHL.HamiltonianSimulation.CNNOT;
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Diagnostics;
 
@@ -22,7 +22,11 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
         bitString
     }
 
-    operation GetLabel(preXiQubits : Qubit[], preYiQubits : Qubit[], xiQubits : Qubit[]) : Unit is Adj + Ctl {
+    operation GetLabel(
+        preXiQubits : Qubit[],
+        preYiQubits : Qubit[],
+        xiQubits : Qubit[]
+    ) : Unit is Adj + Ctl {
         // get the color label of the next xi
         // xi = position of the first different digit -- the different digit
         // xi Qubits is initially 0
@@ -45,7 +49,7 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
 
     internal function GetLogStarN(n : Int) : Int {
         mutable nIter = n;
-        mutable logStarN = 0;
+        mutable logStarN = 1; // apply an additional round when nclock == 3
         while nIter > 3 {
             set nIter = Ceiling(Lg(IntAsDouble(nIter)));
             set logStarN += 1;
@@ -60,7 +64,7 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
         set lenXiList w/= 0 <- lenX0;
 
         for i in 1..logStarN - 1 {
-            set lenXiList w/= i <- Ceiling(Lg(IntAsDouble(lenXiList[i - 1])));
+            set lenXiList w/= i <- MaxI(Ceiling(Lg(IntAsDouble(lenXiList[i - 1]))), 3);
         }
 
         set lenXiList w/= logStarN <- 3;
@@ -79,9 +83,13 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
     }
 
 
-    internal operation CoinTossingStep(preRegLen : Int, regLen : Int, preVerticesRegs : Qubit[], verticesRegs : Qubit[]) : Unit is Adj + Ctl {
+    internal operation CoinTossingStep(
+        preRegLen : Int,
+        regLen : Int,
+        preVerticesRegs : Qubit[],
+        verticesRegs : Qubit[]
+    ) : Unit is Adj + Ctl {
         let numVertices = Length(verticesRegs) / regLen;
-        // Message($"preRegLen : {preRegLen}; RegLen : {regLen}; Length(preRegVerticesRegs) : {Length(preVerticesRegs)} Length(verticesRegs) :{Length(verticesRegs)}.");
         Fact(Length(verticesRegs) % regLen == 0, "ConTossingStep: the regLen must divide verticesRegs.");
         Fact(Length(preVerticesRegs) % preRegLen == 0, "ConTossingStep: the preRegLen must divide preVerticesRegs.");
         Fact(Length(preVerticesRegs) / preRegLen == numVertices + 1, "CoinTossingStep: each step the number of vertices must reduce by 1.");
@@ -93,108 +101,40 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
             GetLabel(preXiQubits, preYiQubits, xiQubits);
         }
     }
-    //     /// # Summary
-    // /// Computes `if (c == x) { action(target) }`, that is, applies `action` to `target`
-    // /// if a BigInt value `c` is equal to the little-endian qubit register `x`
-    // operation ApplyIfEqualL<'T>(
-    //     action : 'T => Unit is Adj + Ctl,
-    //     c : BigInt,
-    //     xs : Qubit[],
-    //     target : 'T
-    // ) : Unit is Adj + Ctl {
 
-    //     let cBitSize = BitSizeL(c);
-    //     let xLen = Length(xs);
-    //     if (cBitSize <= xLen) {
-    //         let bits = BigIntAsBoolArray(c, Length(xs));
-    //         within {
-    //             ApplyPauliFromBitString(PauliX, false, bits, xs);
-    //         } apply {
-    //             Controlled ApplyAsSinglyControlled(xs, (a => action(a), target));
-    //         }
-    //     }
-    // }
 
-    // internal operation ApplyIfAssociatedByJK<'T>(
-    //     action : 'T => Unit is Adj + Ctl,
-    //     oracle : (Qubit[], Qubit[], Qubit[], Qubit) => Unit is Adj + Ctl,
-    //     xQubits : Qubit[],
-    //     yQubits : Qubit[],
-    //     jQubits : Qubit[],
-    //     kQubits : Qubit[],
-    //     target : 'T
-    // ) : Unit is Adj + Ctl {
-    //     // it is guaranteed that x < y,
-    //     // if y is x's jth neighbour and x is y's kth neighbour, then apply the specified action
+    internal operation FindNextVertexInPath(
+        oracle : (Qubit[], Qubit[], Qubit[], Qubit) => Unit is Adj + Ctl,
+        frontierVertexQubits : Qubit[],
+        jQubits : Qubit[],
+        kQubits : Qubit[],
+        nextVertexQubits : Qubit[]
+    ) : Unit is Adj + Ctl {
+        // we want to find vertex in the path that's next to the current frontier,
+        // the path is grown from small idx vertex to larger idx index : x0 < x1 < x2 < ...
+        // so next vertex must be larger than frontier
+        // that suggest that next vertex could only be frontier's jth neibour
 
-    //     use ayQubits = Qubit[Length(xQubits)];
-    //     use axQubits = Qubit[Length(yQubits)];
-    //     use arQubits = Qubit[2];
-    //     oracle(yQubits, jQubits, ayQubits, arQubits[0]);
-
-    //     // Controlled oracle()
-
-    //     within {
-
-    //         oracle(ayQubits, kQubits, axQubits, arQubits[1]);
-    //     } apply {}
-    // }
-
-    internal operation FindNextNodeInPath(oracle : (Qubit[], Qubit[], Qubit[], Qubit) => Unit is Adj + Ctl, xQubits : Qubit[], cQubits : Qubit[], yQubits : Qubit[]) : Unit is Adj + Ctl {
-        // We know x,y (x < y is guaranteed), want to find vertex z that the (j,k) of x--y is equal to that of y--z.
-        // In other words, we want to find next node z in the "path"
-        // we have j and k in cQubits, cQubits = |j>|k>|ccc>.
-        // If z exist, then oracle|y>|k>|0>|0> = |y>|k>|z>|1> && oracle|z>|j>|0>|0> = |z>|j>|y>|1>
-
-        use ayQubits = Qubit[Length(xQubits)];
-        use axQubits = Qubit[Length(xQubits)];
+        let length = Length(frontierVertexQubits);
+        use aFrontierVertexQubits = Qubit[length];
+        use aNextVertexQubits = Qubit[length];
         use arQubits = Qubit[2];
 
-        let lenjOrk = (Length(cQubits) - 3) / 2;
-        let jQubits = cQubits[0..lenjOrk -1];
-        let kQubits = cQubits[lenjOrk..2 * lenjOrk-1];
 
         within {
-            oracle(xQubits, jQubits, ayQubits, arQubits[0]);
-            oracle(ayQubits, kQubits, axQubits, arQubits[1]);
+            oracle(frontierVertexQubits, jQubits, aNextVertexQubits, arQubits[0]);
+            oracle(aNextVertexQubits, kQubits, aFrontierVertexQubits, arQubits[1]);
         } apply {
-            Controlled ApplyIfEqualLE(arQubits, (ApplyBitwiseCNOT(_, _), axQubits, xQubits, (ayQubits, yQubits)));
+            Controlled ApplyIfEqualLE(
+                arQubits,
+                (
+                    ApplyBitwiseCNOT,
+                    aFrontierVertexQubits,
+                    frontierVertexQubits,
+                    (aNextVertexQubits, nextVertexQubits)
+                )
+            );
         }
-
-
-
-        // use ifEqual0Qubit = Qubit();
-        // use ifEqual1Qubit = Qubit();
-
-        // within {
-        //     oracle(yQubits, jQubits, a0Qubits);
-        //     oracle(a0Qubits, kQubits, a1Qubits);
-        //     ApplyGetEqualty(xQubits, a0Qubits, ifEqual0Qubit);
-        //     ApplyGetEqualty(yQubits, a1Qubits, ifEqual1Qubit);
-
-        // } apply {
-        //     within {
-        //         X(ifEqual0Qubit);
-        //     } apply {
-        //         // assign z value a0 if ? != x and ^ != y
-        //         Controlled ApplyBitwiseCNOT([ifEqual0Qubit, ifEqual1Qubit], (a0Qubits, zQubits));
-        //     }
-        // }
-
-        // // swap j and k
-        // within {
-        //     oracle(yQubits, kQubits, a0Qubits);
-        //     oracle(a0Qubits, jQubits, a1Qubits);
-        //     ApplyGetEqualty(xQubits, a0Qubits, ifEqual0Qubit);
-        //     ApplyGetEqualty(yQubits, a1Qubits, ifEqual1Qubit);
-
-        // } apply {
-        //     within {
-        //         X(ifEqual0Qubit);
-        //     } apply {
-        //         Controlled ApplyBitwiseCNOT([ifEqual0Qubit, ifEqual1Qubit], (a0Qubits, zQubits));
-        //     }
-        // }
 
     }
 
@@ -213,116 +153,142 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
         (startIdx, endIdx)
     }
 
+    internal function GetSupplyQubitsNum(lenX0 : Int) : Int {
+        mutable n = 0;
+        if lenX0 < 3 {
+            set n = 3 - lenX0;
+        }
+        n
+    }
 
-    internal operation DeterministicCoinTossing(unweightedOracle : (Qubit[], Qubit[], Qubit[], Qubit) => Unit is Adj + Ctl, xQubits : Qubit[], yQubits : Qubit[], cQubits : Qubit[]) : Unit is Adj + Ctl {
+    internal operation DeterministicCoinTossing(
+        unweightedOracle : (Qubit[], Qubit[], Qubit[], Qubit) => Unit is Adj + Ctl,
+        smallVertexQubits : Qubit[],
+        largeVertexQubits : Qubit[],
+        jQubits : Qubit[],
+        kQubits : Qubit[],
+        colorQubits : Qubit[]
+    ) : Unit is Adj + Ctl {
         // prepare the color qubits
-        // it is not guaranteed that x < y so we have to figure it out first
+        // it is guaranteed that x < y
         // the color qubits is initially |j>|k>|000>
         // we assign the additional 3 digits color
-        let lenX0Reg = Length(xQubits);
+        let lenX0Reg = Length(smallVertexQubits);
+        let supX0Num = GetSupplyQubitsNum(lenX0Reg);
+        use axQubits = Qubit[supX0Num];
+        use ayQubits = Qubit[supX0Num];
 
-        Fact(lenX0Reg > 3, "DeterministicCoinTossing: the length of the xqubits must be large than 3, otherwise deterministic coin tossing is not needed.");
+        let lenSupX0Reg = lenX0Reg + supX0Num;
 
-        let logStarN = GetLogStarN(lenX0Reg);
 
-        let lenXiList = GetLenXiList(lenX0Reg);
+        let logStarN = GetLogStarN(lenSupX0Reg);
+        let lenXiList = GetLenXiList(lenSupX0Reg);
         let numCoinQubits = GetTotalCoinQubitsNum(lenXiList);
-        use aQubits = Qubit[numCoinQubits - 3]; // the last three are clock qubits
+        use aQubits = Qubit[numCoinQubits - 2 * lenSupX0Reg - 3]; // the last three are clock qubits
 
+        let totalQubits = smallVertexQubits + axQubits + largeVertexQubits + ayQubits + aQubits + colorQubits;
+
+        // for the first round, find all the near vertices connected in the path
+        let numVertices = logStarN + 1;
         within {
-            ApplyBitwiseCNOT(xQubits, aQubits[0..lenX0Reg-1]);
-            ApplyBitwiseCNOT(yQubits, aQubits[lenX0Reg..2 * lenX0Reg-1]);
-
-            // make sure the small one is in the front.
-            ApplyIfGreaterLE(SwapRegs(_, _), xQubits, yQubits, (aQubits[0..lenX0Reg-1], aQubits[lenX0Reg..2 * lenX0Reg-1]));
-        } apply {
-            // assign the start value
-            let totalQubits = aQubits + cQubits[Length(cQubits) - 3..Length(cQubits)-1];
-
-
-            // for the first round, find all the near vertices connected in the path
-            let numVertices = logStarN + 1;
             for i in 2..numVertices -1 {
-                let xIterQubits = SliceArray(totalQubits, i-1, lenX0Reg);
-                let yIterQubits = SliceArray(totalQubits, i, lenX0Reg);
-                FindNextNodeInPath(unweightedOracle, yIterQubits, cQubits, yIterQubits);
+                let prevQubits = SliceArray(totalQubits, i-1, lenSupX0Reg);
+                let nextQubits = SliceArray(totalQubits, i, lenSupX0Reg);
+                FindNextVertexInPath(unweightedOracle, prevQubits[0..lenX0Reg-1], jQubits, kQubits, nextQubits[0..lenX0Reg-1]);
             }
 
-            for i in 1..logStarN {
+            for i in 1..logStarN - 1 {
                 let (preXiRegsStartIdx, preXiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, i - 1);
                 let (xiRegsStartIdx, xiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, i);
-                CoinTossingStep(lenXiList[i-1], lenXiList[i], totalQubits[preXiRegsStartIdx..preXiRegsEndIdx], totalQubits[xiRegsStartIdx..xiRegsEndIdx]);
+                CoinTossingStep(
+                    lenXiList[i-1],
+                    lenXiList[i],
+                    totalQubits[preXiRegsStartIdx..preXiRegsEndIdx],
+                    totalQubits[xiRegsStartIdx..xiRegsEndIdx]
+                );
             }
+        } apply {
+            // the last
+            let (preXiRegsStartIdx, preXiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, logStarN - 1);
+            let (xiRegsStartIdx, xiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, logStarN);
+            CoinTossingStep(
+                lenXiList[logStarN-1],
+                lenXiList[logStarN],
+                totalQubits[preXiRegsStartIdx..preXiRegsEndIdx],
+                totalQubits[xiRegsStartIdx..xiRegsEndIdx]
+            );
         }
 
     }
 
     operation GraphColoringOracle(oracle : (Qubit[], Qubit[], Qubit[], Qubit[]) => Unit is Adj + Ctl, unweightedOracle : (Qubit[], Qubit[], Qubit[], Qubit) => Unit is Adj + Ctl, xQubits : Qubit[], cQubits : Qubit[], yQubits : Qubit[], rQubits : Qubit[]) : Unit is Adj + Ctl {
-        // Input: vertex x, colour c = (j, k, f, g).
+        // Input: vertex x, colour c = (om1, om2, f, g).
         // Output : m(x), w(x), where m(x) is the vertex y that shares an edge of colour c
         // with x, the weight w(x) of that edge, or m(x) = x and w(x) = O if the edge does
         // not exist.
 
         Fact((Length(cQubits) - 3) % 2 == 0, "GraphColoringOracle: Length(cQubits) must be 2k + 3.");
-        let lenjOrk = (Length(cQubits) - 3) / 2;
-        let jQubits = cQubits[0..lenjOrk]; // again, j may not be "j" in the paper, j is just the first reg.
-        let kQubits = cQubits[lenjOrk..2 * lenjOrk-1];
+        let lenOrdMark = (Length(cQubits) - 3) / 2;
+        let lenX = Length(xQubits);
+        use ayQubits = Qubit[lenX];
+        use axQubits = Qubit[lenX];
+        use condQubits = Qubit[2];
+        use arQubits = Qubit[2];
 
-        use ayQubits = Qubit[Length(yQubits)];
-        use arQubit = Qubit();
+        let firstOrdMarkQubits = cQubits[0..lenOrdMark-1];
+        let SecOrdMarkQubits = cQubits[lenOrdMark..2 * lenOrdMark-1];
+        let colorQubits = cQubits[Length(cQubits) - 3..Length(cQubits) - 1];
 
-        let cQubitsSwapJK = cQubits[lenjOrk..2 * lenjOrk-1] + cQubits[0..lenjOrk-1] + cQubits[Length(cQubits)-3..Length(cQubits)-1];
-        for qc in [cQubits, cQubitsSwapJK] {
+
+        // we define that y is x's jth neighbour and x is y's kth neighbour
+        // (firstOrdMark, SecOrdMark) = (j, k) if x <= y
+        // (firstOrdMark, SecOrdMark) = (k, j) if x > y
+        //
+        // so there are two possibilities :
+        // 1. x <= y: x --(j,k)-- y first order mark is j
+        // 2. x >  y: x --(k,j)-- y first order mark is k
+
+        // try first possibility:
+        let p0JQubits = firstOrdMarkQubits;
+        let p0KQubits = SecOrdMarkQubits;
+
+        within {
+            unweightedOracle(xQubits, p0JQubits, ayQubits, arQubits[0]);
+            unweightedOracle(ayQubits, p0KQubits, axQubits, arQubits[1]);
+            ApplyIfEqualLE(X, axQubits, xQubits, (condQubits[0]));
+            ApplyIfLessOrEqualLE(X, xQubits, ayQubits, condQubits[1]);
+            Controlled DeterministicCoinTossing(arQubits + condQubits, (unweightedOracle, xQubits, ayQubits, p0JQubits, p0KQubits, colorQubits));
+        } apply {
             within {
-                // 1.Check if vertex x has a jth neighbour, and if that jth neighbour's kth neighbour
-                // is x. If so, call the neighbour y, otherwise return m(x) = x and w(x) = 0
-                FindNextNodeInPath(unweightedOracle, xQubits, qc, ayQubits);
+                // I used a trick here to reduce need for aColorQubits
+                ApplyToEachCA(X, colorQubits);
             } apply {
-                // 2. Finish colouring the edge (x, y) using the deterministic coin tossing method,
-                // or append to the colour "000" if x = y. If the computed colour does not match
-                // the input colour f, return m(x) = x and w(x) = 0
-                within {
-                    // if the colors are the same, the last 3 color qubits of qc will be set to |000>
-                    DeterministicCoinTossing(unweightedOracle, xQubits, ayQubits, qc);
-                } apply {
-                    ApplyControlledOnInt(0, oracle(_, _, _, _), qc[Length(qc) - 3..Length(qc) - 1], (xQubits, qc[0..lenjOrk-1], yQubits, rQubits));
-                }
-
+                Controlled oracle(arQubits + condQubits + colorQubits, (xQubits, p0JQubits, yQubits, rQubits));
             }
         }
 
-        // use ayQubits = Qubit[Length(yQubits)];
-        // use axQubits = Qubit[Length(xQubits)];
-        // use arQubit = Qubit();
-        // use ifEqual0Qubit = Qubit();
-        // use ifEqual1Qubit = Qubit();
 
-        // use aColorQubits = Qubit[3];
-        // use colorsSameQubit = Qubit();
+        // try second possibility:
+        let p1JQubits = SecOrdMarkQubits;
+        let p1KQubits = firstOrdMarkQubits;
 
-        // // 1.Check if vertex x has a jth neighbour, and if that jth neighbour's kth neighbour
-        // // is x. If so, call the neighbour y, otherwise return m(x) = x and w(x) = 0
-        // within {
-        //     unweightedOracle(xQubits, jQubits, ayQubits, arQubit);
-        //     unweightedOracle(ayQubits, kQubits, axQubits, arQubit);
-        //     ApplyGetEqualty(yQubits, ayQubits, ifEqual0Qubit);
-        //     ApplyGetEqualty(xQubits, axQubits, ifEqual1Qubit);
+        within {
+            unweightedOracle(xQubits, p1JQubits, ayQubits, arQubits[0]);
+            unweightedOracle(ayQubits, p1KQubits, axQubits, arQubits[1]);
+            ApplyIfEqualLE(X, axQubits, xQubits, (condQubits[0]));
+            ApplyIfGreaterLE(X, xQubits, ayQubits, condQubits[1]);
+            Controlled DeterministicCoinTossing(arQubits + condQubits, (unweightedOracle, ayQubits, xQubits, p1JQubits, p1KQubits, colorQubits));
+        } apply {
+            within {
+                // I used a trick here to reduce need for aColorQubits
+                ApplyToEachCA(X, colorQubits);
+            } apply {
+                Controlled oracle(arQubits + condQubits + colorQubits, (xQubits, p1JQubits, yQubits, rQubits));
+            }
+        }
 
-        // } apply {
-        //     // 2. Finish colouring the edge (x, y)a using the deterministic coin tossing method,
-        //     // or append to the colour "000" if x = y. If the computed colour does not match
-        //     // the input colour f, return m(x) = x and w(x) = 0
 
-        //     within {
-        //         // Controlled DeterministicCoinTossing([ifEqual0Qubit, ifEqual1Qubit, arQubit], (unweightedOracle, xQubits, yQubits, jQubits + kQubits + aColorQubits));
-        //         Controlled ApplyGetEqualty([ifEqual0Qubit, ifEqual1Qubit], (aColorQubits, cQubits[Length(cQubits)-3..Length(cQubits)-1], colorsSameQubit));
-        //     } apply {
-        //         ApplyBitwiseCNOT(xQubits, yQubits);
-        //         Controlled ApplyBitwiseCNOT([colorsSameQubit], (xQubits, yQubits)); // cancel the effect
-        //         Controlled oracle([colorsSameQubit], (xQubits, cQubits, yQubits, rQubits)); // we do not need to double controll
-        //     }
-        // }
-        // DumpMachine();
+
     }
 
 }
