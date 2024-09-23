@@ -32,6 +32,8 @@ namespace HHLUnitTest {
 
     }
 
+    operation OneSparseHHLTest() : Unit {}
+
 
     operation OracleTest() : Unit {
         let h = [
@@ -330,16 +332,28 @@ namespace HHLUnitTest {
         ResetAll(qx);
         // use qx = Qubit[2];
 
-        // let ev = [-0.35, 0., 0.94, 0.]; // eigen value = -1
-        // let h = [[2.5, 0., 1., 0.], [0., 3., 0., 0.], [1., 0., 0., 0.], [0., 0., 0., -5.]];
-        // PreparePureStateDL(ev, qx);
+    }
 
-        // DumpMachine();
-        // ApplyColorHamiltonianSimulation(time, h, 7, 1, 0, 000, qx);
-        // DumpMachine();
-        // ResetAll(qx);
+    operation OneSparseHHLUnitTest() : Unit {
+        let h = [
+            [2.5, 0., 0., 0.],
+            [0., 3., 0., 0.],
+            [0., 0., 0.,-1.],
+            [0., 0., -1., 0.]
+        ];
+        let x = [2., 0., 1., 7.];
+        OneSparseHHLSimulation(h, x);
+    }
 
-
+    operation HHLUnitTest() : Unit {
+        let h = [
+            [2.5, 0., 1., 0.],
+            [0., 3., 0., 0.],
+            [1., 0., 0., 1.],
+            [0., 0., 1., 0.]
+        ];
+        let x = [2., 3., 1., 0.];
+        HHLSimulation(h, x);
     }
 }
 

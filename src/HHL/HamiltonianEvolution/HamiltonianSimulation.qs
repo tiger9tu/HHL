@@ -129,6 +129,22 @@ namespace HHL.HamiltonianSimulation {
 
     }
 
+    operation ApplyOneSparseHamiltonianSimulation(time : Double, h : Double[][], numBits : Int, qx : Qubit[]) : Unit is Adj + Ctl {
+        let nx = Length(qx);
+        use qy = Qubit[nx];
+        use qj = Qubit[nx];
+        use qr = Qubit[numBits];
+        use qa = Qubit();
+
+        within {
+            Oracle(h, qx, qj, qy, qr);
+            Zip2Op(WGate, qx, qy);
+            Zip2Op(NCNOT(_, qa), qx, qy);
+        } apply {
+            eZZFtGate(time, qa, qr);
+        }
+    }
+
     operation ApplyColorHamiltonianSimulation(
         time : Double,
         h : Double[][],

@@ -47,6 +47,52 @@ namespace HHL {
         HS(IntAsDouble(power) * t0, qx);
     }
 
+    operation OneSparseHHLSimulation(A : Double[][], b : Double[]) : Unit {
+
+        let N = Length(A);
+        let nb = Ceiling(Lg(IntAsDouble(N)));
+
+        // these parameters depends on other stuff, but we will come to that later..
+        let nc = 4; // num clock qubits
+        let C = 1.;  // scaling of ancilla rotation
+        let ntrotter = 5;
+        let t0 = 2. * PI() / 2.^IntAsDouble(nc);
+        let nr = 10; // represent number of bits in r register of oracle
+
+
+        use qb = Qubit[nb];
+        use qc = Qubit[nc];
+        use qa = Qubit();
+
+        // let eiAt = OracleHamiltonianSimulation(_, nr, oA, _);
+        // let eiAt = ApplySparseHamiltonianSimulation(_, A, nr, _);
+        // let eiAtPower = HSPower(t0, _, eiAt, _);
+        let eiAt = ApplyOneSparseHamiltonianSimulation(_, A, nr, _);
+        let eiAtPower = HSPower(t0, _, eiAt, _);
+
+
+        mutable postSelect : Result = Zero;
+
+        repeat {
+            PreparePureStateDL(b, qb);
+            within {
+                ApplyPhaseEstimation(eiAtPower, qc, qb);
+            } apply {
+                ApplyCReciprocal(C, true, qc, qa);
+            }
+            set postSelect = M(qa);
+            ResetAll(qc + [qa]);
+        } until postSelect == One
+        fixup {
+            ResetAll(qb);
+        }
+
+        ReverseQubits(qb); // represents big-endian
+        DumpMachine();
+        ResetAll(qb);
+
+    }
+
     operation HHLSimulation(A : Double[][], b : Double[]) : Unit {
 
         let N = Length(A);
@@ -55,10 +101,9 @@ namespace HHL {
         // these parameters depends on other stuff, but we will come to that later..
         let nc = 4; // num clock qubits
         let C = 1.;  // scaling of ancilla rotation
-        let ntrotter = 14;
+        let ntrotter = 4;
         let t0 = 2. * PI() / 2.^IntAsDouble(nc);
         let nr = 10; // represent number of bits in r register of oracle
-        let s = 2;
 
 
         use qb = Qubit[nb];
