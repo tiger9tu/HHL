@@ -130,20 +130,37 @@ namespace HHL.HamiltonianSimulation {
     }
 
     operation ApplyOneSparseHamiltonianSimulation(time : Double, h : Double[][], numBits : Int, qx : Qubit[]) : Unit is Adj + Ctl {
-        let nx = Length(qx);
-        use qy = Qubit[nx];
-        use qj = Qubit[nx];
-        use qr = Qubit[numBits];
-        use qa = Qubit();
+        body (...) {
+            Controlled ApplyOneSparseHamiltonianSimulation([], (time, h, numBits, qx));
+        }
 
-        within {
-            Oracle(h, qx, qj, qy, qr);
-            Zip2Op(WGate, qx, qy);
-            Zip2Op(NCNOT(_, qa), qx, qy);
-        } apply {
-            eZZFtGate(time, qa, qr);
+        controlled (ctrls, ...) {
+
+            if Length(ctrls) >= 2 {
+                use control = Qubit();
+                within {
+                    Controlled X(ctrls, control);
+                } apply {
+                    Controlled ApplyOneSparseHamiltonianSimulation([control], (time, h, numBits, qx));
+                }
+            } else {
+                let nx = Length(qx);
+                use qy = Qubit[nx];
+                use qj = Qubit[nx];
+                use qr = Qubit[numBits];
+                use qa = Qubit();
+
+                within {
+                    Oracle(h, qx, qj, qy, qr);
+                    Zip2Op(WGate, qx, qy);
+                    Zip2Op(NCNOT(_, qa), qx, qy);
+                } apply {
+                    Controlled eZZFtGate(ctrls, (time, qa, qr));
+                }
+            }
         }
     }
+
 
     operation ApplyColorHamiltonianSimulation(
         time : Double,
@@ -154,33 +171,46 @@ namespace HHL.HamiltonianSimulation {
         color : Int,
         qx : Qubit[]
     ) : Unit is Adj + Ctl {
-        let nx = Length(qx);
-        use qy = Qubit[nx];
-        use qc = Qubit[2 * nx + 3];
+        body (...) {
+            Controlled ApplyColorHamiltonianSimulation([], (time, h, numBits, j, k, color, qx));
+        }
 
-        use qr = Qubit[numBits];
-        use qa = Qubit();
+        controlled (ctrls, ...) {
+            if Length(ctrls) >= 2 {
+                use control = Qubit();
+                within {
+                    Controlled X(ctrls, control);
+                } apply {
+                    Controlled ApplyColorHamiltonianSimulation([control], (time, h, numBits, j, k, color, qx));
+                }
+            } else {
 
-        use qtemp1 = Qubit[nx];
-        use qtemp2 = Qubit[nx];
+                let nx = Length(qx);
+                use qy = Qubit[nx];
+                use qc = Qubit[2 * nx + 3];
 
-        within {
-            // prepare qc
-            ApplyXorInPlace(j, qc[0..nx-1]);
-            ApplyXorInPlace(k, qc[nx..2 * nx-1]);
-            ApplyXorInPlace(color, qc[Length(qc) - 3..Length(qc) -1]);
-        } apply {
-            within {
-                let o = Oracle(h, _, _, _, _);
-                let uwO = UnweightedOracle(h, _, _, _, _);
+                use qr = Qubit[numBits];
+                use qa = Qubit();
 
-                GraphColoringOracle(o, uwO, qx, qc, qy, qr);
-                // Zip4Op(ExactWGate, qx, qy, qtemp1, qtemp2);
-                Zip2Op(WGate, qx, qy);
-                Zip2Op(NCNOT(_, qa), qx, qy);
-            } apply {
-                // Z(qa);
-                eZZFtGate(time, qa, qr);
+                use qtemp1 = Qubit[nx];
+                use qtemp2 = Qubit[nx];
+
+                within {
+                    // prepare qc
+                    ApplyXorInPlace(j, qc[0..nx-1]);
+                    ApplyXorInPlace(k, qc[nx..2 * nx-1]);
+                    ApplyXorInPlace(color, qc[Length(qc) - 3..Length(qc) -1]);
+                } apply {
+                    within {
+                        GraphColoringOracle(h, qx, qc, qy, qr);
+                        // Zip4Op(ExactWGate, qx, qy, qtemp1, qtemp2);
+                        Zip2Op(WGate, qx, qy);
+                        Zip2Op(NCNOT(_, qa), qx, qy);
+                    } apply {
+                        // Z(qa);
+                        Controlled eZZFtGate(ctrls, (time, qa, qr));
+                    }
+                }
             }
         }
     }
@@ -206,8 +236,10 @@ namespace HHL.HamiltonianSimulation {
 
     operation ApplySparseHamiltonianSimulation(time : Double, sparsity : Int, h : Double[][], numBits : Int, qx : Qubit[]) : Unit is Adj + Ctl {
         let coefs = GetColorCoefList(time, h, numBits, sparsity);
-        ApplyTrotterSuzuki(2, 5, coefs, qx); // here trotter step is only 3
+        ApplyTrotterSuzuki(1, 2, coefs, qx); // here trotter step is only 3
 
     }
 }
+
+
 

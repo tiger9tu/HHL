@@ -8,11 +8,17 @@ namespace Test {
     open HHLUnitTest;
     open Microsoft.Quantum.Math;
     open HHL.HamiltonianSimulation.GraphColoring;
+    open HHLGateCountTest;
 
     @EntryPoint()
     operation Main() : Unit {
         // OneSparseHHLUnitTest();
         HHLUnitTest();
+        // OracleGateCount();
+        // GraphColoringOracleGateCount();
+        // DeterministicCoinTossingGateCount();
+        // GraphColoringUnitTest();
+        // OneSparseHamiltonianSimulationGateCount();
 
 
     }

@@ -80,7 +80,7 @@ namespace HHLUnitTest {
 
         let o = Oracle(h, _, _, _, _);
         let uwo = UnweightedOracle(h, _, _, _, _);
-        GraphColoringOracle(o, uwo, qx, qc, qy, qr);
+        GraphColoringOracle(h, qx, qc, qy, qr);
         DumpMachine();
         ResetAll(qx + qc + qy + qr);
     }
@@ -165,7 +165,7 @@ namespace HHLUnitTest {
         let O = Oracle(h, _, _, _, _);
         let uwO = UnweightedOracle(h, _, _, _, _);
 
-        GraphColoringOracle(O, uwO, qx, qc, qy, qr);
+        GraphColoringOracle(h, qx, qc, qy, qr);
         DumpMachine();
         DumpRegister(qy);
         ResetAll(qx + qj + qk + qcolor + qy + qr);
@@ -347,13 +347,20 @@ namespace HHLUnitTest {
 
     operation HHLUnitTest() : Unit {
         let h = [
-            [2.5, 0., 1., 0.],
-            [0., 3., 0., 0.],
-            [1., 0., 0., 1.],
-            [0., 0., 1., 0.]
+            [0., 1.4, 0., 0.],
+            [1.4, 0., 0., 0.],
+            [0., 0., 0., 1.],
+            [0., 0., 1., 1.]
         ];
         let x = [2., 3., 1., 0.];
         HHLSimulation(h, x);
+
+        // let h = [
+        //     [2.5, 1.],
+        //     [1., 3.]
+        // ];
+        // let x = [2., 3.];
+        // HHLSimulation(h, x);
     }
 }
 

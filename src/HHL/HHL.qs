@@ -119,19 +119,20 @@ namespace HHL {
 
         mutable postSelect : Result = Zero;
 
-        repeat {
-            PreparePureStateDL(b, qb);
-            within {
-                ApplyPhaseEstimation(eiAtPower, qc, qb);
-            } apply {
-                ApplyCReciprocal(C, true, qc, qa);
-            }
-            set postSelect = M(qa);
-            ResetAll(qc + [qa]);
-        } until postSelect == One
-        fixup {
-            ResetAll(qb);
+        // repeat {
+        PreparePureStateDL(b, qb);
+        within {
+            ApplyPhaseEstimation(eiAtPower, qc, qb);
+        } apply {
+            ApplyCReciprocal(C, true, qc, qa);
         }
+        set postSelect = M(qa);
+        ResetAll(qc + [qa]);
+        // } until postSelect == One
+        // fixup {
+        //     Message($"one circle!");
+        //     ResetAll(qb);
+        // }
 
         ReverseQubits(qb); // represents big-endian
         DumpMachine();

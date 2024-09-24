@@ -1,4 +1,5 @@
 namespace HHL.HamiltonianSimulation.GraphColoring {
+    import HHL.HamiltonianSimulation.Oracle.UnweightedOracle;
     import Microsoft.Quantum.Math.MaxI;
     open Microsoft.Quantum.Unstable.Arithmetic;
     import HHL.HamiltonianSimulation.Oracle.Oracle;
@@ -169,63 +170,85 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
         kQubits : Qubit[],
         colorQubits : Qubit[]
     ) : Unit is Adj + Ctl {
-        // prepare the color qubits
-        // it is guaranteed that x < y
-        // the color qubits is initially |j>|k>|000>
-        // we assign the additional 3 digits color
-        let lenX0Reg = Length(smallVertexQubits);
-        let supX0Num = GetSupplyQubitsNum(lenX0Reg);
-        use axQubits = Qubit[supX0Num];
-        use ayQubits = Qubit[supX0Num];
 
-        let lenSupX0Reg = lenX0Reg + supX0Num;
+        body (...) {
+            Controlled DeterministicCoinTossing([], (unweightedOracle, smallVertexQubits, largeVertexQubits, jQubits, kQubits, colorQubits));
+        }
 
 
-        let logStarN = GetLogStarN(lenSupX0Reg);
-        let lenXiList = GetLenXiList(lenSupX0Reg);
-        let numCoinQubits = GetTotalCoinQubitsNum(lenXiList);
-        use aQubits = Qubit[numCoinQubits - 2 * lenSupX0Reg - 3]; // the last three are clock qubits
+        controlled (ctrls, ...) {
+            if Length(ctrls) >= 2 {
+                use control = Qubit();
+                within {
+                    Controlled X(ctrls, control);
+                } apply {
+                    Controlled DeterministicCoinTossing([control], (unweightedOracle, smallVertexQubits, largeVertexQubits, jQubits, kQubits, colorQubits));
+                }
+            } else {
+                // prepare the color qubits
+                // it is guaranteed that x < y
+                // the color qubits is initially |j>|k>|000>
+                // we assign the additional 3 digits color
+                let lenX0Reg = Length(smallVertexQubits);
+                let supX0Num = GetSupplyQubitsNum(lenX0Reg);
+                use axQubits = Qubit[supX0Num];
+                use ayQubits = Qubit[supX0Num];
 
-        let totalQubits = smallVertexQubits + axQubits + largeVertexQubits + ayQubits + aQubits + colorQubits;
+                let lenSupX0Reg = lenX0Reg + supX0Num;
 
-        // for the first round, find all the near vertices connected in the path
-        let numVertices = logStarN + 1;
-        within {
-            for i in 2..numVertices -1 {
-                let prevQubits = SliceArray(totalQubits, i-1, lenSupX0Reg);
-                let nextQubits = SliceArray(totalQubits, i, lenSupX0Reg);
-                FindNextVertexInPath(unweightedOracle, prevQubits[0..lenX0Reg-1], jQubits, kQubits, nextQubits[0..lenX0Reg-1]);
+
+                let logStarN = GetLogStarN(lenSupX0Reg);
+                let lenXiList = GetLenXiList(lenSupX0Reg);
+                let numCoinQubits = GetTotalCoinQubitsNum(lenXiList);
+                use aQubits = Qubit[numCoinQubits - 2 * lenSupX0Reg - 3]; // the last three are clock qubits
+
+                let totalQubits = smallVertexQubits + axQubits + largeVertexQubits + ayQubits + aQubits + colorQubits;
+
+                // for the first round, find all the near vertices connected in the path
+                let numVertices = logStarN + 1;
+                within {
+                    for i in 2..numVertices -1 {
+                        let prevQubits = SliceArray(totalQubits, i-1, lenSupX0Reg);
+                        let nextQubits = SliceArray(totalQubits, i, lenSupX0Reg);
+                        FindNextVertexInPath(unweightedOracle, prevQubits[0..lenX0Reg-1], jQubits, kQubits, nextQubits[0..lenX0Reg-1]);
+                    }
+
+                    for i in 1..logStarN - 1 {
+                        let (preXiRegsStartIdx, preXiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, i - 1);
+                        let (xiRegsStartIdx, xiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, i);
+                        CoinTossingStep(
+                            lenXiList[i-1],
+                            lenXiList[i],
+                            totalQubits[preXiRegsStartIdx..preXiRegsEndIdx],
+                            totalQubits[xiRegsStartIdx..xiRegsEndIdx]
+                        );
+                    }
+                } apply {
+                    // the last
+                    let (preXiRegsStartIdx, preXiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, logStarN - 1);
+                    let (xiRegsStartIdx, xiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, logStarN);
+                    Controlled CoinTossingStep(
+                        ctrls,
+                        (
+                            lenXiList[logStarN-1],
+                            lenXiList[logStarN],
+                            totalQubits[preXiRegsStartIdx..preXiRegsEndIdx],
+                            totalQubits[xiRegsStartIdx..xiRegsEndIdx]
+                        )
+                    );
+                }
             }
-
-            for i in 1..logStarN - 1 {
-                let (preXiRegsStartIdx, preXiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, i - 1);
-                let (xiRegsStartIdx, xiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, i);
-                CoinTossingStep(
-                    lenXiList[i-1],
-                    lenXiList[i],
-                    totalQubits[preXiRegsStartIdx..preXiRegsEndIdx],
-                    totalQubits[xiRegsStartIdx..xiRegsEndIdx]
-                );
-            }
-        } apply {
-            // the last
-            let (preXiRegsStartIdx, preXiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, logStarN - 1);
-            let (xiRegsStartIdx, xiRegsEndIdx) = GetXiRegsTotalRange(lenXiList, logStarN);
-            CoinTossingStep(
-                lenXiList[logStarN-1],
-                lenXiList[logStarN],
-                totalQubits[preXiRegsStartIdx..preXiRegsEndIdx],
-                totalQubits[xiRegsStartIdx..xiRegsEndIdx]
-            );
         }
 
     }
 
-    operation GraphColoringOracle(oracle : (Qubit[], Qubit[], Qubit[], Qubit[]) => Unit is Adj + Ctl, unweightedOracle : (Qubit[], Qubit[], Qubit[], Qubit) => Unit is Adj + Ctl, xQubits : Qubit[], cQubits : Qubit[], yQubits : Qubit[], rQubits : Qubit[]) : Unit is Adj + Ctl {
+    operation GraphColoringOracle(h : Double[][], xQubits : Qubit[], cQubits : Qubit[], yQubits : Qubit[], rQubits : Qubit[]) : Unit is Adj + Ctl {
         // Input: vertex x, colour c = (om1, om2, f, g).
         // Output : m(x), w(x), where m(x) is the vertex y that shares an edge of colour c
         // with x, the weight w(x) of that edge, or m(x) = x and w(x) = O if the edge does
         // not exist.
+        let gco = Oracle(h, _, _, _, _);
+        let gcoUnWeighted = UnweightedOracle(h, _, _, _, _);
 
         Fact((Length(cQubits) - 3) % 2 == 0, "GraphColoringOracle: Length(cQubits) must be 2k + 3.");
         let lenOrdMark = (Length(cQubits) - 3) / 2;
@@ -253,44 +276,46 @@ namespace HHL.HamiltonianSimulation.GraphColoring {
         let p0KQubits = SecOrdMarkQubits;
 
         within {
-            unweightedOracle(xQubits, p0JQubits, ayQubits, arQubits[0]);
-            unweightedOracle(ayQubits, p0KQubits, axQubits, arQubits[1]);
+            gcoUnWeighted(xQubits, p0JQubits, ayQubits, arQubits[0]);
+            gcoUnWeighted(ayQubits, p0KQubits, axQubits, arQubits[1]);
             ApplyIfEqualLE(X, axQubits, xQubits, (condQubits[0]));
             ApplyIfLessOrEqualLE(X, xQubits, ayQubits, condQubits[1]);
-            Controlled DeterministicCoinTossing(arQubits + condQubits, (unweightedOracle, xQubits, ayQubits, p0JQubits, p0KQubits, colorQubits));
+            Controlled DeterministicCoinTossing(arQubits + condQubits, (gcoUnWeighted, xQubits, ayQubits, p0JQubits, p0KQubits, colorQubits));
         } apply {
             within {
                 // I used a trick here to reduce need for aColorQubits
                 ApplyToEachCA(X, colorQubits);
             } apply {
-                Controlled oracle(arQubits + condQubits + colorQubits, (xQubits, p0JQubits, yQubits, rQubits));
+                Controlled gco(arQubits + condQubits + colorQubits, (xQubits, p0JQubits, yQubits, rQubits));
             }
         }
 
 
-        // try second possibility:
+        // try second possibility (this may actually be combined into the first one, let's do this later if needed)
         let p1JQubits = SecOrdMarkQubits;
         let p1KQubits = firstOrdMarkQubits;
 
         within {
-            unweightedOracle(xQubits, p1JQubits, ayQubits, arQubits[0]);
-            unweightedOracle(ayQubits, p1KQubits, axQubits, arQubits[1]);
+            gcoUnWeighted(xQubits, p1JQubits, ayQubits, arQubits[0]);
+            gcoUnWeighted(ayQubits, p1KQubits, axQubits, arQubits[1]);
             ApplyIfEqualLE(X, axQubits, xQubits, (condQubits[0]));
             ApplyIfGreaterLE(X, xQubits, ayQubits, condQubits[1]);
-            Controlled DeterministicCoinTossing(arQubits + condQubits, (unweightedOracle, ayQubits, xQubits, p1JQubits, p1KQubits, colorQubits));
+            Controlled DeterministicCoinTossing(arQubits + condQubits, (gcoUnWeighted, ayQubits, xQubits, p1JQubits, p1KQubits, colorQubits));
         } apply {
             within {
                 // I used a trick here to reduce need for aColorQubits
                 ApplyToEachCA(X, colorQubits);
             } apply {
-                Controlled oracle(arQubits + condQubits + colorQubits, (xQubits, p1JQubits, yQubits, rQubits));
+                use control = Qubit();
+                within {
+                    Controlled X(arQubits + condQubits + colorQubits, control);
+                } apply {
+                    Controlled gco([control], (xQubits, p1JQubits, yQubits, rQubits));
+                }
             }
         }
 
-
-
     }
-
 }
 
 
