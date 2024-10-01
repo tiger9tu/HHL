@@ -12,8 +12,11 @@ namespace Test {
 
     @EntryPoint()
     operation Main() : Unit {
-        // OneSparseHHLUnitTest();
-        HHLUnitTest();
+        // simple demo
+        OneSparseHHLUnitTest();
+
+        // this may take time to run
+        // HHLUnitTest();
         // OracleGateCount();
         // GraphColoringOracleGateCount();
         // DeterministicCoinTossingGateCount();
