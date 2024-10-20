@@ -1,5 +1,9 @@
 namespace Test {
     // open HHLGateCountTest;
+    import Std.Diagnostics.StopCountingOperation;
+    import Std.Diagnostics.StartCountingOperation;
+    import HHL.HamiltonianSimulation.Oracle.Oracle;
+    import HHL.HamiltonianSimulation.Oracle.UnweightedOracle;
     import HHL.OneSparseHHLSimulation;
     import HHL.CommonOperation.SumIntArray;
     import HHL.HamiltonianSimulation.U1Gate;
@@ -9,19 +13,13 @@ namespace Test {
     open Microsoft.Quantum.Math;
     open HHL.HamiltonianSimulation.GraphColoring;
     open HHLGateCountTest;
+    
 
     @EntryPoint()
     operation Main() : Unit {
-        // simple demo
-        OneSparseHHLUnitTest();
-
-        // this may take time to run
-        // HHLUnitTest();
-        // OracleGateCount();
-        // GraphColoringOracleGateCount();
-        // DeterministicCoinTossingGateCount();
-        // GraphColoringUnitTest();
-        // OneSparseHamiltonianSimulationGateCount();
+        // OneSparseHHLUnitTest();
+  
+        StdGateSetCounting(OracleGateCount, 2);
 
 
     }

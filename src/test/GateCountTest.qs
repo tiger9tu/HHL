@@ -1,4 +1,7 @@
 namespace HHLGateCountTest {
+    import Std.Diagnostics.StopCountingOperation;
+    import Std.Diagnostics.StartCountingOperation;
+    import Std.Diagnostics.StartCountingFunction;
     open HHL.HamiltonianSimulation.GraphColoring;
     open Microsoft.Quantum.Arrays;
     open Microsoft.Quantum.Diagnostics;
@@ -16,14 +19,65 @@ namespace HHLGateCountTest {
     open HHL.HamiltonianSimulation.Oracle;
 
 
-    operation OracleGateCount() : Unit {
-        let h = [
-            [2.5, 0., 0., 0.],
-            [0., 3., 0., 0.],
-            [0., 0., 0., 1.],
-            [0., 0., 1., 0.]
-        ];
-        let n = 2;
+    operation StdGateSetCounting(op: (Int => Unit), n: Int) : Unit {
+        StartCountingOperation(H);
+        StartCountingOperation(X);
+        StartCountingOperation(Y);
+        StartCountingOperation(Z);
+        StartCountingOperation(S);
+        StartCountingOperation(T);
+        StartCountingOperation(Rx);
+        StartCountingOperation(Ry);
+        StartCountingOperation(Rz);
+        StartCountingOperation(CNOT);
+        StartCountingOperation(CZ);
+        StartCountingOperation(CY);
+        StartCountingOperation(CCNOT);
+        StartCountingOperation(M);
+
+        StartCountingOperation(Oracle);
+        StartCountingOperation(UnweightedOracle);
+        
+        op(n);
+
+        let HCount = StopCountingOperation(H);
+        let XCount = StopCountingOperation(X);
+        let YCount = StopCountingOperation(Y);
+        let ZCount = StopCountingOperation(Z);
+        let SCount = StopCountingOperation(S);
+        let TCount = StopCountingOperation(T);
+        let RxCount = StopCountingOperation(Rx);
+        let RyCount = StopCountingOperation(Ry);
+        let RzCount = StopCountingOperation(Rz);
+        let CNOTCount = StopCountingOperation(CNOT);
+        let CZCount = StopCountingOperation(CZ);
+        let CYCount = StopCountingOperation(CY);
+        let CCNOTCount = StopCountingOperation(CCNOT);
+        let MCount = StopCountingOperation(M);
+
+        let OracleCount = StopCountingOperation(Oracle);
+        let UniweightedOracleCount = StopCountingOperation(UnweightedOracle);
+
+        Message($"H count: {HCount}");
+        Message($"X count: {XCount}");
+        Message($"Y count: {YCount}");
+        Message($"Z count: {ZCount}");
+        Message($"S count: {SCount}");
+        Message($"T count: {TCount}");
+        Message($"Rx count: {RxCount}");
+        Message($"Ry count: {RyCount}");
+        Message($"Rz count: {RzCount}");
+        Message($"CNOT count: {CNOTCount}");
+        Message($"CZ count: {CZCount}");
+        Message($"CY count: {CYCount}");
+        Message($"CCNOT count: {CCNOTCount}");
+        Message($"M count: {MCount}");
+        Message($"Oracle count: {OracleCount}");
+        Message($"UnweightedOracle count: {UniweightedOracleCount}");
+    }
+
+    operation OracleGateCount(n: Int) : Unit {
+        let h = GenerateZeroMatrix(n);
 
         use qx = Qubit[n];
         use qy = Qubit[n];
@@ -32,18 +86,26 @@ namespace HHLGateCountTest {
         Oracle(h, qx, qc, qy, qr);
         ResetAll(qx + qy + qr + qc);
     }
+    
+    // same as oracle
+    operation UnweightedOracleGateCount(n: Int) : Unit {
+        
+        let h = GenerateZeroMatrix(n);
 
-    operation GraphColoringOracleGateCount() : Unit {
+        use qx = Qubit[n];
+        use qy = Qubit[n];
+        use qr = Qubit();
+        use qc = Qubit[5];
+        UnweightedOracle(h, qx, qc, qy, qr);
+
+        ResetAll(qx + qy + [qr] + qc);
+    }
+
+    operation GraphColoringOracleGateCount(n : Int) : Unit {
         let time = 0.3;
-        let n = 2;
         let s = 2;
         let numbits = 10;
-        let h = [
-            [2.5, 0., 0., 0.],
-            [0., 3., 0., 0.],
-            [0., 0., 0., 1.],
-            [0., 0., 1., 0.]
-        ];
+        let h = GenerateZeroMatrix(n);
         use qx = Qubit[n];
         use qy = Qubit[n];
         use qr = Qubit[10];
@@ -52,14 +114,8 @@ namespace HHLGateCountTest {
         ResetAll(qx + qy + qr + qc);
     }
 
-    operation DeterministicCoinTossingGateCount() : Unit {
-        let n = 2;
-        let h = [
-            [2.5, 0., 0., 0.],
-            [0., 3., 0., 0.],
-            [0., 0., 0., 1.],
-            [0., 0., 1., 0.]
-        ];
+    operation DeterministicCoinTossingGateCount(n: Int) : Unit {
+        let h = GenerateZeroMatrix(n);
         use qx = Qubit[n];
         use qy = Qubit[n];
         use qj = Qubit[n];
@@ -70,16 +126,12 @@ namespace HHLGateCountTest {
         ResetAll(qx + qy + qj + qk + qc);
     }
 
-    operation OneSparseHamiltonianSimulationGateCount() : Unit {
+    operation OneSparseHamiltonianSimulationGateCount(n: Int) : Unit {
+
+
         let time = 0.3;
-        let n = 2;
         let numbits = 10;
-        let h = [
-            [2.5, 0., 0., 0.],
-            [0., 3., 0., 0.],
-            [0., 0., 0., 1.],
-            [0., 0., 1., 0.]
-        ];
+        let h = GenerateZeroMatrix(2^n);
         use qx = Qubit[n];
         ApplyOneSparseHamiltonianSimulation(time, h, numbits, qx);
         DumpMachine();

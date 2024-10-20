@@ -178,4 +178,8 @@ namespace HHL.CommonOperation {
         return arr[startIndex..endIndex];
     }
 
+    function GenerateZeroMatrix(n: Int): Double[][] {
+        Repeated(Repeated(0., n), n)
+    }
+
 }
