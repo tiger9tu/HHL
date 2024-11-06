@@ -19,7 +19,7 @@ namespace HHLGateCountTest {
     open HHL.HamiltonianSimulation.Oracle;
 
 
-    operation StdGateSetCounting(op: (Int => Unit), n: Int) : Unit {
+    operation StdGateSetCounting(op : (Int => Unit), n : Int) : Unit {
         StartCountingOperation(H);
         StartCountingOperation(X);
         StartCountingOperation(Y);
@@ -37,7 +37,7 @@ namespace HHLGateCountTest {
 
         StartCountingOperation(Oracle);
         StartCountingOperation(UnweightedOracle);
-        
+
         op(n);
 
         let HCount = StopCountingOperation(H);
@@ -58,7 +58,7 @@ namespace HHLGateCountTest {
         let OracleCount = StopCountingOperation(Oracle);
         let UniweightedOracleCount = StopCountingOperation(UnweightedOracle);
 
-        Message($"H count: {HCount}");
+
         Message($"X count: {XCount}");
         Message($"Y count: {YCount}");
         Message($"Z count: {ZCount}");
@@ -76,7 +76,7 @@ namespace HHLGateCountTest {
         Message($"UnweightedOracle count: {UniweightedOracleCount}");
     }
 
-    operation OracleGateCount(n: Int) : Unit {
+    operation OracleGateCount(n : Int) : Unit {
         let h = GenerateZeroMatrix(n);
 
         use qx = Qubit[n];
@@ -86,10 +86,10 @@ namespace HHLGateCountTest {
         Oracle(h, qx, qc, qy, qr);
         ResetAll(qx + qy + qr + qc);
     }
-    
+
     // same as oracle
-    operation UnweightedOracleGateCount(n: Int) : Unit {
-        
+    operation UnweightedOracleGateCount(n : Int) : Unit {
+
         let h = GenerateZeroMatrix(n);
 
         use qx = Qubit[n];
@@ -114,7 +114,7 @@ namespace HHLGateCountTest {
         ResetAll(qx + qy + qr + qc);
     }
 
-    operation DeterministicCoinTossingGateCount(n: Int) : Unit {
+    operation DeterministicCoinTossingGateCount(n : Int) : Unit {
         let h = GenerateZeroMatrix(n);
         use qx = Qubit[n];
         use qy = Qubit[n];
@@ -126,7 +126,7 @@ namespace HHLGateCountTest {
         ResetAll(qx + qy + qj + qk + qc);
     }
 
-    operation OneSparseHamiltonianSimulationGateCount(n: Int) : Unit {
+    operation OneSparseHamiltonianSimulationGateCount(n : Int) : Unit {
 
 
         let time = 0.3;

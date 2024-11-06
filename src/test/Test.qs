@@ -13,13 +13,13 @@ namespace Test {
     open Microsoft.Quantum.Math;
     open HHL.HamiltonianSimulation.GraphColoring;
     open HHLGateCountTest;
-    
+
 
     @EntryPoint()
     operation Main() : Unit {
         // OneSparseHHLUnitTest();
-  
-        StdGateSetCounting(OracleGateCount, 2);
+
+        // StdGateSetCounting(ColorHamiltonianSimulationGateCount, 4);
 
 
     }
