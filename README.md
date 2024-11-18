@@ -1,2 +1,3 @@
 # HHL
-HHL algorithm
+Qshpar full implementation of HHL algorithm
+
