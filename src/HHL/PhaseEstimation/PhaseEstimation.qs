@@ -19,7 +19,7 @@ namespace HHL.PhaseEstimation {
         let nClock = Length(clockQubits);
         for i in 0..nClock - 1 {
             let power = 2^i; // little-endian, first qubits present less significant bits
-            Message($"qpe c + 1.");
+            // Message($"qpe c + 1.");
             Controlled unitary([clockQubits[i]], (power, phiQubits));
         }
 

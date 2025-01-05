@@ -78,15 +78,6 @@ namespace HHL.CommonOperation {
         }
     }
 
-
-
-    operation U3(theta : Double, phi : Double, lambda : Double, qubit : Qubit) : Unit is Adj + Ctl {
-        Rz(lambda, qubit);
-        Ry(theta, qubit);
-        Rz(phi, qubit);
-        R(PauliI, - (phi + lambda), qubit);
-    }
-
     operation Zip4Op(Op : (Qubit[] => Unit is Adj + Ctl), qubits1 : Qubit[], qubits2 : Qubit[], qubits3 : Qubit[], qubits4 : Qubit[]) : Unit is Adj + Ctl {
         let length = Length(qubits1);
         Fact(length == Length(qubits2) and length == Length(qubits3) and length == Length(qubits4), "Zip4Op: qubits must be with the same length.");
@@ -178,7 +169,7 @@ namespace HHL.CommonOperation {
         return arr[startIndex..endIndex];
     }
 
-    function GenerateZeroMatrix(n: Int): Double[][] {
+    function GenerateZeroMatrix(n : Int) : Double[][] {
         Repeated(Repeated(0., n), n)
     }
 

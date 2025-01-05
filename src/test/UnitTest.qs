@@ -283,32 +283,14 @@ namespace HHLUnitTest {
         HHLSimulation(A, b);
     }
 
-    operation WGateFailedTest() : Unit {
-        // use q = Qubit[2];
-        // PreparePsiMinus(q);
-        // DumpMachine();
+    operation WGateTest() : Unit {
         use qx = Qubit[2];
-        // use qy = Qubit[2];
-        use qt = Qubit[2];
-        // use qt2 = Qubit[2];
 
         X(qx[0]);
-        within {
-            ExactWGate(qx + qt);
-        } apply {
-
-            DumpRegister(qx);
-        }
+        X(qx[1]);
+        WGate([qx[0], qx[1]]);
         DumpMachine();
-        ResetAll(qx + qt);
-
-        // let qx0y0 = [qx[0]] + [qy[0]];
-        // let qx1qy1 = [qx[1]] + [qy[1]];
-
-
-
-        // ZipOp(WGate, qx, qy);
-
+        ResetAll(qx);
 
     }
 
