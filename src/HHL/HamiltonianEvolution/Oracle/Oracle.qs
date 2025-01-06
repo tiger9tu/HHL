@@ -82,4 +82,7 @@ namespace HHL.HamiltonianSimulation.Oracle {
         }
     }
 
+    operation EmptyOracle(H : Double[][], qx : Qubit[], qj : Qubit[], qy : Qubit[], qr : Qubit[]) : Unit is Adj + Ctl {
+        // do nothing
+    }
 }

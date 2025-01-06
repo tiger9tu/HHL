@@ -17,9 +17,11 @@ namespace Test {
 
     @EntryPoint()
     operation Main() : Unit {
-        // OneSparseHHLUnitTest();
 
-        // StdGateSetCounting(ColorHamiltonianSimulationGateCount, 4);
+        // WGateTest();
+        use qx = Qubit[2];
+        // H(qx[0]);
+        T(qx[0]);
 
 
     }
