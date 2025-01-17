@@ -269,99 +269,55 @@ class Task:
 
 class HHL(Task):
     def __init__(
-        self, scaling, sparsity, kappa, epsilon, precision  # n, number of input qubits
+        self, n, sparsity, kappa, epsilon, precision  # n, number of input qubits
     ):
-        hs_count = 864 * sparsity**4 * kappa**2 / epsilon
+        hs_count = np.sqrt(80 / 3) * np.pi * kappa ** (5 / 2) * sparsity / epsilon**2
         t_count = hs_count * (
-            87 * 6 * precision + 205 * 2 * scaling + 7 * 2 * scaling
+            12 * 4 * n + 4 * 2 * n + 15 * 54
         )  # precision is the number of bits
         self.ancilla_qubits = 20  # suppose HHL's ancilla qubits are 20
-        logical_qubit_count = scaling + self.ancilla_qubits
-
+        clock_qubit_count = np.ceil(np.log2(np.sqrt(5 / 3) * kappa / epsilon))
+        precision_qubit_count = precision
+        logical_qubit_count = 2 * n + precision_qubit_count + clock_qubit_count
+        # logical_qubit_count = n
         super().__init__(logical_qubit_count, t_count)
 
 
-if __name__ == "__main__":
-    # t_gate_count = 1e8
-    # logical_qubit_count = 100
+# if __name__ == "__main__":
+#     # t_gate_count = 1e8
+#     # logical_qubit_count = 100
 
-    physical_error_rate = 1e-4
-    clock_cycle_time = 1e-6
-    max_physical_qubits = 80000
+#     physical_error_rate = 1e-4
+#     clock_cycle_time = 1e-6
+#     max_physical_qubits = 80000
 
-    # setting of HHl
-    kappa = 2
-    epsilon = 0.1
-    precision = 5
+#     # setting of HHl
+#     kappa = 2
+#     epsilon = 0.1
+#     precision = 5
 
-    opt_dist_block_counts = []
-    opt_data_protos = []
-    opt_time = []
-    opt_physical_qubit_count = []
+#     opt_dist_block_counts = []
+#     opt_data_protos = []
+#     opt_time = []
+#     opt_physical_qubit_count = []
 
-    for n in range(10, 50):
-        sparsity = n / 16  # this is for consistency with the plots on the paper
-        hhl_task = HHL(n, sparsity, kappa, epsilon, precision)
+#     for n in range(10, 50):
+#         sparsity = n / 16  # this is for consistency with the plots on the paper
+#         hhl_task = HHL(n, sparsity, kappa, epsilon, precision)
 
-        (
-            optimal_distillation_block_count,
-            optimal_data_protocol,
-            optimal_cycle_count,
-            optimal_physical_qubit_count,
-        ) = find_optimal_setting(
-            hhl_task.t_gate_count,
-            hhl_task.logical_qubit_count,
-            physical_error_rate,
-            max_physical_qubits,
-        )
+#         (
+#             optimal_distillation_block_count,
+#             optimal_data_protocol,
+#             optimal_cycle_count,
+#             optimal_physical_qubit_count,
+#         ) = find_optimal_setting(
+#             hhl_task.t_gate_count,
+#             hhl_task.logical_qubit_count,
+#             physical_error_rate,
+#             max_physical_qubits,
+#         )
 
-        opt_dist_block_counts.append(optimal_distillation_block_count)
-        opt_data_protos.append(optimal_data_protocol)
-        opt_time.append(optimal_cycle_count * clock_cycle_time)
-        opt_physical_qubit_count.append(optimal_physical_qubit_count)
-
-    # import matplotlib.pyplot as plt
-
-    # fig, ax1 = plt.subplots(figsize=(12, 6))
-
-    # color = 'tab:red'
-    # ax1.set_xlabel('n')
-    # ax1.set_ylabel('Optimal Time (s)', color=color)
-    # ax1.plot(range(10, 50), opt_time, color=color)
-    # ax1.tick_params(axis='y', labelcolor=color)
-
-    # ax2 = ax1.twinx()
-    # color = 'tab:blue'
-    # ax2.set_ylabel('Optimal Physical Qubit Count', color=color)
-    # ax2.plot(range(10, 50), opt_physical_qubit_count, color=color)
-    # ax2.tick_params(axis='y', labelcolor=color)
-
-    # fig.tight_layout()
-
-    # for i in range(1, len(opt_dist_block_counts)):
-    #     if opt_dist_block_counts[i] != opt_dist_block_counts[i - 1]:
-    #         ax1.axvline(x=i + 10, color='green', linestyle='--')
-    #         ax1.text(i + 10, max(opt_time), f'nd = {opt_dist_block_counts[i]}', rotation=90, verticalalignment='bottom')
-
-    # data_protocol_colors = ['lightblue', 'lightgreen', 'lightcoral']
-    # current_protocol = opt_data_protos[0]
-    # start_index = 0
-
-    # for i in range(1, len(opt_data_protos)):
-    #     if opt_data_protos[i] != current_protocol:
-    #         ax1.axvspan(start_index + 10, i + 10, color=data_protocol_colors[data_protocals.index(current_protocol)], alpha=0.3)
-    #         ax1.text((start_index + i) / 2 + 10, max(opt_time) * 0.8, current_protocol.name, rotation=90, verticalalignment='bottom')
-    #         current_protocol = opt_data_protos[i]
-    #         start_index = i
-
-    # ax1.axvspan(start_index + 10, 50, color=data_protocol_colors[data_protocals.index(current_protocol)], alpha=0.3)
-    # ax1.text((start_index + 50) / 2, max(opt_time) * 0.8, current_protocol.name, rotation=90, verticalalignment='bottom')
-
-    # plt.show()
-
-    # print(
-    #     f"Optimal distillation block count: {optimal_distillation_block_count}\n"
-    #     f"Optimal data protocol: {optimal_data_protocol}\n"
-    #     f"Optimal time: {optimal_cycle_count * clock_cycle_time}\n"
-    #     f"Optimal physical qubit count: {optimal_physical_qubit_count}\n\n"
-    # )
+#         opt_dist_block_counts.append(optimal_distillation_block_count)
+#         opt_data_protos.append(optimal_data_protocol)
+#         opt_time.append(optimal_cycle_count * clock_cycle_time)
+#         opt_physical_qubit_count.append(optimal_physical_qubit_count)

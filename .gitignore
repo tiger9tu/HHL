@@ -1,5 +1,6 @@
 # mathematica
 tmp*
+*.pdf
 qshp/*
 *.nb
 # Byte-compiled / optimized / DLL files
