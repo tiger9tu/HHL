@@ -162,7 +162,9 @@ def determine_code_distance(
     return max_d  # This is a sign of failure
 
 
-def optimize_configuration(distillation_block, d, T_count, max_physical_qubits=1e6):
+def optimize_configuration(
+    distillation_block, d, T_count, max_physical_qubits=1e6, specify_data_protocol=None
+):
     """
     Step 4: Optimize configuration by adding distillation blocks and changing data block protocols.
     """
@@ -171,6 +173,11 @@ def optimize_configuration(distillation_block, d, T_count, max_physical_qubits=1
     # 1.change the number of distillation blocks (the type of distillation block is fixed)
     # 2.change the data block protocol
 
+    specific_data_protocals = data_protocals
+
+    if specify_data_protocol is not None:
+        specific_data_protocals = [data_protocals[specify_data_protocol]]
+
     space_time_cost = float("inf")
     optimal_distillation_block_count = None
     optimal_data_protocol = None
@@ -178,7 +185,7 @@ def optimize_configuration(distillation_block, d, T_count, max_physical_qubits=1
     optimal_physical_qubit_count = None
 
     for n_distillation in range(1, 100):
-        for data_protocol in data_protocals:
+        for data_protocol in specific_data_protocals:
 
             magic_production_time = (
                 distillation_block.magic_production_time / n_distillation
@@ -201,9 +208,6 @@ def optimize_configuration(distillation_block, d, T_count, max_physical_qubits=1
 
             total_space_time_cost = total_physical_qubits * total_clock_cycles
             if total_space_time_cost < space_time_cost:
-                # print(
-                #     f"n_distillation: {n_distillation}, data_protocol: {data_protocol},total_physical_qubits: {total_physical_qubits}, total_clock_cycles: {total_clock_cycles}"
-                # )
                 space_time_cost = total_space_time_cost
                 optimal_distillation_block_count = n_distillation
                 optimal_data_protocol = data_protocol
@@ -226,11 +230,19 @@ def optimize_configuration(distillation_block, d, T_count, max_physical_qubits=1
 
 
 def find_optimal_setting(
-    t_gate_count, logical_qubit_count, physical_error_rate, max_physical_qubits
+    t_gate_count,
+    logical_qubit_count,
+    physical_error_rate,
+    max_physical_qubits,
+    specify_distillation_protocol=None,
+    specify_data_protocol=None,
 ):
     initialize(logical_qubit_count)
+    distillation_protocal_index = (
+        specify_distillation_protocol
+        or determine_distillation_protocol(physical_error_rate)
+    )
 
-    distillation_protocal_index = determine_distillation_protocol(physical_error_rate)
     setup_tiles, setup_time = construct_minimal_setup(
         distillation_protocals[distillation_protocal_index], t_gate_count
     )
@@ -247,6 +259,7 @@ def find_optimal_setting(
         code_distance,
         t_gate_count,
         max_physical_qubits,
+        specify_data_protocol,
     )
 
     return (
@@ -279,7 +292,6 @@ class HHL(Task):
         clock_qubit_count = np.ceil(np.log2(np.sqrt(5 / 3) * kappa / epsilon))
         precision_qubit_count = precision
         logical_qubit_count = 2 * n + precision_qubit_count + clock_qubit_count
-        # logical_qubit_count = n
         super().__init__(logical_qubit_count, t_count)
 
 

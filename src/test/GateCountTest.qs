@@ -136,4 +136,17 @@ namespace HHLGateCountTest {
         ApplyOneSparseHamiltonianSimulation(time, h, numbits, qx);
         DumpMachine();
     }
+
+    operation WgateGateCount(n : Int) : Unit {
+        use q = Qubit[n];
+        WGate(q);
+        ResetAll(q);
+    }
+
+    operation U1GateGateCount() : Unit {
+        use q = Qubit();
+        use qc = Qubit();
+        Controlled U1Gate([qc], (0.5, q));
+        Reset(q);
+    }
 }

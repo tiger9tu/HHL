@@ -1,5 +1,6 @@
 namespace Test {
     // open HHLGateCountTest;
+    import HHL.HamiltonianSimulation.NCNOT;
     import Std.Diagnostics.StopCountingOperation;
     import Std.Diagnostics.StartCountingOperation;
     import HHL.HamiltonianSimulation.Oracle.Oracle;
@@ -17,12 +18,11 @@ namespace Test {
 
     @EntryPoint()
     operation Main() : Unit {
-
-        // WGateTest();
-        use qx = Qubit[2];
-        // H(qx[0]);
-        T(qx[0]);
-
-
+        // OneSparseHamiltonianSimulationGateCount(2);
+        // WgateGateCount(2);
+        // U1GateGateCount();
+        use qubits = Qubit[1];
+        Rz(1.0, qubits[0]);
+        // NCNOT(qubits[0..1], qubits[2]);
     }
 }

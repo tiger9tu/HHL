@@ -23,7 +23,7 @@ namespace HHL.HamiltonianSimulation {
         }
     }
 
-    internal operation NCNOT(cnQubits : Qubit[], tQubit : Qubit) : Unit is Adj + Ctl {
+    operation NCNOT(cnQubits : Qubit[], tQubit : Qubit) : Unit is Adj + Ctl {
 
         within {
             X(cnQubits[0]);
@@ -32,7 +32,7 @@ namespace HHL.HamiltonianSimulation {
         }
     }
 
-    internal operation U1Gate(theta : Double, qubit : Qubit) : Unit is Adj + Ctl {
+    operation U1Gate(theta : Double, qubit : Qubit) : Unit is Adj + Ctl {
         Exp([PauliI], theta / 2., [qubit]);
         Rz(theta, qubit);
     }
