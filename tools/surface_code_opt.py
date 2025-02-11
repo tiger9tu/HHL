@@ -284,9 +284,9 @@ class HHL(Task):
     def __init__(
         self, n, sparsity, kappa, epsilon, precision  # n, number of input qubits
     ):
-        hs_count = np.sqrt(80 / 3) * np.pi * kappa ** (5 / 2) * sparsity / epsilon**2
+        hs_count = np.sqrt(320 / 3) * np.pi * kappa**2 * sparsity / epsilon**2
         t_count = hs_count * (
-            12 * 4 * n + 4 * 2 * n + 15 * 54
+            18 * n + 90 * precision + 15
         )  # precision is the number of bits
         self.ancilla_qubits = 20  # suppose HHL's ancilla qubits are 20
         clock_qubit_count = np.ceil(np.log2(np.sqrt(5 / 3) * kappa / epsilon))
