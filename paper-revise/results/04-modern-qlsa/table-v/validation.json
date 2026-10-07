@@ -1,0 +1,14 @@
+{
+  "result": "passed",
+  "checks": [
+    "Tables III--V: both columns match independent hand calculation",
+    "normalization, query multiplicities, Eq.(64) allocation, example count and retries",
+    "integer result stable at 40, 80 and 100 decimal digits",
+    "retry cap includes exact power-of-two boundaries",
+    "invalid inputs and ambiguous normalization rejected",
+    "optional tomography: error budget, exclusive costs, no double retry, monotonicity and invalid inputs",
+    "tomography repetition ceiling independently checked"
+  ],
+  "python": "3.11.15",
+  "scope": "Formula transcription and numerical adapter, not full circuit certification"
+}

@@ -1,0 +1,13 @@
+{
+  "two_point_orders": {
+    "random_matching": {
+      "operator_error": 1.0002420424030176,
+      "matrix_error": 1.0002455671142554
+    },
+    "poisson_2d": {
+      "operator_error": 1.0000070373028305,
+      "matrix_error": 1.0000071893360305
+    }
+  },
+  "max_log_reconstruction_diagnostic_over_bound_slack": 0.0009613484452013007
+}

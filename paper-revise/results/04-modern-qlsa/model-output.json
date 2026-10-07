@@ -1,0 +1,23 @@
+{
+  "model_version": "04-v1.0.0",
+  "effective_inverse_gap": 4.0,
+  "original_kappa_2": 3,
+  "n_padded": 2,
+  "epsilon_trace_algorithm": 0.01,
+  "queries_expanded": false,
+  "compiled_T_count": null,
+  "compiled_Clifford_count": null,
+  "depth": null,
+  "t_depth": null,
+  "logical_qubits_peak": null,
+  "qec_ready": false,
+  "benchmark_reconciled": false,
+  "algorithm": "Dalzell v2 Algorithm 4 / Theorem 4 Eq. 133",
+  "theorem_gap_bound": 4.0,
+  "statistic": "upper bound on expectation",
+  "A_queries": 253.91797303088308,
+  "b_queries": 507.83594606176615,
+  "internal_retries_included": true,
+  "output_certificate": "trace distance of ensemble, ideal access",
+  "norm_setup_separable": false
+}

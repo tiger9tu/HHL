@@ -1,0 +1,18 @@
+{
+  "model_version": "clean-modern-qlsa-1.0.0",
+  "generated_utc": "2026-09-25T00:05:25.537997+00:00",
+  "python": "3.11.15",
+  "reference": "https://arxiv.org/pdf/2211.12489v1",
+  "source_sha256": {
+    "modern_qlsa.py": "6a74e674279091081e055604a94ed09c4f3a050acdccba9e2295c8be5875851c",
+    "generate_data.py": "d7aaf0a7bf8714ad56b2315043f41abc7cebf693665a810a29561b96ad6f4952",
+    "README.md": "db70df360c602e988a944c723da390af43252b0b77a27f2761d2d2576050301d",
+    "validate.py": "6c253fb339ec9fd643c10542b1e7e3d036c4deb457164567a82a0bdbe19e3326"
+  },
+  "output_sha256": {
+    "inputs.json": "2d5d580f29ffbd565fd7419c9155ee0a2529da121f2a57ae85ab9d2eb7d3752a",
+    "resources.json": "bfa434c44fdf5c514748a947cf9fb17a4ecad81bc7c110f59e385f31e0c48064",
+    "resources.csv": "6eea1676e8b8f1685d717492bc394b6c67da20b11fddf90bb1cba419dceef1f5"
+  },
+  "count": 2
+}

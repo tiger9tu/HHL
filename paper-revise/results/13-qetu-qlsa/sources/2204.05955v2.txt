@@ -1,0 +1,2282 @@
+Ground-state preparation and energy estimation
+on early fault-tolerant quantum computers
+via quantum eigenvalue transformation of unitary matrices
+Yulong Dong1,4, Lin Lin1,2,3,∗and Yu Tong1
+1Department of Mathematics, University of California, Berkeley, California 94720 USA
+2Applied Mathematics and Computational Research Division,
+Lawrence Berkeley National Laboratory, Berkeley, CA 94720, USA
+3Challenge Institute of Quantum Computation, University
+of California, Berkeley, California 94720 USA and
+4Berkeley Center for Quantum Information and Computation, Berkeley, California 94720 USA
+(Dated: October 19, 2022)
+Under suitable assumptions, the algorithms in [Lin, Tong, Quantum 2020] can estimate the
+ground-state energy and prepare the ground state of a quantum Hamiltonian with near-optimal
+query complexities. However, this is based on a block encoding input model of the Hamiltonian,
+whose implementation is known to require a large resource overhead. We develop a tool called quan-
+tum eigenvalue transformation of unitary matrices with real polynomials (QET-U), which uses a
+controlled Hamiltonian evolution as the input model, a single ancilla qubit and no multi-qubit con-
+trol operations, and is thus suitable for early fault-tolerant quantum devices. This leads to a simple
+quantum algorithm that outperforms all previous algorithms with a comparable circuit structure for
+estimating the ground-state energy. For a class of quantum spin Hamiltonians, we propose a new
+method that exploits certain anti-commutation relations and further removes the need of imple-
+menting the controlled Hamiltonian evolution. Coupled with a Trotter-based approximation of the
+Hamiltonian evolution, the resulting algorithm can be very suitable for early fault-tolerant quantum
+devices. We demonstrate the performance of the algorithm using IBM Qiskit for the transverse ﬁeld
+Ising model. If we are further allowed to use multi-qubit Toﬀoli gates, we can then implement am-
+plitude ampliﬁcation and a new binary amplitude estimation algorithm, which increases the circuit
+depth but decreases the total query complexity. The resulting algorithm saturates the near-optimal
+complexity for ground-state preparation and energy estimating using a constant number of ancilla
+qubits (no more than 3).
+I.
+INTRODUCTION
+Preparing the ground state and estimating the ground-state energy of a quantum Hamiltonian
+have a wide range of applications in condensed matter physics, quantum chemistry, and quantum
+information. To solve such problems, quantum computers promise to deliver a new level of compu-
+tational power that can be signiﬁcantly beyond the boundaries set by classical computers. Despite
+exciting early progress on NISQ devices [63], it is widely believed that most scientiﬁc advances in
+quantum sciences require some version of fault-tolerant quantum computers, which are expected
+to be able to accomplish much more complicated tasks. On the other hand, the fabrication of
+full-scale fault-tolerant quantum computers remains a formidable technical challenge for the fore-
+seeable future, and it is reasonable to expect that early fault-tolerant quantum computers share the
+following characteristics: (1) The number of logical qubits is limited. (2) It can be diﬃcult to ex-
+ecute certain controlled operations (e.g., multi-qubit control gates), whose implementation require
+∗Electronic address: linlin@math.berkeley.edu
+arXiv:2204.05955v2  [quant-ph]  18 Oct 2022
+
+2
+a large number of non-Cliﬀord gates. Besides these, the maximum circuit depth of early-fault-
+tolerant quantum computers, which is determined by the maximum coherence time of the devices,
+may still be limited. Therefore it is still important to reduce the circuit depth, sometimes even at
+the expense of a larger total runtime (via a larger number of repetitions). Quantum algorithms
+tailored for early fault-tolerant quantum computers [4, 10, 13, 41, 44, 77, 80, 85] need to properly
+take these limitations into account, and the resulting algorithmic structure can be diﬀerent from
+those designed for fully fault-tolerant quantum computers.
+To gain access to the quantum Hamiltonian H, a standard input model is the block encoding
+(BE) model, which directly encodes the matrix H (after proper rescaling) as a submatrix block
+of a larger unitary matrix UH [14, 48]. Combined with techniques such as linear combination of
+unitaries (LCU) [7], quantum signal processing [46] or quantum singular value transformation [25],
+one can implement a large class of matrix functions of H on a quantum computer. This leads to
+quantum algorithms for ground-state preparation and ground-state energy estimation with near-
+optimal query complexities to UH [43]. The block encoding technique is also very useful in many
+other tasks such as Hamiltonian simulation, solving linear systems, preparing the Gibbs state, and
+computing Green’s function and the correlation functions [14, 24, 46, 64, 71]. However, the block
+encoding of a quantum Hamiltonian (e.g., a sparse matrix) often involves a relatively large number
+of ancilla qubits, as well as multi-qubit controlled operations that lead to a large number of two-
+qubit gates and long circuit depths [25], and is therefore not suitable in the early fault-tolerant
+setting.
+A widely used alternative approach for accessing the information in H is the time evolution op-
+erator U = exp(−iτH) for some time τ. This input model will be referred to as the Hamiltonian
+evolution (HE) model. While Hamiltonian simulation can be performed using quantum signal pro-
+cessing for sparse Hamiltonians with optimal query complexity [46], such an algorithm queries a
+block encoding of H, which defeats the purpose of employing the HE model. On the other hand,
+when H can be eﬃciently decomposed into a linear combination of Pauli operators, the time evolu-
+tion operator can be eﬃciently implemented using, e.g., the Trotter product formula [17, 45] without
+using any ancilla qubit. This remarkable feature has inspired quantum algorithms for performing a
+variety of tasks using controlled time evolution and one ancilla qubit. A textbook example of such
+an algorithm is the Hadamard test. It uses one ancilla qubit and the controlled Hamiltonian evo-
+lution to estimate the average value Re ⟨ψ|U|ψ⟩, which is encoded by the probability of measuring
+the ancilla qubit with outcome 0 (see Fig. 1 (a)). The number of repeated measurements of this
+procedure is O(ϵ−2), where ϵ is the desired precision. Assume the spectrum of the Hamiltonian H
+is contained in [η, π −η] for some η > 0. If |ψ⟩is the exact ground state of H, we can retrieve the
+eigenvalue as λ = arccos(Re ⟨ψ|U|ψ⟩). By allowing a series of longer simulation times of t = d for
+some integer d, this leads to Kitaev’s algorithm that uses only log ϵ−1 measurements, at the expense
+of increasing the circuit depth to O(ϵ−1) (see Fig. 1 (b)). The total simulation time is therefore
+O(ϵ−1 log ϵ−1), which reaches the Heisenberg limit [26, 27, 86, 87] up to a logarithmic factor.
+When the input state |φ0⟩(prepared by an oracle UI) is diﬀerent from the exact ground state
+of H denoted by |ψ0⟩, there have been multiple quantum algorithms using the circuit of Fig. 1
+(b) or its variant to estimate the ground-state energy [44, 59, 78, 83]. Let γ be a lower bound
+of the initial overlap, i.e., | ⟨φ0|ψ0⟩| ≥γ. It is worth noting that all quantum algorithms with
+provable performance guarantees require a priori knowledge that γ is reasonably large (assuming
+black-box access to the Hamiltonian). Without such an assumption, this problem is QMA-hard
+[2, 36, 37, 58].
+Candidates for such |φ0⟩include the Hartree-Fock state in quantum chemistry
+[39, 73], and quantum states prepared using the variational quantum eigensolver [52, 60, 61]. Some
+techniques can be used to boost the overlap using low-depth circuits [80]. Furthermore, algorithms
+using the circuit of Fig. 1 (b) typically cannot be used to prepare the ground state. With the
+
+3
+time evolution operator as the input, one can use the LCU algorithm to prepare the ground state
+[23, 35], thus reducing the number of ancilla qubits needed to implement the block encoding of the
+Hamiltonian. Note that LCU requires additional ancilla qubits to store the coeﬃcients, and as a
+result cannot be implemented using O(1) qubits.
+(a) Hadamard test, short time evolution
+(b) Hadamard test, long time evolution
+(c) QET-U
+Figure 1. After a proper rescaling, the n-qubit circuit U implements e−iH, and Hadamard test circuit
+(a) estimates Re ⟨ψ|e−iH|ψ⟩.
+Repeating the controlled evolution d times, the circuit (b) estimates the
+average value of a long time evolution Re ⟨ψ|e−idH|ψ⟩. For a very general class of functions f the circuit
+(c) can approximately prepare a normalized quantum state f(H) |ψ⟩/ ∥f(H) |ψ⟩∥with approximate success
+probability p = ∥f(H) |ψ⟩∥2, by interleaving the forward (U) and backward (U †) time evolution with some
+properly chosen X-rotations in the ancilla qubit.
+We will show that both the ground-state preparation and energy estimation can be solved by
+(repeatedly) preparing a quantum state of the form |ψf⟩∝f(H) |φ0⟩, where f is a real polyno-
+mial approximating a shifted sign function. A main technical tool developed in this this paper
+is called quantum eigenvalue transformation of unitary matrices with real polynomials (QET-U),
+which allows us to prepare such a state |ψf⟩by querying U = e−iH, using only one ancilla qubit,
+and does not require any multi-qubit control operation (Theorem 1). The circuit structure (Fig.
+1 (c)) is only slightly diﬀerent from that in Fig 1 (b). The QET-U technique is closely related
+to concepts such as quantum signal processing, quantum eigenvalue transformation, and quantum
+singular value transformation. The relations among these techniques are detailed in Appendix A.
+The information of the function f of interest is stored in the adjustable parameters {ϕi} called
+phase factors. To ﬁnd such parameters, we need to identify a polynomial approximation to the
+shifted sign function, and then evaluate the phase factors corresponding to the approximate poly-
+nomial. Most quantum signal processing (QSP) based applications construct such a polynomial
+approximation analytically, which can sometimes lead to cumbersome expressions and suboptimal
+approximation results. We provide a convex-optimization-based procedure to streamline this pro-
+cess and yield the near-optimal approximation (see Section IV). Both the QET-U technique and
+the convex optimization method can be useful in applications beyond ground-state preparation and
+energy estimation.
+The computational cost will be primarily measured in terms of the query complexity, i.e., how
+many times we need to query U and UI in total, and we will also analyze the additional one- and
+two-qubit gates needed, such as the single qubit rotation gates, and the two-qubit gates needed
+
+4
+to implement the n-qubit reﬂection operator. In our algorithms, the number of additional gates
+has the same scaling as the query complexity, or involves an n factor where n is system size. We
+measure the circuit depth requirement in terms of query depth: the number of times we need to
+query U in one coherent run of the circuit. Note that this term is not to be confused with the
+circuit depth for implementing the oracle U, which we will not consider in this work. This metric
+reﬂects the circuit depth requirement faithfully because in our algorithm, in one coherent run of
+the circuit, the number of queries to UI is also upper bounded by this metric, and the additional
+circuit depth needed for additional gates is upper bounded by this metric up to a factor of O(n).
+Besides the query depth, we also focus on whether multi-qubit control needs to be implemented.
+Algorithms such as amplitude ampliﬁcation and amplitude estimation [11] can be used to reduce
+the total query complexity, but they also need to use (n + 1)-bit Toﬀoli gates (speciﬁcally, n-
+qubit reﬂection operator with respect to the zero state |0n⟩), which can be implemented using
+O(n) two-qubit gates and one ancilla qubit [5]. These operations will be referred to as “low-level”
+multi-qubit control gates. Some other quantum algorithms may require more complex multi-qubit
+control operations as well as more ancilla qubits. For instance, the high-conﬁdence QPE algorithm
+[40, 54, 62] requires a circuit to carry out the arithmetic operation of taking the median of multiple
+energy measurement results, which can require poly(n) two-qubit gates and ancilla qubits. Such
+operations will be referred to as “high-level” multi-qubit control gates.
+To solve the ground-state preparation and energy estimation problem, we propose two diﬀerent
+types of algorithms, with two diﬀerent goals in mind. For the ﬁrst type of algorithms, which we call
+the short query depth algorithms, we only use QET-U to prioritize reducing the quantum resources
+needed. No multi-qubit controlled operation is involved. For the second type of algorithms, which
+we call the near-optimal algorithms, we optimize the total query complexity by using amplitude
+ampliﬁcation and a new binary amplitude estimation algorithm (Lemma 12). Such algorithms only
+use low-level multi-qubit control operations. Both types of algorithms only use a small number of
+ancilla qubits (no more than 2 or 3).
+For ground-state energy estimation, surprisingly, even though the total query complexity of the
+short query depth algorithm does not have the optimal asymptotic scaling, it still outperforms all
+previous algorithms with the same ancilla qubit number constraint [6, 32, 44, 66], in terms of total
+query complexity (see Table I). Most notably, in this setting we achieve a quadratic improvement
+on the γ dependence, from e
+O(γ−4) to e
+O(γ−2) (the notation e
+O(g) means O(g poly log(g)) unless
+otherwise stated). Moreover the circuit depth from the previous state-of-the-art result is preserved
+in our algorithm. Numerical comparison (see Fig. 4) demonstrates that our algorithm outperforms
+QPE, not only in terms of the asymptotic scaling, but also the exact non-asymptotic number of
+queries for moderately small values of γ. Our near-optimal algorithm takes this advantage even
+further, matching the best known query complexity scaling in Ref. [43] (which saturates the query
+complexity lower bound).
+For ground-state preparation, the only other algorithm that can use at most constantly many
+ancilla qubits is the quantum phase estimation algorithm with semi-classical Fourier transform
+[29]. Compared to this algorithm, our short query depth algorithm has an exponentially improved
+precision dependence and a quadratically improved γ dependence, from e
+O(γ−4) to e
+O(γ−2), while
+maintaining the same circuit depth. The near-optimal algorithm further improves the dependence
+to e
+O(γ−1). A comparison of the algorithms for ground-state preparation can be found in Table II.
+We remark that here we consider the case where we know a parameter µ such that λ0 ≤µ −∆/2 <
+µ + ∆/2 ≤λ1, as in Theorem 6. If no such µ is known, we need to ﬁrst estimate the ground-state
+energy to precision O(∆), and the resulting algorithm is discussed in Theorem 13. If the ground-
+state energy is known a priori, then the algorithm in [18] may yield a similar speedup for preparing
+the ground state, but such knowledge is generally not available.
+
+5
+In the above analysis, speciﬁcally in Tables I and II, we compared with algorithms whose com-
+plexity can be rigorously analyzed under the assumptions of a good initial overlap (and spectral gap
+for ground-state preparation). We did not compare with heuristic algorithms such as the variational
+quantum eigensolver [52, 60, 61]. There are also algorithms that are designed with diﬀerent but
+similar goals in mind, such as the quantum algorithmic cooling technique in Ref. [84], which can
+estimate an eigenvalue λj belonging to a given range [λL
+j , λR
+j ] (assuming all other eigenvalues are
+away from this range). Then the total runtime scaling is e
+O(γ−4) where γ is the overlap between
+the initial guess and the target eigenstate [84, Theorem 2]. The same technique can also be used
+to estimate the observable expectation value of the target eigenstate, without coherently preparing
+the target eigenstate.
+For certain Hamiltonians, QET-U can be implemented with the standard Hamiltonian evolution
+rather than the controlled version.
+Note that “control-free” only means that the Hamiltonian
+evolution is not controlled by one or more qubits, but control gates that are independent of the
+Hamiltonian can still be used. In Ref. [33], the control-free setting for an n-qubit time evolution is
+achieved by introducing an n-qubit reference state, on which the time evolution acts trivially. The
+algorithm also requires the implementation of the controlled n-qubit SWAP gate, and therefore has
+a relatively large overhead. There are other control-free algorithms proposed in Refs. [44, 49, 57]
+for energy and phase estimation via the measurement of certain scalar expectation values as the
+output. In particular, such algorithms cannot coherently implement a controlled time evolution
+and are therefore not compatible with the implementation of QET-U. In this paper, we exploit
+certain anti-commutation relations and structures of the Hamiltonian to propose a new control-free
+implementation. In the context of QET-U, the algorithm does not introduce any ancilla qubit and
+requires a small number of two-qubit gates that scales linearly in n. We demonstrate the optimized
+circuit implementation of the transverse ﬁeld Ising model under the control-free setting. To the
+extent of our knowledge, this circuit is signiﬁcantly simpler than all previous QSP-type circuits
+for simulating a physical Hamiltonian. We show the numerical performance of our algorithm for
+estimating the ground energy estimation in the presence of tunable quantum error using IBM Qiskit.
+II.
+QUANTUM EIGENVALUE TRANSFORMATION OF UNITARY MATRICES
+Given the Hamiltonian evolution input model U = e−iH, we ﬁrst demonstrate that by slightly
+modifying the circuit for the Hadamard test in Fig. 1 (b), we can approximately prepare a target
+state |ψf⟩= f(H) |ψ⟩/ ∥f(H) |ψ⟩∥eﬃciently and with controlled accuracy for a large class of real
+functions f. Speciﬁcally, this requires alternately applying the controlled forward time evolution
+operator U, a single qubit X rotation in the ancilla qubit, and the controlled backward time
+evolution operator U † (see Fig. 1 (c)). This circuit does not store the eigenvalues of H either in a
+classical or a quantum register, and the information of the function f of interest is entirely stored
+in the adjustable parameters ϕ0, ϕ1, ϕ2, . . . , ϕd/2. These parameters form a set of symmetric phase
+factors (ϕ0, ϕ1, ϕ2, . . . , ϕ2, ϕ1, ϕ0) ∈Rd+1 used in the circuit Fig. 1 (c). The symmetry of the phase
+factors is the key to attaining the reality of the function f of interest.
+Theorem 1 (QET-U). Let U = e−iH with an n-qubit Hermitian matrix H. For any even real
+polynomial F(x) of degree d satisfying |F(x)| ≤1, ∀x ∈[−1, 1], we can ﬁnd a sequence of symmetric
+phase factors Φz := (ϕ0, ϕ1, · · · , ϕ1, ϕ0) ∈Rd+1, such that the circuit in Fig. 1 (c) denoted by U
+satisﬁes (⟨0| ⊗In)U(|0⟩⊗In) = F
+ cos H
+2
+
+.
+The proof of Theorem 1 is given in Appendix B. It is worth mentioning that the concept of
+“qubitization” [25, 48] appears very straightforwardly in QET-U. Let the matrix function of interest
+
+6
+Query
+Query
+# ancilla
+Need
+Input
+depth
+complexity
+qubits
+MQC? model
+This work (Theorem 4 )
+e
+O(ϵ−1)
+e
+O(ϵ−1γ−2)
+O(1)
+No
+HE
+This work (Theorem 5)
+e
+O(ϵ−1γ−1)
+e
+O(ϵ−1γ−1)
+O(1)
+Low
+HE
+QPE (high conﬁdence) [40,
+54, 62]
+e
+O(ϵ−1)
+e
+O(ϵ−1γ−2)
+O(poly log(γ−1ϵ−1))
+High
+HE
+QPE (semi-classical) [6, 32]
+e
+O(ϵ−1γ−2)
+e
+O(ϵ−1γ−4)
+O(1)
+No
+HE
+QEEA [44, 66]
+e
+O(ϵ−1)
+e
+O(ϵ−4γ−4)
+O(1)
+No
+HE
+GTC19 (Theorem 4) [23]
+e
+O(ϵ−3/2γ−1) e
+O(ϵ−3/2γ−1)
+O(log(ϵ−1))
+High
+HE
+LT20 [43]
+e
+O(ϵ−1γ−1)
+e
+O(ϵ−1γ−1)
+m + O(log(ϵ−1))
+High
+BE
+LT22 [44]
+e
+O(ϵ−1)
+e
+O(ϵ−1γ−4)
+O(1)
+No
+HE
+Table I. Comparison of the performance of quantum algorithms for ground-state energy estimation in
+terms of the query complexity, query depth, number of ancilla qubits, and the level of multi-qubit control
+(abbreviated as “MQC” in the table) operation is needed. γ is the overlap between the initial guess |φ0⟩and
+the ground state, and ϵ is the allowed error. “HE” stands for the Hamiltonian evolution model (assuming
+no ancilla qubits), and “BE” for the block encoding model. The sharper estimate for estimating the ground-
+state energy using the quantum eigenvalue estimation algorithm (QEEA) is given in [44, Appendix C]. We
+assume that Ref. [43] uses m ancilla qubits, and the high-level MQC operation is due to the block encoding
+of H.
+be expressed as f(H) = (f◦g)(cos H
+2 ), where g(x) = 2 arccos(x). Therefore we can ﬁnd a polynomial
+approximation F(x) so that
+sup
+x∈[σmin,σmax]
+|(f ◦g)(x) −F(x)| ≤ϵ.
+(1)
+Here σmin = cos λmax
+2
+, σmax = cos λmin
+2 , respectively (note that cos(x/2) is a monotonically decreas-
+ing function on [0, π]). This ensures that the operator norm error satisﬁes
+∥(⟨0| ⊗In)U(|0⟩⊗In) −f(H)∥≤ϵ.
+The implementation of U = e−iH corresponds to a Hamiltonian simulation problem of H at time
+t = 1. In practice, we can use the Trotter decomposition to obtain an approximate implementation
+of U without ancilla qubits, i.e., we can partition the time interval into r steps with τ = r−1 and
+use a low order Trotter method to implement an approximation to Uτ ≈e−iHτ. Then
+U = e−iH ≈(Uτ)r.
+(2)
+In line with other works in analyzing the performance of quantum algorithms using the HE input
+model [6, 32, 44, 66], in the discussion below, unless otherwise speciﬁed, we assume U is implemented
+exactly, and the errors are due to other sources such as polynomial approximation, the binary
+search process etc. We refer readers to Appendix C for the complexity analysis of QET-U when
+U is implemented using a p-th order Trotter formula, as well as its implication in the ground-state
+energy estimation.
+
+7
+Query
+Query
+# ancilla
+Need
+Input
+depth
+complexity
+qubits
+MQC? model
+This work (Theorem 6)
+e
+O(∆−1)
+e
+O(∆−1γ−2)
+O(1)
+No
+HE
+This work (Theorem 11)
+e
+O(∆−1γ−1) e
+O(∆−1γ−1)
+O(1)
+Low
+HE
+QPE (high conﬁdence) [40,
+54, 62]
+e
+O(∆−1)
+e
+O(∆−1γ−2)
+O(poly log(∆−1γ−1ϵ−1))
+High
+HE
+QPE (semi-classical) [6, 32]
+e
+O(∆−1γ−2) e
+O(∆−1γ−4)
+O(1)
+No
+HE
+GTC19 (Theorem 1) [23]
+e
+O(∆−1γ−1) e
+O(∆−1γ−1) O(log(∆−1) + log log(ϵ−1))
+High
+HE
+LT20 [43]
+e
+O(∆−1γ−1) e
+O(∆−1γ−1)
+m
+High
+BE
+Table II. Comparison of the performance of quantum algorithms for ground-state preparation in terms of the
+query complexity, query depth, number of ancilla qubits, and the level of multi-qubit control (abbreviated
+as “MQC” in the table) operation is needed. γ is the overlap between the initial guess |φ0⟩and the ground
+state, ∆is a lower bound of the spectral gap, and 1−ϵ is the target ﬁdelity. “HE” stands for the Hamiltonian
+evolution model (assuming no ancilla qubits), and “BE” the block encoding model. Here we assume that
+an upper bound of the ground-state energy is known (µ in Theorem 6). The algorithm in Ref. [23] (GTC19
+in the table) requires precise knowledge of the ground-state energy. We assume that Ref. [43] uses m ancilla
+qubits, and the high-level MQC operation is due to the block encoding of H.
+III.
+GROUND-STATE ENERGY ESTIMATION AND GROUND-STATE
+PREPARATION
+In this section we discuss how to estimate the ground-state energy and to prepare the ground
+state within the QET-U framework.
+The setup of the problems is as follows: we assume that
+the Hamiltonian H can be accessed through its time-evolution operator e−iH. The goal is (1) to
+estimate the ground-state energy, and (2) to prepare the ground state. For the ﬁrst task we assume
+that we have access to a good initial guess |φ0⟩of the ground state, i.e., | ⟨φ0|ψ0⟩| ≥γ where |ψ0⟩
+is the ground state. For the second task, we need the additional assumption that the ground-state
+energy λ0 is separated from the rest of the spectrum by a gap ∆. These assumptions are stated
+more formally in the deﬁnitions below.
+Deﬁnition 2 (ground-state energy estimation). Suppose we are given a Hamiltonian H on n qubits
+whose spectrum is contained in [η, π −η] for some η > 0. The Hamiltonian can be accessed through
+a unitary U = e−iH. Also suppose we have an initial guess |φ0⟩of the ground state |ψ0⟩satisfying
+| ⟨φ0|ψ0⟩| ≥γ. This initial guess can be prepared by UI. The oracles U and UI are provided as
+black-box oracles. The goal is to estimate the ground-state energy λ0 to within additive error ϵ.
+Deﬁnition 3 (ground-state preparation). Under the same assumptions as in Deﬁnition 2, and the
+additional assumption that there is a spectral gap at least ∆separating the ground-state energy λ0
+from the rest of the spectrum, the goal is to prepare a quantum state | eψ0⟩such that | ⟨ψ0| eψ0⟩| ≥1−ϵ.
+We will primarily focus on ground-state energy estimation. This is because once we have the
+ground-state energy, preparing the ground state can be done by applying an approximate projection,
+which can be directly performed using QET-U. We will consider two settings: the short query depth
+
+8
+setting and the near-optimal setting. In the ﬁrst setting we prioritize lowering the query depth (and
+hence the circuit depth), and in the second setting we prioritize lowering the query complexity (and
+hence the total runtime). Our results for the two settings are stated in the following theorems:
+Theorem 4 (ground-state energy estimation using QET-U). Under the assumptions stated in
+Deﬁnition 2, we can estimate the ground-state energy to within additive error ϵ, with probability at
+least 1 −ϑ, with the following cost:
+1. e
+O(ϵ−1γ−2 log(ϑ−1)) queries to (controlled-) U and O(γ−2 poly log(ϵ−1ϑ−1)) queries to UI.
+2. One ancilla qubit.
+3. e
+O(ϵ−1γ−2 log(ϑ−1)) additional one-qubit quantum gates.
+4. O(ϵ−1 log(γ−1)) query depth of U.
+Note that here, using the short query depth algorithm, we do not need to use extra two-qubit
+gates beyond what is needed in (controlled-) U.
+Theorem 5 (near-optimal ground-state energy estimation with QET-U and improved binary am-
+plitude estimation). Under the assumptions stated in Deﬁnition 2, we can estimate the ground-state
+energy to within additive error ϵ, with probability at least 1 −ϑ, with the following cost:
+1. e
+O(ϵ−1γ−1 log(ϑ−1)) queries to (controlled-) U and O(γ−1 poly log(ϵ−1ϑ−1)) queries to UI.
+2. Three ancilla qubits.
+3. e
+O(nγ−1 log(ϵ−1ϑ−1) + ϵ−1γ−1 log(ϑ−1)) additional one- and two-qubit quantum gates.
+4. e
+O(ϵ−1γ−1 log(ϑ−1)) query depth of U.
+To the best of our knowledge, this is also the ﬁrst algorithm that can estimate the ground-state
+energy with e
+O(γ−1ϵ−1) query complexity using only a constant number of ancilla qubits.
+We can see from the two theorems stated above that the trade-oﬀbetween the query depth and
+the query complexity, which is also shown in Table I: the short query depth algorithm has a e
+O(γ−2)
+dependence on γ, which is sub-optimal. This is compensated by the fact that the query depth is
+only logarithmic in γ, which can be signiﬁcantly smaller than that required in the near-optimal
+algorithm. Similar trade-oﬀexists for the ground-state preparation algorithms (Theorems 6 and
+11), as shown in Table II.
+We ﬁrst discuss in Section III.1 the quantum algorithms to solve these tasks with short query
+depth. As a side note, when the initial state is indeed an eigenstate of H, Theorem 4 also directly
+gives rise to a new algorithm for performing QPE using QET-U that achieves the Heisenberg-
+limited precision scaling (see Section III.2). Finally, assuming access to (n + 1)-bit Toﬀoli gates,
+Section III.3 describes the quantum algorithms for solving the ground-state preparation and energy
+estimation problems with near-optimal complexity.
+In Sections III.1, III.2, and III.3, we will mostly describe the algorithms to solve these tasks and
+state the results as lemmas and theorems along the way. We believe this can help readers better
+grasp the whole picture. A exception is the proofs of Theorems 4 and 5, which are presented as
+formal proofs.
+
+9
+III.1.
+Algorithms with short query depths
+Let us ﬁrst focus on the ground-state preparation problem. We ﬁrst consider a simple setting in
+which we assume knowledge of a parameter µ such that
+λ0 ≤µ −∆/2 < µ + ∆/2 ≤λ1,
+(3)
+where λ1 is the ﬁrst excited state energy. We need to ﬁnd a polynomial approximation to the shifted
+sign function
+θ(x −µ) =
+(
+1,
+x ≤µ,
+0,
+x > µ,
+and the polynomial should satisfy the requirement in Theorem 1. To this end, given a number
+0 < c < 1, we would like to ﬁnd a real polynomial f(x) satisfying
+|f(x) −c| ≤ϵ,
+∀x ∈[η, µ −∆/2];
+|f(x)| ≤ϵ,
+∀x ∈[µ + ∆/2, π −η].
+(4)
+As will be discussed Section IV, it is preferable to choose c to be slighter smaller than 1 to avoid
+numerical overshooting. Compared to c = 1, this has a negligible eﬀect in practice and does not
+aﬀect the asymptotic scaling of the algorithm. Taking the cosine transformation in Theorem 1 into
+account, we need to ﬁnd a real even polynomial satisfying
+|F(x) −c| ≤ϵ,
+x ∈[σ+, σmax];
+|F(x)| ≤ϵ,
+x ∈[σmin, σ−];
+|F(x)| ≤1,
+x ∈[−1, 1],
+(5)
+where
+σ± = cos µ ∓∆/2
+2
+,
+σmin = cos π −η
+2
+,
+σmax = cos η
+2.
+(6)
+Here we have used the fact that cos(·) is a monotonically decreasing function on [0, π/2].
+To ﬁnd such a polynomial F(x), we may use the result in [47, Corollary 7], which constructs a
+polynomial of degree O(∆−1 log ϵ−1) for c = 1 and any µ ∈[η, π −η]. This algorithm ﬁrst replaces
+the discontinuous shifted sign function by a continuous approximation using error functions (need
+to shift both horizontally and vertically, and symmetrize to get an even polynomial), and then
+truncates a polynomial expansion of the resulting smooth function. The construction is speciﬁc
+to the shifted sign function. Its implementation relies on modiﬁed Bessel functions of the ﬁrst
+kind, which should be carefully treated to ensure numerical stability especially when ∆is small.
+In Section IV, we introduce a simple convex-optimization-based method for generating a near-
+optimal approximation, which does not rely on any analytic computation. The convex optimization
+procedure can be used not only to approximate the shifted sign function, but also to ﬁnd polynomial
+approximations in a wide range of settings. The process of obtaining the phase factors can also be
+streamlined using QSPPACK [21]. The details of this procedure is described in Section IV, and an
+example of the optimal approximate polynomial is given in Fig. 2.
+We can then run the QET-U circuit to apply f(H) = F(cos(H/2)) to an initial guess |φ0⟩. If |φ0⟩
+has a non-zero component in the direction of the ground state |ψ0⟩, then f(H) will preserve this
+component up to a factor c ≈1, but will suppress the orthogonal component by a factor ϵ ≈0, thus
+giving us a quantum state close to the ground state. This procedure does not always succeed due to
+the non-unitary nature of f(H), and consequently we need to repeat it multiple times until we get
+a success. The number of repetitions needed is O(γ−2 log(ϑ−1)) to guarantee a success probability
+of at least 1 −ϑ. The result is summarized in Theorem 6:
+
+10
+Theorem 6 (ground-state preparation using QET-U). Under the same assumptions as in Deﬁni-
+tion 3, with the additional assumption that we have µ satisfying Eq. (3), we can prepare the ground
+state up to ﬁdelity 1 −ϵ, with probability at least 2/3, with the following cost:
+1. e
+O(γ−2∆−1 log(ϵ−1)) queries to (controlled-) U and O(γ−2) queries to UI.
+2. One ancilla qubit.
+3. e
+O(γ−2∆−1 log(ϵ−1)) additional one-qubit quantum gates.
+4. e
+O(∆−1 log(ϵ−1γ−1)) maximal query depth of U.
+Again, using the short query depth algorithm, we do not need to use extra two-qubit gates beyond
+what is needed in (controlled-) U. We can repeat the procedure multiple times to make the success
+probability exponentially close to 1. In this algorithm, to be more precise than the e
+O notation used
+in Theorem 6, we need O(γ−2∆−1 log(γ−1ϵ−1)) queries to U. There is a logarithmic dependence on
+γ−1 because we need to account for subnormalization that comes from post-selecting measurement
+results when analyzing the error. Success of the above procedure is ﬂagged by the measurement
+outcome of the ancilla qubit.
+For ground-state energy estimation, our strategy is to adapt the binary search algorithm in [43,
+Theorem 8] to the current setting. In order to estimate the ground-state energy with increasing
+precision, we need to repeatedly solve a decision problem:
+Deﬁnition 7 (The fuzzy bisection problem). Under the same assumptions as in Deﬁnition 2, we
+are asked to solve the following problem: output 0 when λ0 ≤x −h, and output 1 when λ0 ≥x + h.
+Here the fuzziness is in the fact that when x−h < λ0 < x+h we are allowed to output either 0 or
+1. This is in fact essential for making this problem eﬃciently solvable. Solving the fuzzy bisection
+problem will enable us to ﬁnd the ground-state energy through binary search. We will discuss the
+details in the proof of Theorem 4.
+To solve the fuzzy bisection problem, we need a real even polynomial F(x) satisfying the following:
+c −ϵ′ ≤F(x) ≤c + ϵ′,
+x ∈[cos((x −h)/2), 1]
+|F(x)| ≤ϵ′,
+x ∈[0, cos((x + h)/2)]
+(7)
+For asymptotic analysis, we can use the approximate sign function from [47, Corollary 6], and the
+degree of F(x) is O(h−1 log(ϵ′−1)). With a choice of F(x) that satisﬁes the above requirements, if
+λ0 ≥x + h, then ∥F(cos(H/2)) |φ0⟩∥≤ϵ′; if λ0 ≤x −h, then
+∥F(cos(H/2)) |φ0⟩∥≥∥F(cos(λ0/2)) |φ0⟩∥≥(c −ϵ′)γ.
+Therefore, after choosing ϵ′ = γc/(2(γ + 1)), to solve the fuzzy bisection problem, we only need
+to distinguish between the following two cases:
+∥F(cos(H/2)) |φ0⟩∥≤ϵ′ = γc/(2(γ + 1)) or
+∥F(cos(H/2)) |φ0⟩∥≥(c −ϵ′)γ = (γ + 2)γc/(2(γ + 1)).
+These two cases are well separated,
+because
+(γ + 2)γc
+2(γ + 1) −
+γc
+2(γ + 1) = γc
+2 .
+Hence these two quantities are separated by a gap of order Ω(γ), which enables us to distinguish
+between them using a modiﬁed version of amplitude estimation, as will be discussed later.
+A block
+encoding of F(cos(H/2)) can be constructed using QET-U, which we denote by Uproj:
+(⟨0| ⊗In)Uproj(|0⟩⊗In) = F(cos(H/2)).
+(8)
+
+11
+Because of the estimate of the degree of F(x), Uproj here uses O(h−1 log(γ−1)) queries to U = e−iH.
+All we need to do is to distinguish between the following two cases:
+∥(⟨0| ⊗I)Uproj(I ⊗UI)(|0⟩|0n⟩)∥≤
+γc
+2(γ + 1) or ∥(⟨0| ⊗I)Uproj(I ⊗UI)(|0⟩|0n⟩)∥≥(γ + 2)γc
+2(γ + 1) .
+This problem can be generalized into the following binary amplitude estimation problem:
+Deﬁnition 8 (Binary amplitude estimation). Let W be a unitary acting on two registers (one
+with one qubit and the other with n qubits), with the ﬁrst register indicating success or failure. Let
+A = ∥(⟨0| ⊗In)W(|0⟩|0n⟩)∥be the success amplitude. Given 0 ≤γ1 < γ2, provided that A is either
+smaller than γ1 or greater than γ2, we want to correctly distinguish between the two cases, i.e.
+output 0 for the former and 1 for the latter.
+In the context of the fuzzy bisection problem in Deﬁnition 7, we need to choose W = Uproj(I⊗UI),
+γ1 = γc/(2(γ+1)), γ2 = (γ+2)γc/(2(γ+1)). Note that γ2/γ1 = γ+2 ≥2, and therefore henceforth
+we only consider the case where for some constant c′ we have γ2/γ1 ≥c′.
+Now we can use Monte Carlo sampling to estimate A = ∥(⟨0|⊗In)W(|0⟩|0n⟩)∥. We will estimate
+how many samples are needed to distinguish whether A ≥γ2 or A ≤γ1. We implement W |0⟩|0n⟩
+and measure the ﬁrst qubit, and the output will be a random variable, taking value in {0, 1},
+following the Bernoulli distribution and its expectation value is 1 −A2. We denote p1 = 1 −γ2
+1
+and p2 = 1 −γ2
+2.
+We will generate Ns samples and check whether the average is larger than
+p1/2 = (p1 + p2)/2 (in which case we choose to believe that A ≤γ1), or the average is smaller than
+p1/2 (in which case we choose to believe that A ≥γ2). By the Chernoﬀ–Hoeﬀding Theorem, the
+error probability is upper bounded by
+max
+
+e−D(p1/2||p1)Ns, e−D(p1/2||p2)Ns	
+,
+(9)
+where
+D(x||y) = x log(x/y) + (1 −x) log((1 −x)/(1 −y))
+is the Kullback–Leibler divergence between Bernoulli distributions. Direct calculation, using the
+fact that γ2 ≥c′γ1, shows that D(p1/2||p1), D(p1/2||p2) ≥Ω(γ2
+1). Therefore to ensure that the error
+probability is below ϑ′, we only need to choose Ns such that e−Ω(γ2
+1Ns) ≤ϑ′. Thus we get the
+scaling of Ns = O(γ−2
+1
+log(ϑ′−1)). From the above analysis, we have the following lemma.
+Lemma 9 (Monte Carlo method for solving binary estimation). The binary amplitude estimation
+problem in Deﬁnition 8, with the additional assumption that there exists constant c′ > 0 such that
+γ2/γ1 ≥c′, can be solved correctly with probability at least 1 −ϑ′ by querying W O(γ−2
+1
+log(ϑ′−1))
+times, and this procedure does not require additional ancilla qubits besides the ancilla qubits already
+required in W. The maximal query depth of W is O(1).
+Lemma 9 enables us to solve the fuzzy bisection problem stated in Deﬁnition 7. With the tools
+introduced above, we can now prove Theorem 4.
+Proof of Theorem 4. We solve the ground-state energy estimation problem by performing a binary
+search, and at each search step we need to solve a fuzzy bisection problem, which we know can
+be done from the above discussion. Below we will discuss how the binary search works, i.e., why
+repeatedly solving the fuzzy bisection problem can help us ﬁnd the ground-state energy. For sim-
+plicity of the discussion we set η = π/4 in Deﬁnition 2, i.e., the spectrum of the Hamiltonian is
+
+12
+contained in the interval [π/4, 3π/4]. In each iteration of the binary search we have l and r such
+that l ≤λ0 ≤r. In the ﬁrst iteration we choose l = π/4 and r = 3π/4. With l and r we want to
+solve the following fuzzy bisection problem: output 0 when λ0 ≤(2l + r)/3, and output 1 when
+λ0 ≥(l + 2r)/3. In other words we let x = (l + r)/2 and h = (r −l)/6 in Deﬁnition 7. After solving
+this fuzzy bisection problem, if the output is 0, then we know l ≤λ0 ≤(l + 2r)/3, and therefore we
+can update r to be (l + 2r)/3. Similarly if the output is 1 we can update l to be (2l + r)/3. In this
+way we get a new pair of l and r such that l ≤λ0 ≤r and r −l shrinks by 2/3.
+The values of l and r will converge to λ0 from both sides, and therefore when r −l ≤2ϵ, λ0 will
+be within ϵ distance from (l + r)/2, thus giving us the ground-state energy estimate we want. This
+will take ⌈log3/2(πϵ−1/2)⌉iterations because r −l shrinks by a factor 2/3 in each iteration and the
+initial value is π/2.
+In our context, we need to perform a binary amplitude estimation at each of the O(log(ϵ−1))
+steps to solve the fuzzy bisection problem, and therefore to ensure a ﬁnal success probability of at
+least ϑ we need to choose ϑ′ = Θ(ϑ/ log(ϵ−1)) in Lemma 9. Since γ1 = γc/(2(γ + 1)) = Ω(γ), as
+discussed immediately after we introduced Deﬁnition 8, each time we solve the binary amplitude
+estimation problem we need to use W = Uproj(I ⊗UI) for O(γ−2(log(ϑ−1) + log log(ϵ−1))) times.
+Note that each Uproj requires using U = e−iH for O(h−1 log(γ−1)) times. Adding up for h that
+decreases exponentially until it is of order ϵ, we can get the estimate for the cost of estimating the
+ground-state energy, as stated in Theorem 4.
+III.2.
+Quantum phase estimation revisited
+As an application of the ground-state energy estimation algorithm using QET-U, let us revisit
+the task of performing quantum phase estimation (QPE). Assuming access to a unitary U = e−iH
+and an eigenstate |ψ⟩such that U |ψ⟩= e−iλ |ψ⟩, the goal of the phase estimation is to estimate λ
+to precision ϵ. This can be viewed as the ground-state energy estimation problem with an initial
+overlap γ = 1. Although λ may not be the ground-state energy of H, other eigenvalues of H do
+not matter because the initial state has zero overlap with other eigenstates.
+In order to estimate λ, we can repeatedly solve the fuzzy bisection problem in Deﬁnition 7, and
+this gives us an algorithm that is essentially identical to the one described in the proof of Theorem
+4. As a corollary of Theorem 4, the phase estimation problem can be solved with the following cost
+that achieves the Heisenberg limit:
+Corollary 10 (Phase estimation). Suppose we are given U = e−iH, a quantum state |ψ⟩such that
+U |ψ⟩= e−iλ |ψ⟩, where λ ∈[η, π −η] for some constant η > 0. We can estimate λ to precision ϵ
+with probability at least 1 −ϑ using e
+O(ϵ−1 log(ϑ−1)) applications to (controlled) U and its inverse,
+a single copy of |ψ⟩, and O(ϵ−1(log(ϑ−1) + log log(ϵ−1))) additional one qubit gates.
+It may require some explanation as to why we only need a single copy of |ψ⟩rather than repeatedly
+apply a circuit that prepares |ψ⟩. This is because |ψ⟩is an eigenstate and consequently will be
+preserved up to a phase factor in the circuit depicted in Figure 1 (c). Therefore it can be reused
+throughout the algorithm and there is no need to prepare it more than once.
+III.3.
+Algorithms with near-optimal query complexities
+With a block encoding input model, Theorems 6 and 8 in Ref. [43] are near-optimal algorithms for
+preparing the ground state and for estimating the ground-state energy, respectively. In this section,
+
+13
+we combine QET-U with amplitude ampliﬁcation and a new binary amplitude estimation method to
+yield quantum algorithms with the same near-optimal query complexities. For amplitude estimation
+we avoid using quantum Fourier transform as it would require an additional register of qubits.
+Instead we use a procedure described in Appendix D based on QET-U. Unlike previous near-term
+methods for amplitude estimation [78, 79] that typically rely on Bayesian inference techniques, and
+thus require knowledge of a prior distribution, our method does not require such prior knowledge.
+One could also adapt the QFT-free approximate counting algorithms in [1, 82] to the amplitude
+estimation problem, but our approach in Appendix D is better tailored for the QET-U framework.
+We need to use amplitude ampliﬁcation to quadratically improve the γ dependence in Theorem
+6, and to achieve the near-optimal query complexity for preparing the ground state in Deﬁnition
+3 (assuming knowledge of µ). Let us ﬁrst study the number of ancilla qubits needed for this task.
+For amplitude ampliﬁcation we need to construct a reﬂection operator around the initial guess
+|φ0⟩.
+This requires implementing 2 |0n⟩⟨0n| −I, which is equivalent, using phase kickback, to
+implementing an (n + 1)-bit Toﬀoli gate:
+|1n⟩⟨1n| ⊗σx + (I −|1n⟩⟨1n|) ⊗I.
+This (n + 1)-bit Toﬀoli gate can be implemented using O(n) elementary one- or two-qubit gates,
+on n + 2 qubits [5, Corollary 7.4]. Note that this can be a relatively costly operation on early
+fault-tolerant quantum devices. We need two ancilla qubits to implement the reﬂection operator,
+but one of them can be reused for other purposes. The reason is as follows: one ancilla qubit is the
+one that σx acts on conditionally in the (n + 1)-bit Toﬀoli gate. This one cannot be reused because
+it needs to start from |0⟩and will be returned to |0⟩. The other qubit, however, can start from any
+state and will be returned to the original state, as discussed in [5, Corollary 7.4], and therefore we
+can use any qubit in the circuit for this task, except for the n + 1 qubits already involved in the
+(n + 1)-bit Toﬀoli gate. Note in Theorem 6 we have one ancilla qubit that is used for QET-U. This
+qubit can therefore serve as the ancilla qubit needed in implementing the (n + 1)-bit Toﬀoli gate.
+Thus we only need two ancilla qubits in the whole procedure.
+To summarize the cost, we have the following theorem:
+Theorem 11 (near-optimal ground-state preparation with QET-U and amplitude ampliﬁcation).
+Under the same assumptions as in Deﬁnition 3, with the additional assumption that we have µ
+satisfying (3), we can prepare the ground state, with probability 2/3, up to ﬁdelity 1 −ϵ with the
+following cost:
+1. e
+O(γ−1∆−1 log(ϵ−1)) queries to (controlled-) U and O(γ−1) queries to UI.
+2. Two ancilla qubits.
+3. e
+O(nγ−1∆−1 log(ϵ−1)) additional one- and two-qubit quantum gates.
+4. e
+O(γ−1∆−1 log(ϵ−1)) query depth for U.
+Note that we can repeat this procedure multiple times to make the success probability exponen-
+tially close to 1.
+For ground-state energy estimation, in the algorithm described in the proof of Theorem 4, our
+short query depth algorithm has a e
+O(γ−2) scaling because of the Monte Carlo sampling in the
+binary amplitude estimation (Deﬁnition 8) procedure. Here we will improve the scaling to e
+O(γ−1)
+using the technique developed in [43, Lemma 7].
+The technique in [43, Lemma 7] uses phase
+estimation, and requires O(log((γ2 −γ1)−1)) = O(log(γ−1)) ancilla qubits. In Appendix D, we
+
+14
+propose a method to solve the binary amplitude estimation problem using QET-U, which reduces
+the number of additional ancilla qubits down from O(log(γ−1)) to two. The result is summarized
+here:
+Lemma 12 (Binary amplitude estimation). The binary amplitude estimation problem in Deﬁni-
+tion 8 can be solved correctly with probability at least 1−ϑ′ by querying W O((γ2 −γ1)−1 log(ϑ′−1))
+times, and this procedure requires one additional ancilla qubit (besides the ancilla qubits already
+required in W).
+The key idea is to treat the walk operator in amplitude estimation as a time evolution operator
+corresponding to a Hamiltonian, and this allows us to apply QET-U to extract information about
+that Hamiltonian.
+As a result of this new method to solve the binary amplitude estimation problem, the ground-
+state energy estimation problem can now be solved using only three ancilla qubits: one for QET-U,
+and two others for binary amplitude estimation.
+With these results we can now analyze the cost of ground-state energy estimation in the near-
+optimal setting, and thereby prove Theorem 5.
+Proof of Theorem 5. We adopt the same strategy of performing a binary search to locate the ground-
+state energy, as used in Theorem 4. The main diﬀerence is that instead of using Monte Carlo
+sampling to solve the binary amplitude estimation problem, we now use QET-U to do so, with the
+complexity stated in Lemma 12.
+We now count how many times we need to query U = e−iH in this approach. Each time we
+perform binary amplitude estimation, we need to use Uproj for O(γ−1 log(ϑ′−1)) times to have at
+least 1 −ϑ′ success probability each time. We need to perform binary amplitude estimation for
+each step of the binary search, and there are in total O(log(ϵ−1)) steps. Therefore to ensure a ﬁnal
+success probability of at least 1 −ϑ we need to choose ϑ′ = Θ(ϑ/ log(ϵ−1)). At the k-th binary
+search step, Uproj uses U = e−iH for O((3/2)k log(γ−1)) times. Therefore in total we need to query
+U, up to a constant factor
+⌈log3/2(πϵ−1/2)⌉
+X
+k=0
+(3/2)k log(γ−1)γ−1 log(ϑ′−1) = O
+
+ϵ−1γ−1 log(γ−1)
+ log(ϑ−1) + log log(ϵ−1)
+
+times. This query complexity agrees with that in [43, Theorem 8] up to a logarithmic factor.
+When we count the number of additional quantum gates needed, there will be an n dependence,
+which comes from the fact that we need to implement a reﬂection operator 2 |0n+1⟩⟨0n+1| −I
+each time we implement Uproj in the binary amplitude estimation procedure (see Appendix D).
+These reﬂection operators require e
+O(nγ−1 log(ϵ−1ϑ−1)) gates. We also need O(ϵ−1γ−1 log(ϑ−1))
+additional quantum gates that come from implementing QET-U. Combining the two numbers we
+get the number of gates as shown in the theorem.
+When preparing the ground state, the parameter µ in Theorem 11 is generally not known a
+priori. For exactly solvable models or small quantum systems, despite the ability to simulate them
+classically, one might still want to prepare the ground state, and in such cases µ is available. In the
+general case, to prepare the ground state without knowing a parameter µ as in Theorem 11, we can
+ﬁrst estimate the ground-state energy to within additive error O(∆), and then run the algorithm
+in Theorem 11. This results in an algorithm with the following costs:
+Theorem 13. Under the assumptions stated in Deﬁnition 3, we can prepare the ground state to
+ﬁdelity at least 1 −ϵ, with probability at least 1 −ϑ, with the following cost:
+
+15
+1. e
+O(∆−1γ−1 poly log(ϵ−1ϑ−1)) queries to (controlled-) U and O(γ−1 poly log(∆−1ϵ−1ϑ−1))
+queries to UI.
+2. Three ancilla qubits.
+3. e
+O(nγ−1 log(∆−1ϵ−1ϑ−1)+∆−1γ−1 log(ϵ−1ϑ−1)) additional one- and two-qubit quantum gates.
+4. e
+O(∆−1γ−1 poly log(ϵ−1ϑ−1)) query depth of U.
+IV.
+CONVEX-OPTIMIZATION-BASED METHOD FOR CONSTRUCTING
+APPROXIMATING POLYNOMIALS
+To approximate an even target function using an even polynomial of degree d, we can express
+the target polynomial as the linear combination of Chebyshev polynomials with some unknown
+coeﬃcients {ck}:
+F(x) =
+d/2
+X
+k=0
+T2k(x)ck.
+(10)
+To formulate this as a discrete optimization problem, we ﬁrst discretize [−1, 1] using M grid points
+(e.g., roots of Chebyshev polynomials {xj = −cos
+jπ
+M−1}M−1
+j=0 ).
+One can also restrict them to
+[0, 1] due to symmetry). We deﬁne the coeﬃcient matrix, Ajk = T2k(xj),
+k = 0, . . . , d/2. Then
+the coeﬃcients for approximating the shifted sign function can be found by solving the following
+optimization problem
+min
+{ck}
+max
+
+max
+xj∈[σmax,σ+] |F(xj) −c| ,
+max
+xj∈[σmin,σ−] |F(xj)|
+
+s.t.
+F(xj) =
+X
+k
+Ajkck,
+|F(xj)| ≤c,
+∀j = 0, . . . , M −1.
+(11)
+This is a convex optimization problem and can be solved using software packages such as CVX [28].
+The norm constraint |F(x)| ≤1 is relaxed to |F(xj)| ≤c to take into account that the constraint
+can only be imposed on the sampled points, and the values of |F(x)| may slightly overshoot on
+[−1, 1]\{xj}M−1
+j=0 . The eﬀect of this relaxation is negligible in practice and we can choose c to be
+suﬃciently close to 1 (for instance, c can be 0.999). Since Eq. (11) approximately solves a min-max
+problem, it achieves the near-optimal solution (in the sense of the L∞norm) by deﬁnition both in
+the asymptotic and pre-asymptotic regimes.
+Once the polynomial F(x) is given, the Chebyshev coeﬃcients can be used as the input to ﬁnd
+the symmetric phase factors using an optimization-based method. Due to the parity constraint, the
+number of degrees of freedom in the target polynomial F(x) is ed := ⌈d+1
+2 ⌉. Hence F(x) is entirely
+determined by its values on ed distinct points. We may choose these points to be xk = cos
+
+2k−1
+4 e
+d π
+
+,
+k = 1, ..., ed, which are the positive nodes of the Chebyshev polynomial T2 e
+d(x).
+The problem
+of ﬁnding the symmetric phase factors can be equivalently solved via the following optimization
+problem
+Φ∗=
+arg min
+Φ∈[−π,π)d+1,
+symmetric.
+F(Φ), F(Φ) := 1
+ed
+e
+d
+X
+k=1
+|g(xk, Φ) −F(xk)|2 ,
+(12)
+
+16
+where
+g(x, Φ) := Re[⟨0|eiφ0Zei arccos(x)Xeiφ1Zei arccos(x)X · · · eiφd−1Zei arccos(x)XeiφdZ|0⟩].
+The desired phase factor achieves the global minimum of the cost function with F(Φ∗) = 0. It has
+been found that a quasi-Newton method to solve Eq. (12) with a particular symmetric initial guess
+Φ0 = (π/4, 0, 0, . . . , 0, 0, π/4),
+(13)
+can robustly ﬁnd the symmetric phase factors. Although the optimization problem is highly non-
+linear, the success of the optimization based algorithm can be explained in terms of the strongly
+convex energy landscape near Φ0 [81]. Numerical results indicate that on a laptop computer, CVX
+can ﬁnd the near-optimal polynomials for d ∼5000. Given the target polynomial, the optimization
+based algorithm can ﬁnd phase factors for d ∼10000 [21]. This should be more than suﬃcient
+for most QSP-based applications on early fault-tolerant quantum computers. The streamlined pro-
+cess of ﬁnding near-optimal polynomials and the associated phase factors has been implemented in
+QSPPACK [55].
+As an illustrative example of the numerically optimized min-max polynomials, we set η =
+0.1, µ = 1.0, ∆= 0.4, M = 400, c = 0.999. This corresponds to σmin = 0.0500, σ−= 0.8253, σ+ =
+0.9211, σmax = 0.9997. The resulting polynomial and the pointwise errors with d = 20 and d = 80
+are shown in Fig. 2. We remark that the polynomial has been reconstructed using the numerically
+optimized phase factors using QSPPACK, and hence has taken the error in the entire process into ac-
+count. We ﬁnd that the pointwise error of the polynomial approximation satisﬁes the equioscillation
+property on each of the intervals [σmin, σ−],[σ+, σmax]. This resembles the Chebyshev equioscilla-
+tion theorem of the best polynomial approximation on a single interval (see e.g. [72, Chapter 10]).
+Fig. 3 shows that the maximum pointwise error on the desired intervals converges exponentially
+with the increase of the polynomial degree.
+More generally, to ﬁnd a min-max polynomial approximation to a general even target function
+h(x) on a set I ⊆[−1, 1] satisfying |h(x)| ≤c < 1, x ∈I we may solve the optimization problem
+min
+{ck}
+max
+xj∈I |F(xj) −h(xj)|
+s.t.
+F(xj) =
+X
+k
+Ajkck,
+|F(xj)| ≤c,
+∀j = 0, . . . , M −1.
+(14)
+We also remark that even though QET-U only concerns even polynomials, the same strategy can
+be applied if the target function h is odd, or does not have a deﬁnite parity.
+V.
+NUMERICAL COMPARISON WITH QPE FOR GROUND-STATE ENERGY
+ESTIMATION
+In this section we compare the numerical performance of our ground-state energy estimation
+algorithm in Theorem 4 with the quantum phase estimation algorithm implemented using semi-
+classical Fourier transform [29] to save the number of ancilla qubits, as done in Refs. [6, 32]. We will
+evaluate how many queries to U = e−iH are needed in both algorithms to reach the target accuracy
+ϵ ≤10−3. The Hamiltonian H used here has a randomly generated spectrum and is a 200 × 200
+matrix. The initial state |φ0⟩is guaranteed to satisfy | ⟨φ0|ψ0⟩| ≥γ with a tunable value of γ. In
+our algorithm, the number of queries is counted by adding up the degrees of all the polynomials we
+need to implement using QET-U.
+
+17
+(a)
+(b)
+(c)
+(d)
+Figure 2. The polynomial obtained by convex optimization approximating the shifted sign function and
+the pointwise error on [σmin, σ−] ∪[σ+, σmax] with d = 20 (a,b) and d = 80 (c,d).
+Fig. 4 shows that to achieve comparable accuracy, our algorithm uses signiﬁcantly fewer queries
+than quantum phase estimation, in terms of both the asymptotic scaling (improves from γ−4 to
+γ−2) as well as the actual number of queries for moderately small values of γ. In Fig. 4, the error
+of our method is computed by running the algorithm in Theorem 4 on a classical computer and
+comparing the output with the exact ground-state energy, and we show in the ﬁgure that the mean
+of the absolute error in multiple trials. In our method we need to determine the polynomial degree
+needed for each binary search step (or each time we solve the fuzzy bisection problem in Deﬁnition
+7). This polynomial degree is determined by running the algorithm in Section IV, and selecting the
+smallest degree that provides an error below the target accuracy. In our numerical tests we require
+the approximation error to be below 10−3 so that it is much smaller than the squared overlap. The
+error of QPE is computed by sampling from the exact energy measurement output distribution,
+which is again simulated on a classical computer, and comparing the output with the exact ground-
+state energy. We also compute the absolute error for QPE in multiple trials and take the mean in
+Figure 4. The mean absolute errors in Fig. 4 (b) show that the advantage of our algorithm does
+not come from a loose error estimate for QPE, since our algorithm reaches the target precision
+(ϵ = 5 × 10−4 in this case) consistently and QPE does not achieve a higher precision than our
+algorithm.
+
+18
+Figure 3. Exponential convergence of the maximum pointwise error on [σmin, σ−] ∪[σ+, σmax] with respect
+to the increase of the polynomial degree obtained by the convex optimization method.
+(a)
+(b)
+Figure 4. Comparing the performance of the algorithm in Theorem 4 and the single-ancilla qubit quantum
+phase estimation using semi-classical Fourier transform [6, 29, 32]. (a) The number of queries of U needed
+to reach target precision ϵ = 5 × 10−4, 10−3, 2 × 10−3 for diﬀerent values of γ. The gray dashed line and
+dotted line show γ−4 scaling and γ−2 scaling respectively. Both axes are in logarithmic scale. (b) The mean
+absolute error achieved by the two algorithms for target accuracy ϵ = 5 × 10−4.
+VI.
+CONTROL-FREE IMPLEMENTATION OF QUANTUM SPIN MODELS
+In this section we demonstrate that for certain quantum spin models, the QET-U circuit can
+be simpliﬁed without the need of accessing the controlled Hamiltonian evolution.
+Consider a
+Hamiltonian H that is a linear combination of poly(n) terms of Pauli operators. Note that two
+Pauli operators either commute or anti-commute. Hence for each term in the Hamiltonian, we can
+easily ﬁnd another Pauli operator K that anti-commutes with this term. More generally, we assume
+
+19
+that H admits a grouping
+H =
+ℓ
+X
+j=1
+H(j),
+H(j) =
+dj
+X
+s=1
+h(j)
+s ,
+(15)
+where each h(j)
+s
+is a weighted Pauli operator. For each j, we assume that there exists a single Pauli
+operator Kj which anti-commutes with H(j), i.e., KjH(j)Kj = −H(j). The number of groups ℓ
+is poly(n) in the worst case, but for many Hamiltonians in practice, ℓmay be much smaller. For
+example, it may be upper bounded by a constant (see examples below).
+Conjugating the Pauli string on the time evolution operator ﬂips the sign of the evolution time,
+i.e., Kje−iτH(j)Kj = eiτH(j). Since the time evolution of each Hamiltonian component is the build-
+ing block of the Trotter splitting algorithm, the time ﬂipping gives a simple implementation of the
+controlled time evolution without controlling the Hamiltonian components or their time evolution.
+To implement the controlled time evolution, it suﬃces to conjugate the circuit implementing the
+time evolution with the corresponding controlled Pauli string. Suppose Wj(τ) ≈Uj(τ) := e−iτH(j)
+is the quantum circuit approximately implementing the time evolution using Trotter splitting.
+Then, KjWj(τ)Kj = Wj(−τ) approximates the reversed time evolution using the same splitting
+algorithm. This allows us to use Corollary 17 (see Appendix B) which simpliﬁes the circuit imple-
+mentation of QET-U.
+To illustrate the control-free implementation, let us consider the transverse ﬁeld Ising model
+(TFIM) for instance, whose Hamiltonian takes the form
+HTFIM = −
+n−1
+X
+j=1
+ZjZj+1
+|
+{z
+}
+H(1)
+TFIM
+−g
+n
+X
+j=1
+Xj
+|
+{z
+}
+H(2)
+TFIM
+.
+(16)
+Here g > 0 is the coupling constant. Note that a Pauli string
+K := Y1 ⊗Z2 ⊗Y3 ⊗Z4 ⊗· · ·
+(17)
+anti-commutes with both components of the Hamiltonian, namely KH(j)
+TFIMK = −H(j)
+TFIM for j = 1
+and 2. Therefore, conjugating the Pauli string K on the time evolution operator ﬂips the sign of
+the evolution time, i.e., Ke−iτH(j)
+TFIMK = eiτH(j)
+TFIM for j = 1 and 2. In the sense of Eq. (15), we
+have ℓ= 1. As a consequence, for TFIM, Fig. 1(c) is equivalent to the circuit in Fig. 5 in which
+the controlled time evolution is implicitly implemented by inserting controlled Pauli strings.
+It should be noted that the controlled Pauli string only requires implementing controlled single-
+qubit gates, rather than the controlled two-qubit gates of the form e−iτZjZj+1 (note that the Hamil-
+tonian involves two qubit terms of the form ZjZj+1). If the quantum circuit conceptually queries
+the controlled time evolution d times, the simpliﬁed circuit only inserts 2d controlled Pauli strings
+in the circuit. In this case, when implementing W( 1
+2) using several Trotter steps, the controlled
+Pauli strings only need to be inserted before and after each W( 1
+2), but not between the Trotter
+layers. This simpliﬁed implementation gives the quantum circuit in Fig. 5(b). Note that in the
+general case where controlled Pauli strings are inserted in between Trotter layers, the number of
+controlled Pauli strings required for the implementation is O(dℓr) where r is the number of Trotter
+steps to implement each time evolution operator. The simpliﬁed quantum circuit in Fig. 5(b) only
+uses 2d controlled Pauli strings. Therefore, this simpliﬁed implementation signiﬁcantly reduces the
+cost when the number of Trotter step r is large.
+
+20
+(a)
+(b)
+Figure 5. Simpliﬁed quantum circuit for simulating the TFIM Hamiltonian using QET-U. (a) Controlled
+time evolution of the TFIM Hamiltonian without directly controlling the Hamiltonian. (b) Simpliﬁed circuit
+for implementing QET-U. The evolution operator W
+ −1
+2
+
+can also be implemented as W
+  1
+2
+
+conjugated
+by Pauli X operators (see Fig. 7).
+In contrast to TFIM in which all Hamiltonian components share the same anti-commuting Pauli
+string, the control-free implementation of general spin Hamiltonian may require more Pauli strings.
+For example, the Hamiltonian of the Heisenberg model takes the form
+HHeisenberg = −
+n−1
+X
+j=1
+JxXjXj+1 −
+n−1
+X
+j=1
+JyYjYj+1
+|
+{z
+}
+H(1)
+Heisenberg
+−
+n−1
+X
+j=1
+JzZjZj+1
+|
+{z
+}
+H(2)
+Heisenberg
+.
+Let us consider two Pauli strings K1 = Z1⊗I2⊗Z3⊗I4⊗· · · and K2 = X1⊗I2⊗X3⊗I4⊗· · · . Then,
+we have the anti-commutation relations K1H(1)
+HeisenbergK1 = −H(1)
+Heisenberg and K2H(2)
+HeisenbergK2 =
+−H(2)
+Heisenberg. Therefore, conjugating each basic time evolution e−iτH(j)
+Heisenberg j = 1, 2 by controlled
+K1 or K2 respectively, we can implement the controlled time evolution without directly controlling
+Hamiltonians or the corresponding time evolution operators. This corresponds to ℓ= 2 in Eq. (15).
+Unlike the implementation for the TFIM, the controlled Pauli strings cannot be canceled between
+each Trotter layer. Therefore, simulating a Heisenberg model requires additional controlled Pauli
+gates compared to that in the TFIM simulation.
+Other types of quantum Hamiltonians may also be mapped to spin Hamiltonians to perform
+control-free time evolution using the anti-commutation relation. Consider the 1D Fermi-Hubbard
+model of interacting fermions in a lattice:
+HFH = −µ
+n
+X
+j=1
+X
+σ∈{↑,↓}
+c†
+j,σcj,σ + u
+n
+X
+j=1
+c†
+j,↑cj,↑c†
+j,↓cj,↓−t
+n−1
+X
+j=1
+X
+σ∈{↑,↓}
+
+c†
+j,σcj+1,σ + c†
+j+1,σcj,σ
+
+where c†
+j,σ and cj,σ (σ ∈{↑, ↓} = {0, 1}) are creation and annihilation operators for diﬀerent
+fermionic mode, µ is the chemical potential, u is the on-site Coulomb repulsion energy, and t is
+the hopping energy. The equivalent spin Hamiltonian can be derived by applying Jordan-Wigner
+
+21
+transformation (see e.g., [65]), which gives (up to a global constant)
+HFH,qubits = 1
+2
+1
+2u −µ
+
+n
+X
+j=1
+X
+σ∈{0,1}
+Zj,σ
+|
+{z
+}
+H(1)
+FH,qubits
++ 1
+4u
+n
+X
+j=1
+Zj,0Zj,1
+|
+{z
+}
+H(2)
+FH,qubits
+−t
+n−1
+X
+j=1
+X
+σ∈{0,1}
+ Σ+
+j,σΣ−
+j+1,σ + Σ+
+j+1,σΣ−
+j,σ
+
+|
+{z
+}
+H(3)
+FH,qubits
+where the subscript (j, σ) stands for the j-th qubit on the σ-th chain, and Σ±
+j,σ := Xj,σ ±
+iYj,σ. Let K1 = ⊗j,σXj,σ, K2 =
+ ⊗n
+j=1Xj,0
+
+⊗
+ ⊗n
+j=1Ij,1
+
+, and K3 = (⊗j=even(Zj,0 ⊗Zj,1)) ⊗
+(⊗j=odd(Ij,0 ⊗Ij,1)) be three Pauli strings.
+Then, we have the anti-commutation relations
+KjH(j)
+FH,qubitsKj = −H(j)
+FH,qubits for j = 1, 2, 3. Thus, controlling the time evolution of the spin-1/2
+Fermi-Hubbard model can be implemented by controlling these Pauli strings. The construction
+above can also be generalized to 2D Fermi-Hubbard models. Note that direct Trotterization of the
+2D Fermi-Hubbard model following the Jordan-Wigner transformation leads to non-optimal com-
+plexities, and the complexity can be improved via a fermionic swap networks [38]. The control-free
+implementation of these more complex instances will be our future work.
+For the simplicity of implementation, the energy estimation can be derived from the measurement
+frequencies of bit-strings using the standard variational quantum eigensolver (VQE) algorithm
+(see e.g., [52]). We state the algorithm for deriving energy estimation from measurement results
+in Appendix E for completeness.
+Using the control-free implementation and VQE-type energy
+estimation, the implementation of the ground-state preparation using QET-U can be carried out
+eﬃciently on quantum hardware.
+VII.
+NUMERICAL RESULTS FOR TFIM
+Despite the potentially wide range of applications of quantum signal processing (QSP) and quan-
+tum singular value transformation (QSVT), their implementation has been limited by the large
+resource overhead needed to implement the block encoding of the input matrix. To our knowledge,
+QSP based quantum simulation has only been implemented for matrices encoded by random cir-
+cuits [19, 20, 22]. Using the QET-U and the control-free implementation in the previous section,
+we show that the short depth version of our algorithm for ground-state preparation and energy
+estimation can be readily implemented for certain physical Hamiltonians. Our implementation has
+a very small overhead compared to the Trotter based Hamiltonian simulation, and the circuit uses
+only one- and two-qubit gate operations. We demonstrate this for the TFIM via IBM Qiskit, and the
+source code is available in the Github repository [56].
+To demonstrate the algorithm, we prepare
+the ground state of the Ising model with a varying number of qubits n, and coupling strength is
+set to g = 4. In the quantum circuit, we set the initial state to |0⟩|ψin⟩where |ψin⟩= |0n⟩and
+the additional one qubit is the ancilla qubit on which X rotations are applied. To simplify the
+numerical test, we compute the value of µ and ∆by explicitly diagonalizing the Hamiltonian. For
+each Hamiltonian evolution U in the QET-U circuit, the number of Trotter steps is set to r = 3.
+We list system-dependent parameters and the initial overlap γ = |⟨ψin|ψ0⟩| for diﬀerent numbers
+of system qubits n in Table III. According to the analysis in Section VI, it is suﬃcient to measure
+two quantum circuits to estimate the ground-state energy of the TFIM. Each quantum circuit in
+the numerical experiment is measured with 105 measurement shots, and we independently repeat
+the numerical test 30 times to estimate the statistical ﬂuctuation. To emulate the noisy quantum
+operation, we add a depolarizing error channel to each gate operation in the quantum circuit where
+
+22
+10
+20
+degree d
+8
+7
+6
+5
+ground energy Egrd
+n_qubits = 2
+10
+20
+degree d
+15.0
+12.5
+10.0
+7.5
+5.0
+ground energy Egrd
+n_qubits = 4
+0
+20
+degree d
+25
+20
+15
+10
+5
+ground energy Egrd
+n_qubits = 6
+0
+25
+50
+degree d
+30
+20
+10
+0
+ground energy Egrd
+n_qubits = 8
+10
+20
+degree d
+10
+3
+10
+1
+|Egrd
+Eexact
+grd
+|
+10
+20
+degree d
+10
+2
+100
+|Egrd
+Eexact
+grd
+|
+0
+20
+degree d
+10
+1
+100
+101
+|Egrd
+Eexact
+grd
+|
+0
+25
+50
+degree d
+10
+2
+10
+1
+100
+101
+|Egrd
+Eexact
+grd
+|
+rdplz = 10
+2
+rdplz = 10
+3
+rdplz = 10
+4
+rdplz = 10
+5
+noiseless
+exact
+Figure 6.
+Estimating the ground-state energy of the TFIM model using QET-U. Each marker labels
+the data simulated with a given depolarizing error rate rdplz. The dashed line is the exact ground-state
+energy Eexact
+grd
+of the spin system.
+The (red) right triangles denote the data computed from the best
+polynomial approximation by the convex optimization solver, which only include the approximation error
+and are independent of quantum noise. The error bar stands for the standard deviation estimated from 30
+repetitions.
+the error of single-qubit gate operation and that of the two-qubit gate operation are set to rdplz
+10
+and rdplz respectively. Assuming the digital error model (DEM), the total eﬀect of the noise can
+be written as
+ϱexp = αDEMϱexact + (1 −αDEM)E(ϱinput),
+and the noise channel E(ϱinput) can be modeled as a global depolarized error channel [9] with circuit
+ﬁdelity αDEM. Given n and d, the number of single- and two-qubit gates involved in the quantum
+circuit are
+ng,1 = d(nr + 1) + 1
+and
+ng,2 = d ((n −1)r + 2n) .
+(18)
+Therefore, the circuit ﬁdelity can be modeled as
+αDEM =
+
+1 −rdplz
+10
+ng,1
+(1 −rdplz)ng,2 .
+The numerical result is presented in Fig. 6. The convergence of the noiseless data to the exact
+ground-state energy suggests that the energy can be computed accurately when d is modest (10 ∼
+30). The statistical ﬂuctuation, quantiﬁed by the standard deviation derived from 30 repetitions,
+is on the order of 10−2 and is not visible in the top panels. When simulating in the presence of the
+depolarizing noise, numerical results suggest that accurate estimation of the energy requires rdplz
+to be 10−4 or less. This requirement is beyond the noise level that can achieved by current NISQ
+devices. Therefore we expect that QET-U based algorithms are more suited for early fault-tolerant
+
+23
+quantum devices.
+For TFIM, the spectral gap ∆decreases as the number of qubits increases.
+Therefore the degree of the polynomial also needs to be increased to approximate the shifted sign
+function and to prepare the ground state to a ﬁxed precision (see Fig. 6).
+VIII.
+CONCLUSION
+In this work, we develop algorithms for preparing the ground state and for estimating the ground-
+state energy of a quantum Hamiltonian suitable on early fault-tolerant quantum computers. The
+early fault-tolerant setting limits the number of qubits, the circuit depth, and the type of multi-
+qubit control operations that can be employed. While block encoding is an elegant technique for
+abstractly encoding the information of an input Hamiltonian, existing block encoding strategies
+(such as those for s-sparse matrices [16, 25]) can lead to a large resource overhead and cannot meet
+the stringent requirements of early fault-tolerant devices. The resource overhead for approximately
+implementing a Hamiltonian evolution input model is much lower, and can be a suitable starting
+point for constructing more complex quantum algorithms.
+Many computational tasks can be expressed in the form of applying a matrix function f(H)
+to a quantum state |ψ⟩. We develop a tool called quantum eigenvalue transformation of unitary
+matrices with real polynomials (QET-U), which performs this task using the controlled Hamiltonian
+evolution as the input model (similar to that in quantum phase estimation), only one ancilla qubit
+and no multi-qubit control operations. Combined with a fuzzy bisection procedure, the total query
+complexity of the resulting algorithm to estimate the ground-state energy scales as e
+O(ϵ−1γ−2),
+which saturates the Heisenberg limit with target precision ϵ. The scaling with the initial overlap γ
+is not optimal, but this result already outperforms all previous quantum algorithms for estimating
+the ground-state energy using a comparable circuit structure (see Table I).
+The QET-U technique, and the new convex-optimization-based technique for streamlining the
+process of ﬁnding phase factors, could readily be useful in many other contexts, such as preparing
+the Gibbs state.
+It is worth mentioning that other than using shifted sign functions, one can
+also use the exponential function e−β(H−µI) (the same as that needed for preparing Gibbs states,
+with an appropriate choice of β, µ) to approximately prepare the ground state. This gives rise
+to the imaginary time evolution method. Unlike the quantum imaginary time evolution (QITE)
+method [53] which performs both real-time evolution and a certain quantum state tomography
+procedure, QET-U only queries the time evolution with performance guarantees and therefore can
+be signiﬁcantly more advantageous in the early-fault-tolerant regime.
+If we are further allowed to use the (n + 1)-bit Toﬀoli gates (which is a relatively low-level multi-
+qubit operation, as the additional two-qubit operations scale linearly in n), we can develop a new
+binary amplitude estimation algorithm that is also based on QET-U. The total query complexity
+for estimating the ground-state energy can be improved to the near-optimal scaling of e
+O(ϵ−1γ−1),
+at the expense of increasing the circuit depth from e
+O(ϵ−1) to e
+O(ϵ−1γ−1). This matches the results
+in Ref. [43] with a block encoding input model. This also provides an answer to a question raised
+in Ref. [44], i.e., whether it is possible to have a quantum algorithm that does not use techniques
+such as LCU or block encoding, with a short query depth that scales as e
+O(ϵ−1), and with a total
+query complexity that scales better than O(γ−4). Our short query depth algorithm shows that it
+is possible to improve the total query complexity to O(γ−2) while satisfying all other constraints.
+The construction of our near-optimal algorithm (using binary amplitude estimation) indicates that
+it is unlikely that one can improve the total query complexity to O(γ−1) without introducing a
+factor that scales with γ−1 in the circuit depth.
+
+24
+The improvements in circuit depth and query complexity for preparing the ground state are
+similar to that of the ground-state energy estimation (see Table II). It is worth mentioning that many
+previous works using a single ancilla qubit cannot be easily modiﬁed to prepare the ground state.
+It is currently an open question whether the query complexity can be reduced to the near-optimal
+scaling without using any multi-qubit controlled operation (speciﬁcally, whether the additional one-
+and two-qubit quantum gates can be independent of the system size n).
+In practice, the cost of implementing the controlled Hamiltonian evolution can still be high.
+By exploiting certain anti-commutation relations, we develop a new control-free implementation
+of QET-U for a class of quantum spin Hamiltonians. The results on quantum simulators using
+IBM Qiskit indicate that relatively accurate estimates to the ground-state energy can be obtained
+already with a modest polynomial degree (10 ∼30). However, the results of the QET-U can be
+sensitive to quantum noises (such as gate-wise depolarizing noises). On one hand, while the QET-
+U circuit (especially, the control-free variant) may be simple enough to ﬁt on a NISQ device, the
+error on the NISQ devices may be too large to obtain meaningful results. On the other hand,
+it may be possible to combine QET-U with randomized compilation [76] and/or error mitigation
+techniques [12] to signiﬁcantly reduce the impact of the noise, which may then enable us to obtain
+qualitatively meaningful results on near-term devices [70]. These will be our future works.
+Acknowledgment
+This work was supported by the U.S. Department of Energy under the Quantum Systems Acceler-
+ator program under Grant No. DE-AC02-05CH11231 (Y.D.), by the NSF Quantum Leap Challenge
+Institute (QLCI) program under Grant number OMA-2016245 (Y.T.), and by the Google Quan-
+tum Research Award (L.L.). L.L. is a Simons Investigator. The authors thank Zhiyan Ding and
+Subhayan Roy Moulik for discussions, and the anonymous referees for helpful suggestions.
+
+25
+Supplementary Information
+Appendix A: Brief summary of polynomial matrix transformations
+In the past few years, there have been signiﬁcant algorithmic advancements in eﬃcient repre-
+sentation of certain polynomial matrix transformations on quantum computers [25, 46, 48], which
+ﬁnds applications in Hamiltonian simulation, solving linear systems of equations, eigenvalue prob-
+lems, to name a few. The commonality of these approaches is to (1) encode a certain polynomial
+using a product of parameterized SU(2) matrices, and (2) lift the SU(2) representation to matri-
+ces of arbitrary dimensions (a procedure called “qubitization” [48] which is related to quantum
+walks [15, 69]). This framework often leads to a very concise quantum circuit, and can unify a
+large class of quantum algorithms that have been developed in the literature [25, 50]. For clarity
+of the presentation, the term quantum signal processing (QSP) will speciﬁcally refer to the SU(2)
+representation. It is worth noting that the depending on the structure of the matrix and the input
+model, the resulting quantum circuits can be diﬀerent. Block encoding [25, 48] is a commonly used
+input model for representing non-unitary matrices on a quantum computer.
+Deﬁnition 14 (Block encoding). Given an n-qubit matrix A (N = 2n), if we can ﬁnd α, ϵ ∈R+,
+and an (m + n)-qubit unitary matrix UA so that
+∥A −α (⟨0m| ⊗IN) UA (|0m⟩⊗IN) ∥2 ≤ϵ,
+(A1)
+then UA is called an (α, m, ϵ)-block-encoding of A.
+When a polynomial of interest is represented by QSP, we can use the block encoding input model
+to implement the polynomial transformation of a Hermitian matrix, which gives the quantum
+eigenvalue transformation (QET) [48]. Similarly the polynomial transformation of a general matrix
+(called singular value transformation) gives the quantum singular value transformation (QSVT) [25].
+In fact, for a Hermitian matrix with a block encoding input model, the quantum circuits of QET
+and QSVT can be the same.
+It is worth noting that the original presentation of QSP [46] combines together the SU(2) repre-
+sentation and a trigonometric polynomial transformation of a Hermitian matrix H, and the input
+model is provided by a quantum walk operator [15]. If H is a s-sparse matrix, the use of a walk
+operator is actually not necessary, and QET/QSVT gives a more concise algorithm than that in
+Ref. [46].
+Using the Hamiltonian evolution input model, our QET-U algorithm provides a circuit structure
+that is similar to that in [46, Figure 1], and the derivation of QET-U is both simpler and more con-
+structive. Note that Ref. [46] only states the existence of the parameterization without providing an
+algorithm to evaluate the phase factors, and the connection with the more explicit parameterization
+such as those in [25, 31] has not been shown in the literature. Our QET-U algorithm in Theorem 1
+directly connects to the parameterization in [25], and in particular, QSP with symmetric phase
+factors [21, 81]. This gives rise to a concise way for representing real polynomial transformations
+that is encountered in most applications.
+The QET-U technique is also related to QSVT. From the Hamiltonian evolution input model
+U = e−iH, we can ﬁrst use one ancilla qubit and linear combination of unitaries to implement a
+block encoding of cos(H) = (U + U †)/2. Using another ancilla qubit, we can use another ancilla
+qubit and QET/QSVT to implement H = arccos(cos(H)) approximately. In other words, from
+the Hamiltonian evolution U we can implement the matrix logarithm of U to approximately block
+
+26
+encode H. Then we can implement a matrix function f(H) using the block encoding above and
+another layer of QSVT. QET-U simpliﬁes the procedure above by directly querying U. The concept
+of “qubitization” [48] appears very straightforwardly in QET-U (see Appendix B). It also saves one
+ancilla qubit and gives perhaps a slightly smaller circuit depth.
+Appendix B: Quantum eigenvalue transformation for unitary matrices
+Let
+W(x) = ei arccos(x)X =
+
+x
+i
+√
+1 −x2
+i
+√
+1 −x2
+x
+
+,
+x ∈[−1, 1].
+(B1)
+We ﬁrst state the result of quantum signal processing for real polynomials [24, Corollary 10], and
+speciﬁcally the symmetric quantum signal processing [81, Theorem 10] in Theorem 15.
+Theorem 15 (Symmetric quantum signal processing, W-convention). Given a real polynomial
+F(x) ∈R[x], and deg F = d, satisfying
+1. F has parity d mod 2,
+2. |F(x)| ≤1, ∀x ∈[−1, 1],
+then there exists polynomials G(x), Q(x) ∈R[x] and a set of symmetric phase factors Φ :=
+(φ0, φ1, · · · , φ1, φ0) ∈Rd+1 such that the following QSP representation holds:
+eiφ0Z
+d
+Y
+j=1
+
+W(x)eiφjZ
+=
+
+F(x) + iG(x) iQ(x)
+√
+1 −x2
+iQ(x)
+√
+1 −x2 F(x) −iG(x)
+
+,
+(B2)
+In order to derive QET-U, we deﬁne
+Wz(x) = ei arccos(x)Z =
+
+ei arccos(x)
+0
+0
+e−i arccos(x)
+
+,
+x ∈[−1, 1].
+(B3)
+Then Theorem 16 is equivalent to Theorem 15, but uses the variable x is encoded in the Wz matrix
+instead of the W matrix.
+Theorem 16 (Symmetric quantum signal processing, Wz-convention). Given a real, even polyno-
+mial F(x) ∈R[x], and deg F = d, satisfying |F(x)| ≤1, ∀x ∈[−1, 1], then there exists polynomials
+G(x), Q(x) ∈R[x] and a symmetric phase factors Φz := (ϕ0, ϕ1, · · · , ϕ1, ϕ0) ∈Rd+1 such that the
+following QSP representation holds:
+UΦz(x) = eiϕ0XW ∗
+z (x)eiϕ1XWz(x)eiϕ2X · · · eiϕ2XW ∗
+z (x)eiϕ1XWz(x)eiϕ0X
+=
+
+F(x)
+−Q(x)
+√
+1 −x2 + iG(x)
+Q(x)
+√
+1 −x2 + iG(x)
+F(x)
+
+.
+(B4)
+Proof. Using
+eiϕX = HeiϕZH,
+(B5)
+and
+HWz(x)H = W(x),
+HW ∗
+z (x)H = −e−i π
+2 ZW(x)e−i π
+2 Z,
+(B6)
+
+27
+we have
+UΦz(x) =(−1)
+d
+2 H
+n
+ei(ϕ0−π
+2 )ZW(x)ei(ϕ1−π
+2 )ZW(x)ei(ϕ2−π
+2 )Z · · ·
+ei(ϕ2−π
+2 )ZW(x)ei(ϕ1−π
+2 )ZW(x)eiϕ0Zo
+H
+=(−1)
+d
+2 He−i π
+4 Zn
+ei(ϕ0−π
+4 )ZW(x)ei(ϕ1−π
+2 )ZW(x)ei(ϕ2−π
+2 )Z · · ·
+ei(ϕ2−π
+2 )ZW(x)ei(ϕ1−π
+2 )ZW(x)ei(ϕ0−π
+4 )Zo
+ei π
+4 ZH.
+(B7)
+The term in the parenthesis satisﬁes the condition of Theorem 15. We may choose a symmetric
+phase factor (φ0, φ1, . . . , φ1, φ0), so that
+eiφ0ZW(x)eiφ1ZW(x)eiφ2Z · · · eiφ2ZW(x)eiφ1ZW(x)eiφ0Z
+=(−1)
+d
+2
+
+F(x) + iG(x) iQ(x)
+√
+1 −x2
+iQ(x)
+√
+1 −x2 F(x) −iG(x)
+
+.
+(B8)
+Then deﬁne ϕj = φj + (2 −δj0)π/4 for j = 0, . . . , d/2, direct computation shows
+UΦz(x) =
+
+F(x)
+−Q(x)
+√
+1 −x2 + iG(x)
+Q(x)
+√
+1 −x2 + iG(x)
+F(x)
+
+,
+(B9)
+which proves the theorem.
+Proof of Theorem 1. For any eigenstate |vj⟩of H with eigenvalue λj, note that span{|0⟩|vj⟩, |1⟩|vj⟩}
+is an invariant subspace of U, U †, X ⊗In, and hence of U. Together with the fact that for any phase
+factors ϕ, ϕ′,
+eiϕXW ∗
+z (x)eiϕ′XWz(x) = eiϕX
+1
+0
+0 e2i arccos(x)
+
+eiϕ′X
+1
+0
+0 e−2i arccos(x)
+
+,
+(B10)
+we have
+U |0⟩|vj⟩= (UΦz(cos(λj/2)) |0⟩) |vj⟩= F(cos(λj/2)) |0⟩|vj⟩+ αj |1⟩|vj⟩.
+(B11)
+Here we have used x = cos(λj/2), and
+αj = Q(cos(λj/2)) sin(λj/2) + iG(cos(λj/2))
+(B12)
+is an irrelevant constant according to Eq. (B4).
+Since any state |ψ⟩can be expanded as the linear combination of eigenstates |vj⟩as
+|ψ⟩=
+X
+j
+cj |vj⟩,
+(B13)
+we have
+U |0⟩|ψ⟩=
+X
+j
+cjU |0⟩|vj⟩= |0⟩
+X
+j
+cjF(cos(λj/2)) |vj⟩+ |1⟩|⊥⟩
+= |0⟩F(cos(H/2)) |ψ⟩+ |1⟩|⊥⟩,
+(B14)
+where |⊥⟩is some unnormalized quantum state. This proves the theorem.
+
+28
+Sometimes instead of controlled U, we have direct access to an oracle that simultaneously imple-
+ments a controlled forward and backward time evolution:
+V =
+
+eiH
+0
+0
+e−iH
+
+.
+(B15)
+This is the case, for instance, in certain implementation of QET-U in a control-free setting. Corol-
+lary 17 describes this version of QET-U.
+Figure 7.
+Variant of QET-U with an oracle implementing the controlled forward and backward time
+evolution. The implementation of V † can be carried out by conjugating V with Pauli X gates acting on the
+ﬁrst qubit, and the Pauli X gate can be ﬁrst combined with the phase rotation as eiϕXX = iei(ϕ+π/2)X.
+Corollary 17 (QET-U with forward and backward time evolution). Let V be the unitary matrix
+given in Eq. (B15) corresponding to an n-qubit Hermitian matrix H. For any even real polynomial
+F(x) of degree d satisfying |F(x)| ≤1, ∀x ∈[−1, 1], we can ﬁnd a sequence of symmetric phase
+factors Φz := (ϕ0, ϕ1, · · · , ϕ1, ϕ0) ∈Rd+1, such that the circuit in Fig. 7 denoted by U satisﬁes
+⟨0| ⊗In)U(|0⟩⊗In) = F (cos H).
+Proof. Let |vj⟩be an eigenstate of H with eigenvalue λj. For any phase factors ϕ, ϕ′, using
+eiϕXW ∗
+z (x)eiϕ′XWz(x) = eiϕX
+
+e−i arccos(x)
+0
+0
+ei arccos(x)
+
+eiϕ′X
+
+ei arccos(x)
+0
+0
+e−i arccos(x)
+
+,
+(B16)
+we have
+U |0⟩|vj⟩= (UΦz(cos λj) |0⟩) |vj⟩= F(cos λj) |0⟩|vj⟩+ αj |1⟩|vj⟩.
+(B17)
+Here x = cos λj, and αj = Q(cos λj) sin λj + iG(cos λj).
+The rest of the proof follows that of
+Theorem 1.
+Appendix C: Cost of QET-U using Trotter formulas
+If the time evolution operator U = e−iH is implemented using Trotter formulas, we can directly
+analyze the circuit depth and gate complexity of estimating the ground-state energy in the setting
+of Theorems 4 and 5.
+
+29
+We suppose the Hamiltonian H can be decomposed into a sum of terms H = PL
+γ=1 Hγ, where
+each term Hγ can be eﬃciently exponentiated, i.e.
+with gate complexity independent of time.
+In other words we assume each Hγ can be fast-forwarded [3, 30, 67]. We assume that the gate
+complexity for implementing a single Trotter step is GTrotter, and the circuit depth required is
+DTrotter. For initial state preparation, we assume we need gate complexity Ginitial and circuit depth
+Dinitial. A p-th order Trotter formula applied to U = e−iH with r Trotter steps gives us a unitary
+operator UHS with error
+∥UHS −U∥≤CTrotterr−p,
+where CTrotter is a prefactor, for which the simplest bound is CTrotter = O((P
+γ ∥H∥γ)p+1). Tighter
+bounds in the form of a sum of commutators are proved in Refs. [17, 68], and there are many works
+on how to decompose the Hamiltonian to reduce the resource requirement [8, 42, 51, 75]. If the
+circuit queries U, U † for d times and the desired precision is δ, then we can choose
+d × CTrotterr−p = δ,
+or equivalently
+r = O
+
+max{d1/pC1/p
+Trotterδ−1/p, 1}
+
+.
+(C1)
+As an example, let us now analyze the number of Trotter steps needed in the context of estimating
+the ground-state energy in Theorem 4 without amplitude ampliﬁcation. When replacing the exact
+U with UHS, we only need to ensure that the resulting error in Uproj deﬁned in Eq. (8) is O(γ).
+This will enable us to solve the binary amplitude estimation problem (see Deﬁnition 8) with the
+same asymptotic query complexity. Since Uproj uses U (and therefore UHS) at most e
+O(ϵ−1 log(γ−1))
+times, we only need to ensure
+e
+O(ϵ−1 log(γ−1)) × CTrotterr−p = O(γ).
+(C2)
+Consequently we need to choose
+r = e
+O
+
+max{C1/p
+Trotterϵ−1/pγ−1/p, 1}
+
+.
+(C3)
+The query depth of U is e
+O(ϵ−1 log(γ−1)), and therefore the circuit depth is
+e
+O
+
+max{C1/p
+Trotterϵ−1/pγ−1/p, log(γ−1)}ϵ−1DTrotter + Dinitial
+
+.
+Similarly the total number of queries to U is e
+O(ϵ−1γ−2 log(ϑ−1)) times, and the total number of
+queries to UI is O(γ−2 poly log(ϵ−1ϑ−1)), and the resulting total gate complexity is
+e
+O
+
+max{C1/p
+Trotterϵ−1/pγ−1/p, 1}ϵ−1γ−2GTrotter log(ϑ−1) + γ−2Ginitial log(ϑ−1)
+
+.
+The analysis of the number of Trotter steps in the setting of Theorem 5 is similar. We still
+want to ensure (C2), which results in the same choice of the number of Trotter steps r as in (C3).
+Combined with the query complexity in Theorem 5, the total gate complexity is
+e
+O
+
+max{C1/p
+Trotterϵ−1/pγ−1/p, 1}ϵ−1γ−1GTrotter log(ϑ−1) + γ−1Ginitial log(ϑ−1)
+
+.
+(C4)
+
+30
+Appendix D: Binary amplitude estimation with a single ancilla qubit and QET-U
+In this section we discuss how to solve the binary amplitude estimation problem in Deﬁnition 8
+using a single ancilla qubit. We restate the problem here.
+Deﬁnition (Binary amplitude estimation). Let W be a unitary acting on two registers, with the
+ﬁrst register indicating success or failure. Let A = ∥(⟨0|⊗In)W(|0⟩|0n⟩)∥be the success amplitude.
+Given 0 ≤γ1 < γ2, provided that A is either smaller than γ1 or greater than γ2, we want to correctly
+distinguish between the two cases, i.e. output 0 for the former and 1 for the latter.
+In the following we will describe an algorithm to solve this problem and thereby prove Lemma
+12. We can ﬁnd quantum states |Φ⟩and |⊥⟩such that
+W(|0⟩|0n⟩) = A |0⟩|Φ⟩+
+p
+1 −A2 |⊥⟩,
+and (⟨0| ⊗I) |⊥⟩= 0. We also deﬁne
+|⊥′⟩= −
+p
+1 −A2 |0⟩|Φ⟩+ A |⊥⟩.
+As in amplitude ampliﬁcation, we deﬁne two reﬂection operators:
+R0 = (2 |0⟩⟨0| −I) ⊗In,
+R1 = W(2 |0n+1⟩⟨0n+1| −In+1)W †.
+Relative to the basis {W(|0⟩|0n⟩), |⊥′⟩} the two reﬂection operators can be represented by the
+matrices
+
+2A2 −1
+−2A
+√
+1 −A2
+−2A
+√
+1 −A2
+1 −2A2
+
+,
+
+1
+0
+0 −1
+
+.
+Therefore we can verify that |Ψ±⟩= (W |0⟩|0n⟩± i |⊥′⟩)/
+√
+2 are eigenvectors of R0R1:
+R0R1 |Ψ±⟩= e∓i2 arccos(A) |Ψ±⟩.
+If we use the usual amplitude estimation algorithm to estimate A we can simply perform phase
+estimation with R0R1 on the quantum state W(|0⟩|0n⟩), which is an equal superposition of |Ψ±⟩:
+W(|0⟩|0n⟩) =
+1
+√
+2(|Ψ+⟩+ |Ψ−⟩).
+However, here we will do something diﬀerent. We view R0R1 has a time-evolution operator corre-
+sponding to some Hamiltonian L:
+R0R1 = e−iL,
+where, in the subspace spanned by {W(|0⟩|0n⟩), |⊥′⟩} we have
+L = 2 arccos(A) |Ψ+⟩⟨Ψ+| −2 arccos(A) |Ψ−⟩⟨Ψ−| .
+Then, using QET-U in Theorem 1 we can implement a block encoding, which we denote by U, of
+P(cos(L/2)) for any suitable polynomial P, and in the same subspace we have
+P(cos(L/2)) = P(A)
+ |Ψ+⟩⟨Ψ+| + |Ψ−⟩⟨Ψ−|
+
+= P(A)
+ W |0⟩|0n⟩⟨0| ⟨0n| W † + |⊥′⟩⟨⊥′|
+
+.
+
+31
+Using QET-U we can use Monte Carlo sampling to estimate the quantity
+∥(⟨0| ⊗In+1)U
+ |0⟩⊗(W |0⟩|0n⟩)
+
+∥2 = |P(A)|2.
+(D1)
+To be more precise, we can start from the state |0⟩|0⟩|0n⟩on n + 2 qubits, apply W to the last
+n + 1 qubits, then U to all n + 2 qubits, and in the end measure the ﬁrst qubit. The probability of
+obtaining 0 in the measurement outcome is exactly Eq. (D1).
+Now let us consider an even polynomial P(x) such that |P(x)| ≤1 for x ∈[−1, 1], and
+P(x) ≥1 −δ, x ∈[γ2, 1],
+|P(x)| ≤δ, x ∈[0, γ1].
+Such a polynomial of degree O((γ2 −γ1)−1 log(δ−1)) can be constructed using the approximate
+sign function in [47] (if we take this approach we need to symmetrize the polynomial through
+P(x) = (Q(x) + Q(−x))/2) or the optimization procedure described in Section IV. Using this
+polynomial, we can then use Monte Carlo sampling to distinguish two cases, which will solve the
+binary amplitude estimation problem:
+∥(⟨0| ⊗In+1)U
+ |0⟩⊗(W |0⟩|0n⟩)
+
+∥2 ≥(1 −δ)2, or ∥(⟨0| ⊗In+1)U
+ |0⟩⊗(W |0⟩|0n⟩)
+
+∥2 ≤δ2.
+We can choose δ = 1/4 and it takes running W and U and measuring the ﬁrst qubit each O(log(ϑ−1))
+times to successfully distinguish between the above two cases with probability at least 1 −ϑ. In
+this we use the standard majority voting procedure to boost the success probability. Each single
+run of U requires O((γ2 −γ1)−1) applications of W, which corresponds to the polynomial degree.
+Therefore in total we need to apply W O((γ2 −γ1)−1 log(ϑ−1)) times.
+In this whole procedure we need one additional ancilla qubit for QET-U. Note that the n + 1
+qubits reﬂection operator in R1 can be implemented using the (n + 2)-qubit Toﬀoli gate and phase
+kickback. Using [5, Corollary 7.4] we can implement the (n+2)-qubit Toﬀoli gate on (n+3) qubits.
+As a result another ancilla qubit is needed. We have proved Lemma 12, which we restate here:
+Lemma. The binary amplitude estimation problem in Deﬁnition 8 can be solved correctly with
+probability at least 1 −ϑ by querying W O((γ2 −γ1)−1 log(ϑ−1)) times, and this procedure requires
+two additional ancilla qubits (besides the ancilla qubits already required in W).
+Appendix E: Details of numerical simulation of TFIM
+In the numerical simulation for estimating the ground-state energy of TFIM, we explicitly diag-
+onalize the Hamiltonian to obtain the exact ground state |ψ0⟩, ground energy E0, the ﬁrst excited
+energy E1, and the highest excited energy En−1. We then perform an aﬃne transformation to the
+shifted Hamiltonian
+Hsh = c1H + c2In,
+c1 =
+π −2η
+En−1 −E0
+and c2 = η −c1E0.
+(E1)
+Consequently, the eigenvalues of the shifted Hamiltonian are exactly in the interval [η, π −η], i.e.,
+Esh
+0 = η and Esh
+n−1 = π −η. The time evolution is then e−iτHsh = e−iτc2e−iτc1H which means that
+the evolution time is scaled to τ sh = τc1 with an additional phase shift φsh = τc2. The system
+dependent parameters are then given by
+µ = 1
+2
+ Esh
+0 + Esh
+1
+
+, ∆= Esh
+1 −Esh
+0 , and σ± = cos µ ∓∆/2
+2
+.
+(E2)
+
+32
+We set the input quantum state to |0⟩|ψin⟩where |ψin⟩= |0n⟩and the additional one qubit is the
+ancilla qubit for performing X rotations in QET-U. The initial overlap is γ = |⟨ψin|ψ0⟩|. We list
+the system dependent parameters used in the numerical experiments in Fig. 6 in Table III.
+n
+µ
+∆
+σ+
+σ−
+c1
+c2
+γ
+2 0.7442 1.2884 0.9988 0.7686 0.1824 1.5708 0.5301
+4 0.3926 0.5851 0.9988 0.9419 0.0909 1.5708 0.3003
+6 0.2887 0.3773 0.9988 0.9717 0.0605 1.5708 0.1703
+8 0.2394 0.2788 0.9988 0.9821 0.0453 1.5708 0.0965
+Table III. System dependent parameters for diﬀerent number of system qubits n.
+For completeness, we brieﬂy introduce the algorithm for deriving the energy estimation from the
+measurement of bit-string frequencies. The energy estimation process can be optimized so that it
+is suﬃcient to measure a few quantum circuits to compute the energy. For TFIM, if the ground
+state is |ψ0⟩, its ground-state energy is
+E0 = ⟨ψ0|HTFIM|ψ0⟩= −
+n−1
+X
+j=1
+⟨ψ0|ZjZj+1|ψ0⟩−g
+n
+X
+j=1
+⟨ψ0|Xj|ψ0⟩=: −
+n−1
+X
+j=1
+Ψj,j+1 −g
+n
+X
+j=1
+ΨH
+j .
+We will show that the energy component Ψj,j+1 and ΨH
+j can be exactly expressed as the marginal
+probabilities readable from measurements. Decomposing ZjZj+1 with respect to eigenvectors, we
+have
+Ψj,j+1 = ⟨ψ0|ZjZj+1|ψ0⟩=
+1
+X
+zj=0
+1
+X
+zj+1=0
+(−1)zj+zj+1 |⟨ψ0|zj, zj+1⟩|2 =
+1
+X
+zj=0
+1
+X
+zj+1=0
+(−1)zj+zj+1P (zj, zj+1| ψ0).
+Here, P (zj, zj+1|ψ0) is the marginal probability measuring the j-th qubit with zj and the (j +1)-th
+qubit with zj+1 under computational basis when the quantum circuit for preparing the ground state
+|ψ0⟩is given. Similarly, the other quantity involved in the energy is
+ΨH
+j = ⟨ψ0|Xj|ψ0⟩= ⟨ψ0|H⊗nZjH⊗n|ψ0⟩= ⟨ψH
+0 |Zj|ψH
+0 ⟩=
+1
+X
+zj=0
+(−1)zjP
+ zj|ψH
+0
+
+.
+Here, P
+ zj|ψH
+0
+
+is the marginal probability measuring the j-th qubit with zj under computational
+basis when the quantum circuit for preparing the ground state |ψ0⟩following a Hadamard trans-
+formation, which is denoted as |ψH
+0 ⟩:= H⊗n |ψ0⟩, is given.
+In order to estimate the ground-state energy of TFIM, it suﬃces to measure all qubits in two
+circuits: the circuit in Fig. 5 (b) and that following a Hadamard transformation on all system qubits.
+The measurement results estimate the marginal probabilities up to the Monte Carlo measurement
+error.
+Furthermore, their linear combination with signs gives the ground-state energy estimate
+based on the previous analysis.
+The procedure for estimating the energy can readily be generalized to other models. Consider a
+Hamiltonian
+H =
+L
+X
+k=1
+Hk,
+Hk =
+vk
+X
+j=1
+hk,j.
+(E3)
+
+33
+Here we group the components of the Hamiltonian into L classes, and for a ﬁxed k, the components
+hk,j can be simultaneously diagonalized by an eﬃciently implementable unitary Vk. The strategies of
+Hamiltonian grouping has also been used in e.g., Refs. [34, 74]. We want to estimate the expectation
+⟨ψ0|H|ψ0⟩where |ψ0⟩is the quantum state prepared by some quantum circuit. Then, it suﬃces to
+measure L diﬀerent quantum circuits {Vk |ψ0⟩: k = 1, · · · , L} and to compute the expectation from
+the measurement data by some signed linear combination. For example, to estimate the ground-
+state energy of the Heisenberg model, we can let L = 3 and V1 = I⊗n, V2 = H⊗n and V3 =
+ HS†⊗n
+where H and S are Hadamard gate and phase gate respectively.
+[1] S. Aaronson and P. Rall. Quantum approximate counting, simpliﬁed. In Symposium on Simplicity in
+Algorithms, pages 24–32. SIAM, 2020.
+[2] D. Aharonov, D. Gottesman, S. Irani, and J. Kempe. The power of quantum systems on a line. Comm.
+Math. Phys., 287(1):41–65, 2009. doi:10.1007/s00220-008-0710-3.
+[3] Y. Atia and D. Aharonov. Fast-forwarding of Hamiltonians and exponentially precise measurements.
+Nature Comm., 8(1), 2017. doi:10.1038/s41467-017-01637-7.
+[4] R. Babbush, J. R. McClean, M. Newman, C. Gidney, S. Boixo, and H. Neven. Focus beyond quadratic
+speedups for error-corrected quantum advantage. PRX Quantum, 2(1):010103, 2021.
+[5] A. Barenco, C. H. Bennett, R. Cleve, D. P. DiVincenzo, N. Margolus, P. Shor, T. Sleator, J. A. Smolin,
+and H. Weinfurter. Elementary gates for quantum computation. Physical review A, 52(5):3457, 1995.
+[6] D. W. Berry, B. L. Higgins, S. D. Bartlett, M. W. Mitchell, G. J. Pryde, and H. M. Wiseman.
+How to perform the most accurate possible phase measurements.
+Phys. Rev. A, 80(5), 2009.
+doi:
+10.1103/physreva.80.052114.
+[7] D. W. Berry, A. M. Childs, and R. Kothari. Hamiltonian simulation with nearly optimal dependence
+on all parameters. Proceedings of the 56th IEEE Symposium on Foundations of Computer Science,
+pages 792–809, 2015.
+[8] D. W. Berry, C. Gidney, M. Motta, J. R. McClean, and R. Babbush. Qubitization of arbitrary basis
+quantum chemistry leveraging sparsity and low rank factorization. Quantum, 3:208, 2019.
+[9] S. Boixo, S. V. Isakov, V. N. Smelyanskiy, R. Babbush, N. Ding, Z. Jiang, M. J. Bremner, J. M.
+Martinis, and H. Neven. Characterizing quantum supremacy in near-term devices. Nat. Phys., 14(6):
+595–600, 2018.
+[10] K. E. Booth, B. O’Gorman, J. Marshall, S. Hadﬁeld, and E. Rieﬀel. Quantum-accelerated constraint
+programming. arXiv preprint arXiv:2103.04502, 2021.
+[11] G. Brassard, P. Hoyer, M. Mosca, and A. Tapp. Quantum amplitude ampliﬁcation and estimation.
+Contemp. Math., 305:53–74, 2002.
+[12] Z. Cai, X. Xu, and S. C. Benjamin. Mitigating coherent noise using pauli conjugation. npj Quantum
+Inf., 6(1):1–9, 2020.
+[13] E. T. Campbell. Early fault-tolerant simulations of the Hubbard model. Quantum Science and Tech-
+nology, 7(1):015007, 2021.
+[14] S. Chakraborty, A. Gily´en, and S. Jeﬀery.
+The power of block-encoded matrix powers: improved
+regression techniques via faster hamiltonian simulation. arXiv:1804.01973, 2018.
+[15] A. M. Childs. On the relationship between continuous-and discrete-time quantum walk. Commun.
+Math. Phys., 294(2):581–603, 2010.
+[16] A. M. Childs, R. Kothari, and R. D. Somma. Quantum algorithm for systems of linear equations with
+exponentially improved dependence on precision. SIAM J. Comput., 46:1920–1950, 2017.
+[17] A. M. Childs, Y. Su, M. C. Tran, N. Wiebe, and S. Zhu. Theory of trotter error with commutator
+scaling. Phys. Rev. X, 11(1):011020, 2021.
+[18] K. Choi, D. Lee, J. Bonitati, Z. Qian, and J. Watkins. Rodeo algorithm for quantum computing.
+Physical Review Letters, 127(4):040505, 2021.
+
+34
+[19] A. Cornelissen, J. Bausch, and A. Gily´en. Scalable benchmarks for gate-based quantum computers.
+arXiv preprint arXiv:2104.10698, 2021.
+[20] Y. Dong and L. Lin. Random circuit block-encoded matrix and a proposal of quantum linpack bench-
+mark. Phys. Rev. A, 103(6):062412, 2021.
+[21] Y. Dong, X. Meng, K. B. Whaley, and L. Lin. Eﬃcient phase factor evaluation in quantum signal
+processing. Phys. Rev. A, 103:042419, 2021.
+[22] Y. Dong, K. B. Whaley, and L. Lin. A quantum hamiltonian simulation benchmark. arXiv preprint
+arXiv:2108.03747, 2021.
+[23] Y. Ge, J. Tura, and J. I. Cirac. Faster ground state preparation and high-precision ground energy
+estimation with fewer qubits. J. Math. Phys., 60(2):022202, 2019. doi:10.1063/1.5027484.
+[24] A. Gily´en, Y. Su, G. H. Low, and N. Wiebe. Quantum singular value transformation and beyond:
+exponential improvements for quantum matrix arithmetics. arXiv:1806.01838, 2018.
+[25] A. Gily´en, Y. Su, G. H. Low, and N. Wiebe. Quantum singular value transformation and beyond:
+exponential improvements for quantum matrix arithmetics. In Proceedings of the 51st Annual ACM
+SIGACT Symposium on Theory of Computing, pages 193–204, 2019.
+[26] V. Giovannetti, S. Lloyd, and L. Maccone. Quantum metrology. Phys. Rev. Lett., 96(1), 2006. doi:
+10.1103/physrevlett.96.010401.
+[27] V. Giovannetti, S. Lloyd, and L. Maccone. Advances in quantum metrology. Nature Photon., 5(4):222,
+2011. doi:10.1038/nphoton.2011.35.
+[28] M. Grant and S. Boyd. CVX: Matlab software for disciplined convex programming, version 2.1. http:
+//cvxr.com/cvx, Mar. 2014.
+[29] R. B. Griﬃths and C.-S. Niu. Semiclassical fourier transform for quantum computation. Phys. Rev.
+Lett., 76(17):3228, 1996. doi:10.1103/physrevlett.76.3228.
+[30] S. Gu, R. D. Somma, and B. S¸ahino˘glu. Fast-forwarding quantum evolution. Quantum, 5:577, 2021.
+[31] J. Haah. Product decomposition of periodic functions in quantum signal processing. Quantum, 3:190,
+2019.
+[32] B. L. Higgins, D. W. Berry, S. D. Bartlett, H. M. Wiseman, and G. J. Pryde. Entanglement-free
+heisenberg-limited phase estimation. Nature, 450(7168):393–396, 2007. doi:10.1038/nature06257.
+[33] W. J. Huggins, J. Lee, U. Baek, B. O’Gorman, and K. B. Whaley.
+A non-orthogonal variational
+quantum eigensolver. New J. of Phys., 22(7):073009, 2020. doi:10.1088/1367-2630/ab867b.
+[34] A. F. Izmaylov, T.-C. Yen, R. A. Lang, and V. Verteletskyi. Unitary partitioning approach to the
+measurement problem in the variational quantum eigensolver method. Journal of chemical theory and
+computation, 16(1):190–195, 2019.
+[35] T. Keen, E. Dumitrescu, and Y. Wang. Quantum algorithms for ground-state preparation and green’s
+function calculation. arXiv preprint arXiv:2112.05731, 2021.
+[36] J. Kempe, A. Kitaev, and O. Regev. The complexity of the local Hamiltonian problem. SIAM J.
+Comput., 35(5):1070–1097, 2006. doi:10.1007/978-3-540-30538-5˙31.
+[37] A. Y. Kitaev, A. Shen, and M. N. Vyalyi. Classical and quantum computation. Number 47. American
+Mathematical Soc., 2002.
+[38] I. Kivlichan, J. McClean, N. Wiebe, C. Gidney, A. Aspuru-Guzik, G.-L. Chan, and R. Babbush.
+Quantum Simulation of Electronic Structure with Linear Depth and Connectivity. Phys. Rev. Lett.,
+120(11):110501, 2018.
+[39] I. D. Kivlichan, J. McClean, N. Wiebe, C. Gidney, A. Aspuru-Guzik, G. K.-L. Chan, and R. Babbush.
+Quantum simulation of electronic structure with linear depth and connectivity. Phys. Rev. Lett., 120
+(11):110501, 2018.
+[40] E. Knill, G. Ortiz, and R. D. Somma.
+Optimal quantum measurements of expectation values of
+observables. Phys. Rev. A, 75(1), 2007. doi:10.1103/PhysRevA.75.012328.
+[41] D. Layden. First-order Trotter error from a second-order perspective. arXiv preprint arXiv:2107.08032,
+2021.
+[42] J. Lee, D. W. Berry, C. Gidney, W. J. Huggins, J. R. McClean, N. Wiebe, and R. Babbush. Even more
+eﬃcient quantum computations of chemistry through tensor hypercontraction. PRX Quantum, 2(3):
+030305, 2021.
+[43] L. Lin and Y. Tong. Near-optimal ground state preparation. Quantum, 4:372, 2020.
+
+35
+[44] L. Lin and Y. Tong. Heisenberg-limited ground state energy estimation for early fault-tolerant quantum
+computers. PRX Quantum, 3:010318, 2022.
+[45] S. Lloyd. Universal quantum simulators. Science, pages 1073–1078, 1996.
+[46] G. H. Low and I. L. Chuang. Optimal hamiltonian simulation by quantum signal processing. Phys.
+Rev. Lett., 118:010501, 2017.
+[47] G. H. Low and I. L. Chuang.
+Hamiltonian simulation by uniform spectral ampliﬁcation.
+arXiv:1707.05391, 2017.
+[48] G. H. Low and I. L. Chuang. Hamiltonian simulation by qubitization. Quantum, 3:163, 2019.
+[49] S. Lu, M. C. Ba˜nuls, and J. I. Cirac. Algorithms for quantum simulation at ﬁnite energies. arXiv
+preprint arXiv:2006.03032, 2020.
+[50] J. M. Martyn, Z. M. Rossi, A. K. Tan, and I. L. Chuang. A grand uniﬁcation of quantum algorithms.
+arXiv:2105.02859, 2021.
+[51] S. McArdle, E. Campbell, and Y. Su. Exploiting fermion number in factorized decompositions of the
+electronic structure hamiltonian. Physical Review A, 105(1):012403, 2022.
+[52] J. R. McClean, J. Romero, R. Babbush, and A. Aspuru-Guzik.
+The theory of variational hybrid
+quantum-classical algorithms. New J. Phys., 18(2):023023, 2016.
+[53] M. Motta, C. Sun, A. T. Tan, M. J. O’Rourke, E. Ye, A. J. Minnich, F. G. Brand˜ao, and G. K.-L.
+Chan. Determining eigenstates and thermal states on a quantum computer using quantum imaginary
+time evolution. Nat. Phys., 16(2):205–210, 2020.
+[54] D. Nagaj, P. Wocjan, and Y. Zhang.
+Fast ampliﬁcation of QMA.
+Quantum Inf. Comput., 9(11):
+1053–1068, 2009.
+[55] Note1. https://github.com/qsppack/QSPPACK.
+[56] Note2. https://github.com/qsppack/QETU.
+[57] T. E. O’Brien, S. Polla, N. C. Rubin, W. J. Huggins, S. McArdle, S. Boixo, J. R. McClean, and
+R. Babbush. Error mitigation via veriﬁed phase estimation. arXiv preprint arXiv:2010.02538, 2020.
+[58] R. Oliveira and B. M. Terhal. The complexity of quantum spin systems on a two-dimensional square
+lattice. arXiv preprint quant-ph/0504050, 2005.
+[59] T. E. O’Brien, B. Tarasinski, and B. M. Terhal. Quantum phase estimation of multiple eigenvalues for
+small-scale (noisy) experiments. New J. Phys., 21(2):023022, 2019.
+[60] P. J. O’Malley, R. Babbush, I. D. Kivlichan, J. Romero, J. R. McClean, R. Barends, J. Kelly,
+P. Roushan, A. Tranter, N. Ding, et al. Scalable quantum simulation of molecular energies. Phys.
+Rev. X, 6(3):031007, 2016. doi:10.1103/PhysRevX.6.031007.
+[61] A. Peruzzo, J. McClean, P. Shadbolt, M.-H. Yung, X.-Q. Zhou, P. J. Love, A. Aspuru-Guzik, and J. L.
+O’brien. A variational eigenvalue solver on a photonic quantum processor. Nat. Commun., 5:4213,
+2014.
+[62] D. Poulin and P. Wocjan.
+Sampling from the thermal quantum Gibbs state and evaluat-
+ing partition functions with a quantum computer.
+Phys. Rev. Lett.,
+103(22),
+2009.
+doi:
+10.1103/physrevlett.103.220502.
+[63] J. Preskill. Quantum computing in the nisq era and beyond. Quantum, 2:79, 2018.
+[64] P. Rall. Quantum algorithms for estimating physical quantities using block encodings. Physical Review
+A, 102(2):022408, 2020.
+[65] J.-M. Reiner, M. Marthaler, J. Braum¨uller, M. Weides, and G. Sch¨on. Emulating the one-dimensional
+fermi-hubbard model by a double chain of qubits.
+Phys. Rev. A, 94:032338, Sep 2016.
+doi:
+10.1103/PhysRevA.94.032338. URL https://link.aps.org/doi/10.1103/PhysRevA.94.032338.
+[66] R. D. Somma. Quantum eigenvalue estimation via time series analysis. New J. Phys., 21(12):123025,
+2019. doi:10.1088/1367-2630/ab5c60.
+[67] Y. Su. Fast-forwardable quantum evolution and where to ﬁnd them. Quantum Views, 5:62, 2021.
+[68] Y. Su, H.-Y. Huang, and E. T. Campbell. Nearly tight Trotterization of interacting electrons. arXiv
+preprint arXiv:2012.09194, 2020.
+[69] M. Szegedy. Quantum speed-up of markov chain based algorithms. In 45th Annual IEEE symposium
+on foundations of computer science, pages 32–41, 2004.
+[70] R. N. Tazhigulov, S.-N. Sun, R. Haghshenas, H. Zhai, A. T. Tan, N. C. Rubin, R. Babbush, A. J.
+Minnich, and G. K. Chan. Simulating challenging correlated molecules and materials on the sycamore
+
+36
+quantum processor. arXiv preprint arXiv:2203.15291, 2022.
+[71] Y. Tong, D. An, N. Wiebe, and L. Lin. Fast inversion, preconditioned quantum linear system solvers,
+and fast evaluation of matrix functions. arXiv:2008.13295, 2020.
+[72] L. N. Trefethen. Approximation theory and approximation practice, volume 164. SIAM, 2019.
+[73] N. M. Tubman, C. Mejuto-Zaera, J. M. Epstein, D. Hait, D. S. Levine, W. Huggins, Z. Jiang, J. R.
+McClean, R. Babbush, M. Head-Gordon, et al. Postponing the orthogonality catastrophe: eﬃcient state
+preparation for electronic structure simulations on quantum devices. arXiv preprint arXiv:1809.05523,
+2018.
+[74] V. Verteletskyi, T.-C. Yen, and A. F. Izmaylov. Measurement optimization in the variational quantum
+eigensolver using a minimum clique cover. The Journal of chemical physics, 152(12):124114, 2020.
+[75] V. von Burg, G. H. Low, T. H¨aner, D. S. Steiger, M. Reiher, M. Roetteler, and M. Troyer. Quantum
+computing enhanced computational catalysis. Physical Review Research, 3(3):033055, 2021.
+[76] J. J. Wallman and J. Emerson.
+Noise tailoring for scalable quantum computation via randomized
+compiling. Phys. Rev. A, 94(5):052325, 2016.
+[77] K. Wan, M. Berta, and E. T. Campbell.
+A randomized quantum algorithm for statistical phase
+estimation. arXiv preprint arXiv:2110.12071, 2021.
+[78] D. Wang, O. Higgott, and S. Brierley. Accelerated variational quantum eigensolver. Phys. Rev. Lett.,
+122(14):140504, 2019. doi:10.1103/physrevlett.122.140504.
+[79] G. Wang, D. E. Koh, P. D. Johnson, and Y. Cao. Minimizing estimation runtime on noisy quantum
+computers. PRX Quantum, 2(1):010346, 2021.
+[80] G. Wang, S. Sim, and P. D. Johnson. State preparation boosters for early fault-tolerant quantum
+computation. arXiv preprint arXiv:2202.06978, 2022.
+[81] J. Wang, Y. Dong, and L. Lin. On the energy landscape of symmetric quantum signal processing.
+arXiv preprint arXiv:2110.04993, 2021.
+[82] C.-R. Wie. Simpler quantum counting. arXiv preprint arXiv:1907.08119, 2019.
+[83] N. Wiebe, C. Granade, A. Kapoor, and K. M. Svore. Bayesian inference via rejection ﬁltering. arXiv
+preprint arXiv:1511.06458, 2015.
+[84] P. Zeng, J. Sun, and X. Yuan. Universal quantum algorithmic cooling on a quantum computer. arXiv
+preprint arXiv:2109.15304, 2021.
+[85] R. Zhang, G. Wang, and P. Johnson. Computing ground state properties with early fault-tolerant
+quantum computers. arXiv preprint arXiv:2109.13957, 2021.
+[86] M. Zwierz, C. A. P´erez-Delgado, and P. Kok. General optimality of the Heisenberg limit for quantum
+metrology. Phys. Rev. Lett., 105(18), 2010. doi:10.1103/physrevlett.105.180402.
+[87] M. Zwierz, C. A. P´erez-Delgado, and P. Kok. Ultimate limits to quantum metrology and the meaning
+of the Heisenberg limit. Phys. Rev. A, 85(4):042112, 2012. doi:10.1103/PhysRevA.85.042112.

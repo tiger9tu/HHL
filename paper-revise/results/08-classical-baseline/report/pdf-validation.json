@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "pages": 5,
+  "pdf_sha256": "8060b42a15a5b7ab53067da23fac4a7498b737b117a2a25ef53ed5f22e962216",
+  "checks": [
+    "PDF opens with five pages",
+    "only the current report PDF remains",
+    "superseded archive removed",
+    "build command targets current filename"
+  ],
+  "source_sha256": "fa885e622902dcd68b8b705c5295b3649320678459906cebe28e178417d978c6",
+  "filename": "Classical-Baseline-CG-HPCG-2026-09-20.pdf"
+}

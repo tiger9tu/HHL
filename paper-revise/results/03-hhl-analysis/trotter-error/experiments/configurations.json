@@ -1,0 +1,6813 @@
+[
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 0,
+    "seed": 20260909
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 1,
+    "seed": 20260910
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 2,
+    "seed": 20260911
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 3,
+    "seed": 20260912
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 4,
+    "seed": 20260913
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 5,
+    "seed": 20260914
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 6,
+    "seed": 20260915
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 7,
+    "seed": 20260916
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 8,
+    "seed": 20260917
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 9,
+    "seed": 20260918
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 10,
+    "seed": 20260919
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 11,
+    "seed": 20260920
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 12,
+    "seed": 20260921
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 13,
+    "seed": 20260922
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 14,
+    "seed": 20260923
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 15,
+    "seed": 20260924
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 16,
+    "seed": 20260925
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 17,
+    "seed": 20260926
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 18,
+    "seed": 20260927
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 19,
+    "seed": 20260928
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 20,
+    "seed": 20260929
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 21,
+    "seed": 20260930
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 22,
+    "seed": 20260931
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 23,
+    "seed": 20260932
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 24,
+    "seed": 20260933
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 25,
+    "seed": 20260934
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 26,
+    "seed": 20260935
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 27,
+    "seed": 20260936
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 28,
+    "seed": 20260937
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 29,
+    "seed": 20260938
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 30,
+    "seed": 20260939
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 31,
+    "seed": 20260940
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 32,
+    "seed": 20260941
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 33,
+    "seed": 20260942
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 34,
+    "seed": 20260943
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 35,
+    "seed": 20260944
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 36,
+    "seed": 20260945
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 37,
+    "seed": 20260946
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 38,
+    "seed": 20260947
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 39,
+    "seed": 20260948
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 40,
+    "seed": 20260949
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 41,
+    "seed": 20260950
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 42,
+    "seed": 20260951
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 43,
+    "seed": 20260952
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 44,
+    "seed": 20260953
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 45,
+    "seed": 20260954
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 46,
+    "seed": 20260955
+  },
+  {
+    "family": "fixed_band",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 47,
+    "seed": 20260956
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 48,
+    "seed": 20260957
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 49,
+    "seed": 20260958
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 50,
+    "seed": 20260959
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 51,
+    "seed": 20260960
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 52,
+    "seed": 20260961
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 53,
+    "seed": 20260962
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 54,
+    "seed": 20260963
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 55,
+    "seed": 20260964
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 56,
+    "seed": 20260965
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 57,
+    "seed": 20260966
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 58,
+    "seed": 20260967
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 59,
+    "seed": 20260968
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 60,
+    "seed": 20260969
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 61,
+    "seed": 20260970
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 62,
+    "seed": 20260971
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 63,
+    "seed": 20260972
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 64,
+    "seed": 20260973
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 65,
+    "seed": 20260974
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 66,
+    "seed": 20260975
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 67,
+    "seed": 20260976
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 68,
+    "seed": 20260977
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 69,
+    "seed": 20260978
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 70,
+    "seed": 20260979
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 71,
+    "seed": 20260980
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 72,
+    "seed": 20260981
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 73,
+    "seed": 20260982
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 74,
+    "seed": 20260983
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 75,
+    "seed": 20260984
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 76,
+    "seed": 20260985
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 77,
+    "seed": 20260986
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 78,
+    "seed": 20260987
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 79,
+    "seed": 20260988
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 80,
+    "seed": 20260989
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 81,
+    "seed": 20260990
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 82,
+    "seed": 20260991
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 83,
+    "seed": 20260992
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 84,
+    "seed": 20260993
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 85,
+    "seed": 20260994
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 86,
+    "seed": 20260995
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 87,
+    "seed": 20260996
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 88,
+    "seed": 20260997
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 89,
+    "seed": 20260998
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 90,
+    "seed": 20260999
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 91,
+    "seed": 20261000
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 92,
+    "seed": 20261001
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 93,
+    "seed": 20261002
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 94,
+    "seed": 20261003
+  },
+  {
+    "family": "fixed_band",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 95,
+    "seed": 20261004
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 96,
+    "seed": 20261005
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 97,
+    "seed": 20261006
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 98,
+    "seed": 20261007
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 99,
+    "seed": 20261008
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 100,
+    "seed": 20261009
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 101,
+    "seed": 20261010
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 102,
+    "seed": 20261011
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 103,
+    "seed": 20261012
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 104,
+    "seed": 20261013
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 105,
+    "seed": 20261014
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 106,
+    "seed": 20261015
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 107,
+    "seed": 20261016
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 108,
+    "seed": 20261017
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 109,
+    "seed": 20261018
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 110,
+    "seed": 20261019
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 111,
+    "seed": 20261020
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 112,
+    "seed": 20261021
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 113,
+    "seed": 20261022
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 114,
+    "seed": 20261023
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 115,
+    "seed": 20261024
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 116,
+    "seed": 20261025
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 117,
+    "seed": 20261026
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 118,
+    "seed": 20261027
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 119,
+    "seed": 20261028
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 120,
+    "seed": 20261029
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 121,
+    "seed": 20261030
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 122,
+    "seed": 20261031
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 123,
+    "seed": 20261032
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 124,
+    "seed": 20261033
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 125,
+    "seed": 20261034
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 126,
+    "seed": 20261035
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 127,
+    "seed": 20261036
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 128,
+    "seed": 20261037
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 129,
+    "seed": 20261038
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 130,
+    "seed": 20261039
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 131,
+    "seed": 20261040
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 132,
+    "seed": 20261041
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 133,
+    "seed": 20261042
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 134,
+    "seed": 20261043
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 135,
+    "seed": 20261044
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 136,
+    "seed": 20261045
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 137,
+    "seed": 20261046
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 138,
+    "seed": 20261047
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 139,
+    "seed": 20261048
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 140,
+    "seed": 20261049
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 141,
+    "seed": 20261050
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 142,
+    "seed": 20261051
+  },
+  {
+    "family": "fixed_band",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 143,
+    "seed": 20261052
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 144,
+    "seed": 20261053
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 145,
+    "seed": 20261054
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 146,
+    "seed": 20261055
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 147,
+    "seed": 20261056
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 148,
+    "seed": 20261057
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 149,
+    "seed": 20261058
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 150,
+    "seed": 20261059
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 151,
+    "seed": 20261060
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 152,
+    "seed": 20261061
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 153,
+    "seed": 20261062
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 154,
+    "seed": 20261063
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 155,
+    "seed": 20261064
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 156,
+    "seed": 20261065
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 157,
+    "seed": 20261066
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 158,
+    "seed": 20261067
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 159,
+    "seed": 20261068
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 160,
+    "seed": 20261069
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 161,
+    "seed": 20261070
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 162,
+    "seed": 20261071
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 163,
+    "seed": 20261072
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 164,
+    "seed": 20261073
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 165,
+    "seed": 20261074
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 166,
+    "seed": 20261075
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 167,
+    "seed": 20261076
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 168,
+    "seed": 20261077
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 169,
+    "seed": 20261078
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 170,
+    "seed": 20261079
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 171,
+    "seed": 20261080
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 172,
+    "seed": 20261081
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 173,
+    "seed": 20261082
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 174,
+    "seed": 20261083
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 175,
+    "seed": 20261084
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 176,
+    "seed": 20261085
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 177,
+    "seed": 20261086
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 178,
+    "seed": 20261087
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 179,
+    "seed": 20261088
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 180,
+    "seed": 20261089
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 181,
+    "seed": 20261090
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 182,
+    "seed": 20261091
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 183,
+    "seed": 20261092
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 184,
+    "seed": 20261093
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 185,
+    "seed": 20261094
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 186,
+    "seed": 20261095
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 187,
+    "seed": 20261096
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 188,
+    "seed": 20261097
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 189,
+    "seed": 20261098
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 190,
+    "seed": 20261099
+  },
+  {
+    "family": "fixed_band",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 191,
+    "seed": 20261100
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 192,
+    "seed": 20261101
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 193,
+    "seed": 20261102
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 194,
+    "seed": 20261103
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 195,
+    "seed": 20261104
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 196,
+    "seed": 20261105
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 197,
+    "seed": 20261106
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 198,
+    "seed": 20261107
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 199,
+    "seed": 20261108
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 200,
+    "seed": 20261109
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 201,
+    "seed": 20261110
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 202,
+    "seed": 20261111
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 203,
+    "seed": 20261112
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 204,
+    "seed": 20261113
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 205,
+    "seed": 20261114
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 206,
+    "seed": 20261115
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 207,
+    "seed": 20261116
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 208,
+    "seed": 20261117
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 209,
+    "seed": 20261118
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 210,
+    "seed": 20261119
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 211,
+    "seed": 20261120
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 212,
+    "seed": 20261121
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 213,
+    "seed": 20261122
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 214,
+    "seed": 20261123
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 215,
+    "seed": 20261124
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 216,
+    "seed": 20261125
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 217,
+    "seed": 20261126
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 218,
+    "seed": 20261127
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 219,
+    "seed": 20261128
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 220,
+    "seed": 20261129
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 221,
+    "seed": 20261130
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 222,
+    "seed": 20261131
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 223,
+    "seed": 20261132
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 224,
+    "seed": 20261133
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 225,
+    "seed": 20261134
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 226,
+    "seed": 20261135
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 227,
+    "seed": 20261136
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 228,
+    "seed": 20261137
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 229,
+    "seed": 20261138
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 230,
+    "seed": 20261139
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 231,
+    "seed": 20261140
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 232,
+    "seed": 20261141
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 233,
+    "seed": 20261142
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 234,
+    "seed": 20261143
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 235,
+    "seed": 20261144
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 236,
+    "seed": 20261145
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 237,
+    "seed": 20261146
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 238,
+    "seed": 20261147
+  },
+  {
+    "family": "fixed_band",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 239,
+    "seed": 20261148
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 240,
+    "seed": 20261149
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 241,
+    "seed": 20261150
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 242,
+    "seed": 20261151
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 243,
+    "seed": 20261152
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 244,
+    "seed": 20261153
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 245,
+    "seed": 20261154
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 246,
+    "seed": 20261155
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 247,
+    "seed": 20261156
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 248,
+    "seed": 20261157
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 249,
+    "seed": 20261158
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 250,
+    "seed": 20261159
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 251,
+    "seed": 20261160
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 252,
+    "seed": 20261161
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 253,
+    "seed": 20261162
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 254,
+    "seed": 20261163
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 255,
+    "seed": 20261164
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 256,
+    "seed": 20261165
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 257,
+    "seed": 20261166
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 258,
+    "seed": 20261167
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 259,
+    "seed": 20261168
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 260,
+    "seed": 20261169
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 261,
+    "seed": 20261170
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 262,
+    "seed": 20261171
+  },
+  {
+    "family": "fixed_band",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 263,
+    "seed": 20261172
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 264,
+    "seed": 20261173
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 265,
+    "seed": 20261174
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 266,
+    "seed": 20261175
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 267,
+    "seed": 20261176
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 268,
+    "seed": 20261177
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 269,
+    "seed": 20261178
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 270,
+    "seed": 20261179
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 271,
+    "seed": 20261180
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 272,
+    "seed": 20261181
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 273,
+    "seed": 20261182
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 274,
+    "seed": 20261183
+  },
+  {
+    "family": "fixed_band",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 275,
+    "seed": 20261184
+  },
+  {
+    "family": "fixed_band",
+    "N": 1024,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 276,
+    "seed": 20261185
+  },
+  {
+    "family": "fixed_band",
+    "N": 1024,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 277,
+    "seed": 20261186
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 278,
+    "seed": 20261187
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 279,
+    "seed": 20261188
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 280,
+    "seed": 20261189
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 281,
+    "seed": 20261190
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 282,
+    "seed": 20261191
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 283,
+    "seed": 20261192
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 284,
+    "seed": 20261193
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 285,
+    "seed": 20261194
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 286,
+    "seed": 20261195
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 287,
+    "seed": 20261196
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 288,
+    "seed": 20261197
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 289,
+    "seed": 20261198
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 290,
+    "seed": 20261199
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 291,
+    "seed": 20261200
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 292,
+    "seed": 20261201
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 293,
+    "seed": 20261202
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 294,
+    "seed": 20261203
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 295,
+    "seed": 20261204
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 296,
+    "seed": 20261205
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 297,
+    "seed": 20261206
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 298,
+    "seed": 20261207
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 299,
+    "seed": 20261208
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 300,
+    "seed": 20261209
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 301,
+    "seed": 20261210
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 302,
+    "seed": 20261211
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 303,
+    "seed": 20261212
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 304,
+    "seed": 20261213
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 305,
+    "seed": 20261214
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 306,
+    "seed": 20261215
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 307,
+    "seed": 20261216
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 308,
+    "seed": 20261217
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 309,
+    "seed": 20261218
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 310,
+    "seed": 20261219
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 311,
+    "seed": 20261220
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 312,
+    "seed": 20261221
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 313,
+    "seed": 20261222
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 314,
+    "seed": 20261223
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 315,
+    "seed": 20261224
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 316,
+    "seed": 20261225
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 317,
+    "seed": 20261226
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 318,
+    "seed": 20261227
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 319,
+    "seed": 20261228
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 320,
+    "seed": 20261229
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 321,
+    "seed": 20261230
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 322,
+    "seed": 20261231
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 323,
+    "seed": 20261232
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 324,
+    "seed": 20261233
+  },
+  {
+    "family": "random_matching",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 325,
+    "seed": 20261234
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 326,
+    "seed": 20261235
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 327,
+    "seed": 20261236
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 328,
+    "seed": 20261237
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 329,
+    "seed": 20261238
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 330,
+    "seed": 20261239
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 331,
+    "seed": 20261240
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 332,
+    "seed": 20261241
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 333,
+    "seed": 20261242
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 334,
+    "seed": 20261243
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 335,
+    "seed": 20261244
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 336,
+    "seed": 20261245
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 337,
+    "seed": 20261246
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 338,
+    "seed": 20261247
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 339,
+    "seed": 20261248
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 340,
+    "seed": 20261249
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 341,
+    "seed": 20261250
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 342,
+    "seed": 20261251
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 343,
+    "seed": 20261252
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 344,
+    "seed": 20261253
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 345,
+    "seed": 20261254
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 346,
+    "seed": 20261255
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 347,
+    "seed": 20261256
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 348,
+    "seed": 20261257
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 349,
+    "seed": 20261258
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 350,
+    "seed": 20261259
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 351,
+    "seed": 20261260
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 352,
+    "seed": 20261261
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 353,
+    "seed": 20261262
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 354,
+    "seed": 20261263
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 355,
+    "seed": 20261264
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 356,
+    "seed": 20261265
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 357,
+    "seed": 20261266
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 358,
+    "seed": 20261267
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 359,
+    "seed": 20261268
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 360,
+    "seed": 20261269
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 361,
+    "seed": 20261270
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 362,
+    "seed": 20261271
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 363,
+    "seed": 20261272
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 364,
+    "seed": 20261273
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 365,
+    "seed": 20261274
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 366,
+    "seed": 20261275
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 367,
+    "seed": 20261276
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 368,
+    "seed": 20261277
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 369,
+    "seed": 20261278
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 370,
+    "seed": 20261279
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 371,
+    "seed": 20261280
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 372,
+    "seed": 20261281
+  },
+  {
+    "family": "random_matching",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 373,
+    "seed": 20261282
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 374,
+    "seed": 20261283
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 375,
+    "seed": 20261284
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 376,
+    "seed": 20261285
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 377,
+    "seed": 20261286
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 378,
+    "seed": 20261287
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 379,
+    "seed": 20261288
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 380,
+    "seed": 20261289
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 381,
+    "seed": 20261290
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 382,
+    "seed": 20261291
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 383,
+    "seed": 20261292
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 384,
+    "seed": 20261293
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 385,
+    "seed": 20261294
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 386,
+    "seed": 20261295
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 387,
+    "seed": 20261296
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 388,
+    "seed": 20261297
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 389,
+    "seed": 20261298
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 390,
+    "seed": 20261299
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 391,
+    "seed": 20261300
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 392,
+    "seed": 20261301
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 393,
+    "seed": 20261302
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 394,
+    "seed": 20261303
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 395,
+    "seed": 20261304
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 396,
+    "seed": 20261305
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 397,
+    "seed": 20261306
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 398,
+    "seed": 20261307
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 399,
+    "seed": 20261308
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 400,
+    "seed": 20261309
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 401,
+    "seed": 20261310
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 402,
+    "seed": 20261311
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 403,
+    "seed": 20261312
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 404,
+    "seed": 20261313
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 405,
+    "seed": 20261314
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 406,
+    "seed": 20261315
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 407,
+    "seed": 20261316
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 408,
+    "seed": 20261317
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 409,
+    "seed": 20261318
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 410,
+    "seed": 20261319
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 411,
+    "seed": 20261320
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 412,
+    "seed": 20261321
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 413,
+    "seed": 20261322
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 414,
+    "seed": 20261323
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 415,
+    "seed": 20261324
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 416,
+    "seed": 20261325
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 417,
+    "seed": 20261326
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 418,
+    "seed": 20261327
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 419,
+    "seed": 20261328
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 420,
+    "seed": 20261329
+  },
+  {
+    "family": "random_matching",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 421,
+    "seed": 20261330
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 422,
+    "seed": 20261331
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 423,
+    "seed": 20261332
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 424,
+    "seed": 20261333
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 425,
+    "seed": 20261334
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 426,
+    "seed": 20261335
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 427,
+    "seed": 20261336
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 428,
+    "seed": 20261337
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 429,
+    "seed": 20261338
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 430,
+    "seed": 20261339
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 431,
+    "seed": 20261340
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 432,
+    "seed": 20261341
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 433,
+    "seed": 20261342
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 434,
+    "seed": 20261343
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 435,
+    "seed": 20261344
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 436,
+    "seed": 20261345
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 437,
+    "seed": 20261346
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 438,
+    "seed": 20261347
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 439,
+    "seed": 20261348
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 440,
+    "seed": 20261349
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 441,
+    "seed": 20261350
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 442,
+    "seed": 20261351
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 443,
+    "seed": 20261352
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 444,
+    "seed": 20261353
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 445,
+    "seed": 20261354
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 446,
+    "seed": 20261355
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 447,
+    "seed": 20261356
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 448,
+    "seed": 20261357
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 449,
+    "seed": 20261358
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 450,
+    "seed": 20261359
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 451,
+    "seed": 20261360
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 452,
+    "seed": 20261361
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 453,
+    "seed": 20261362
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 454,
+    "seed": 20261363
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 455,
+    "seed": 20261364
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 456,
+    "seed": 20261365
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 457,
+    "seed": 20261366
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 458,
+    "seed": 20261367
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 459,
+    "seed": 20261368
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 460,
+    "seed": 20261369
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 461,
+    "seed": 20261370
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 462,
+    "seed": 20261371
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 463,
+    "seed": 20261372
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 464,
+    "seed": 20261373
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 465,
+    "seed": 20261374
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 466,
+    "seed": 20261375
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 467,
+    "seed": 20261376
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 468,
+    "seed": 20261377
+  },
+  {
+    "family": "random_matching",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 469,
+    "seed": 20261378
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 470,
+    "seed": 20261379
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 471,
+    "seed": 20261380
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 472,
+    "seed": 20261381
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 473,
+    "seed": 20261382
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 474,
+    "seed": 20261383
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 475,
+    "seed": 20261384
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 476,
+    "seed": 20261385
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 477,
+    "seed": 20261386
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 478,
+    "seed": 20261387
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 479,
+    "seed": 20261388
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 480,
+    "seed": 20261389
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 481,
+    "seed": 20261390
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 482,
+    "seed": 20261391
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 483,
+    "seed": 20261392
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 484,
+    "seed": 20261393
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 485,
+    "seed": 20261394
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 486,
+    "seed": 20261395
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 487,
+    "seed": 20261396
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 488,
+    "seed": 20261397
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 489,
+    "seed": 20261398
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 490,
+    "seed": 20261399
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 491,
+    "seed": 20261400
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 492,
+    "seed": 20261401
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 493,
+    "seed": 20261402
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 494,
+    "seed": 20261403
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 495,
+    "seed": 20261404
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 496,
+    "seed": 20261405
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 497,
+    "seed": 20261406
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 498,
+    "seed": 20261407
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 499,
+    "seed": 20261408
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 500,
+    "seed": 20261409
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 501,
+    "seed": 20261410
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 502,
+    "seed": 20261411
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 503,
+    "seed": 20261412
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 504,
+    "seed": 20261413
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 505,
+    "seed": 20261414
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 506,
+    "seed": 20261415
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 507,
+    "seed": 20261416
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 508,
+    "seed": 20261417
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 509,
+    "seed": 20261418
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 510,
+    "seed": 20261419
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 511,
+    "seed": 20261420
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 512,
+    "seed": 20261421
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 513,
+    "seed": 20261422
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 514,
+    "seed": 20261423
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 515,
+    "seed": 20261424
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 516,
+    "seed": 20261425
+  },
+  {
+    "family": "random_matching",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 517,
+    "seed": 20261426
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 518,
+    "seed": 20261427
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 519,
+    "seed": 20261428
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 520,
+    "seed": 20261429
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 521,
+    "seed": 20261430
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 522,
+    "seed": 20261431
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 523,
+    "seed": 20261432
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 524,
+    "seed": 20261433
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 525,
+    "seed": 20261434
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 526,
+    "seed": 20261435
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 527,
+    "seed": 20261436
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 528,
+    "seed": 20261437
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 529,
+    "seed": 20261438
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 530,
+    "seed": 20261439
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 531,
+    "seed": 20261440
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 532,
+    "seed": 20261441
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 533,
+    "seed": 20261442
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 534,
+    "seed": 20261443
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 535,
+    "seed": 20261444
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 536,
+    "seed": 20261445
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 537,
+    "seed": 20261446
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 538,
+    "seed": 20261447
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 539,
+    "seed": 20261448
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 540,
+    "seed": 20261449
+  },
+  {
+    "family": "random_matching",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 541,
+    "seed": 20261450
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 542,
+    "seed": 20261451
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 543,
+    "seed": 20261452
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 544,
+    "seed": 20261453
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 545,
+    "seed": 20261454
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 546,
+    "seed": 20261455
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 547,
+    "seed": 20261456
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 548,
+    "seed": 20261457
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 549,
+    "seed": 20261458
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 550,
+    "seed": 20261459
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 551,
+    "seed": 20261460
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 552,
+    "seed": 20261461
+  },
+  {
+    "family": "random_matching",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 553,
+    "seed": 20261462
+  },
+  {
+    "family": "random_matching",
+    "N": 1024,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 554,
+    "seed": 20261463
+  },
+  {
+    "family": "random_matching",
+    "N": 1024,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 555,
+    "seed": 20261464
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 556,
+    "seed": 20261465
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 557,
+    "seed": 20261466
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 558,
+    "seed": 20261467
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 559,
+    "seed": 20261468
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 560,
+    "seed": 20261469
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 561,
+    "seed": 20261470
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 562,
+    "seed": 20261471
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 563,
+    "seed": 20261472
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 564,
+    "seed": 20261473
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 565,
+    "seed": 20261474
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 566,
+    "seed": 20261475
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 567,
+    "seed": 20261476
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 568,
+    "seed": 20261477
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 569,
+    "seed": 20261478
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 570,
+    "seed": 20261479
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 571,
+    "seed": 20261480
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 572,
+    "seed": 20261481
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 573,
+    "seed": 20261482
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 574,
+    "seed": 20261483
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 575,
+    "seed": 20261484
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 576,
+    "seed": 20261485
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 577,
+    "seed": 20261486
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 578,
+    "seed": 20261487
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 579,
+    "seed": 20261488
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 580,
+    "seed": 20261489
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 581,
+    "seed": 20261490
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 582,
+    "seed": 20261491
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 583,
+    "seed": 20261492
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 584,
+    "seed": 20261493
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 585,
+    "seed": 20261494
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 586,
+    "seed": 20261495
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 587,
+    "seed": 20261496
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 588,
+    "seed": 20261497
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 589,
+    "seed": 20261498
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 590,
+    "seed": 20261499
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 591,
+    "seed": 20261500
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 592,
+    "seed": 20261501
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 593,
+    "seed": 20261502
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 594,
+    "seed": 20261503
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 595,
+    "seed": 20261504
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 596,
+    "seed": 20261505
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 597,
+    "seed": 20261506
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 598,
+    "seed": 20261507
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 599,
+    "seed": 20261508
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 600,
+    "seed": 20261509
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 601,
+    "seed": 20261510
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 602,
+    "seed": 20261511
+  },
+  {
+    "family": "random_spd",
+    "N": 8,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 603,
+    "seed": 20261512
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 604,
+    "seed": 20261513
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 605,
+    "seed": 20261514
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 606,
+    "seed": 20261515
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 607,
+    "seed": 20261516
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 608,
+    "seed": 20261517
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 609,
+    "seed": 20261518
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 610,
+    "seed": 20261519
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 611,
+    "seed": 20261520
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 612,
+    "seed": 20261521
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 613,
+    "seed": 20261522
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 614,
+    "seed": 20261523
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 615,
+    "seed": 20261524
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 616,
+    "seed": 20261525
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 617,
+    "seed": 20261526
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 618,
+    "seed": 20261527
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 619,
+    "seed": 20261528
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 620,
+    "seed": 20261529
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 621,
+    "seed": 20261530
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 622,
+    "seed": 20261531
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 623,
+    "seed": 20261532
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 624,
+    "seed": 20261533
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 625,
+    "seed": 20261534
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 626,
+    "seed": 20261535
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 627,
+    "seed": 20261536
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 628,
+    "seed": 20261537
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 629,
+    "seed": 20261538
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 630,
+    "seed": 20261539
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 631,
+    "seed": 20261540
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 632,
+    "seed": 20261541
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 633,
+    "seed": 20261542
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 634,
+    "seed": 20261543
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 635,
+    "seed": 20261544
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 636,
+    "seed": 20261545
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 637,
+    "seed": 20261546
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 638,
+    "seed": 20261547
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 639,
+    "seed": 20261548
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 640,
+    "seed": 20261549
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 641,
+    "seed": 20261550
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 642,
+    "seed": 20261551
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 643,
+    "seed": 20261552
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 644,
+    "seed": 20261553
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 645,
+    "seed": 20261554
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 646,
+    "seed": 20261555
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 647,
+    "seed": 20261556
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 648,
+    "seed": 20261557
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 649,
+    "seed": 20261558
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 650,
+    "seed": 20261559
+  },
+  {
+    "family": "random_spd",
+    "N": 16,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 651,
+    "seed": 20261560
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 652,
+    "seed": 20261561
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 653,
+    "seed": 20261562
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 654,
+    "seed": 20261563
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 655,
+    "seed": 20261564
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 656,
+    "seed": 20261565
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 657,
+    "seed": 20261566
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 658,
+    "seed": 20261567
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 659,
+    "seed": 20261568
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 660,
+    "seed": 20261569
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 661,
+    "seed": 20261570
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 662,
+    "seed": 20261571
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 663,
+    "seed": 20261572
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 664,
+    "seed": 20261573
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 665,
+    "seed": 20261574
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 666,
+    "seed": 20261575
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 667,
+    "seed": 20261576
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 668,
+    "seed": 20261577
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 669,
+    "seed": 20261578
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 670,
+    "seed": 20261579
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 671,
+    "seed": 20261580
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 672,
+    "seed": 20261581
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 673,
+    "seed": 20261582
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 674,
+    "seed": 20261583
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 675,
+    "seed": 20261584
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 676,
+    "seed": 20261585
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 677,
+    "seed": 20261586
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 678,
+    "seed": 20261587
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 679,
+    "seed": 20261588
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 680,
+    "seed": 20261589
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 681,
+    "seed": 20261590
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 682,
+    "seed": 20261591
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 683,
+    "seed": 20261592
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 684,
+    "seed": 20261593
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 685,
+    "seed": 20261594
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 686,
+    "seed": 20261595
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 687,
+    "seed": 20261596
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 688,
+    "seed": 20261597
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 689,
+    "seed": 20261598
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 690,
+    "seed": 20261599
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 691,
+    "seed": 20261600
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 692,
+    "seed": 20261601
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 693,
+    "seed": 20261602
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 694,
+    "seed": 20261603
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 695,
+    "seed": 20261604
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 696,
+    "seed": 20261605
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 697,
+    "seed": 20261606
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 698,
+    "seed": 20261607
+  },
+  {
+    "family": "random_spd",
+    "N": 32,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 699,
+    "seed": 20261608
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 700,
+    "seed": 20261609
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 701,
+    "seed": 20261610
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 702,
+    "seed": 20261611
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 703,
+    "seed": 20261612
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 704,
+    "seed": 20261613
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 705,
+    "seed": 20261614
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 706,
+    "seed": 20261615
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 707,
+    "seed": 20261616
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 708,
+    "seed": 20261617
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 709,
+    "seed": 20261618
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 710,
+    "seed": 20261619
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 711,
+    "seed": 20261620
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 712,
+    "seed": 20261621
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 713,
+    "seed": 20261622
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 714,
+    "seed": 20261623
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 715,
+    "seed": 20261624
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 716,
+    "seed": 20261625
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 717,
+    "seed": 20261626
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 718,
+    "seed": 20261627
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 719,
+    "seed": 20261628
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 720,
+    "seed": 20261629
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 721,
+    "seed": 20261630
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 722,
+    "seed": 20261631
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 723,
+    "seed": 20261632
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 724,
+    "seed": 20261633
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 725,
+    "seed": 20261634
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 726,
+    "seed": 20261635
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 727,
+    "seed": 20261636
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 728,
+    "seed": 20261637
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 729,
+    "seed": 20261638
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 730,
+    "seed": 20261639
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 731,
+    "seed": 20261640
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 732,
+    "seed": 20261641
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 733,
+    "seed": 20261642
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 734,
+    "seed": 20261643
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 735,
+    "seed": 20261644
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 736,
+    "seed": 20261645
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 737,
+    "seed": 20261646
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 738,
+    "seed": 20261647
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 739,
+    "seed": 20261648
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 740,
+    "seed": 20261649
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 741,
+    "seed": 20261650
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 742,
+    "seed": 20261651
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 743,
+    "seed": 20261652
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 744,
+    "seed": 20261653
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 745,
+    "seed": 20261654
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 746,
+    "seed": 20261655
+  },
+  {
+    "family": "random_spd",
+    "N": 64,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 747,
+    "seed": 20261656
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 748,
+    "seed": 20261657
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 749,
+    "seed": 20261658
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 750,
+    "seed": 20261659
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 751,
+    "seed": 20261660
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 752,
+    "seed": 20261661
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 753,
+    "seed": 20261662
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 754,
+    "seed": 20261663
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 755,
+    "seed": 20261664
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 8,
+    "case_id": 756,
+    "seed": 20261665
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 9,
+    "case_id": 757,
+    "seed": 20261666
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 10,
+    "case_id": 758,
+    "seed": 20261667
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 11,
+    "case_id": 759,
+    "seed": 20261668
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 12,
+    "case_id": 760,
+    "seed": 20261669
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 13,
+    "case_id": 761,
+    "seed": 20261670
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 14,
+    "case_id": 762,
+    "seed": 20261671
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 2,
+    "sample": 15,
+    "case_id": 763,
+    "seed": 20261672
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 764,
+    "seed": 20261673
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 765,
+    "seed": 20261674
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 766,
+    "seed": 20261675
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 767,
+    "seed": 20261676
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 768,
+    "seed": 20261677
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 769,
+    "seed": 20261678
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 770,
+    "seed": 20261679
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 771,
+    "seed": 20261680
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 8,
+    "case_id": 772,
+    "seed": 20261681
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 9,
+    "case_id": 773,
+    "seed": 20261682
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 10,
+    "case_id": 774,
+    "seed": 20261683
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 11,
+    "case_id": 775,
+    "seed": 20261684
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 12,
+    "case_id": 776,
+    "seed": 20261685
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 13,
+    "case_id": 777,
+    "seed": 20261686
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 14,
+    "case_id": 778,
+    "seed": 20261687
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 4,
+    "sample": 15,
+    "case_id": 779,
+    "seed": 20261688
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 780,
+    "seed": 20261689
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 781,
+    "seed": 20261690
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 782,
+    "seed": 20261691
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 783,
+    "seed": 20261692
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 784,
+    "seed": 20261693
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 785,
+    "seed": 20261694
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 786,
+    "seed": 20261695
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 787,
+    "seed": 20261696
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 8,
+    "case_id": 788,
+    "seed": 20261697
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 9,
+    "case_id": 789,
+    "seed": 20261698
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 10,
+    "case_id": 790,
+    "seed": 20261699
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 11,
+    "case_id": 791,
+    "seed": 20261700
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 12,
+    "case_id": 792,
+    "seed": 20261701
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 13,
+    "case_id": 793,
+    "seed": 20261702
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 14,
+    "case_id": 794,
+    "seed": 20261703
+  },
+  {
+    "family": "random_spd",
+    "N": 128,
+    "matching_terms": 8,
+    "sample": 15,
+    "case_id": 795,
+    "seed": 20261704
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 796,
+    "seed": 20261705
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 797,
+    "seed": 20261706
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 798,
+    "seed": 20261707
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 799,
+    "seed": 20261708
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 4,
+    "case_id": 800,
+    "seed": 20261709
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 5,
+    "case_id": 801,
+    "seed": 20261710
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 6,
+    "case_id": 802,
+    "seed": 20261711
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 2,
+    "sample": 7,
+    "case_id": 803,
+    "seed": 20261712
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 804,
+    "seed": 20261713
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 805,
+    "seed": 20261714
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 806,
+    "seed": 20261715
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 807,
+    "seed": 20261716
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 4,
+    "case_id": 808,
+    "seed": 20261717
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 5,
+    "case_id": 809,
+    "seed": 20261718
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 6,
+    "case_id": 810,
+    "seed": 20261719
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 4,
+    "sample": 7,
+    "case_id": 811,
+    "seed": 20261720
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 812,
+    "seed": 20261721
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 813,
+    "seed": 20261722
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 814,
+    "seed": 20261723
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 815,
+    "seed": 20261724
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 4,
+    "case_id": 816,
+    "seed": 20261725
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 5,
+    "case_id": 817,
+    "seed": 20261726
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 6,
+    "case_id": 818,
+    "seed": 20261727
+  },
+  {
+    "family": "random_spd",
+    "N": 256,
+    "matching_terms": 8,
+    "sample": 7,
+    "case_id": 819,
+    "seed": 20261728
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 0,
+    "case_id": 820,
+    "seed": 20261729
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 1,
+    "case_id": 821,
+    "seed": 20261730
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 2,
+    "case_id": 822,
+    "seed": 20261731
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 2,
+    "sample": 3,
+    "case_id": 823,
+    "seed": 20261732
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 824,
+    "seed": 20261733
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 825,
+    "seed": 20261734
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 2,
+    "case_id": 826,
+    "seed": 20261735
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 4,
+    "sample": 3,
+    "case_id": 827,
+    "seed": 20261736
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 0,
+    "case_id": 828,
+    "seed": 20261737
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 1,
+    "case_id": 829,
+    "seed": 20261738
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 2,
+    "case_id": 830,
+    "seed": 20261739
+  },
+  {
+    "family": "random_spd",
+    "N": 512,
+    "matching_terms": 8,
+    "sample": 3,
+    "case_id": 831,
+    "seed": 20261740
+  },
+  {
+    "family": "random_spd",
+    "N": 1024,
+    "matching_terms": 4,
+    "sample": 0,
+    "case_id": 832,
+    "seed": 20261741
+  },
+  {
+    "family": "random_spd",
+    "N": 1024,
+    "matching_terms": 4,
+    "sample": 1,
+    "case_id": 833,
+    "seed": 20261742
+  },
+  {
+    "family": "poisson_2d",
+    "N": 9,
+    "matching_terms": 4,
+    "sample": 0,
+    "grid": 3,
+    "case_id": 834,
+    "seed": 20261743
+  },
+  {
+    "family": "poisson_2d",
+    "N": 49,
+    "matching_terms": 4,
+    "sample": 0,
+    "grid": 7,
+    "case_id": 835,
+    "seed": 20261744
+  },
+  {
+    "family": "poisson_2d",
+    "N": 225,
+    "matching_terms": 4,
+    "sample": 0,
+    "grid": 15,
+    "case_id": 836,
+    "seed": 20261745
+  },
+  {
+    "family": "poisson_2d",
+    "N": 529,
+    "matching_terms": 4,
+    "sample": 0,
+    "grid": 23,
+    "case_id": 837,
+    "seed": 20261746
+  },
+  {
+    "family": "poisson_2d",
+    "N": 961,
+    "matching_terms": 4,
+    "sample": 0,
+    "grid": 31,
+    "case_id": 838,
+    "seed": 20261747
+  },
+  {
+    "family": "commuting",
+    "N": 8,
+    "matching_terms": 0,
+    "sample": 0,
+    "case_id": 839,
+    "seed": 20261748
+  },
+  {
+    "family": "commuting",
+    "N": 64,
+    "matching_terms": 0,
+    "sample": 0,
+    "case_id": 840,
+    "seed": 20261749
+  },
+  {
+    "family": "commuting",
+    "N": 256,
+    "matching_terms": 0,
+    "sample": 0,
+    "case_id": 841,
+    "seed": 20261750
+  },
+  {
+    "family": "commuting",
+    "N": 1024,
+    "matching_terms": 0,
+    "sample": 0,
+    "case_id": 842,
+    "seed": 20261751
+  },
+  {
+    "family": "cancelling",
+    "N": 8,
+    "matching_terms": 0,
+    "sample": 0,
+    "amplitude": 1.0,
+    "case_id": 843,
+    "seed": 20261752
+  },
+  {
+    "family": "cancelling",
+    "N": 8,
+    "matching_terms": 0,
+    "sample": 0,
+    "amplitude": 4.0,
+    "case_id": 844,
+    "seed": 20261753
+  },
+  {
+    "family": "cancelling",
+    "N": 64,
+    "matching_terms": 0,
+    "sample": 0,
+    "amplitude": 1.0,
+    "case_id": 845,
+    "seed": 20261754
+  },
+  {
+    "family": "cancelling",
+    "N": 64,
+    "matching_terms": 0,
+    "sample": 0,
+    "amplitude": 4.0,
+    "case_id": 846,
+    "seed": 20261755
+  },
+  {
+    "family": "cancelling",
+    "N": 256,
+    "matching_terms": 0,
+    "sample": 0,
+    "amplitude": 1.0,
+    "case_id": 847,
+    "seed": 20261756
+  },
+  {
+    "family": "cancelling",
+    "N": 256,
+    "matching_terms": 0,
+    "sample": 0,
+    "amplitude": 4.0,
+    "case_id": 848,
+    "seed": 20261757
+  },
+  {
+    "family": "pauli",
+    "N": 2,
+    "matching_terms": 0,
+    "sample": 0,
+    "case_id": 849,
+    "seed": 20261758
+  }
+]

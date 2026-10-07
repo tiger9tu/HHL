@@ -1,0 +1,31 @@
+{
+  "commands": [
+    "python reproduce.py",
+    "python validate.py"
+  ],
+  "conventions": "dimensionless normalized H; counts are per attempted filter unless labeled",
+  "date_utc": "2026-09-09",
+  "python": "3.6.15",
+  "sha256": {
+    "num/epsA.m": "ecc447b2008cb28092fc171657c980031bf8e657035796b4c70b4e490244231c",
+    "num/trotter.m": "fda9821eec9c8192a62eee63435bea7ddc02f42f8f2fa868e2162e667690ab90",
+    "paper-revise/docs/comment1.pdf": "f1533f5507b5a163a3974f5ae42d85bfa3f229f041868872e1b24fa301ce1800",
+    "paper-revise/docs/comment2.pdf": "d24b96fab65ecd59454acfc5cd0bf34a894cb360dd2a95914dceffdcf1296df8",
+    "paper-revise/prompts/paper-revise.md": "13b7342709c8ae669f010e9536d7a872a8fa6a3511f9ecc9e883cb9c036c8584",
+    "paper-revise/prompts/tasks/13-qetu-qlsa.md": "d5c5a04d5882e3368ac5ba22c44fa09532aca7411110ca461059a17bfe408d64",
+    "paper-revise/prompts/tasks/README.md": "f2728d40d1561af87a2fb56a7d87e3ef6b2b6383198684963eccc9aa726d3455",
+    "paper-revise/results/01-framework/interface.md": "eb92548fb494eabed82bd80441e0671c5a8c22bdc7f9bf90ce24611b2901857e",
+    "paper-revise/results/02-application/instance.json": "6c6630ae605575da11c35fb38bcafd1ffb33d8b275d94f2777218e974ab7a670",
+    "paper-revise/results/02-application/specification.md": "12db141643103146d288b24e02f8e58ec05ca93728d0efd3d2afa7fb5f0488b2",
+    "paper-revise/results/03-hhl-analysis/practical-trotter/method-section.tex": "355cea7236714e6a1993d5546f22d884ccc436d0bfe0dda713b03a0e8929b28b",
+    "paper-revise/results/03-hhl-analysis/trotter-error/experiments/configurations.json": "cb95f16391bf310b6485fc53ba9f5eec7f1ff4fda80eb30d61b884bb09ee7e43",
+    "paper-revise/results/03-hhl-analysis/trotter-error/experiments/errors.csv": "fed56947ca6c6278f3150db58f63c3dc0fd54e22a3503dbc9f28af51824f6bbb",
+    "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py": "1f0c7e1a429bd34a695e24fb5f1118690d7bc59163675c82619b1ce9fe969a91",
+    "paper-revise/results/03-hhl-analysis/trotter-error/trotter-error-estimation.tex": "da04e16a6c837785e6723332a47dd9f7b0feb2356574c238282b5afefc79a780",
+    "paper-revise/results/04-modern-qlsa/model.md": "095b280925249544032ddf80d156ac7d6ddd439bed94f9789e6c68a73f53c34f",
+    "paper-revise/results/13-qetu-qlsa/sources/1806.01838v1.pdf": "0326a3de56b10c9805074031a827b1ac4c5ee526c5ad362096adfbacc261c60d",
+    "paper-revise/results/13-qetu-qlsa/sources/2204.05955v2.pdf": "ec93b1b96a5a1d94436bcba8abb830e391f5ff75347566061afcbba04c4471b5",
+    "paper/Explore_Practical_Quantum_Speedup_for_Quantum_Linear_System_of_Equations (1).pdf": "775cc22c04e0d578198406adc539c4b40e2b4823b4068d27eb2cbfe2ebe051fc",
+    "src/HHL/HamiltonianEvolution/TrotterSuzuki/TrotterSuzuki.qs": "eb6422e26767ef9901afa26ef91e79dc248211af81c497fc0d272a1881cb8e65"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "result": "passed",
+  "pages": 9,
+  "checks": [
+    "no unresolved references",
+    "no overfull TeX boxes",
+    "all words within page bounds",
+    "both exact example counts present",
+    "embedded reproduction ZIP"
+  ],
+  "pdf_sha256": "d4b6af6760ee723bb90e41c251697e41d372e56664546e4b91def5766ac59623",
+  "archive_sha256": "279344b937be3998fc812beb869998ccd096bb93b2d78099fa315a4c1da6c25b",
+  "pdf": "04-modern-qlsa/Modern-QLSA-T-count-report.pdf",
+  "pymupdf": "1.28.2"
+}

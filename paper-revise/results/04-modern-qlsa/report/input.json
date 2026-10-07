@@ -1,0 +1,7 @@
+{
+  "instance_id": "generic-real-stored-data",
+  "N": 1024,
+  "kappa": 100,
+  "epsilon_state": "0.01",
+  "delta": "0.01"
+}

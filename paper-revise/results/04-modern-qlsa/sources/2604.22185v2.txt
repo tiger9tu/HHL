@@ -1,0 +1,8660 @@
+--- Page 1 ---
+Constant Factor Analysis of Optimal Quantum Linear Solvers in Practice
+Pedro C. S. Costa,
+1, 2 ,
+
+Alexander M. Dalzell,
+3
+Dong An,
+4
+and Dominic W. Be rry
+2
+1
+ContinoQuantum, Sydney, NSW 2093, AU
+2
+School of Mathematical and Physical Sciences, Macquarie Unive rsity, Sydney, NSW 2109, AU
+3
+AWS Center for Quantum Computing, Pasadena, CA
+4
+Beijing International Center for Mathematical Research, Peking University, Beijing, China
+Optimal quantum linear equation solvers provide complexity
+O
+(
+
+log (1
+=
+)), where
+
+is the con-
+dition numb er and
+
+is the allowable error. The optimal solver using a discrete adiabatic approach
+[PRX Quantum
+3
+, 040303 (2022)] has large analytically proven constant factors for the upp er b ound
+on the complexity. The constant factors were later found to b e ab out 1,200 times smaller in numer-
+ical testing [Quantum
+9
+, 1887 (2025)]. This meant it is ab out an order of magnitude more ecient
+than using a randomised approach from [PRX Quantum
+6
+, 040373 (2025)], which has far smaller
+analytically proven constant factors. Recently, a \Shortcut" metho d has b een found to provide an
+optimal solver which also has small proven constant factors. In the present work, we conduct a
+comprehensive numerical analy sis comparing this metho d with the adiabatic solver for two families
+of random linear systems. We nd that, in the case where the solution norm is
+unknown
+, the adia-
+batic solver provides slightly b etter p erformance. If the solution norm is
+known
+, then the shortcut
+metho d prov ides signicantly b etter p erformance for non-Hermitian matrices.
+I.
+ Intro duction
+Just as linear system algorithms are foundational in clas-
+sical computing|p owering numerical metho ds for dier-
+ential equations and serving as core subroutines in ma-
+chine learning|quantum line ar system algorithms (QL-
+SAs) [
+1
+] are p oised to play an analogous role in quan-
+tum computing, as primitives for quantum algorithms for
+dierential equations [
+2
+{
+4
+] and quantum machine learn-
+ing [
+5
+], with p olylogarithmic dep endence on the sys te m
+dimension (i.e., exp onential improvement over classica l
+scaling) under standard assumptions such as sparsity,
+mo derate condition numb er,
+
+, and ecient oracle ac-
+cess.
+The rst QLSA was prop osed by Harrow, Hassidim,
+and Lloyd [
+6
+], which has complexity
+O
+(
+
+2
+=
+) for allow-
+able error
+
+. That complexity is s ub optimal, b ecause it
+scales as the square of the condition numb er, whereas the
+lower b ound found in Ref. [
+6
+] was 
+(
+
+). Variable-time
+amplitude amplication was prop osed as a way to obtain
+near-linear sc aling in
+
+, alb eit at the cost of worse scal-
+ing in
+
+[
+7
+,
+ 8
+]. The complexity was further improved to
+b eing p olynomial in log (1
+=
+) using a linear combinations
+of unitaries approach [
+9
+].
+A new principle in QLSAs was the development of an
+adiabatic solver, with the rst prop osal giving complexity
+O
+(
+
+log (
+
+)
+=
+) [
+10
+]. The complexity was further improved
+to p olynomial in log (1
+=
+) using improved scheduling [
+11
+],
+then to
+O
+(
+
+log (
+=
+)) using ltering [
+12
+]. The optimal
+complexity is
+O
+(
+
+log (1
+=
+)), and was achieved using a
+quantum walk with a discrete adiabatic theorem [
+13
+]. An
+alternative approach to achieving optimal complexity is
+an adiabatic solver using randomised times, though ini-
+tial metho ds we re slightly sub optimal [
+1 0
+,
+ 14
+]. This was
+improved to b eing strictly optimal scaling using \Pois-
+sonization" [
+15
+], which was incorp orated into Ref. [
+16
+]
+
+Corresp onding author:
+ p cs.costa@protonmail.com
+(the published version of Ref. [
+14
+]). A new approach
+to achieving the optimal complexity is the \Shortcut"
+metho d prop osed in Ref. [
+17
+].
+After the de velopment of QLSAs with the optimal
+O
+(
+
+log (1
+=
+)) complexity, the fo cus shifted to the con-
+stant factors in this complexity. The QLSA constant
+factors are imp ortant when evaluating the feasibility of
+prop osed e nd-to-e nd applications via detailed resource
+estimates, as has b een done for p ortfolio optimization
+[
+18
+] and solving certain dierential equations [
+19
+{
+21
+].
+The discrete adiabatic quantum walk (QW) approach
+[
+13
+] proved an upp er b ound on the complexity with a
+large constant factor, le aving op en the p ossibility for sig-
+nicant improvements. The \randomised" metho d for
+the quantum linear system problem (QLSP) was initially
+sub optimal, but much tighter b ounds on the complex-
+ity were proven, leading to the conjecture that it would
+outp erform the QW metho d for realistic paramete rs [
+16
+].
+To test this conjecture, Ref. [
+22
+] numerically tested b oth
+quantum solvers with thousands of random instances of
+matrices with a range of dimensions and condition num-
+b ers. The results from Ref. [
+22
+] show that in practice, the
+constant factor of the QW metho d is ab out 1200 times
+smaller than the upp er b ound estimated in Ref. [
+22
+]. As
+a result, the QW outp erforms the randomised metho d by
+roughly an order of magnitude.
+More recently, the Shortcut metho d [
+17
+] provides an
+optimal quantum linear system solver. This metho d
+is based on the quantum singular value transformation
+(QSVT) [
+23
+], and oers a signicantly smaller constant
+factor guarantee compared to the upp er b ound given for
+the QW [
+13
+]. In this work, we p erform comparative nu-
+merical testing of the QW and Shortcut metho ds . In
+comparison to the testing in Ref. [
+22
+], we test larger
+condition numb er and dimension, and dierent sparsity
+conditions. We observe a slight dierent constant factor
+for the new range of condition numb er and dimension in
+the algorithm s' p erformance. We there fore test the ran-
+arXiv:2604.22185v2  [quant-ph]  27 Apr 2026
+
+--- Page 2 ---
+2
+domised metho d with higher dimension, to ensure that
+the conclusions of Ref. [
+22
+] still hold.
+The background of the Shortcut metho d is presented
+in Section
+ I I
+. Details of the numerical tes ts for the QLS
+solvers are given in Section
+ I I I
+. We conclude in Sec -
+tion
+ IV
+. Additional technical details on the Shortcut
+metho d and further numerical analyses are provided in
+the app endices.
+I I.
+ Review and Algorithmic Metho d for the
+Shortcut to an Optimal QLSP Solver
+A.
+ The QLSP
+We b egin with a brief review of the Quantum Linear
+System Problem (QLSP), based primarily on Ref. [
+17
+].
+In this setting, the input is a s quare matrix
+A
+2
+C
+m
+
+m
+,
+and the goal is to solve the linear system
+A
+x
+=
+b
+, where
+x
+;
+b
+2
+C
+m
+.
+In the quantum version, we assume acces s to a unitary
+U
+b
+acting on
+s
+ˇ
+log
+2
+(
+m
+) qubits such that
+U
+b
+j
+e
+0
+i
+=
+j
+b
+i
+=
+k
+b
+k
+
+1
+2
+s
+
+1
+X
+j
+=0
+b
+j
+j
+e
+j
+i
+;
+(1)
+i.e., the normalized vector
+b
+is enco ded as the amplitude
+of a quantum state in the computational basis
+fj
+e
+j
+ig
+2
+s
+
+1
+j
+=0
+.
+We also assume
+k
+A
+k
+= 1. Access to
+A
+is provided via
+a blo ck enco ding: an (
+ ; a
+)-blo ck-enco ding unitary
+U
+A
+acting on
+a
++
+s
+qubits, such that
+A
+=
+
+
+h
+0
+j
+
+
+a
+
+
+I
+2
+s
+
+U
+A
+
+j
+0
+i
+
+
+a
+
+
+I
+2
+s
+
+;
+(2)
+with
+
+ k
+A
+k
+.
+Given an error parame ter
+
+, the goal of the QLSP is to
+pro duce a quantum state
+j
+~
+x
+i
+such that
+k j
+x
+i j
+~
+x
+i k 
+
+,
+where
+j
+x
+i /
+A
+
+1
+j
+b
+i
+. For non-deterministic pro cedures
+this error condition is generalised to requiring an out-
+put quantum state
+ˆ
+x
+such that the Bures distance is no
+greater than
+
+.
+Since the algorithm prop osed in [
+17
+] requires an esti-
+mate of
+k
+x
+k
+, it is useful to know its m aximum p ossible
+value. Given
+
+=
+k
+A
+k  k
+A
+
+1
+k
+and
+k
+b
+k
+= 1, we have
+k
+x
+k
+=
+k
+A
+
+1
+b
+k  k
+A
+
+1
+k  k
+b
+k
+=
+:
+(3)
+B.
+ The Algorithm
+The algorithm from [
+17
+] consists of two key c omp o-
+nents: a Kernel Reection (KR) followed by a Kernel
+Pro jec tion (KP), detailed in App endix
+ A
+. In this work,
+we fo cus solely on the KR part, whose c ost we analyze to
+extract a constant factor for comparison with the results
+in [
+22
+].
+To apply the KR metho d, the matrix
+A
+must rst b e
+enlarged using a guess for the norm of the solution. We
+restrict ourselves to square matrices
+A
+2
+C
+n
+
+n
+, which
+are emb edded into larger square matrices
+A
+t
+2
+C
+m
+
+m
+,
+where
+m
+=
+n
++ 1, based on a guess
+t
+2
+[1
+; 
+] for
+k
+x
+k
+.
+Let
+f
+v
+j
+g
+n
+
+1
+j
+=0
+b e the canonical basis of
+C
+n
+, where
+A
+is
+represented as
+A
+=
+P
+n
+
+1
+i;j
+=0
+A
+ij
+v
+i
+v
+y
+j
+. Then, we dene
+A
+t
+:
+=
+n
+
+1
+X
+i;j
+=0
+A
+ij
+e
+i
+e
+y
+j
++
+1
+t
+e
+m
+
+1
+e
+y
+m
+
+1
+=
+
+A
+0
+0
+1
+t
+
+;
+(4)
+where
+f
+e
+j
+g
+m
+
+1
+j
+=0
+, with
+m
+=
+n
++ 1, is the canonical basis of
+C
+m
+.
+The vector
+b
+=
+P
+n
+
+1
+j
+=0
+b
+j
+v
+j
+is similarly extended to
+b
+0
+:
+=
+n
+
+1
+X
+j
+=0
+b
+j
+p
+2
+e
+j
++
+1
+p
+2
+e
+m
+
+1
+:
+(5)
+The corresp onding s olution in the e nlarged space satises
+A
+t
+x
+t
+=
+b
+0
+, where
+x
+t
+=
+n
+
+1
+X
+j
+=0
+x
+j
+p
+2
+e
+j
++
+t
+p
+2
+e
+m
+
+1
+:
+(6)
+All blo ck enco dings and QSVT constructions are p e r-
+formed with these extended quantities. The blo ck-
+enco ding
+U
+A
+t
+and state- preparation unitary
+U
+b
+0
+can b e
+built using
+U
+A
+and
+U
+b
+, as prescrib ed in [
+17
+]. In practice,
+the circuit implementing the blo ck-enco ding for
+A
+t
+has
+only one
+t
+-dep endent gate|a single-qubit rotation where
+the angle of rotation is de termined by
+t
+.
+From these, a blo ck enco ding of
+G
+t
+=
+Q
+b
+0
+A
+t
+(7)
+is c ons tructe d, where
+Q
+b
+0
+=
+I
+
+b
+0
+b
+0y
+is the pro jec tor onto
+the com ple ment of
+b
+0
+, which ensures that
+x
+t
+2
+ker(
+G
+t
+);
+see App endix
+ A
+. In fact, the kernel of
+G
+t
+is the span of
+x
+t
+and the kernel of
+A
+t
+. The QSVT is then applied to
+G
+t
+to implement the ke rne l reection.
+The idea of the KR metho d is to start from the state
+j
+e
+m
+
+1
+i
+in the
+m
+-dimensional Hilb ert space and then ro-
+tate to the orthogonal vector
+j
+x
+i
+where the solution to
+the augmented linear system satises
+j
+x
+t
+i
+= sin(
+
+t
+)
+j
+x
+i
++ cos (
+
+t
+)
+j
+e
+m
+
+1
+i
+;
+(8)
+with
+
+t
+= arctan
+
+k
+x
+k
+t
+
+:
+(9)
+We summarise the quantum algorithm steps from its
+quantum circuit in Fig.
+ 1
+. We analyse it step by step.
+
+--- Page 3 ---
+3
+j
+0
+i
+
+
+
+0
+
+
+(
+a
++2)
+E
+=
+a
++2
+U
+(
+G
+t
+)
+K
+e
+
+;l
+j
+e
+m
+
+1
+i
+=
+s
+j
+e
+m
+
+1
+ih
+e
+m
+
+1
+j
+FIG. 1. Quantum circuit of the KR algorithm (repro duction
+of Figure 10 of [
+17
+]). We have
+U
+(
+G
+t
+)
+K
+e
+
+;l
+the QSVT that imple-
+ments the kernel reection p olynomial
+K
+e
+
+;l
+on the singular
+values of
+G
+t
+. We have
+a
+ancillas to build the blo ck enco ding
+of
+U
+A
+t
+, to which two more ancillas are added: one resulting
+from the QSVT and another from the extra ancilla used for
+U
+G
+t
+.
+First, we initialize the algorithm by preparing the state
+j
+e
+m
+
+1
+i
+(nal register of Fig.
+ 1
+), which admits the decom-
+p osition
+j
+e
+m
+
+1
+i
+= cos(
+
+t
+)
+j
+x
+t
+i
++ sin(
+
+t
+)
+j
+y
+t
+i
+:
+(10)
+where
+j
+y
+t
+i
+=
+
+cos(
+
+t
+)
+j
+x
+i
++ sin(
+
+t
+)
+j
+e
+m
+
+1
+i
+:
+(11)
+is orthogonal to
+j
+x
+t
+i
+.
+Next, we implement KR. This step is approximate,
+and its error is governed by a tunable input parameter
+
+KR
+2
+(0
+;
+1]. In the quantum circuit of Fig.
+ 1
+, it is de-
+picted by the gate
+U
+(
+G
+t
+)
+e
+
+;l
+|a QSVT sequence consisting
+of several calls to the blo ck-enco ding of
+G
+t
+dened in
+Eq. (
+7
+). The eect is the transformation by the order-
+2
+l
+p olynomial
+K
+e
+
+;l
+on the singular values of
+G
+t
+, applied
+to the initial state
+j
+e
+m
+i
+. The p olynomial and the pa-
+rameters
+e
+ and
+l
+are determined bas ed on
+
+KR
+and
+
+in
+order to approximate a reection ab out the kernel. (See
+Eq. (
+A29
+) for the explicit form of
+K
+e
+
+;l
+.) We may note
+that
+j
+x
+i
+and
+j
+e
+m
+
+1
+i
+by construc tio n lie in the orthogonal
+complement of the kernel of
+A
+t
+and meanwhile it holds
+that
+j
+x
+t
+i 2
+ker(
+G
+t
+) and
+j
+x
+t
+i ? j
+y
+t
+i
+. These facts imply
+that
+j
+y
+t
+i
+lies in the orthogonal complement of the kernel
+of
+G
+t
+. Thus, application of
+U
+(
+G
+t
+)
+K
+e
+
+;l
+, implements an ap-
+proximate reection that ips the sign of
+j
+y
+t
+i
+, up to a
+small correction, yielding
+cos(
+
+t
+)
+j
+x
+t
+i 
+(1
+
+
+0
+1
+) sin(
+
+t
+)
+j
+y
+t
+i
++
+
+0
+2
+sin(
+
+t
+)
+j
+z
+i
+;
+(12)
+where
+j
+z
+i
+is a unit vector orthogonal to
+j
+x
+t
+i
+and
+j
+y
+t
+i
+.
+The small corrections
+
+0
+1
+and
+
+0
+2
+are each upp er b o unded
+by
+O
+(
+
+KR
+) (see Eq. (
+A28
+)), and vanish as the tunable
+parameter
+
+KR
+!
+0. Note that these expressions refer
+to the nal register comp onents conditioned on ancilla
+outcomes in the second registe r of Fig.
+ 1
+ b e ing zero.
+Finally, the algorithm implements a multicontrolled
+Tooli gate (last gate of Fig.
+ 1
+) and p ostselects on the
+target ancilla b eing
+j
+0
+i
+. This has the eect of pro jecting
+the nal register onto the subspace orthogonal to
+j
+e
+m
+i
+,
+resulting in a state prop ortional to:
+j
+~
+x
+i /
+cos(
+
+t
+) sin(
+
+t
+)(2
+
+
+0
+1
+)
+j
+x
+i
++
+
+0
+2
+sin(
+
+t
+)
+j
+z
+i
+:
+(13)
+The total probability of success, c orre sp onding to m ea-
+suring all anc illas in the
+j
+0
+i
+state, is given by the squared
+norm of the unnormalized state ab ove:
+p
+succ
+=
+1
+4
+sin(2
+
+t
+)
+2
+(2
+
+
+0
+1
+)
+2
++ (
+
+0
+2
+)
+2
+sin
+2
+(
+
+t
+)
+:
+(14)
+Thus, we upp er b ound this success probability by con-
+sidering the maximum of
+
+0
+2
+and the minimum of
+
+0
+1
+, and
+vice-versa for the lower b ound, i.e.,
+sin
+2
+(2
+
+t
+)
+
+1
+
+
+KR
+1 +
+
+KR
+
+2
+
+p
+succ
+
+sin
+2
+(2
+
+t
+) +
+4
+
+2
+KR
+(1 +
+
+KR
+)
+2
+;
+(15)
+Notice that from Eq. (
+15
+) as
+
+KR
+!
+0 and
+t
+ˇ k
+x
+k
+we
+have
+p
+succ
+!
+1.
+Conditioned on success, the error
+kj
+x
+i j
+~
+x
+ik
+can also
+b e b ounded by arcsin(
+
+KR
+=
+cos(
+
+t
+))
+ˇ
+
+KR
+=
+cos(
+
+t
+) (see
+Theorem 1 of [
+17
+]). Thus, if
+
+error is desired, one can
+cho ose
+
+KR
+=
+
+cos(
+
+t
+) (note, knowledge of
+k
+x
+k
+is re-
+quired to compute
+
+t
+). Alternatively, the output can b e
+considered an ansatz state, and the KP metho d can b e
+used to lter errors down to a smaller value of
+
+, if de-
+sired.
+I I I.
+ Metho ds and results
+When comparing the p erformance of quantum linear
+solvers, it is imp ortant to distinguish b etween sce narios
+where the norm
+k
+x
+k
+is known and where it is not. As
+discussed in [
+17
+], the kernel reection algorithm requires
+an initial estimation of the norm up to a multiplicative
+error. This step is not present in other metho ds such
+as those based on the discrete adiabatic theorem or the
+randomization approach [
+22
+].
+In the idealised setting where the norm of the solution
+is known, the Shortcut metho d do es not re quire the l-
+tering step; that is, the KR pro cedure alone achieves the
+optimal scaling
+O
+
+
+log (1
+=
+)
+
+in terms of the c ondition
+numb er
+
+and the allowed solution e rror
+
+. In fact, when
+the norm is known exactly, one may cho ose
+
+KR
+=
+=
+p
+2,
+and then derive a rigorous query complexity upp er b ound
+of (1 +
+O
+(
+
+))
+
+log
+
+2
+p
+2
+=
+
+, implying the constant factor
+is only 1, even in the worst case. This has the same cost
+as KP (ltering) to error
+
+KP
+=
+
+up to a sm all addi-
+tive
+
+ln
+
+p
+2
+
+correction. For this reason, the Shortcut
+metho d will provide the lowest complexity in the case
+where the norm is known. In the known-norm scenario,
+we do not include a ltering step, and we b enchmark b oth
+QLSAs for total allowable errors
+
+= 10
+
+2
+and
+
+= 10
+
+3
+.
+We analyse this cost in two distinct cases: (1) when the
+input matrix
+A
+is non-Hermitian, and (2) when
+A
+is p os-
+itive denite (PD). In b oth regim es, we test matrices of
+sizes 32
+
+32 and 64
+
+64.
+For the QW-based metho d, we estimate the total
+cost separately for the non-Hermitian (and non-p ositive)
+and p ositive-denite data sets, but using essentially the
+
+--- Page 4 ---
+4
+same set of adiabatic threshold errors, namely 
+2
+f
+0
+:
+40
+;
+0
+:
+30
+;
+0
+:
+20
+;
+0
+:
+15
+;
+0
+:
+10
+g
+. Here,  denotes the
+`
+2
+-norm
+error in the output state of the adiabatic stage, prior to
+the nal ltering step that reduces the error to a pre-
+scrib ed target solution error
+ <
+. For each data set,
+we use the re sulting runs to interp olate the total cost as
+a function of , taking into account b oth the adiabatic
+evolution and the ltering stage, and thereby estimate
+the value of  that minimize s the total cost, (see Eq.
+(27) [
+22
+]) for a given allowable nal error
+
+.
+The depth of the circuit in the Shortcut metho d|and
+consequently the total cost|is determined by selecting
+the parameter
+
+KR
+in the p olynom ial dening the kernel
+reection such that the resulting allowable error in the
+output state is as close as p ossible to the target error.
+For the known-norm case, we set the target error to
+
+as there is no subsequent ltering step. (Later, we will
+consider a two step approach, where the target error is
+, after which ltering is applied to reduce error to
+
+.)
+Once
+
+K R
+is xed, and for a given value of
+e
+ :=
+1
+
+in
+the kernel reection function, the corresp onding p olyno-
+mial order Eq. (
+A16
+) de termines the circuit depth. This
+order plays an analogous role to the numb er of steps nec-
+essary in the discrete adiabatic metho d describ ed in [
+22
+],
+which is required to achieve the desired target error .
+In that case, the e volution progresses from
+s
+= 0 to
+s
+= 1
+according to a given s cheduling function.
+Subsequently, we consider the more realistic sce nario
+in which the norm of the s olution is not known in ad-
+vance. In this setting, we restrict our analysis to non-
+Hermitian matrices, and for the Shortcut metho d, we use
+the
+exhaustive search method in log space
+variant, as pro-
+p osed in [
+17
+, Algorithm 3]. This variant has near-optimal
+asymptotic cost of
+O
+(
+
+log (
+
+) log log (
+
+) +
+
+log (1
+=
+)), and
+it is simpler to implement than the variant from [
+17
+, Al-
+gorithm 4] that achieves optimal
+O
+(
+
+log (1
+=
+)) complex-
+ity even when the norm is not known.
+For the Shortcut metho d, we quantify the complexity
+in terms of calls to the (controlled) blo ck-enco ding
+U
+A
+of
+A
+. Sp ecically, if #
+U
+A
+denotes the p olynomial degree,
+then we dene the eective cost as Cost = #
+U
+A
+=p
+succ
+,
+where
+p
+succ
+is the probability of me asuring
+j
+0
+i
+in the an-
+cillary registers. In the case of the Shortcut m etho d, the
+numb er of calls to
+U
+A
+is given by the p olynomial order
+of the KR, whereas in the QW metho d, it is given by
+the numb er of QW steps. This assumes each QW ste p
+has cost equal to the cost of one call to (controlled)
+U
+A
+.
+Howe ver, for non-Hermitian matrices, a QW step during
+the adiabatic part of the QW m etho d requires applying
+a gate of the form
+j
+0
+i h
+0
+j 
+
+U
+A
++
+j
+1
+i h
+1
+j 
+
+U
+A
+y
+which con-
+trols b etween
+A
+and its adjoint|in some cases, it may
+b e appropriate to cost this op eration as double the cos t
+of controlled
+U
+A
+. Thus, we als o rep ort in App endix
+ A 3
+the total cost of the QW metho d by doubling the cost of
+the adiabatic part. Results are shown for b oth p ositive
+denite and non-Hermitian matrices as a func tion of the
+condition numb er.
+For e ach condition numb er
+
+, we generate 100 inde-
+p endent ra ndom instances (
+A;
+b
+) and rep ort the average
+numb er of
+U
+A
+calls. We rst sample a matrix
+A
+2
+R
+2
+n
+
+2
+n
+with i.i.d. entrie s drawn uniformly from [0
+;
+2], and com-
+pute its singular value decomp osition as
+A
+=
+U
+
+V
+>
+.
+To enforce the target condition numb e r
+
+, we replace
+the singular values of  by anely rescaled singular val-
+ues collected in a diagonal m atrix 
+0
+, chosen so that
+˙
+max
+(
+0
+)
+=˙
+min
+(
+0
+) =
+
+. We then set
+M
+:
+=
+U
+
+0
+V
+>
+for the non-Hermitian instances. For the PD instances,
+we instead set
+M
+:
+=
+V
+
+0
+V
+>
+, which yields a symmetric
+p ositive-denite matrix.
+A.
+ Performance in the Known-Norm Regime
+It is imp ortant to note that this analysis excludes the
+cost of the norm estimation pro cedure; it accounts only
+for the kernel reection ste ps .
+1.
+ Non-Hermitian matrices
+Rather than selecting a distinct value of
+
+KR
+for e ach
+matrix instance to meet the targ et error, we determine a
+single global value of
+
+KR
+for all instances asso ciated with
+a xed condition numb er. T his global
+
+KR
+is chosen such
+that the average error across all 100 non- Hermitian ma-
+trix samples matches the desired target thre shold. This
+strategy is also employed in [
+22
+], but there in terms of
+the walk steps: the total numb er of walk steps is xe d
+so that, on average over all tested instances, the error
+matches the prescrib ed target threshold.
+While the primary fo cus in [
+22
+] was to study the
+p erformance of the improved randomization metho d
+from [
+16
+]|particularly in the low condition numb er
+regime where it was argued to outp erform the discrete
+adiabatic metho d|we extend the analysis here to further
+explore the b ehaviour of the discrete adiabatic and Ran-
+domised me tho d across a broader parameter range; se e
+App endix
+ B 2
+. Accordingly, for each matrix dimension
+considered, we compare the complexities of the Shortcut
+and discrete adiabatic metho d.
+From the results in Tables
+ I
+ to
+ IV
+, where b oth choices
+of allowable error for the solution
+
+are tested, namely
+
+= 10
+
+2
+and
+
+= 10
+
+3
+the Shortcut metho d on non-
+Hermitian ins tanc es achieves a lower cost than the QW
+metho d,
+even when counting only the adiabatic compo-
+nent
+of the latter (Tables
+ B.I
+ and
+ B.I I
+). Thus, in this
+idealized scenario, the Shortcut metho d outp erforms the
+QW approach. We also see that the practical p erfor-
+mance on this e nsemble of random matrices is slightly
+b etter than the worst-case b ound from [
+17
+, Eq. (22)] of
+˘
+
+ln
+
+2
+p
+2
+=
+
+pairs of calls to
+U
+A
+, which evaluates to
+5
+:
+64
+
+and 7
+:
+94
+
+for
+
+= 0
+:
+01 and
+
+= 0
+:
+001, resp ectively.
+
+--- Page 5 ---
+5
+TABLE I. Shortcut metho d p erformance for
+
+= 0
+:
+01 on
+A
+2
+R
+32
+
+32
+(100 non-Hermitian instances). For each condition
+numb er
+
+, the parameter
+
+KR
+is chosen so that the average
+error is
+
+0
+:
+01. We rep ort the normalized cost Cost
+avg
+=
+for
+dierent
+
+values.
+
+
+KR
+Cost
+avg
+=
+Error
+avg
+20
+0
+:
+009
+5
+:
+58
+7
+:
+00
+
+10
+
+3
+40
+0
+:
+016
+5
+:
+20
+9
+:
+20
+
+10
+
+3
+80
+0
+:
+016
+4
+:
+95
+9
+:
+80
+
+10
+
+3
+160
+0
+:
+016
+4
+:
+76
+9
+:
+60
+
+10
+
+3
+320
+0
+:
+025
+4
+:
+50
+1
+:
+00
+
+10
+
+2
+640
+0
+:
+030
+4
+:
+31
+9
+:
+90
+
+10
+
+3
+1280
+0
+:
+005
+3
+:
+86
+9
+:
+80
+
+10
+
+3
+2560
+0
+:
+070
+3
+:
+38
+9
+:
+50
+
+10
+
+3
+TABLE I I. Shortcut metho d p erf ormance for
+
+= 0
+:
+01 on
+A
+2
+R
+64
+
+64
+(100 non-Hermitian instances). For each condition
+numb er
+
+, the parameter
+
+KR
+is chosen so that the average
+error is
+
+0
+:
+01. We rep ort the normalized cost Cost
+avg
+=
+for
+dierent
+
+values.
+
+
+KR
+Cost
+avg
+=
+Error
+avg
+20
+0
+:
+009
+5
+:
+59
+7
+:
+60
+
+10
+
+3
+40
+0
+:
+010
+5
+:
+35
+9
+:
+00
+
+10
+
+3
+80
+0
+:
+012
+5
+:
+23
+9
+:
+70
+
+10
+
+3
+160
+0
+:
+012
+5
+:
+01
+9
+:
+90
+
+10
+
+3
+320
+0
+:
+018
+4
+:
+84
+9
+:
+70
+
+10
+
+3
+640
+0
+:
+023
+4
+:
+59
+9
+:
+10
+
+10
+
+3
+1280
+0
+:
+032
+4
+:
+25
+1
+:
+00
+
+10
+
+2
+2560
+0
+:
+042
+3
+:
+95
+9
+:
+20
+
+10
+
+3
+TABLE I I I. Shortcut metho d p erformance for
+
+= 0
+:
+001 on
+A
+2
+R
+32
+
+32
+, averaged over 100 non-Hermitian instances. For
+each condition numb er
+
+, we select
+
+KR
+such that the aver-
+age error is at most 10
+
+3
+. We rep ort the normalized cost
+Cost
+avg
+=
+for dierent
+
+values.
+
+
+KR
+Cost
+avg
+=
+Error
+avg
+20
+0
+:
+0012
+7
+:
+52
+9
+:
+74
+
+10
+
+4
+40
+0
+:
+0014
+7
+:
+30
+9
+:
+80
+
+10
+
+4
+80
+0
+:
+0016
+7
+:
+18
+1
+:
+00
+
+10
+
+3
+160
+0
+:
+0020
+6
+:
+96
+1
+:
+00
+
+10
+
+3
+320
+0
+:
+0025
+6
+:
+76
+9
+:
+70
+
+10
+
+4
+640
+0
+:
+0029
+6
+:
+60
+9
+:
+35
+
+10
+
+4
+1280
+0
+:
+0050
+6
+:
+24
+9
+:
+86
+
+10
+
+4
+2560
+0
+:
+0090
+5
+:
+54
+1
+:
+00
+
+10
+
+4
+2.
+ Positive denite matrice s
+We ne xt test the Shortcut metho d on p ositive-denite
+matrices with a known solution norm. For these in-
+stances, the QW metho d is known to have a substan-
+tially smaller constant factor than in the non-Hermitian
+TABLE IV. Shortcut metho d p erformance for
+
+= 0
+:
+001 on
+A
+2
+R
+64
+
+64
+, averaged over 100 non-Hermitian instances. For
+each condition numb er
+
+, we cho ose
+
+KR
+such that the av-
+erage error is at most 10
+
+3
+. We rep ort the normalized cost
+Cost
+avg
+=
+for dierent
+
+values.
+
+
+KR
+Cost
+avg
+=
+Error
+avg
+20
+0
+:
+0011
+7
+:
+62
+9
+:
+20
+
+10
+
+4
+40
+0
+:
+0012
+7
+:
+46
+9
+:
+96
+
+10
+
+4
+80
+0
+:
+0103
+7
+:
+36
+1
+:
+00
+
+10
+
+3
+160
+0
+:
+0015
+7
+:
+22
+1
+:
+00
+
+10
+
+4
+320
+0
+:
+0016
+7
+:
+20
+9
+:
+70
+
+10
+
+4
+640
+0
+:
+0230
+6
+:
+82
+1
+:
+00
+
+10
+
+3
+1280
+0
+:
+0030
+6
+:
+58
+1
+:
+00
+
+10
+
+3
+2560
+0
+:
+0056
+5
+:
+98
+1
+:
+00
+
+10
+
+3
+case|approximately
+
+ˇ
+0
+:
+17 for PD versus
+
+ˇ
+1
+:
+84 for
+non-Hermitian, where
+
+is the constant factor used in the
+adiabatic part for a given error , i.e.,
+T
+=
+ =
+, as re-
+p orted in [
+22
+]. We therefore b enchmark b oth metho ds
+side by side under these conditions.
+TABLE V. Shortcut metho d p erformance for
+
+= 0
+:
+01 on
+A
+2
+R
+32
+
+32
+(100 PD instances). For each condition numb er
+
+, the parameter
+
+KR
+is chosen so that the average error is
+
+0
+:
+01.We rep ort the normalized cost Cost
+avg
+=
+for dierent
+
+values.
+
+
+KR
+Cost
+avg
+=
+Error
+avg
+20
+0
+:
+021
+4
+:
+70
+9
+:
+90
+
+10
+
+3
+40
+0
+:
+025
+4
+:
+49
+9
+:
+40
+
+10
+
+3
+80
+0
+:
+030
+4
+:
+30
+9
+:
+30
+
+10
+
+3
+160
+0
+:
+040
+4
+:
+01
+9
+:
+00
+
+10
+
+3
+320
+0
+:
+070
+3
+:
+49
+1
+:
+04
+
+10
+
+2
+640
+0
+:
+110
+3
+:
+19
+1
+:
+01
+
+10
+
+2
+1280
+0
+:
+100
+4
+:
+23
+1
+:
+00
+
+10
+
+2
+2560
+0
+:
+150
+3
+:
+02
+9
+:
+40
+
+10
+
+3
+FIG. 2. The plot shows the recommended values of , f or the
+QW metho d, as a function of the tested condition numb er,
+for the set of p ositive denite matrices
+A
+2
+C
+32
+
+32
+.
+
+--- Page 6 ---
+6
+TABLE VI. Shortcut metho d p erformance for
+
+= 0
+:
+01 on
+A
+2
+R
+64
+
+64
+, averaged over 100 PD instances. For each condition
+numb er
+
+, we cho ose
+
+KR
+such that the average error is at
+most 10
+
+2
+. For each condition numb er
+
+, we cho ose
+
+KR
+such that the average error is at most 10
+
+2
+. We rep ort the
+normalized cost Cost
+avg
+=
+for dierent
+
+values.
+
+
+KR
+Cost
+avg
+=
+Error
+avg
+20
+0
+:
+020
+4
+:
+80
+9
+:
+40
+
+10
+
+3
+40
+0
+:
+023
+4
+:
+62
+9
+:
+50
+
+10
+
+3
+80
+0
+:
+024
+4
+:
+52
+8
+:
+90
+
+10
+
+3
+160
+0
+:
+028
+4
+:
+38
+9
+:
+80
+
+10
+
+3
+320
+0
+:
+032
+4
+:
+24
+9
+:
+90
+
+10
+
+3
+640
+0
+:
+038
+4
+:
+04
+9
+:
+20
+
+10
+
+3
+1280
+0
+:
+044
+3
+:
+90
+9
+:
+80
+
+10
+
+3
+2560
+0
+:
+065
+3
+:
+52
+1
+:
+00
+
+10
+
+2
+TABLE VI I. Shortcut metho d p erf ormance for
+
+= 0
+:
+001 on
+A
+2
+R
+32
+
+32
+(100 PD instances). For each condition numb er
+
+, the parameter
+
+KR
+is chosen so that the average error is
+
+0
+:
+001. We rep ort the normalized cost Cost
+avg
+=
+for dierent
+
+values.
+
+
+KR
+Cost
+avg
+=
+Error
+avg
+20
+0
+:
+0024
+6
+:
+80
+9
+:
+91
+
+10
+
+4
+40
+0
+:
+0027
+6
+:
+65
+1
+:
+00
+
+10
+
+3
+80
+0
+:
+0036
+6
+:
+38
+1
+:
+00
+
+10
+
+3
+160
+0
+:
+0046
+6
+:
+14
+1
+:
+00
+
+10
+
+3
+320
+0
+:
+0072
+5
+:
+71
+1
+:
+00
+
+10
+
+3
+640
+0
+:
+0084
+5
+:
+56
+9
+:
+71
+
+10
+
+4
+1280
+0
+:
+0120
+5
+:
+20
+9
+:
+94
+
+10
+
+4
+2560
+0
+:
+0170
+4
+:
+86
+1
+:
+00
+
+10
+
+3
+TABLE VI I I. Shortcut metho d p erformance for
+
+= 0
+:
+001 on
+A
+2
+R
+64
+
+64
+(100 PD instances). For each condition numb er
+
+, the parameter
+
+KR
+is chosen so that the average error is
+
+0
+:
+001. We rep ort the normalized cost Cost
+avg
+=
+for dierent
+
+values.
+
+
+KR
+Cost
+avg
+=
+Error
+avg
+20
+0
+:
+0024
+6
+:
+80
+1
+:
+00
+
+10
+
+3
+40
+0
+:
+0024
+6
+:
+75
+9
+:
+89
+
+10
+
+4
+80
+0
+:
+0028
+6
+:
+60
+1
+:
+00
+
+10
+
+3
+160
+0
+:
+0032
+6
+:
+49
+1
+:
+00
+
+10
+
+3
+320
+0
+:
+0036
+6
+:
+38
+9
+:
+53
+
+10
+
+4
+640
+0
+:
+0044
+6
+:
+19
+1
+:
+00
+
+10
+
+3
+1280
+0
+:
+0066
+5
+:
+80
+9
+:
+87
+
+10
+
+4
+2560
+0
+:
+0082
+5
+:
+58
+1
+:
+00
+
+10
+
+3
+FIG. 3. Total cost of the QW metho d for dierent target
+solution-error tolerances, using the optimal step sizes  (as
+estimated from Fig.
+ 2
+) for each tested condition numb er, over
+the set of p ositive denite matrices
+A
+2
+C
+32
+
+32
+.
+FIG. 4. The plot shows the recommended values of , f or the
+QW metho d, as a function of the tested condition numb er,
+for the set of p ositive denite matrices
+A
+2
+C
+64
+
+64
+.
+FIG. 5. Total cost of the QW metho d for dierent target
+solution-error tolerances, using the optimal step sizes  (as
+estimated from Fig.
+ 4
+) for each tested condition numb er, over
+the set of p ositive denite matrices
+A
+2
+C
+64
+
+64
+.
+
+--- Page 7 ---
+7
+The results for the adiabatic part, for dierent values
+of , for the same matrices tested with the Shortc ut
+metho d are presented in Table s
+ B.I I I
+ and
+ B .I V
+. We then
+used the results to estimate the optimal values of  that
+minimise the total cost (adiabatic plus ltering) for a
+given total allowable error
+
+.
+The results indicate that regardless of the dimension
+considered, with the optimal values Fig.
+ 2
+ and Fig.
+ 4
+,
+the total cost of the QW metho d, Fig.
+ 3
+ and Fig.
+ 5
+ (see
+the ratios given for 10
+
+2
+and 10
+
+3
+) for the PD almost
+matches the results for the Shortcut when the norm of
+the s olution is known, with a slight improvements for
+the Shortcut metho d for the largest condition numb ers,
+namely
+
+= 1280
+;
+2560. However, in the case that we
+count the QW step as a twice numb e r of steps in the
+adiabatic part, the shortcut metho d will outp erform the
+QW metho d; see Figs.
+ A.IV
+ and
+ A.VI
+ for 10
+
+2
+and 10
+
+3
+.
+B.
+ Performance in the Unknown-Norm Regime
+We also tested the Shortcut metho d for non-Hermitian
+matrices when the norm is unknown for 32
+
+32 and
+64
+
+64 non-Hermitian matrices, but only up to
+
+= 320.
+In this situation, the Shortcut metho d als o require s the
+ltering step, provided by the KP. Sp ecically, we simu-
+lated Algorithm 3 of [
+17
+], which is a variant of the \ex-
+haustive search in log space" describ ed in Se ction 5.1 of
+[
+17
+]. The idea there is to make random guesses for the
+norm, and try running the KR algorithm with a xed
+choice of
+
+KR
+. This succeeds some of the time and pro-
+duces an output s tate with error  conditione d on suc-
+cess. This output state is subsequently ltered to error
+
+.
+Rather than take the total cost including the lter base d
+on the KP as prop osed in [
+17
+], we consider the cost based
+on the LCU ltering metho d from [
+13
+]. The motivation
+is that, if there is failure (i.e., the state is measured as
+orthogonal to the solution), then it will typically b e de-
+tected early. On average, a failure is dete cted halfway
+through the LCU, halving the average cost, whereas KP
+needs to b e complete b efore a failure is detected. For
+further explanation, se e App endix
+ A 3
+ or Section 4 of
+[
+22
+].
+Before presenting the numerical results, we briey de-
+scrib e how we tes t the Shortcut m etho d in the unknown-
+norm regime. The metho d to calculate the inde lity
+is given in App endix D of Ref. [
+17
+]. Equation (85) of
+Ref. [
+17
+] gives an expression for the success probability
+averaged over random choice of
+t
+:
+q
+succ
+=
+1
+2 ln(
+R
+=
+L
+) + 2
+ 
+Q
+L
++
+Q
+R
++ 2
+Z
+R
+L
+d˝
+Q
+t
+!
+;
+(16)
+where
+t
+=
+e
+˝
+,
+Q
+t
+is the probability of success for a given
+t
+,
+L
+= 1 and
+R
+=
+
+. The indelity ca n then b e determined
+using Eq. (98) of Ref. [
+17
+], which is
+1
+ h
+x
+j
+~
+ˆ
+j
+x
+i
+=
+1
+q
+succ
+(2 ln(
+R
+=
+L
+) + 2)
+
+ 
+Q
+L
+
+2
+L
++
+Q
+R
+
+2
+R
++ 2
+Z
+R
+L
+d˝
+Q
+t
+
+2
+t
+!
+;
+(17)
+where
+
+2
+t
+is the indelity for the particular choice of
+t
+.
+In that work, upp er b ounds are determined analyti-
+cally, but in numerical testing we p erform the integral
+numerically by calculating
+Q
+t
+and
+
+t
+for selected values
+of
+t
+. We used Clenshaw{Curtis quadrature, which pro-
+vides highly accurate re sults with only 30 samples of
+t
+.
+As this metho d considers a mixed state,  will b e the Bu-
+res distance, which can b e determined from the indelity
+
+2
+using
+ =
+r
+2
+
+1
+
+p
+1
+
+
+2
+
+;
+(18)
+which is the same as the formula for the norm of the
+dierence of pure states. We also record the cost of the
+Shortcut metho d, dened as the degree of the p olyno-
+mial required for the chosen value of
+
+KR
+. In our tests,
+
+KR
+is xed for each matrix instance, so the c ost is con-
+stant across guesses for that instance. For each of the 100
+random matrix instances, we compute b oth the e rror 
+i
+and the corresp onding cost, and then average these p er-
+instance quantities over the e ns emble. The value of
+
+KR
+is chosen so that the mean error remains b e low the pre-
+scrib ed threshold .
+We then used the recommended value s of  (see Ap-
+p endix
+ B 1
+) to estimate the total cost for the Shortcut
+metho d, rep orted in Fig.
+ 6
+. The results in Fig.
+ 6
+ may
+b e compared to Eq. (128) of [
+17
+], which rigorously upp er
+b ounds the cost as (after some simplications)
+cost
+
+
+6 ln(
+
+) + 6 + 1
+:
+07 ln(1
+=
+) + (6 + 3 ln(
+
+))
+= :
+(19)
+As exp ected, the numerical results averaged over the in-
+stances exhibit lower constant factors than the rigorous
+worst-case analysis. A s one example, at
+
+= 320 and
+
+= 10
+
+3
+the analytic upp er b ound gives cost
+=
+ˇ
+48,
+which is ab out than 60% larger than the numerically
+computed value.
+
+--- Page 8 ---
+8
+FIG. 6. Total cost for the Shortcut metho d for dierent target
+solution-error tolerances, using the optimal target error  (as
+estimated from Fig.
+ B.I I I
+) for each tested condition numb er,
+over the set of non-Hermitian matrices
+A
+2
+C
+32
+
+32
+.
+We then used the recomme nded values of  (see
+App endix
+ B 1
+) to estimate the total c ost for the QW
+metho d, Fig.
+ 7
+, for the same non-Hermitian matrices
+tested for the Shortcut metho d.
+FIG. 7. Total cost for the QW metho d for dierent target
+solution-error tolerances, using the optimal step sizes  (as
+estimated from Fig.
+ B.I
+) for each tested condition numb er,
+over the set of non-Hermitian matrices
+A
+2
+C
+32
+
+32
+.
+From o ur 32
+
+32 testing, we observe that for practically
+relevant choices of the total allowable solution error
+
+,
+the QW metho d can outp erform the Shortcut metho d
+(with exhaustive search for the norm) reaching at most a
+factor of approximately 2
+:
+3 for a target w ith low accuracy
+
+(ratios for
+
+= 10
+
+1
+in Fig.
+ 6
+ vs Fig.
+ 7
+) for
+
+= 320,
+however reducing it to a factor of 1
+:
+4 in the regime of high
+accuracy for
+
+(ratio for
+
+= 10
+
+6
+). On the other hand,
+for the smallest value of the condition numb er
+
+= 20,
+the cost for b oth is equivalent.
+We next analyze the results for 64
+
+64 matrices, for
+b oth metho ds, following the recommended values for 
+(see App endix
+ B 1
+). Overall, the total c osts of b oth the
+QW and Shortcut metho ds remain close to those ob-
+served in the 32
+
+32 case. Notably, we obse rve a slight
+cost improvement for the Shortcut metho d (see Fig.
+ 9
+)
+compared to the 32
+
+32 s etting , while the QW metho d
+exhibits almost the same cost (se e Fig.
+ 8
+), but overall
+the QW remains as the lowes t cost metho d. On the
+other hand, if we double the walk steps in the adiabatic
+metho d, the Shortcut metho d p erforms slightly b etter
+than the QW for the lowest c ondition numb ers, namely
+
+= 20 and
+
+= 40, see Figs.
+ A.VI I I
+ and
+ A.X
+.
+FIG. 8. Total cost for the QW metho d for dierent target
+solution-error tolerances, using the optimal step sizes  (as
+estimated from Fig.
+ B.I I
+) for each tested condition numb er,
+over the set of non-Hermitian matrices
+A
+2
+C
+64
+
+64
+.
+FIG. 9. Total cost for the Shortcut metho d for dierent target
+solution-error tolerances, using the optimal step sizes  (as
+estimated from Fig.
+ B.IV
+) for each tested condition numb er,
+over the set of non-Hermitian matrices
+A
+2
+C
+64
+
+64
+.
+a. Sparse matrix numerical testing.
+We also b ench-
+marked sparse instances to contrast with the articial
+dense cases considered earlier. Following [
+24
+], the sparse
+test matrices
+A
+were generated using PDE-like routines:
+we b egan with a random tridiagonal (Laplacian-like)
+stencil and, optionally, added a sparse p e rturbation with
+user-controlled density. Figure
+ 10
+ displays representative
+sparsity patte rns for the teste d instances.
+We compared the two QLSP solvers (Shortcut and
+QW) at target error tolerances 
+2 f
+0
+:
+4
+;
+0
+:
+3
+g
+for ma-
+trix sizes
+n
+2 f
+32
+;
+64
+g
+. Be cause the generator do es not
+
+--- Page 9 ---
+9
+directly prescrib e the condition numb e r, we drew 100 in-
+stances and group ed them into three condition-numb er
+overlapping sets:
+
+1
+2
+[10
+;
+30]
+;
+(
+
+1
+)
+(32
+
+32)
+avg
+= 17
+:
+65
+;
+(
+
+1
+)
+(64
+
+64)
+av g
+= 14
+:
+27
+
+2
+2
+[20
+;
+40]
+;
+(
+
+2
+)
+(32
+
+32)
+avg
+= 26
+:
+93
+;
+(
+
+2
+)
+(64
+
+64)
+av g
+= 26
+:
+98
+
+3
+2
+[30
+;
+50]
+;
+(
+
+3
+)
+(32
+
+32)
+avg
+= 38
+:
+92
+;
+(
+
+3
+)
+(64
+
+64)
+av g
+= 38
+:
+06
+:
+(20)
+(a)
+(b)
+FIG. 10. Two representative 64
+
+64 matrices from our sparse
+solver testing: (a) a sample from group
+k
+1
+and (b) a sample
+from group
+
+2
+. For each matrix, the top lab el rep orts its con-
+dition numb er, and the b ottom lab el rep orts the total numb er
+of nonzeros.
+The goal of these tes ts is to evaluate whether
+spar-
+sity
+|together with the overheads of blo ck-enco ding ac-
+cess to sparse matrices|alters the overall cost b eyond
+the predicted linear dep endence on
+
+and on the target
+accuracy. The Average cost of the Shortcut metho d al-
+ready includes the overhead of estimating the solution
+norm.
+We can analyse these results by examining the cos t ra-
+tio,
+ˆ
+= Cost
+QW
+=
+Cost
+SC
+. Across the range of conditions
+considered, we have not obs erved a signicant change for
+the Shortcut metho d as compared to what is given in Sec-
+tion
+ I I I B
+ for the full dense regime. The same c onc lus ion
+can b e observed for the quantum walk metho d as we can
+see in App endix
+ B 2
+. If the cost of a quantum walk step
+were instead counted as two calls to
+U
+A
+, as discussed in
+Section
+ I I I
+, the ratio
+ˆ
+would increase by a factor of 2.
+Results for
+A
+2
+R
+32
+
+32
+Shortcut metho d
+Quantum Walk
+
+(Cost)
+avg
+(Error)
+avg
+Cost
+(Error)
+avg
+ˆ
+
+1
+1
+:
+23
+
+10
+2
+0
+:
+295
+
+0
+:
+020
+9
+:
+14
+
+10
+0
+:
+288
+
+0
+:
+001
+0
+:
+74
+
+2
+2
+:
+12
+
+10
+2
+0
+:
+298
+
+0
+:
+011
+1
+:
+17
+
+10
+2
+0
+:
+289
+
+0
+:
+011
+0
+:
+55
+
+3
+3
+:
+51
+
+10
+2
+0
+:
+298
+
+0
+:
+007
+1
+:
+96
+
+10
+2
+0
+:
+293
+
+0
+:
+001
+0
+:
+56
+TABLE IX. Comparison b etween the Shortcut and Quantum
+Walk solvers over 100 non-Hermitian sparse instances of size
+32
+
+32 at target error  = 0
+:
+3. The last column rep orts the
+cost ratio
+ˆ
+= Cost
+QW
+=
+Cost
+SC
+.
+Results for
+A
+2
+R
+64
+
+64
+Shortcut metho d
+Quantum Walk
+
+(Cost)
+avg
+(Error)
+avg
+Cost
+(Error)
+avg
+ˆ
+
+1
+8
+:
+18
+
+10
+0
+:
+300
+
+0
+:
+016
+4
+:
+47
+
+10
+0
+:
+279
+
+0
+:
+014
+0
+:
+55
+
+2
+2
+:
+14
+
+10
+2
+0
+:
+300
+
+0
+:
+010
+1
+:
+20
+
+10
+2
+0
+:
+293
+
+0
+:
+006
+0
+:
+56
+
+3
+3
+:
+26
+
+10
+2
+0
+:
+283
+
+0
+:
+013
+1
+:
+64
+
+10
+2
+0
+:
+298
+
+0
+:
+010
+0
+:
+50
+TABLE X. Comparison b etween the Shortcut and Quantum
+Walk solvers over 100 non-Hermitian sparse instances of size
+64
+
+64 at target error  = 0
+:
+3.
+IV.
+ Conclusion
+We tested the Shortcut metho d [
+17
+] through a large-
+scale constant-factor b e nchmarking study, and compared
+its p erformance to the discrete-adiabatic quantum-walk
+solver [
+22
+]. As c ompared to the prior b enchmarking
+study Ref. [
+22
+] (w hich did not consider the Shortcut
+metho d), we extended our em pirical analysis to larger di-
+mensions, larger c ondition numb ers, and additional ma-
+trix families.
+Our results conrm that the Shortcut metho d can pro-
+vide a clear constant-factor advantage in the idealised
+regime where
+k
+x
+k
+is known
+a priori
+for non-Hermitian
+matrices. In contrast, for p ositive-denite systems, the
+QW metho d almost matche s with the Shortcut p erfor-
+mance, consistent with the most favourable constant fac -
+tors of the QW in this setting.
+In the more realistic unknown-norm regime, however,
+the overhead asso ciated with norm estimation and lter-
+ing renders the Shortcut metho d signicantly more costly
+than the QW metho d. As a result, in the large-co ndition-
+numb er and dimensions regime considered here, the QW
+metho d shows a clear advantage, making the Shortcut
+
+--- Page 10 ---
+10
+metho d less comp etitive overall. Note that this con-
+clusion applies to the s im ple st variant of the Shortc ut
+metho d. It remains p ossible that optimized implementa-
+tions of the more complex variants could lead to slightly
+b etter p erformance.
+In summary, these ndings demonstrate that the rela-
+tive p erformance of optimal QLSAs dep ends sensitively
+on matrix structure (non-Hermitian vs. PD), condition
+numb er and the availability of norm information. They
+provide practical guidance on which QLSAs to cho ose in
+various scenarios to provide the b est p erformance.
+Acknowledgements
+The authors thank Mauro E. S. Morales for helpful
+discussions. DWB worked on this pro ject under a sp on-
+sored research agreement w ith Go ogle Quantum AI. This
+pro jec t is supp orted by Australian Research Council Dis-
+covery Pro jects DP220101602 and DP260102543. DA ac-
+knowledges funding from Quantum Science and Technol-
+ogy - National Sc ience and Technology Ma jor Pro je ct via
+Pro jec t 2024ZD0301900, and the supp ort by The Fun-
+damental Research Funds for the Central Universities,
+Peking University.
+[1]
+ M. Morales, L. Pira, P. Schleich, K. Ko or, P. Costa,
+D. An, A. Aspuru-Guzik, L. Lin, P. Reb entrost, and
+D. Berry,
+ arXiv:2411.02522 (2024)
+.
+[2]
+ D. W. Berry and P. C. S. Costa,
+ Quantum
+8
+, 1369 (2024)
+.
+[3]
+ P. C. Costa, P. Schleich, M. E. Morales, and D. W. Berry,
+np j Quantum Information
+11
+, 141 (2025)
+.
+[4]
+ J.-P. Liu, D. An, D. Fang, J. Wang, G. H. Low, and
+S. Jordan,
+ Communications in Mathematical Physics
+404
+, 963 (2023)
+.
+[5]
+ H. Zhao, A. Zlokapa, H. Neven, R. Babbush, J. Preskill,
+J. R. McClean, and H.-Y. Huang,
+ arXiv:2604.07639
+(2026)
+.
+[6]
+ A. W. Harrow, A. Hassidim, and S. Lloyd,
+ Physical Re-
+view Letters
+103
+, 150502 (2009)
+.
+[7]
+ A. Ambainis (Schloss Dagstuhl { Leibniz-Zentrum fur In-
+formatik, 2012) pp. 636{647.
+[8]
+ A. Ambainis,
+ arXiv:1010.4458 (2010)
+.
+[9]
+ A. M. Childs, R. Kothari, and R. D. Somma,
+ SIAM
+Journal on Computing
+46
+, 1920 (2017)
+.
+[10]
+ Y. Suba˘s, R. D. Somma, and D. Orsucci,
+ Physical Re-
+view Letters
+122
+, 060504 (2019)
+.
+[11]
+ D. An and L. Lin,
+ ACM Transactions on Quantum Com-
+puting
+3
+, 5 (2022)
+.
+[12]
+ L. Lin and Y. Tong,
+ Quantum
+4
+, 361 (2020)
+.
+[13]
+ P. C. Costa, D. An, Y. R. Sanders, Y. Su, R. Babbush,
+and D. W. Berry,
+ PRX Quantum
+3
+, 040303 (2022)
+.
+[14]
+ D. Jennings, M. Lostaglio, S. Pallister, A. T. Sornb orger,
+and Y. Suba˘s,
+ arXiv:2305.11352 (2023)
+.
+[15]
+ J. Cunningham and J. Roland (Schloss Dagstuhl {
+Leibniz-Zentrum fur Inf ormatik, 2024) pp. 7:1{7:20.
+[16]
+ D. Jennings, M. Lostaglio, S. Pallister, A. T. Sornb orger,
+and Y. Suba˘s,
+ PRX Quantum
+6
+, 040373 (2025)
+.
+[17]
+ A. M. D alzell,
+ arXiv:2406.12086 (2024)
+.
+[18]
+ A. M. Dalzell, B. D. Clader, G. Salton, M. Berta, C. Y.-
+Y. Lin, D. A. Bader, N. Stamatop oulos, M. J. A. Schuetz,
+F. G. S. L. Brand~ao, H. G. Katzgrab er, and W. J. Zeng,
+PRX Quantum
+4
+, 040325 (2023)
+.
+[19]
+ D. Jennings, M. Lostaglio, R. B. Lowrie, S. Pallister, and
+A. T. Sornb orger,
+ Quantum
+8
+, 1553 (2024)
+.
+[20]
+ J. Penuel, A. Katabarwa, P. D. Johnson, P. Kuklinski,
+B. Rempfer, C. Farquhar, Y. Cao, and M. C. Garrett,
+arXiv:2406.06323 (2025)
+.
+[21]
+ D. Jennings, K . Korzekwa, M. Lostaglio, R. Ashworth,
+E. Marsili, and S. Rolston,
+ arXiv:2512.03758 (2025)
+.
+[22]
+ P. C. S. Costa, D. An, R. Babbush, and D. W. Berry,
+Quantum
+9
+, 1887 (2025)
+.
+[23]
+ A. Gilyen, Y. Su, G. H. Low, and N. Wieb e, in
+Proceed-
+ings of the 51st Annual ACM SIGACT Sym posium on
+Theory of Computing
+(2019) pp. 193{204.
+[24]
+ P. C. S. Costa, \QLSP|Shortcut metho d: Quan-
+tum linear sy stems problem solver and sparse-
+matrix generator,"
+https://github.com/PcostaQuantum/
+QLSP- - - Shortcut- method
+(2025), gitHub rep ository; ac-
+cessed 2025-09-04.
+A.
+ The kernel reection and the kernel pro jection
+The algorithm that we will b e fo cusing on here is based
+on the kernel pro jection (KP) and kernel reection (KR).
+The KP is the technique of eigenstate ltering, general-
+ized to non-Hermitian matrices, and it leads to approx-
+imate pro jection onto the kernel of a matrix. Now, the
+KR leads to approximate re e ction ab out the kernel.
+In either case, the rst step is to construct a matrix
+G
+2
+C
+m
+
+m
+out of
+A
+and
+b
+, namely
+G
+=
+Q
+b
+A;
+(A1)
+where
+Q
+b
+=
+I
+m
+
+bb
+y
+is the pro jector onto the subspace
+of
+b
+, which has
+x
+as in the kernel,
+G
+x
+=
+Q
+b
+A
+x
+=
+Q
+b
+b
+=
+b
+
+b
+k
+b
+k
+= 0
+;
+(A2)
+since
+k
+b
+k
+= 1. We then need to have the blo ck-enco ding
+of
+G
+,
+U
+G
+which has a quite simple construction from the
+blo ck-enco ding of
+A
+and the unitary for
+U
+b
+, as we c an
+see in Fig.
+ A.I
+, plus an extra op eration given by
+C
+
+0
+NOT = 
+0
+
+
+X
++ (
+I
+2
+s
+
+
+0
+)
+
+
+I
+2
+;
+(A3)
+where 
+0
+=
+j
+e
+0
+ih
+e
+0
+j
+and
+I
+2
+s
+=
+P
+2
+s
+
+1
+j
+=0
+j
+e
+j
+ih
+e
+j
+j
+.
+We can eas ily verify that in the third register we will
+have exactly the action of
+G
+, i.e ., supp ose we start with
+
+--- Page 11 ---
+11
+U
+G
+=
+a
+=
+=
+s
+U
+A
+U
+y
+b
+j
+e
+0
+ih
+e
+0
+j
+U
+b
+FIG. A.I. Quantum circuit implementing the blo ck-enconding
+of
+G
+.
+the following state
+j
+0
+i j
+0
+a
+i j
+ 
+i
+, where the application of
+U
+A
+, give s
+I
+2
+
+
+U
+A
+j
+0
+i j
+0
+a
+i j
+ 
+i
+=
+j
+0
+i j
+0
+a
+i
+A
+j
+ 
+i
++
+j
+˚
+?
+i
+:
+(A4)
+Now from Eq. (
+A3
+), combined with the unitaries
+U
+y
+b
+and
+U
+b
+on the last register, i.e.,
+I
+2
+
+
+I
+2
+a
+
+
+(
+I
+2
+s
+ j
+b
+ih
+b
+j
+) +
+X
+
+
+I
+2
+a
+
+ j
+b
+ih
+b
+j
+;
+(A5)
+then we nish with
+j
+0
+i j
+0
+a
+i
+Q
+b
+A
+j
+ 
+i
++
+j
+˚
+0
+?
+i
+=
+j
+0
+i j
+0
+a
+i
+G
+j
+ 
+i
++
+j
+˚
+0
+?
+i
+;
+(A6)
+as we wanted.
+We can now verify that the smallest nonzero e igenvalue
+of
+G
+is at least
+
+
+1
+. Supp ose that from the SVD of
+G
+,
+i.e.,
+G
+=
+U
+
+V
+, we have
+
+a nonzero singular value of
+G
+,
+where
+G
+v
+=
+
+u
+. We then have
+x
+orthogonal to
+v
+, since
+
+
+(
+v
+y
+x
+) =
+
+
+u
+y
+G
+x
+= 0
+:
+(A7)
+Since
+
+is nonzero, we have
+v
+orthogonal to
+x
+. Again,
+from the denition of the singular vectors
+
+u
+=
+G
+v
+=
+Q
+b
+A
+v
+=
+A
+v
+
+(
+b
+y
+A
+v
+)
+b
+=
+A
+
+v
+
+(
+b
+y
+A
+v
+)
+x
+
+:
+(A8)
+The result ab ove shows that
+u
+is in the image of
+A
+and
+that
+Q
+b
+u
+=
+u
+, since
+Q
+b
+A
+
+v
+
+(
+b
+y
+A
+v
+)
+x
+
+=
+
+u
+. Finally,
+we can see from the denition of the singular value s
+
+2
+=
+u
+y
+GG
+y
+u
+=
+u
+y
+Q
+b
+AA
+y
+Q
+b
+u
+=
+u
+y
+AA
+y
+u
+
+1
+=
+2
+;
+(A9)
+where the inequality ab ove re sults from the fact that
+eigenvalues of
+A
+lie in the interval [
+
+
+1
+;
+1].
+1.
+ Kernel Pro jection
+The KP takes two parameters (
+
+KP
+; 
+) and only works
+under the promise that the nonzero singular values of
+G
+lie in the inte rval [
+
+
+1
+;
+1] which we already showed that is
+the cas e. Let us consider an arbitrary norm aliz ed
+s
+-qubit
+state
+j
+˚
+i
+=
+
+j
+w
+i
++
+
+j
+w
+?
+i
+, where
+w
+is a unit vector in the
+kernel of
+G
+, which typically for us it will b e
+j
+w
+i
+=
+j
+x
+i
+,
+and
+w
+?
+a unit vector orthogonal to the kernel of
+G
+. The
+action of KP is to decrease the comp one nts of the state
+j
+˚
+i
+which do not b elong to the kerne l of
+G
+, i.e., under its
+action, we have
+
+j
+w
+i
++
+
+j
+w
+?
+i !
+
+j
+w
+i
++
+ 
+1
+j
+w
+?
+i
++
+ 
+2
+j
+w
+0
+?
+i
+;
+(A10)
+where
+
+1
+and
+
+2
+are re al parameters that satisfy
+p
+
+2
+1
++
+
+2
+2
+
+
+KP
+and
+w
+0
+?
+another unit vector orthogo-
+nal to the kernel of
+G
+. We have the probability that KP
+succeeds by its squared-norm
+j
+
+j
+2
++
+j
+
+j
+2
+(
+
+2
+1
++
+
+2
+2
+).
+The KP here is the same as the eigenstate ltering from
+[
+12
+], which is then constructed through the QSVT. The
+basic idea is that we can build a p olynomial lter function
+that pro jects onto the kernel of the matrix. From [
+12
+],
+the lter function, considering the target parameters
+e
+
+2
+(0
+;
+1) and
+
+KP
+2
+(0
+;
+1] is given by the following degree-2
+l
+p olynomial
+F
+e
+
+;l
+=
+T
+l
+
+1+
+e
+
+2
+
+2
+x
+2
+1
+
+e
+
+2
+
+T
+l
+
+1+
+e
+
+2
+1
+
+e
+
+2
+
+;
+(A11)
+where
+T
+l
+is the
+l
+th Chebys he v p olynomial of the rst
+kind, where its order dep ends on the target parameters,
+i.e.,
+l
+
+˘
+1
+2
+e
+
+ln
+
+2
+
+KP
+ ˇ
+:
+(A12)
+We have from the Lemma 1 of [
+17
+] which is a Lemma im-
+proved from [
+12
+] that the p olynomial
+F
+e
+
+;l
+is guaranteed
+to satisfy the following three prop erties
+1.
+ For all
+x
+2
+[
+
+1
+;
+1], it holds that
+j
+F
+e
+
+;l
+(
+x
+)
+j 
+1.
+2.
+ For all
+x
+2
+[
+e
+
+;
+1], it holds that
+j
+F
+e
+
+;l
+(
+x
+)
+j 
+T
+l
+
+1+
+e
+
+2
+1
+
+e
+
+2
+
+
+1
+
+
+KP
+.
+3.
+F
+e
+
+;l
+(0) = 1.
+The prop erties outlined ab ove indicate that
+F
+e
+
+;l
+(
+x
+) func-
+tions as a lter with width
+e
+, mapping the zero input to
+one and assigning values close to ze ro for all inputs out-
+side the interval [
+
+e
+
+;
+e
+]. The idea is to apply the QSVT
+using the p olynomial
+F
+e
+
+;t
+.
+Following the example provided by [
+17
+], we consider
+a more detailed explanation of what is presented in
+Eq. (
+A10
+), including the QSVT framework. Consider
+the state to which we apply the KP is given by
+j
+˚
+i
+=
+c
+1
+j
+a
+i
++
+c
+2
+j
+b
+i
+where
+a
+is a vector in the kernel of
+H
+, and
+b
+is orthogonal to the kernel. We also assume that the
+vector
+j
+b
+i
+has the following decomp osition
+P
+j
+w
+j
+j
+u
+j
+i
+into right singular vectors
+j
+u
+j
+i
+of
+H
+all of which have
+singular values
+
+j
+2
+(
+e
+
+;
+1). Thus, the second prop erty
+of the lter, we know that of
+F
+e
+
+;l
+(
+
+j
+) lies in the interval
+[
+
+
+KP
+; 
+KP
+].
+In order to lo ok at the action of the p olynomial
+F
+e
+
+;l
+of the matrix
+H
+, which has the following s ingular value
+transformation (SVD)
+H
+=
+W
+
+V
+y
+where
+
+is the di-
+agonal matrix of singular values, let us lo o k the over-
+all picture of its QSVT construction. The key result is
+obtained from the measurement on the state
+j
+0
+i
+of the
+ancillas, expressed as:
+V F
+e
+
+;l
+(
+H
+)
+V
+y
+
+--- Page 12 ---
+12
+=
+
+h
+0
+j
+
+
+(
+a
+H
++1)
+
+
+I
+2
+s
+
+U
+(
+H
+)
+F
+e
+
+;l
+
+j
+0
+i
+
+
+(
+a
+H
++1)
+
+
+I
+2
+s
+
+;
+(A13)
+where the unitary
+U
+(
+H
+)
+F
+e
+
+;l
+represents the unitary pro duced
+by the QSVT of
+U
+H
+. The op erator
+U
+H
+is an (1
+; a
+H
+)-
+blo ck-enco ding of
+H
+and its implementation involves:
+‹
+d
+2
+calls to each of
+U
+H
+and
+U
+y
+H
+,
+‹
+2
+d
+multi-controlled Tooli gates,
+‹
+d
+single-qubit rotation gate s.
+Thus, the application of
+V F
+e
+
+;l
+(
+H
+)
+V
+y
+maps
+j
+b
+i !
+X
+j
+w
+j
+F
+e
+
+;l
+(
+
+j
+)
+j
+u
+j
+i
+=
+
+1
+j
+b
+i
++
+
+2
+j
+b
+0
+i
+;
+(A14)
+where
+b
+0
+is orthogonal to
+b
+and to the kernel of
+H
+, and
+
+2
+1
++
+
+2
+2
+
+
+2
+KP
+. This allows us to assert that
+U
+(
+H
+)
+F
+e
+
+;l
+
+j
+0
+i
+
+
+(
+a
+H
++1)
+
+ j
+˚
+i
+
+=
+
+j
+0
+i
+
+
+(
+a
+H
++1)
+
+
+(
+c
+1
+j
+a
+i
++
+c
+2
+
+1
+j
+b
+i
++
+c
+2
+
+2
+j
+b
+0
+i
+)
+
++
+c
+2
+q
+1
+
+
+2
+1
+
+
+2
+2
+j?i
+;
+(A15)
+where
+j?i
+is a normalized state such that
+
+h
+0
+j
+
+
+(
+a
+H
++1)
+
+
+I
+2
+s
+
+j?i
+= 0. Thus, p ost-selecting
+on the rst register b eing
+j
+0
+i
+
+
+(
+a
+H
++1)
+, this implements
+an approximate pro jector onto the kernel of
+H
+.
+We will nish this sec tion by restating Lemma 2 from
+[
+17
+] following its pro of.
+Lemma 1
+(Using KP to rene QLSS solution)
+.
+Suppose
+b
+is in th e column space of
+A
+, and let
+x
+denote the so-
+lution of minimum
+k
+x
+k
+to t he equation
+Ax
+=
+b
+. Suppose
+A
+has no singular values in the interval
+
+0
+; 
+
+1
+
+and let
+~
+ˆ
+be a mixed quantum state for which
+h
+x
+j
+~
+ˆ
+j
+x
+i
+= 1
+
+
+2
+and
+h
+y
+j
+~
+ˆ
+j
+y
+i
+that are in the kernel of
+A
+. Suppose KP
+is applied to approximately project
+~
+ˆ
+onto the kernel of
+G
+=
+Q
+b
+A
+using parameters
+(
+; 
+KP
+)
+. That is, we choose
+l
+where
+l
+
+˘
+1
+2
+e
+
+ln
+
+2
+
+KP
+ ˇ
+;
+(A16)
+with
+e
+ =
+
+
+1
+and apply the unitary
+U
+(
+G
+)
+F
+e
+
+;l
+, and then
+measure the ancil las to determine success. KP succeeds
+with probability at least
+1
+
+
+2
+, and when it succeeds it
+outputs a state
+~
+ˆ
+out
+for which
+h
+x
+j
+~
+ˆ
+out
+j
+x
+i 
+1
+
+
+2
+
+2
+KP
+1
+
+
+2
++
+
+2
+
+2
+KP
+
+1
+
+
+2
+
+2
+KP
+1
+
+
+2
+(A17)
+1
+2
+k j
+x
+ih
+x
+j 
+~
+ˆ
+out
+k
+1
+
+
+KP
+p
+1
+
+
+2
++
+
+2
+
+2
+KP
+
+
+KP
+p
+1
+
+
+2
+:
+(A18)
+Proof.
+Let ~
+ˆ
+=
+P
+i
+p
+i
+j
+˚
+i
+ih
+˚
+i
+j
+b e a decomp osition of ~
+ˆ
+as
+an ensemble of pure states. Then we have
+h
+x
+j
+~
+ˆ
+j
+x
+i
+=
+X
+i
+p
+i
+j h
+x
+j
+˚
+i
+ij
+2
+= 1
+
+
+2
+:
+(A19)
+Let us consider
+j
+a
+i
+=
+j
+x
+i
+in Eq. (
+A15
+) and
+j
+˚
+i
+i
+=
+c
+1
+j
+x
+i
++
+c
+2
+j
+b
+i
+;
+(A20)
+and conse nquently
+c
+1
+=
+j h
+x
+j
+˚
+i
+ij
+. Let
+j
+ 
+i
+i
+denote the
+output state when KP acts on
+j
+˚
+i
+i
+and we p ostse lect on
+success, i.e ., we have
+j
+ 
+i
+i
+=
+1
+p
+q
+i
+(
+c
+1
+j
+x
+i
++
+c
+2
+
+1
+j
+b
+i
++
+c
+2
+
+2
+j
+b
+0
+i
+)
+;
+(A21)
+and and let
+q
+i
+b e the probability of success, i.e.,
+q
+i
+=
+j
+c
+1
+j
+2
++
+j
+c
+2
+
+1
+j
+2
++
+j
+c
+2
+
+2
+j
+2
+to get the right state b efore ag
+on zero. Thus,
+j h
+x
+j
+ 
+i
+ij
+2
+=
+j
+c
+1
+j
+2
+=q
+i
+. We then have the
+overall probability of succes s of KP given by
+X
+j
+p
+j
+q
+j
+
+X
+j
+p
+j
+j h
+x
+j
+˚
+i
+ij
+2
+= 1
+
+
+2
+;
+(A22)
+which shows the rst claim of this lemma. Now, from the
+expression of
+q
+i
+we know that
+j
+
+1
+j
+2
++
+j
+
+2
+j
+2
+
+
+2
+KP
+, so
+q
+i
+=
+j
+c
+1
+j
+2
++
+j
+c
+2
+
+1
+j
+2
++
+j
+c
+2
+
+2
+j
+2
+=
+j h
+x
+j
+˚
+i
+ij
+2
++
+j
+c
+2
+j
+2
+
+j
+
+1
+j
+2
++
+j
+
+2
+j
+2
+
+=
+j h
+x
+j
+˚
+i
+ij
+2
++ (1
+ j h
+x
+j
+˚
+i
+ij
+2
+)
+
+j
+
+1
+j
+2
++
+j
+
+2
+j
+2
+
+ j h
+x
+j
+˚
+i
+ij
+2
++ (1
+ j h
+x
+j
+˚
+i
+ij
+2
+)
+
+2
+KP
+:
+(A23)
+Given that the output state ~
+ˆ
+is
+~
+ˆ
+out
+=
+P
+i
+p
+i
+q
+i
+j
+ 
+i
+ih
+ 
+i
+j
+P
+j
+p
+j
+q
+j
+;
+(A24)
+which includes the normalization. We can now combine
+the previous results and see that
+h
+x
+j
+~
+ˆ
+out
+j
+x
+i
+=
+P
+i
+p
+i
+q
+i
+j h
+x
+j
+ 
+i
+ij
+2
+P
+j
+p
+j
+q
+j
+=
+P
+i
+p
+i
+j h
+x
+j
+˚
+i
+ij
+2
+P
+j
+p
+j
+q
+j
+=
+1
+
+
+2
+P
+j
+p
+j
+q
+j
+
+1
+
+
+2
+P
+j
+p
+j
+(
+j h
+x
+j
+˚
+i
+ij
+2
++ (1
+ j h
+x
+j
+˚
+i
+ij
+2
+)
+
+2
+KP
+)
+= 1
+
+
+2
+
+2
+KP
+1
+
+
+2
++
+
+2
+
+2
+KP
+:
+(A25)
+The trace distance we apply the following inequality
+1
+=
+2
+k j
+x
+ih
+x
+j 
+˙
+k 
+p
+1
+ h
+x
+j
+˙
+j
+x
+i
+:
+
+--- Page 13 ---
+13
+2.
+ Kernel Reection
+The KR also takes the two input parameters (
+
+KR
+; 
+).
+The
+
+KR
+parameter plays the same role as
+
+KP
+but may
+b e chosen to take a dierent value. We cho ose
+l
+as in
+Eq. (
+A16
+), with
+
+KR
+in plac e of
+
+KP
+. KR maps the quan-
+tum state
+j
+˚
+i
+=
+
+j
+w
+i
++
+
+j
+w
+?
+i
+as follow s
+
+j
+w
+i
++
+
+j
+w
+?
+i !
+
+j
+w
+i 
+
+(1
+
+
+0
+1
+)
+j
+w
+?
+i
++
+ 
+0
+2
+j
+w
+0
+?
+i
+;
+(A26)
+which are the same vectors give n in Eq. (
+A10
+), where
+
+0
+1
+=
+2(
+
+KR
++
+
+1
+)
+1 +
+
+KR
+; 
+0
+2
+=
+2
+
+2
+1 +
+
+KR
+;
+(A27)
+from where the following relations can b e derived
+
+0
+1
+
+0
+;
+q
+
+0
+2
+1
++
+
+0
+2
+2
+
+4
+
+KR
+1 +
+
+KR
+;
+j
+
+0
+2
+j 
+2
+
+KR
+1 +
+
+KR
+:
+(A28)
+Similarly to the KP we can build a 2
+l
+-degree p olyno-
+mial within the framework of QSVT for the KR, which
+is given by
+K
+e
+
+;l
+(
+x
+) =
+2
+F
+e
+
+;l
+(
+x
+)
+
+1 +
+F
+e
+
+;l
+1 +
+F
+e
+
+;l
+(
+e
+)
+=
+2
+T
+l
+
+1+
+e
+
+2
+
+2
+x
+2
+1
+
+e
+
+2
++ 2
+
+T
+l
+
+1+
+e
+
+2
+1
+
+e
+
+2
+
++ 1
+
+1
+:
+(A29)
+Now from the Lemma 3 of [
+17
+] the p olynomial
+K
+e
+
+;l
+is
+guaranteed to satisfy the following three prop erties
+1.
+ For all
+x
+2
+[
+
+1
+;
+1], it holds that
+j
+K
+e
+
+;l
+(
+x
+)
+j 
+1
+:
+(A30)
+2.
+ For all
+x
+2
+[
+e
+
+;
+1], it holds that
+j
+K
+e
+
+;l
+(
+x
+)
+j  
+1 +
+4
+T
+l
+
+1+
+e
+
+2
+1
+
+e
+
+2
+
++ 1
+ 
+1 +
+4
+
+KR
+1 +
+
+KR
+:
+(A31)
+3.
+K
+e
+
+;l
+(0) = 1.
+Now let us do the same exercise that we have done for
+KP. We consider the state
+j
+˚
+i
+=
+c
+1
+j
+a
+i
++
+c
+2
+j
+b
+i
+where
+a
+is a vector in the kernel of
+H
+, and
+b
+is orthogonal to
+the kernel. We again assume that the vector
+j
+b
+i
+has the
+following decomp osition
+P
+j
+w
+j
+j
+u
+j
+i
+. We now lo ok at the
+action of the p olynomial
+K
+e
+
+;l
+of the matrix
+H
+, so in this
+case we have
+V K
+e
+
+;l
+(
+H
+)
+V
+y
+=
+
+h
+0
+j
+
+
+(
+a
+H
++1)
+
+
+I
+2
+s
+
+U
+(
+H
+)
+K
+e
+
+;l
+
+j
+0
+i
+
+
+(
+a
+H
++1)
+
+
+I
+2
+s
+
+:
+(A32)
+From Eq. (
+A14
+), we then can see that
+j
+b
+i !
+X
+j
+w
+j
+K
+e
+
+;l
+(
+
+j
+)
+j
+u
+j
+i
+=
+2
+F
+e
+
+;l
+(
+x
+)
+
+1 +
+F
+e
+
+;l
+1 +
+F
+e
+
+;l
+(
+e
+)
+j
+u
+j
+i
+=
+
+ 
+1
+
+2
+F
+e
+
+;l
+(
+x
+)
+1 +
+F
+e
+
+;l
+(
+e
+)
+!
+j
+b
+i
++
+2
+1 +
+F
+e
+
+;l
+(
+e
+)
+(
+
+1
+j
+b
+i
++
+
+2
+j
+b
+0
+i
+)
+=
+
+(1
+
+
+0
+1
+)
+j
+b
+i
++
+
+0
+2
+j
+b
+0
+i
+;
+(A33)
+where
+
+0
+1
+=
+2
+F
+e
+
+;l
+(
+e
+) + 2
+
+1
+1 +
+F
+e
+
+;l
+(
+e
+)
+; 
+0
+2
+=
+2
+
+2
+1 +
+F
+e
+
+;l
+(
+e
+)
+:
+(A34)
+We also known from the prop erties of
+F
+e
+
+;t
+(
+x
+) that
+for all
+x
+2
+[
+e
+
+;
+1],
+
+KR
+ j
+F
+e
+
+;l
+(
+x
+)
+j
+, so if we consider
+j
+F
+e
+
+;l
+(
+e
+)
+j
+=
+
+KR
+we recover Eq. (
+A27
+). Finally, we can
+conclude
+U
+(
+H
+)
+K
+e
+
+;l
+
+j
+0
+i
+
+
+(
+a
+H
++1)
+
+ j
+˚
+i
+
+=
+
+j
+0
+i
+
+
+(
+a
+H
++1)
+
+
+(
+c
+1
+j
+a
+i
+
+c
+2
+(1
+
+
+0
+1
+)
+j
+b
+i
++
+c
+2
+
+0
+2
+j
+b
+0
+i
+)
+
++
+c
+2
+q
+2
+
+0
+1
+
+
+0
+2
+1
+
+
+0
+2
+2
+j?i
+:
+(A35)
+3.
+ Comparison to QW ltering and double cost
+There are a numb er of s ubtleties in comparing the cost
+of the QSVT lter for the KP in the Shortc ut metho d
+versus the lter used for the QW in Re f. [
+22
+]. For the
+KP of the Shortcut metho d, there is a fac to r of 1
+=
+2 in
+Eq. (
+A16
+), which is not present in Eq. (113) of Ref. [
+22
+].
+However, the degree of the p olynomial is 2
+l
+for the QSVT
+lter for the KP, which means that the numb er of calls to
+the blo ck enco ding is equivalent b etween the two meth-
+o ds. Another subtlety is that the p olynomial has order
+from
+
+`
+to +
+`
+in Ref. [
+22
+], but that do es not increase the
+cost b ecause one may control b etween the qubitised walk
+step and its inverse simply by controlling the reection.
+A further subtlety is that the blo ck enco ding o f
+G
+for
+the QSVT only uses a single call to the blo ck enco d-
+ing of
+A
+, whereas the blo ck enco ding of the Hamiltonian
+given in Fig. 7 of Ref. [
+22
+] uses one call to a c ontrolled
+A
+and another to a controlled
+A
+y
+; see Fig
+ A.I I
+. Those
+two controlled blo ck e nc o dings may b e formulated as a
+single control b etween the blo ck enco dings of
+A
+and
+A
+y
+.
+In blo ck enco dings it is usually the same cost to con-
+trol b etwe en a blo ck enco ding of
+A
+and
+A
+y
+as it is to
+
+--- Page 14 ---
+14
+just control the blo ck enco ding. For example, if a phase
+factor is b eing applied, then it would corres p ond to con-
+trolling b etween an addition versus a subtraction into a
+phase gradient register, which do es not increase the non-
+Cliord cost.
+In some cases it may b e appropriate to cost the c ontrol
+b etween
+A
+and
+A
+y
+as double the cost of simply controlling
+A
+, as also rep orted in this section. In that case, the cost
+of the QW would b e doubled, but the cost of the lter
+would not. The reason is that the lter is for the nal
+Hamiltonian, in which case no sup erp osition is needed
+for the qubit
+a
+1
+that selects b etween the initial and nal
+Hamiltonians. As a result, the qubit
+a
+h
+1
+that selects b e -
+twe en
+A
+and
+A
+y
+is ipp ed every time this Hamiltonian
+is applied (there is an
+X
+on this qubit with no control).
+The quantum walk starts in a chos en computational basis
+state for this qubit, the n each step of the walk dete rm in-
+istically ips this qubit. This me ans that, although the
+blo ck enco ding has b een shown with b oth a controlled
+U
+A
+and
+U
+y
+A
+, in the implementation only one will b e needed
+in each step. Similarly, only one of the
+U
+b
+,
+U
+y
+b
+pairs will
+b e needed each time the Ham iltonian is blo ck enco ded.
+As a result, the cost of the blo ck e nc o ding of the Hamil-
+tonian is one call to the blo ck enco ding of
+A
+or
+A
+y
+, as
+well as one
+U
+b
+,
+U
+y
+b
+pair, and the cost is equivalent to that
+of the blo ck enco ding of
+G
+for the QSVT.
+There is one dierence in the costing, which is that
+Ref. [
+22
+] uses an LCU approach to the lter enabling
+any failure cases to b e detecte d early. In comparison,
+for the QSVT the entire QSVT ne eds to b e p erformed
+b efore failure can b e detected. This me ans that, in the
+case of failure, the LCU approach has half the cost on
+average. To fairly compare the two approaches, we have
+assumed this s aving when testing b oth the Shortcut and
+QW metho ds. A further subtlety is that, although the l-
+ter can b e written as
+T
+`
+(
+
+cos(
+˚
+)) where the Chebyshev
+p olynomial has exp onentially large co ecients, when this
+p olynomial is expanded into the basis of cos(
+m˚
+), the co-
+ecients are p os itive and sum to 1. As a result the LCU
+approach is e cient, and the lter succeeds with proba-
+bility 1 for the ground state.
+We then nish this section rep orting all the cases tested
+previously for the QW metho d (e xcept the sparse-matrix
+results), namely for PD and Non-Hermitian matrices for
+32
+
+32 and 64
+
+64, when we count as twice the numb er
+of application of
+U
+A
+in the adiabatic part for the gates
+of the form
+j
+0
+i h
+0
+j 
+
+U
+A
++
+j
+1
+i h
+1
+j 
+
+U
+A
+y
+.
+FIG. A.I I. The blo ck enco ding of the Hamiltonian from
+Ref. [
+13
+].
+FIG. A.I I I. The plot shows the recommended values of , for
+the QW metho d, when we double the cost f or controlling
+A
+,
+as a function of the tested condition numb er, for the set of
+p ositive denite matrices
+A
+2
+C
+32
+
+32
+.
+FIG. A.IV. Total cost of the QW metho d for dierent target
+solution-error tolerances, when we double the cost for con-
+trolling
+A
+(in contrast for what is given in Fig.
+ 3
+), using the
+optimal step sizes  (as estimated from Fig.
+ A.I I I
+) for each
+tested condition numb er, over the set of p ositive denite ma-
+trices
+A
+2
+C
+32
+
+32
+.
+
+--- Page 15 ---
+15
+FIG. A.V. The plot shows the recommended values of  for
+the QW metho d, when we double the cost for controlling
+A
+,
+as a function of the tested condition numb er, for the set of
+p ositive denite matrices
+A
+2
+C
+64
+
+64
+.
+FIG. A.VI. Total cost of the QW metho d for dierent target
+solution-error tolerances, when we double the cost for con-
+trolling
+A
+(in contrast for what is given in Fig.
+ 5
+), using the
+optimal step sizes  (as estimated from Fig.
+ A.V
+) for each
+tested condition numb er, over the set of p ositive denite ma-
+trices
+A
+2
+C
+64
+
+64
+.
+FIG. A.VI I. The plot shows the recommended values of  for
+the QW metho d, when we double the cost for controlling
+A
+,
+as a function of the tested condition numb er, for the set of
+non-Hermitian matrices
+A
+2
+C
+32
+
+32
+.
+FIG. A.VI I I. Total cost for the QW metho d for dierent tar-
+get solution-error tolerances, when we double the cost for con-
+trolling
+A
+(in contrast for what is given in Fig.
+ 7
+), using the
+optimal step sizes  (as estimated f rom Fig.
+ A.VI I
+) for each
+tested condition numb er, over the set of non-Hermitian ma-
+trices
+A
+2
+C
+32
+
+32
+.
+FIG. A.IX. The plot shows the recommended values of  for
+the QW metho d, when we double the cost f or controlling
+A
+,
+as a function of the tested condition numb er, for the set of
+non-Hermitian matrices
+A
+2
+C
+64
+
+64
+.
+
+--- Page 16 ---
+16
+FIG. A.X. Total cost for the QW metho d for dierent target
+solution-error tolerances, when we double the cost for con-
+trolling
+A
+(in contrast for what is given in Fig.
+ 8
+), using the
+optimal step sizes  (as estimated from Fig.
+ A.IX
+ for each
+tested condition numb er, over the set of non-Hermitian ma-
+trices
+A
+2
+C
+64
+
+64
+.
+B.
+ Numerical Tests - Supp orting Material
+In this section, we extend further results considered in
+[
+22
+] for the QW and the Randomised metho d. We tested
+b oth approaches, considering dierent dimensions across
+dierent condition numb ers. Moreover, we give the plots
+for the recommended values for  accordingly to a given
+target pre cision for
+
+for the solution error for b oth m eth-
+o ds, i.e., QW and Shortcut for the non-Hermitian matri-
+ces.
+1.
+ Recommended values for
+
+We b egin by presenting the results for the QW metho d
+applied to non-Hermitian matrices, including the tables
+used to interp olate the cost values as a function of .
+We also provide the c orre sp onding tables for the p ositive-
+denite (PD) c ases. These re sults then allow us to de-
+termine the recommended values of  that minimize the
+total cost, namely the combined adiabatic and ltering
+contributions.
+FIG. B.I. The plot shows the recommended values of  (used
+to estimated the total cost in Fig.
+ 7
+ ) resulted from Table
+ B.I I
+,
+for the QW metho d as a function of the total allowable error
+in the solution
+
+for dierent tested condition numb er, for the
+set of non-Hermitian matrices
+A
+2
+C
+32
+
+32
+.
+FIG. B .I I. The plot shows the recommended values of  (used
+to estimated the total cost in Fig.
+ 8
+) resulted from Fig.
+ B.I I
+,
+for the QW metho d as a function of the total allowable error
+in the solution
+
+for dierent tested condition numb er, for the
+set of non-Hermitian matrices
+A
+2
+C
+64
+
+64
+.
+We now give the results for the recommended values
+for  for the Shortcut m etho d, followed by the tables
+used for interp olation of .
+
+--- Page 17 ---
+17
+FIG. B.I I I. The plot shows the recommended values of 
+(used to estimated the total cost in Fig.
+ 6
+) resulted from Ta-
+ble
+ B.V
+, for the Shortcut metho d as a function of the total
+allowable error in the solution
+
+for dierent tested condition
+numb er, for the set of non-Hermitian matrices
+A
+2
+C
+32
+
+32
+.
+FIG. B.IV. The plot shows the recommended values of 
+(used to estimated the total cost in Fig.
+ 9
+) resulted from Ta-
+ble
+ B.VI
+, for the Shortcut metho d as a function of the total
+allowable error in the solution
+
+for dierent tested condition
+numb er, for the set of non-Hermitian matrices
+A
+2
+C
+64
+
+64
+.
+2.
+ Extended analysis of the QW and Randomised
+metho d
+We rep ort the results over 100 instances by xing the
+walk step, in the QW metho d, so we get on average the
+following set of
+
+values: 
+2 f
+0
+:
+4
+;
+0
+:
+3
+;
+0
+:
+25
+;
+0
+:
+20
+;
+0
+:
+15
+g
+,
+which is rep orted in Tables
+ B.I
+,
+ B.I I
+ and
+ B.VI I
+ to
+ B.IX
+,
+which represents the costly part of the quantum linear
+solvers, accordingly to [
+22
+], b efore the ltering step.
+In the table , we rep ort the total cost, which represents
+the numb er of applications of the blo ck enco ding of
+U
+A
+,
+the average error (including the standard deviation), and
+the average c ons tant factor (also including the standard
+deviation).
+
+--- Page 18 ---
+18
+
+Cost
+=0
+:
+40
+Error
+=0
+:
+40
+Cost
+=0
+:
+30
+Error
+=0
+:
+30
+Cost
+=0
+:
+25
+Error
+=0
+:
+25
+Cost
+=0
+:
+20
+Error
+=0
+:
+20
+Cost
+=0
+:
+15
+Error
+=0
+:
+15
+20
+68
+0.385
+84
+0.299
+100
+0.238
+112
+0.198
+132
+0.149
+40
+160
+0.396
+196
+0.295
+220
+0.244
+252
+0.200
+292
+0.148
+80
+400
+0.396
+452
+0.294
+504
+0.246
+560
+0.197
+628
+0.148
+160
+888
+0.399
+980
+0.299
+1068
+0.250
+1172
+0.199
+1288
+0.150
+320
+1888
+0.399
+2072
+0.299
+2256
+0.246
+2448
+0.198
+2676
+0.150
+TABLE B.I. Cost and average  error (QW) for di erent condition numb ers
+
+for non-Hermitian matrices
+A
+2
+R
+32
+
+32
+used to
+generate the recommended values for  in Fig.
+ B.I
+.
+
+Cost
+=0
+:
+40
+Error
+=0
+:
+40
+Cost
+=0
+:
+30
+Error
+=0
+:
+30
+Cost
+=0
+:
+25
+Error
+=0
+:
+25
+Cost
+=0
+:
+20
+Error
+=0
+:
+20
+Cost
+=0
+:
+15
+Error
+=0
+:
+15
+20
+64
+0.387
+80
+0.299
+92
+0.250
+112
+0.189
+132
+0.146
+40
+144
+0.393
+188
+0.293
+212
+0.250
+244
+0.201
+288
+0.149
+80
+340
+0.396
+436
+0.296
+488
+0.249
+552
+0.200
+632
+0.150
+160
+788
+0.399
+988
+0.300
+1092
+0.249
+1212
+0.200
+1348
+0.149
+320
+1780
+0.401
+2136
+0.300
+2320
+0.247
+2516
+0.199
+2760
+0.149
+TABLE B.I I. Cost and average  error (QW) for dierent condition numb ers
+
+for non-Hermitian matrices
+A
+2
+R
+64
+
+64
+used
+to generate the recommended values for  in Fig.
+ B.I I
+.
+
+Cost
+=0
+:
+40
+Error
+=0
+:
+40
+Cost
+=0
+:
+30
+Error
+=0
+:
+30
+Cost
+=0
+:
+20
+Error
+=0
+:
+20
+Cost
+=0
+:
+15
+Error
+=0
+:
+15
+Cost
+=0
+:
+10
+Error
+=0
+:
+10
+20
+12
+0.3237
+16
+0.2422
+20
+0.1868
+28
+0.1470
+44
+0.0911
+40
+20
+0.3725
+24
+0.2780
+48
+0.1939
+60
+0.1492
+88
+0.0977
+80
+36
+0.3978
+60
+0.2924
+92
+0.1945
+124
+0.1457
+172
+0.1001
+160
+76
+0.4003
+112
+0.3009
+180
+0.2007
+248
+0.1477
+348
+0.0987
+320
+148
+0.3945
+232
+0.2940
+360
+0.1998
+472
+0.1489
+656
+0.0993
+640
+292
+0.3984
+432
+0.2970
+680
+0.1934
+868
+0.1494
+1224
+0.1000
+1280
+528
+0.3912
+780
+0.2929
+1200
+0.1996
+1660
+0.1459
+2380
+0.0975
+2560
+896
+0.3973
+1368
+0.2997
+2240
+0.1986
+3000
+0.1496
+4080
+0.0990
+TABLE B.I I I. Cost and average  error (QW) for dierent condition numb ers
+
+for p ositive denite matrices
+A
+2
+R
+32
+
+32
+used
+to generate the recommended values for  in Fig.
+ 2
+.
+
+Cost
+=0
+:
+40
+Error
+=0
+:
+40
+Cost
+=0
+:
+30
+Error
+=0
+:
+30
+Cost
+=0
+:
+20
+Error
+=0
+:
+20
+Cost
+=0
+:
+15
+Error
+=0
+:
+15
+Cost
+=0
+:
+10
+Error
+=0
+:
+10
+20
+12
+0.318
+16
+0.237
+20
+0.189
+28
+0.143
+44
+0.087
+40
+20
+0.367
+28
+0.270
+44
+0.201
+60
+0.144
+84
+0.100
+80
+36
+0.388
+56
+0.296
+92
+0.192
+124
+0.147
+176
+0.098
+160
+76
+0.391
+116
+0.294
+188
+0.195
+248
+0.149
+352
+0.099
+320
+152
+0.397
+236
+0.294
+380
+0.194
+492
+0.149
+700
+0.100
+640
+308
+0.395
+452
+0.300
+720
+0.201
+984
+0.149
+1412
+0.100
+1280
+576
+0.399
+880
+0.300
+1520
+0.193
+1980
+0.150
+2860
+0.100
+2560
+1140
+0.399
+1776
+0.300
+2900
+0.200
+3880
+0.150
+5560
+0.101
+TABLE B.IV. Cost and average  error (QW) for dierent condition numb ers
+
+for p ositive denite matrices
+A
+2
+R
+64
+
+64
+used
+to generate the recommended values for  in Fig.
+ 4
+.
+
+--- Page 19 ---
+19
+
+ = 0
+:
+30
+ = 0
+:
+20
+ = 0
+:
+10
+ = 0
+:
+05
+Cost Error
+
+KR
+Cost Error
+
+KR
+Cost Error
+
+KR
+Cost Error
+
+KR
+20
+1
+:
+51
+
+10
+2
+0.2891 0.1488
+1
+:
+66
+
+10
+2
+0.1942 0.0981
+1
+:
+88
+
+10
+2
+0.0986 0.0450
+2
+:
+14
+
+10
+2
+0.0495 0.0235
+40
+3
+:
+72
+
+10
+2
+0.2991 0.1136
+4
+:
+16
+
+10
+2
+0.1858 0.0632
+4
+:
+80
+
+10
+2
+0.0924 0.0291
+5
+:
+48
+
+10
+2
+0.0446 0.0137
+80
+9
+:
+22
+
+10
+2
+0.2889 0.0713
+1
+:
+02
+
+10
+3
+0.1910 0.0420
+1
+:
+18
+
+10
+3
+0.0940 0.0188
+1
+:
+33
+
+10
+3
+0.0497 0.0097
+160
+2
+:
+20
+
+10
+3
+0.3015 0.0493
+2
+:
+48
+
+10
+3
+0.1969 0.0262
+2
+:
+90
+
+10
+3
+0.0958 0.0109
+3
+:
+28
+
+10
+3
+0.0460 0.0052
+320
+5
+:
+34
+
+10
+3
+0.2989 0.0296
+6
+:
+02
+
+10
+3
+0.1972 0.0152
+7
+:
+04
+
+10
+3
+0.0951 0.0061
+7
+:
+82
+
+10
+3
+0.0498 0.0031
+TABLE B.V. Average cost, average error, and
+
+KR
+for dierent condition numb ers
+
+and threshold values  for the Shortcut
+metho d for non-Hermitian matrices
+A
+2
+R
+32
+
+32
+in the unknown-norm regime.
+
+ = 0
+:
+30
+ = 0
+:
+20
+ = 0
+:
+10
+ = 0
+:
+05
+Cost Error
+
+KR
+Cost Error
+
+KR
+Cost Error
+
+KR
+Cost Error
+
+KR
+20
+1
+:
+46
+
+10
+2
+0.2979 0.1748
+1
+:
+62
+
+10
+2
+0.1974 0.1000
+1
+:
+89
+
+10
+2
+0.0903 0.0492
+2
+:
+16
+
+10
+2
+0.0457 0.0240
+40
+3
+:
+66
+
+10
+2
+0.2944 0.1220
+4
+:
+12
+
+10
+2
+0.1865 0.0712
+4
+:
+68
+
+10
+2
+0.0974 0.0362
+5
+:
+36
+
+10
+2
+0.0459 0.0165
+80
+9
+:
+00
+
+10
+2
+0.2887 0.0892
+9
+:
+92
+
+10
+2
+0.1954 0.0520
+1
+:
+15
+
+10
+3
+0.0911 0.0188
+1
+:
+31
+
+10
+3
+0.0466 0.0115
+160
+2
+:
+02
+
+10
+3
+0.2927 0.0619
+2
+:
+40
+
+10
+3
+0.1918 0.0334
+2
+:
+80
+
+10
+3
+0.0934 0.0148
+3
+:
+12
+
+10
+3
+0.0493 0.0076
+320
+5
+:
+14
+
+10
+3
+0.2960 0.0390
+5
+:
+80
+
+10
+3
+0.1957 0.0208
+6
+:
+74
+
+10
+3
+0.0927 0.0088
+7
+:
+52
+
+10
+3
+0.0484 0.0045
+TABLE B.VI. Average cost, average error, and
+
+KR
+for dierent condition numb ers
+
+and threshold values  for the Shortcut
+metho d for non-Hermitian matrices
+A
+2
+R
+64
+
+64
+in the unknown-norm regime.
+Results for
+A
+2
+R
+8
+
+8
+Quantum Walk
+Randomised metho d
+
+Cost
+(Error)
+av g
+
+av g
+(Cost)
+av g
+(Error)
+av g
+
+av g
+20
+9
+:
+20
+
+10
+0
+:
+381
+
+0
+:
+114
+1
+:
+75
+
+0
+:
+53
+6
+:
+42
+
+10
+2
+0
+:
+392
+
+0
+:
+022
+|
+40
+2
+:
+04
+
+10
+2
+0
+:
+393
+
+0
+:
+088
+2
+:
+00
+
+0
+:
+45
+1
+:
+41
+
+10
+3
+0
+:
+393
+
+0
+:
+013
+|
+80
+4
+:
+40
+
+10
+2
+0
+:
+394
+
+0
+:
+059
+2
+:
+16
+
+0
+:
+48
+3
+:
+06
+
+10
+3
+0
+:
+394
+
+0
+:
+017
+|
+160
+9
+:
+20
+
+10
+2
+0
+:
+395
+
+0
+:
+038
+2
+:
+26
+
+0
+:
+34
+6
+:
+47
+
+10
+3
+0
+:
+393
+
+0
+:
+018
+|
+TABLE B.VI I. Performance comparison b etween the discrete adiabatic (Quantum Walk) and the Randomised metho d across
+100 non-Hermitian matrix instances of size 8
+
+8 for the target error  = 0
+:
+4.
+Results for
+A
+2
+R
+16
+
+16
+Quantum Walk
+Randomised metho d
+
+Cost
+(Error)
+av g
+
+av g
+(Cost)
+av g
+(Error)
+av g
+
+av g
+20
+7
+:
+60
+
+10
+0
+:
+398
+
+0
+:
+154
+1
+:
+51
+
+0
+:
+59
+6
+:
+19
+
+10
+2
+0
+:
+391
+
+0
+:
+029
+|
+40
+1
+:
+84
+
+10
+2
+0
+:
+399
+
+0
+:
+142
+1
+:
+83
+
+0
+:
+65
+1
+:
+36
+
+10
+3
+0
+:
+393
+
+0
+:
+018
+|
+80
+4
+:
+24
+
+10
+2
+0
+:
+398
+
+0
+:
+115
+2
+:
+10
+
+0
+:
+61
+3
+:
+02
+
+10
+3
+0
+:
+394
+
+0
+:
+018
+|
+160
+9
+:
+00
+
+10
+2
+0
+:
+398
+
+0
+:
+082
+2
+:
+24
+
+0
+:
+46
+6
+:
+56
+
+10
+3
+0
+:
+394
+
+0
+:
+020
+|
+320
+1
+:
+88
+
+10
+3
+0
+:
+400
+
+0
+:
+042
+2
+:
+35
+
+0
+:
+245
+1
+:
+39
+
+10
+4
+0
+:
+395
+
+0
+:
+026
+|
+TABLE B.VI I I. Performance comparison b etween the discrete adiabatic (Quantum Walk ) and the Randomised metho d across
+100 non-Hermitian matrix instances of size 16
+
+16 for the target error  = 0
+:
+4.
+
+--- Page 20 ---
+20
+Results for
+A
+2
+R
+32
+
+32
+Quantum Walk
+Randomised metho d
+
+Cost
+(Error)
+av g
+
+av g
+(Cost)
+av g
+(Error)
+av g
+
+av g
+20
+6
+:
+80
+
+10
+0
+:
+385
+
+0
+:
+133
+1
+:
+31
+
+0
+:
+45
+5
+:
+94
+
+10
+2
+0
+:
+392
+
+0
+:
+014
+|
+40
+1
+:
+60
+
+10
+2
+0
+:
+396
+
+0
+:
+156
+1
+:
+58
+
+0
+:
+62
+1
+:
+30
+
+10
+3
+0
+:
+394
+
+0
+:
+012
+|
+80
+4
+:
+00
+
+10
+2
+0
+:
+393
+
+0
+:
+136
+1
+:
+97
+
+0
+:
+68
+2
+:
+89
+
+10
+3
+0
+:
+394
+
+0
+:
+014
+|
+160
+8
+:
+88
+
+10
+2
+0
+:
+399
+
+0
+:
+105
+2
+:
+19
+
+0
+:
+58
+6
+:
+41
+
+10
+3
+0
+:
+395
+
+0
+:
+020
+|
+320
+1
+:
+88
+
+10
+3
+0
+:
+399
+
+0
+:
+070
+2
+:
+34
+
+0
+:
+41
+1
+:
+39
+
+10
+4
+0
+:
+395
+
+0
+:
+015
+|
+640
+3
+:
+88
+
+10
+3
+0
+:
+400
+
+0
+:
+049
+2
+:
+42
+
+0
+:
+30
+2
+:
+96
+
+10
+4
+0
+:
+395
+
+0
+:
+011
+|
+TABLE B.IX. Performance comparison b etween the discrete adiabatic (Quantum Walk) and the Randomised metho d across
+100 non-Hermitian matrix instances of size 32
+
+32 for the target error  = 0
+:
+4.

@@ -1,0 +1,10 @@
+{
+  "instance_id": "02-smooth-diffusion-v1-stored-data-state-budget-proxy",
+  "N": 16129,
+  "kappa": 66405.18434557703,
+  "effective_inverse_gap": 2909653.569867071,
+  "epsilon_state": 1.0108869015081302e-05,
+  "delta_retry": 0.002,
+  "query_bound": "auto",
+  "rotation_synthesis_offset": 10
+}

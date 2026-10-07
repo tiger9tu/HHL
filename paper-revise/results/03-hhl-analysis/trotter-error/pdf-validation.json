@@ -1,0 +1,14 @@
+{
+  "pages": 12,
+  "unresolved_references": false,
+  "overfull_boxes": false,
+  "text_outside_page": false,
+  "pdf_sha256": "c44b933d4dfe009ccaf5555e95c3327ba99a83e7c25f2f99e190e2dbd0dc2a67",
+  "tex_sha256": "da04e16a6c837785e6723332a47dd9f7b0feb2356574c238282b5afefc79a780",
+  "compiler": "Tectonic 0.17.0",
+  "numerical_examples_passed": true,
+  "experiment_measurements": 20400,
+  "experiment_bound_violations": 0,
+  "experiment_results_sha256": "a4d3ffe1ac068da11cd38cf11c48ea7690e7ce48d0e121b3ed80f52c2c0dbea3",
+  "experiment_section_sha256": "46f124194c699636e3ff6c2acf322ca2ebb7b2da714b5708e8748c36389daa1d"
+}

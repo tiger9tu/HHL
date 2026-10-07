@@ -1,0 +1,70 @@
+{
+  "id": "q_hhl_core_03",
+  "branch": "quantum",
+  "layer": "logical",
+  "owner": "03",
+  "scope": "per_output",
+  "reuse_key": "none",
+  "multiplicity": {
+    "unit": "1",
+    "status": "known",
+    "note": "One core invocation; task 05 applies attempted-circuit multiplicity exactly once.",
+    "value": 1
+  },
+  "statistic": "upper_bound",
+  "statistic_note": "PF schedule is a deterministic sufficient bound. Compiled costs and non-HS core remain symbolic. No QPE accuracy certificate or end-to-end output guarantee is supplied.",
+  "covers": [
+    "q.core"
+  ],
+  "derived_from": [],
+  "assumptions": [
+    "A03-commutator",
+    "A03-reference",
+    "A03-compilation"
+  ],
+  "resources": {
+    "gate_basis": "compiled Clifford+T; T includes T dagger; exclusive primitive buckets",
+    "gates": {
+      "T": {
+        "unit": "gate",
+        "status": "symbolic",
+        "note": "Counts both QPE directions; excludes preparation, heralding measurement and readout.",
+        "expression": "417852 * g_HS1_T + g_nonHS_T"
+      },
+      "Clifford": {
+        "unit": "gate",
+        "status": "symbolic",
+        "note": "Counts both QPE directions; excludes preparation, heralding measurement and readout.",
+        "expression": "417852 * g_HS1_Clifford + g_nonHS_Clifford"
+      }
+    },
+    "oracle_queries": {
+      "A": {
+        "unit": "query",
+        "status": "symbolic",
+        "note": "Queries per controlled term include compute and uncompute; instantiate the access model.",
+        "expression": "417852 * q_A_HS1"
+      }
+    },
+    "queries_expanded": false,
+    "depth": {
+      "unit": "layer",
+      "status": "symbolic",
+      "note": "Serial upper bound after compiling each controlled term and non-HS core.",
+      "expression": "417852 * D_HS1 + D_nonHS"
+    },
+    "t_depth": {
+      "unit": "layer",
+      "status": "symbolic",
+      "note": "Requires compiled dependency schedule; not inferred from T-count.",
+      "expression": "417852 * DT_HS1 + DT_nonHS"
+    },
+    "logical_qubits_peak": {
+      "unit": "logical_qubit",
+      "status": "symbolic",
+      "note": "Example n_sys=1,m=3; W includes all simultaneously live extra core workspace.",
+      "expression": "1 + 3 + 1 + W_core_peak"
+    },
+    "schedule": "Serial controlled evolutions per R4 plus non-HS QPE/reciprocal/inverse-QPE; supply workspace lifetime and compilation artifact."
+  }
+}

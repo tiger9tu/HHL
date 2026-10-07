@@ -1,0 +1,22739 @@
+--- Page 1 ---
+A shortcut to an optimal quantum linear system solver
+Alexander M. Dalzell
+AWS Center for Quantum Comput ing, Pasadena, CA
+Abstract
+Given a linear system of equations
+ A
+x
+ =
+ b
+, quantum linear system solvers (QLSSs) approximately
+prepare a qu antum state
+ j
+x
+i
+ for which the amplitudes are prop ortional to the solution vector
+ x
+. Asymp-
+totically optimal QLS Ss have query complexity
+ O
+ (
+
+ log (1
+="
+))
+, where
+ 
+ is the condition numb er of
+ A
+,
+and
+ "
+ is the approximation error. However, runtime guarantees for existing optimal and near-optimal
+QLSSs do not have favorable constant prefactors, in part b ecause th ey rely on complex or di˚cult-to-
+analyze techniqu es like variable-time amplitude ampli˝cation and ad iab ati c path-following. Here, we
+give a conceptually simple QLSS that do es not use these techniques. If the solu tion norm
+ k
+x
+k
+ is known
+exactly, our QLSS requires only a single application of
+ kernel re˛ection
+ straightforward extension
+of the eigenstate ˝ltering (EF) technique of previous w the query comp lexity of the QLSS is
+(1 +
+ O
+ (
+"
+))
+
+ ln
+
+2
+p
+2
+="
+
+. If the norm is unknown, our metho d allows it to b e estimated u p to a constant
+factor using
+ O
+ (log log (
+
+))
+ applications of
+ kernel projection
+ direct generalization of ing a
+straightforward QLSS with near-optimal
+ O
+ (
+
+ log log (
+
+) log log log (
+
+) +
+ 
+ log (1
+="
+))
+ total complexity. Al-
+ternatively, by reintro ducing a concept from the adiabatic path-following technique, we show that
+ O
+ (
+
+)
+complexity can b e achieved for estimatin g the norm up to a constant factor, yielding an optimal QLSS
+with
+ O
+ (
+
+ log (1
+="
+))
+ complexity while still avoiding the need to analyze the adiabatic theorem. Finally, we
+give explicit upp er b ounds on the con stant prefactors of the comp lexity statements: we show that the
+query complexity of our optimal QLSS is at most
+ 56
+
+ + 1
+:
+05
+
+ ln(1
+="
+) +
+ o
+(
+
+)
+, saving more than an order
+of magnitude compared to existing QLSS complexity guarantees.
+1 Intro duction
+Quantum linear system solvers (QLSSs) e˚ciently pro-
+duce a quantum state
+ j
+x
+i
+ that enco des th e solution to a
+linear system of equations,
+ A
+x
+ =
+ b
+. Sinc e their discov-
+ery in 2008 [
+1
+], they have b een a key drive r of enthusiasm
+for quantum computing. After all, the need to nume r-
+ically solve large linear systems app ears in a multitude
+of applications and already represents a key use case
+for advanced classical computational hardware, such as
+graphics pro cessing units. However, compared to their
+classical c ou nterparts, quantum algorithms b egin at an
+orders-of-magnitude dis ad vantage due to slower physical
+clo ck sp eeds and severe overheads from quantum error
+correction (see, e .g. , [
+2
+]). Thus, providing a substantial
+quantum sp eedup with the QLSS will require making
+optimizations at e very level of the computational stack.
+Toward this end, the asymptotic p erformance of the
+QLSS has b een steadily improved over time. T he key pa-
+rameters that determine the QLSS complexity are the
+condition numb er
+ 
+ of the matrix to b e inv
+is, the ratio of its largest and small est singular v
+and the error
+ "
+ s ought by the solution. The original
+QLSS had cost
+ O
+ (
+
+2
+="
+)
+ que ri es to the input data com-
+prising
+ A
+ and
+ b
+ [
+1
+]. A s equence of improvements [
+3
+
+10
+] has reduced this complexity to
+ O
+ (
+
+ log (1
+="
+))
+ [
+10
+],
+1
+1
+Optimal
+ O
+ (
+
+ log (1
+=
+))
+ complexity was also obtained by alter-
+native meth o ds in work concurrent [
+11
+] and subsequent [
+12
+] to the
+˝rst version of this pap er.
+which matches lower b ounds showing that linear-in-
+
+ is
+optimal [
+1
+,
+ 13
+].
+2
+The optimal QLSS of Ref. [
+10
+] achieves this state-
+of-the-art complexity by combining two techniques:
+(i)
+ eigenstate ˝ltering
+ (EF), and (ii)
+ adiabatic path-
+fol lowing
+ via the quantum walk metho d. It utilizes
+EF [
+8
+] to approximately pro ject onto the ideal state
+ j
+x
+i
+at cost
+ O
+ (
+
+ log (1
+="
+))
+. However, to apply this technique,
+one must ˝rs t prepare an ansatz state
+ j
+x
+ans
+i
+ that has
+constant overlap
+ 
+ =
+ jh
+x
+ans
+j
+x
+ij
+ = 
+(1)
+, so that EF
+succeeds with substantial probability, and need not b e
+rep eated more than
+ 1
+=
+2
+=
+ O
+ (1)
+ times on average. Ex-
+tending ideas ˝rst explored in Refs. [
+6
+,
+ 7
+], this ansatz
+state is prepared by applying a sequenc e of unitary
+walk op erators, wh ere the eigenstates of the op e rators
+follow a smo othly varying eigenpath. The discrete adi-
+abatic theorem guarantees that if the path is traversed
+su˚ciently slowly, the state of the system will approxi-
+mately track the eigen path. For the QLSS, one cho oses
+the sequence of walk op erators so that the path b egins
+at a simple-to-prepare state related only to the vector
+b
+. As the sequence progresses, information ab out
+ A
+ is
+intro duced, and the path ends at a state from which
+ j
+x
+i
+can b e easily extracted. Ultimately, the metho d pre-
+pares a state
+ j
+x
+ans
+i
+ achieving overlap
+ 
+ at total cost
+O
+ (
+=
+p
+1
+ 
+ 
+2
+)
+.
+2
+It has b een shown that
+ O
+ (
+
+ log (1
+="
+))
+ is
+ jointly
+ optimal in b oth
+
+ and
+ 1
+="
+ [
+14
+,
+ 15
+]. However, in this pap er, unless otherwise stated,
+when we write optimal and near-optimal we mean only with
+resp ect to
+ 
+, where near-optimal refers to scaling
+ 
+ p olylog (
+
+)
+.
+1
+arXiv:2406.12086v2  [quant-ph]  8 Apr 2026
+
+--- Page 2 ---
+j
+x
+i
+j
+e
+n
+i
+j
+x
+t
+i
+j
+s
+i
+cos(2
+
+t
+)
+j
+e
+n
+i
+ + sin(2
+
+t
+)
+j
+x
+i
+
+t
+
+t
+Figure 1: Illustration of the conceptual idea of the quan-
+tum linear system solver in this pap er. Roughly sp eak-
+ing, previous meth o ds approximately follow an adiabatic
+path from an initial state
+ j
+s
+i
+ to the solution
+ j
+x
+i
+, depicted
+by the red line, and then re˝ne the resu lting state w ith
+eigenstate ˝ltering (EF). In contrast, our metho d b egins
+in a known state
+ j
+e
+n
+i
+ that is delib erate ly orthogonal to
+j
+x
+i
+. Given an estimate
+ t
+ for
+ k
+x
+k
+, it uses the quantum
+singular value transformation (QSVT) to re˛ect ab out
+the solution
+ j
+x
+t
+i
+ to an augmented linear system , arriving
+at
+ cos(2
+
+t
+)
+j
+e
+n
+i
+ + sin(2
+
+t
+)
+j
+x
+i
+, where
+ 
+t
+= arctan(
+k
+x
+k
+=t
+)
+ is
+the initial angle b etween
+ j
+e
+n
+i
+ and
+ j
+x
+t
+i
+. Then, it pro jects
+onto the image of
+ I
+ j
+e
+n
+ih
+e
+n
+j
+ (shaded plane) with suc-
+cess probability
+ sin
+2
+(2
+
+t
+)
+, to arrive at
+ j
+x
+i
+, up to errors
+induced by imp erfect re˛ec tion. The success probability
+is
+ 
+(1)
+ as long as
+ t
+ is a constant-factor approximation
+of
+ k
+x
+k
+.
+However, rigorous treatment of adiabatic algo-
+rithms are notoriously di˚cult [
+16
+]. Accordingly, the
+analysis of the discrete ad iab ati c theorem in Ref. [
+10
+] is
+intricate and intro duces a large constant prefactor, on
+the order of
+ 10
+5
+(see [
+17
+, Eq. (L2) of arXiv v1]), into
+the rigorou s b ound on the complexity of preparing the
+ansatz state via the quantum walk metho d. A rigorous
+analysis [
+17
+] of an alternative adiabatic path-following
+strategy called the ran domization metho d [
+6
+] has a
+similar conclusion: ansatz state preparation i s far more
+costly than the subsequent EF step, even for very small
+values of
+ "
+. This large cost of the in particu-
+lar ans atz statetributes to the large re-
+source estimates rep orted for QLSS-based applications,
+such as ˝nancial p ortfoli o optimization [
+18
+] and solving
+di˙erential equations [
+19
+]. Numerical simulations [
+14
+] on
+small random linear systems of size up to
+ 16
+ 
+ 16
+ suggest
+that for b oth the randomization metho d and the quan-
+tum walk metho d, the constant prefactors involve d are
+much sm aller than their explicit upp er b ounds. Nev-
+ertheless, it re mains desirable to have a ti ghter upp er
+b ound that is guaranteed to hold for larger systems, and
+in the worst case.
+In this pap er, we intro duce a new conceptual idea,
+depicted in
+ Figure 1
+, that eliminates the need for ansatz
+state preparation via adiabatic path-following. Brie˛y,
+the idea is to
+ augment
+ the linear system by adding a
+single additional variable and a single uncoupled linear
+constraint on that variable. T he solution to the aug-
+mented linear system simultaneously has constant over-
+lap with the solution
+ j
+x
+i
+ and with an easy-to-prepare
+state we lab el
+ j
+e
+n
+i
+. Thus, we can quickly navigate from
+j
+e
+n
+i
+ to
+ j
+x
+ i
+ by approximately re˛ecting ab out the so-
+lution to the augmentedting this re-
+˛ection is an extension of the EF technique and has cost
+O
+ (
+
+ log (1
+="
+))
+. The re sult is a simp er QLSS that relies
+only on EF -like op erations combined with a few straight-
+forward line ar algebra observations.
+A caveat is that augmenting the linear s ys tem in the
+right way requires knowing (or guessing) an estimate of
+the Euclidean norm
+ k
+x
+k
+ of the solution to the linear sys-
+tem. Thus, in a sense, our work might b e viewed as
+ re-
+placing
+ the ansatz-state-preparation step in prior QLSSs
+with a solution-norm-estimation step. This trade is b en-
+e˝cial since
+ k
+x
+k
+ is a single real numb er that need only
+b e le arn ed once, rather than a high-dimensional quan-
+tum state that must b e reprepared each time the linear
+system is to b e s olved. If the norm is known to within a
+constant multip licative factor, our QLSS is asymptoti-
+cally optimal, with
+ O
+ (
+
+ log (1
+="
+))
+ cost. If the norm is un-
+known, we also show that our framework o˙ers a sim ple
+way to le arn i t (up to a constant factor) in near-optimal
+cost
+ O
+ (
+
+ log log (
+
+) log log log (
+
+))
+. Alternatively, by us -
+ing our metho d together with some of the intuition from
+the adiabatic approach, we show that the norm can b e
+learned up to a constant factor in optimal
+ O
+ (
+
+)
+ complex-
+ity, while still avoiding the intricate analysis of the adia-
+batic theorem. Furthermore, the approximation ratio of
+the n orm estimate c an b e improved from constant to
+ 1 +
+ "
+incurring additional cost equal to
+ O
+ (
+
+ log (1
+="
+)
+="
+)
+, shav-
+ing multiple
+ log (
+
+)
+ and
+ log (1
+="
+)
+ factors o˙ of th e pre-
+vious state-of-the-art metho d for norm estim ation from
+Ref. [
+5
+], and nearly matching the lower b ound of
+ 
+(
+="
+)
+that we show in the app endix. Dep ending on which
+norm estimation metho d is used, this gives a full QLSS
+with optimal or near-optimal query complexity.
+In
+ Section 2
+, we establish notation and background
+information ab out the quantum linear system problem,
+and in
+ Section 3
+ we intro duce
+ kernel projection
+ and
+ ker-
+nel re˛ ection
+, the EF-like op erations that constitute the
+main technical ingredient of our QL SS. In
+ Section 4
+, we
+present our main algorithm for solving the quantum li n-
+ear system problem when an estimate for the s olution
+norm is known, and in
+ Section 5
+, we present several al-
+gorithms for e stimating the norm, along with c ompact,
+non-optimized pro ofs of correctness. In
+ Section 6
+, we
+provide a discussion of constant prefactors, based on a
+more detailed version of our QLSS that we develop in
+the app endix. Finally, in
+ Section 7
+ we provide some
+concluding remarks.
+2
+
+--- Page 3 ---
+2 The quantum linear system
+problem
+The input to the linear system problem is an
+ m
+ 
+ n
+matrix
+ A
+ 2
+ C
+m
+
+n
+and a vector
+ b
+ 2
+ C
+m
+. The solution
+is a ve ctor
+ x
+ 2
+ C
+n
+for which
+ A
+x
+ =
+ b
+, assuming s uch
+a solution exists.
+3
+When more than one s uch solution
+exists, we seek the
+ x
+ with minimum Euclidean norm
+k
+x
+k
+.
+Let
+ s
+ =
+ d
+log
+2
+(1 + max(
+m; n
+))
+e
+ (here we add one to
+leave ro om for an extra row/column, as discussed later).
+Consider an
+ s
+-qubit system with orthonormal computa-
+tional basis states
+ fj
+e
+j
+ig
+2
+s
+
+1
+j
+ =0
+. For
+ k
+ 
+ 2
+s
+, we asso ciate
+k
+ -dime nsional vectors
+ u
+ = (
+u
+0
+; : : : ; u
+k
+ 
+1
+)
+ 2
+ C
+k
+with
+normalized
+ s
+-qubit states
+ j
+u
+i
+ =
+ k
+u
+k
+
+1
+P
+k
+ 
+1
+j
+ =0
+u
+j
+j
+e
+j
+i
+, for
+which the co e˚cients in the computational basis are
+prop ortional to the corresp onding vector entries. For
+k
+r
+; k
+c
+
+ 2
+s
+, we asso ciate
+ k
+r
+
+ k
+c
+matrices
+ M
+ with the
+op erator
+P
+k
+r
+
+1
+i
+=0
+P
+k
+c
+
+1
+j
+ =0
+m
+ij
+j
+e
+i
+ih
+e
+j
+j
+, where
+ m
+ij
+are the
+matrix entries of
+ M
+ . Then, following standard conven-
+tions, we assume we have access to the data in the
+ m
+-
+dimensional vector
+ b
+ via a unitary op erator
+ U
+b
+for which
+U
+b
+j
+e
+0
+i
+ =
+ j
+b
+i
+. We also assume that
+ k
+A
+k 
+ 1
+ (where
+kk
+ denotes sp ectral norm for matrix arguments), and
+that we have access to the matrix
+ A
+ via a
+ (
+ ; a
+)
+-blo ck-
+enco ding of
+ A
+, that is, an
+ (
+a
+ +
+ s
+)
+-qubit unitary
+4
+op era-
+tion
+ U
+A
+for which
+A
+ =
+ 
+ (
+h
+0
+j
+
+
+a
+
+
+ I
+2
+s
+)
+U
+A
+(
+j
+0
+i
+
+
+a
+
+
+ I
+2
+s
+)
+where
+ I
+d
+denotes the identity op erator on a Hilb ert space
+of dimension
+ d
+, here the Hilb ert space for the
+ s
+-qubit
+system. Note that unitarity requires
+ 
+  k
+A
+k
+.
+The quantum linear system problem (QLSP) takes
+as input an error parameter
+ "
+ and asks to pro duce
+a quantum state
+ j
+ ~
+x
+i
+ for which the trace distance
+1
+2
+kj
+x
+ih
+x
+j j
+ ~
+x
+ih
+ ~
+x
+jk
+1
+is at most
+ "
+, while min imizing the
+numb er of queries to
+ U
+A
+and
+ U
+b
+, as well as their con-
+trolled versions and their inverses . We also accept ran-
+domized algorithms that output a mixed state
+ ~
+ˆ
+ for
+which
+1
+2
+kj
+x
+ih
+x
+j 
+ ~
+ˆ
+k
+1
+
+ "
+. Our analysis could have b een
+p erformed for other related metrics, such as
+ kj
+x
+i j
+ ~
+x
+ik
+,
+as used in Ref. [
+10
+].
+Additionally, henceforth we assume the convention
+that
+ k
+b
+k
+ = 1
+ and
+ 
+ = 1
+. This convention is als o without
+loss of ge nerality since the quantum linear system prob-
+lem asks only to prepare a quantum state prop ortional
+3
+If no solution exists (b ecause
+ b
+ is not in the column space of
+A
+), we ideally seek the vector fo r which the least-squares metric
+k
+A
+x
+ 
+ b
+k
+ is minimized. However, our QLSS do es not o˙er a so-
+lution in this case, and throughout we assume th at
+ b
+ is in the
+column space of
+ A
+. The least-squares case can b e handled by the
+near-optimal QLSS of Ref. [
+5
+].
+4
+Since
+ m ax(
+m; n
+)
+ <
+ 2
+s
+, this assumes that the blo ck-enco ded
+matrix already has at least one row and column of zero-padding.
+If this is not the case, this padding can b e created with one ancilla
+qubit; see
+ App endix
+ A.6
+.
+to
+ x
+, making it insensitive to scaling of
+ A
+ and
+ b
+. We sup-
+p ose there is a known value of
+ 
+ such th at all nonzero
+singular values of
+ A
+ fall in the interval
+ [
+
+
+1
+;
+ 1]
+us
+ 
+is an upp er b ound on the cond ition numb er of
+ A
+, when
+A
+ is restricted to act on inputs orthogonal to its kernel.
+5
+These conventions imply that
+1
+  k
+x
+k 
+  :
+ (1)
+3 Kernel pro jection and kernel re-
+˛ection
+Kernel pro jection (KP) is the term we give to the
+technique of eigen state ˝ltering, generalized to non-
+Hermitian and p otentially non-square matrices. As its
+name su gge sts, when c ombined with p osts election, it
+leads to approximate pro jection onto the kernel of a ma-
+trix. Similarly, kernel re˛ection (KR) leads to approxi-
+mate re˛ection ab out the kernel. In either case, the ˝rst
+step is to construct a matrix
+ G
+ out of
+ A
+ and
+ b
+ for which
+x
+ is in the kernel. Namely, following prior work [
+6
+
+8
+],
+we let
+G
+ =
+ Q
+b
+A
+ (2)
+where the
+ m
+ 
+ m
+ matrix
+ Q
+b
+=
+ I
+m
+
+ bb
+y
+is th e pro jec tor
+onto the subspace orthogonal to
+ b
+. The kernel of
+ G
+ is
+the span of the kernel of
+ A
+ and the vector
+ x
+. Here, we
+note that since we have de˝ned
+ x
+ to b e the solution to
+A
+x
+ =
+ b
+ of minimum norm
+ k
+x
+k
+,
+ x
+ is orthogonal to the
+kernel of
+ A
+. We can easily construct a
+ (1
+; a
+ + 1)
+-blo ck-
+enco ding
+ U
+G
+for
+ G
+ using one query to each of
+ U
+A
+,
+ U
+b
+,
+and
+ U
+y
+b
+; see
+ App en dix A
+.
+Furthermore, we can assert that the smallest
+nonzero singular value of
+ G
+ is at least
+ 
+
+1
+, by the follow-
+ing argument (see also [
+6
+,
+ 7
+]). Supp ose
+ ˙
+ is a nonzero
+singular valu e of
+ G
+, with normalized left singular vec-
+tor
+ u
+ and right singular vector
+ v
+ . Since
+ ˙
+ is nonzero,
+v
+ is orthogonal to
+ x
+ and to the kernel of
+ A
+. Moreover,
+by d e˝nition of singular vectors,
+ ˙
+ u
+ =
+ Q
+b
+A
+v
+ =
+ A
+v
+ 
+(
+b
+y
+A
+v
+ )
+b
+ =
+ A
+(
+v
+ 
+ (
+b
+y
+A
+v
+ )
+x
+)
+, implying that
+ u
+ is in the
+image of
+ A
+, and also that
+ Q
+b
+u
+ =
+ u
+. By the de˝nition of
+singular values,
+ ˙
+2
+=
+ u
+y
+Q
+b
+AA
+y
+Q
+b
+u
+ =
+ u
+y
+AA
+y
+u
+ 
+ 1
+=
+2
+,
+where the last inequality follows from the fact that
+ u
+ is
+in the image of
+ A
+, and thus can b e expressed as a linear
+combination of eigenvectors of
+ AA
+y
+, all of which have
+eigenvalue at least
+ 1
+=
+2
+.
+With these facts establis hed, we c an now de˝ne
+the technique of kernel pro jection. It takes as input
+two parameters
+ (
+; 
+ )
+ and only works u nder the promise
+that the nonzero singular values of
+ G
+ lie i n the interval
+[
+
+
+1
+;
+ 1]
+ (which we proved ab ove in the case
+ G
+ =
+ Q
+b
+A
+).
+Consider an arb itrary normalized
+ s
+-qubit state
+ j
+˚
+i
+ =
+
+ j
+w
+ i
+ +
+ 
+ j
+w
+?
+i
+, where
+ w
+ is a unit vector in the kernel of
+5
+Actually, we need only consider singular values corresp onding
+to singular vectors on which
+ b
+ h as sup p ort, when computing the
+required choice of
+ 
+.
+3
+
+--- Page 4 ---
+G
+ (typically
+ j
+w
+ i
+ =
+ j
+x
+i
+), and
+ w
+?
+is a unit vector orthog-
+onal to the kernel of
+ G
+. KP enacts the transformation
+
+ j
+w
+ i
+ +
+ 
+ j
+w
+?
+i
+KP
+7!
+ 
+ j
+w
+ i
+ +
+  
+1
+j
+w
+?
+i
+ +
+  
+2
+j
+w
+0
+?
+i
+ (3)
+where
+ 
+1
+and
+ 
+2
+are real parameters (dep ende nt on
+ w
+ ),
+that satisfy
+p
+
+2
+1
++
+ 
+2
+2
+
+ 
+ , and
+ w
+0
+?
+is another unit vec-
+tor orthogonal to
+ w
+?
+and to the kernel of
+ G
+. In othe r
+words, KP leaves the kernel of
+ G
+ untouched while shrink-
+ing the norm of the p ortion of the state orthogonal to
+the kerne l by a factor of
+ 
+ (or more). The right-hand
+side is subnormalized: the probability that KP succeeds
+is given by its squared-norm
+ j
+
+ j
+2
++
+ j
+
+ j
+2
+(
+
+2
+1
++
+ 
+2
+2
+)
+. This
+probability can b e small if the initial state
+ j
+˚
+i
+ has small
+overlap
+ 
+ with the kerne l of
+ G
+, necessitating the step of
+ansatz state preparation in prior work [
+8
+,
+ 10
+].
+Similarly, KR can b e understo o d as enacting the
+transformation
+
+ j
+w
+ i
+ +
+ 
+ j
+w
+?
+i
+KR
+7!
+ 
+ j
+w
+ i 
+ 
+ (1
+ 
+ 
+0
+1
+)
+j
+w
+?
+i
+ +
+  
+0
+2
+j
+w
+0
+?
+i
+ :
+ (4)
+For ˝xed
+ w
+ and
+ w
+?
+, the vector
+ w
+0
+?
+in Eq. (
+4
+) is the same
+as the one in Eq. (
+3
+). Moreover, we have the identities
+
+0
+1
+=
+2
+
+ +2
+
+1
+1+
+
+and
+ 
+0
+2
+=
+2
+
+2
+1+
+
+, from which we can derive
+relations
+
+0
+1
+
+ 0
+;
+q
+
+0
+2
+1
++
+ 
+0
+2
+2
+
+4
+
+1 +
+ 
+;
+ j
+
+0
+2
+j 
+2
+
+1 +
+ 
+(5)
+These ide ntities are justi˝e d in
+ App endix B
+, and fol-
+low from the close relationship b etween KP and KR.
+Namely, b oth KP and KR are enacted as an application
+of the quantum singular value transformation (QSVT)
+[
+20
+,
+ 21
+]. Brie˛y, the QSVT pro cedure involves preparing
+the state
+ j
+0
+i
+
+
+(
+a
++2)
+
+ j
+˚
+ i
+, ap plying a sequenc e of gates in-
+cluding
+ U
+G
+and
+ U
+y
+G
+, and then p ostselecting on the ˝rst
+register b eing
+ j
+0
+i
+
+
+(
+a
++2)
+ or failure of KP and
+KR is he ralde d by the outcome of these measurements.
+The circuit is constructed to preserve the right singular
+vectors of
+ G
+ while applying a certain p olynomial trans-
+formation to the singular values, and the total cost of
+the pro cedure scales with the degree of the p olynomial.
+To p erform KP, we cho ose a p olynomial
+ p
+ for w hich
+p
+(0) = 1
+ and
+ j
+p
+(
+x
+)
+j 
+ 
+ for all
+ x
+ 
+ 
+
+1
+. To p erform
+KR, we cho ose a related p olynomial w here
+ p
+(0) = 1
+ and
+
+1
+ 
+ p
+(
+x
+)
+  
+1 + 4
+ =
+(1 +
+ 
+ )
+ for all
+ x
+ 
+ 
+
+1
+. In b oth
+cases, the degree of this p olynomial is
+ 2
+`
+, where
+`
+ =
+ d
+ 
+ ln(2
+=
+ )
+=
+2
+e
+ (6)
+The cost of imp lementing the KP or KR unitary is
+ `
+ calls
+to the blo ck-enco ding
+ U
+G
+,
+ `
+ calls to its inve rs e
+ U
+y
+G
+,
+ 4
+`
+multi-controlle d To˙oli gates, and
+ 2
+`
+ si ngle-qub it rota-
+tion gates. Details of this implem entation can b e found
+in
+ App endix B
+.
+KP is e quivalent to EF when the matrix
+ A
+ is Her-
+mitian. EF was develop ed in Ref. [
+8
+], where it was ap-
+plied to the QLSP to give the ˝rst QLSS with error
+dep endence strictly linear in
+ log (1
+="
+)
+. The idea was to
+use existing QLSSs to ˝rst pro duce a state
+ j
+x
+ans
+i
+ with
+
+ = 
+(1)
+ overlap with
+ j
+x
+i
+, and then apply EF to pro ject
+to a state
+ "
+-close to
+ j
+x
+i
+, succeeding with probability
+roughly
+ j
+
+ j
+2
+. Later, Ref. [
+10
+] showed that a QLSS based
+on the discrete adiabatic theorem can pro duce a state
+j
+x
+ans
+i
+ with
+ O
+ (
+=
+p
+1
+ 
+ 
+2
+)
+ complexity, which, combined
+with EF and taking
+ 
+ = 
+(1)
+, gives an optimal QLSS
+with overall
+ O
+ (
+
+ log (1
+="
+))
+ c omplexity.
+4 Optimal QLSS give n constant-
+factor estimate for norm
+The main conceptu al idea presented in this pap er is to
+form an augmented linear system by intro ducing one
+new variable to the system, and adding one new (un-
+coupled) linear constraint involving th at variable. This
+adds a know n singular vector to the linear syste m, with
+a known, tunable s ingular value. If the known singular
+value is chosen appropriately, then the solution to the
+augmented linear s ys tem simu ltan eously has substantial
+overlap wi th the solution
+ j
+x
+i
+ of the original linear sys-
+tem, and with the known singular vector. This pro-
+duces a navigable path from the known singular vector
+to the solution
+ j
+x
+i
+ that bypasses the need for sophis-
+ticated ansatz-preparation metho shortcut to an
+optimal QLSS.
+Recall that
+ k
+b
+k
+ = 1
+ and
+ k
+A
+k 
+ 1
+ by convention,
+and that this implies that
+ 1
+  k
+x
+k 
+ 
+. Let
+ t
+ 2
+ [1
+; 
+]
+ b e
+an estimate of
+ k
+x
+k
+ and de˝ ne
+
+t
+= arctan
+
+k
+x
+k
+t
+
+:
+ (7)
+Let
+ A
+t
+b e an
+ (
+m
+ + 1)
+ 
+ (
+n
+ + 1)
+ matrix, where the upp er
+left
+ m
+ 
+ n
+ blo ck is
+ A
+, the lower right entry is
+ 1
+=t
+, and
+the other entries are zero:
+A
+t
+=
+ A
+ +
+1
+t
+e
+m
+e
+n
+y
+=
+2
+6
+4
+A
+ 0
+0
+ t
+
+1
+3
+7
+5
+:
+ (8)
+All nonzero singular values of
+ A
+t
+lie in the interval
+[
+
+
+1
+;
+ 1]
+. Furthermore, de˝ne
+b
+0
+=
+1
+p
+2
+(
+b
+ +
+ e
+m
+) =
+2
+6
+4
+b
+=
+p
+2
+1
+=
+p
+2
+3
+7
+5
+(9)
+It is then easy to verify that the solution to the aug-
+mented system
+ A
+t
+x
+t
+=
+ b
+0
+is
+x
+t
+=
+1
+p
+2
+(
+x
+ +
+ t
+e
+n
+) =
+2
+6
+4
+x
+=
+p
+2
+t=
+p
+2
+3
+7
+5
+:
+ (10)
+4
+
+--- Page 5 ---
+The vectors
+ x
+,
+ x
+t
+, and
+ e
+n
+are depicted in
+ Figure 1
+. All
+three lie in the plane spanned by
+ x
+ and
+ e
+n
+with
+ 
+t
+the
+angle b etween
+ e
+n
+and
+ x
+t
+.
+With one ancilla qubit and one controlled query to
+U
+b
+, we can easily construct a unitary
+ U
+b
+0
+that prepares
+j
+b
+0
+i
+. Similarly, with one controlled query to
+ U
+A
+, we can
+construct a
+ (1
+; a
+ + 1)
+-blo ck-enco ding
+ U
+A
+t
+for
+ A
+t
+. T his
+blo ck-enco ding can b e tu rne d into a
+ (1
+; a
+ + 2)
+-blo ck-
+enco ding
+ U
+G
+t
+of the m atrix (cf. Eq. (
+2
+))
+G
+t
+=
+ Q
+b
+0
+A
+t
+(11)
+for which
+ x
+t
+lies in the kernel, and the nonzero singu-
+lar values are contained in
+ [
+
+
+1
+;
+ 1]
+; these blo ck-enco ding
+constructions are provided in
+ App endix A
+.
+Our main algorithm prop oses to b egin in the state
+j
+e
+n
+i
+ and end in th e orthogonal state
+ j
+x
+i
+. In this journey
+through the
+ n
+-dimensional Hilb e rt space, the vector
+ j
+x
+t
+i
+is the essential landmark that charts the correct path.
+The QS VT-based technique of KR provides the vehicle
+for traversing this path, using the matrix
+ G
+t
+as its com-
+pass, as
+ G
+t
+enco des
+ j
+x
+t
+i
+ into its kernel. As we will see,
+KR is most e˙ective w hen the state
+ j
+x
+t
+i
+ li es equally far
+from
+ j
+e
+n
+i
+ and
+ j
+x
+i
+, corresp onding to
+ 
+t
+=
+ ˇ =
+4
+. If
+ 
+t
+is
+larger or smaller, the algorithm requires more rep etitions
+due to reduced success p robabil ity.
+Formally, the algorithm takes as in put the value of
+
+, as well as a choice for
+ t
+ 2
+ [1
+; 
+]
+ and for
+ 
+ 2
+ (0
+;
+ 1]
+. The
+pro cedure has three steps, describ ed in
+ Algorithm 1
+.
+Algorithm 1:
+ QLSS given norm es timate
+Input:
+ (
+A;
+ b
+; ;  ; t
+)
+Output:
+ j
+ ~
+x
+i
+ with probability
+ p
+succ
+, or fail with
+probability
+ 1
+ 
+ p
+succ
+1
+ Prepare
+ j
+e
+n
+i
+2
+ Apply KR to approximately re˛ect ab out the
+kernel of
+ G
+t
+(de˝ned in Eq. (
+11
+)), with
+parameters
+ (
+; 
+ )
+. If KR fails, output fail.
+3
+ Pro ject onto
+ span
+fj
+e
+j
+ig
+n
+
+1
+j
+ =0
+to pro duce
+ j
+ ~
+x
+i
+, by
+measuring the op erator
+ I
+ j
+e
+n
+ih
+e
+n
+j
+. If
+pro jection fails, output fail.
+We now analyze each step of this algorithm. The
+state prepared in step 1 c an b e decomp osed as
+j
+e
+n
+i
+ = cos(
+
+t
+)
+j
+x
+t
+i
+ + sin(
+
+t
+)
+j
+y
+t
+i
+ (12)
+where
+j
+x
+t
+i
+ = sin(
+
+t
+)
+j
+x
+i
+ + cos(
+
+t
+)
+j
+e
+n
+i
+ ;
+ (13)
+j
+y
+t
+i
+ =
+ 
+ cos(
+
+t
+)
+j
+x
+i
+ + sin(
+
+t
+)
+j
+e
+n
+i
+ (14)
+are orthogonal states. Since
+ j
+x
+t
+i
+ is in the kernel of
+ G
+t
+and
+ j
+y
+t
+i
+ is orthogonal to
+ j
+x
+t
+i
+ and to the kernel of
+ A
+t
+(to
+see this, observe that b oth
+ j
+x
+i
+ and
+ j
+e
+n
+i
+ are orthogonal
+to the kernel of
+ A
+t
+), we can assert that
+ j
+y
+t
+i
+ is orthogonal
+to the kernel of
+ G
+t
+. T hus, we may invoke Eq. (
+4
+), and
+we ˝nd that step 2 sends this s tate to
+cos(
+
+t
+)
+j
+x
+t
+i 
+ (1
+ 
+ 
+0
+1
+) sin(
+
+t
+)
+j
+y
+t
+i
+ +
+ 
+0
+2
+sin(
+
+t
+)
+j
+z
+ i
+ (15)
+where
+ 
+0
+1
+and
+ 
+0
+2
+ob ey Eq. (
+5
+). The state
+ j
+z
+ i
+ is a unit
+vector orthogonal to
+ j
+x
+t
+i
+ and
+ j
+y
+t
+i
+, and therefore orthog-
+onal to
+ j
+x
+i
+ and
+ j
+e
+n
+i
+. Step 3 ˝lters out
+ j
+e
+n
+i
+, bringing
+the state to
+j
+ ~
+x
+i /
+ c os(
+
+t
+) sin(
+
+t
+)(2
+ 
+ 
+0
+1
+)
+j
+x
+i
+ +
+ 
+0
+2
+sin(
+
+t
+)
+j
+z
+ i
+ :
+ (16)
+The probability that ste ps 2 and 3 b oth succeed,
+denoted by
+ p
+succ
+, is given by th e squared norm of the
+subnormalized state on the right-hand side of Eq. (
+16
+).
+Using Eq. (
+5
+), it is seen to satisfy the b ounds
+sin
+2
+(2
+
+t
+)
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+
+ p
+succ
+
+ sin
+2
+(2
+
+t
+) +
+4
+
+2
+(1 +
+ 
+ )
+2
+(17)
+where the lower (upp er) b ound is generated by replacing
+
+0
+1
+with its maximum (minimum) value and
+ 
+0
+2
+with its
+minimum (maximum) value. The s uccess probability is
+plotted in
+ Figure 2
+ for
+ 
+ !
+ 0
+. Exam ining Eq. (
+16
+), the
+normalized state
+ j
+ ~
+x
+i
+ is seen to satisfy
+1
+2
+kj
+x
+ih
+x
+j j
+~
+x
+ih
+~
+x
+jk
+1
+=
+p
+1
+ jh
+x
+j
+ ~
+x
+ij
+2
+(18)
+=
+ j
+
+0
+2
+j
+ sin(
+
+t
+)
+p
+
+1
+=
+2
+succ
+(19)
+
+
+ +
+ O
+ (
+
+2
+)
+cos(
+
+t
+)
+(20)
+Actually, a more careful analysis, p erformed in
+ Theo-
+rem 1
+ of
+ App endix C
+ , shows that the unsp eci˝ed
+ O
+ (
+
+2
+)
+term in the ˝nal line ab ove is not necessary.
+The cost of step 2 is
+ `
+ =
+ d
+
+ ln(2
+=
+ )
+=
+2
+e
+ controlled
+queries to each of
+ U
+A
+and
+ U
+y
+A
+, and
+ 2
+`
+ controlled queries
+to each of
+ U
+b
+and
+ U
+y
+b
+, as well as
+ O
+ (
+`
+)
+ other gates. The
+cost of step 3 is a single multi-controlled To˙oli gate,
+which can b e used to set an ancilla to 1 only if the state is
+j
+e
+n
+i
+. See
+ Figure 11
+ in
+ App endix C
+ for m ore information
+on the implementation of the three steps.
+If the norm estimate
+ t
+ is a constant-factor ap-
+proximation of
+ k
+x
+k
+ is,
+ t
+ 2
+ [
+
+
+1
+k
+x
+k
+; 
+ k
+x
+k
+]
+for some
+ 
+-indep endent constant
+ 
+ =
+ O
+ (1)
+, then
+sin
+2
+(2
+
+t
+) = 4
+k
+x
+k
+2
+t
+2
+=
+(
+k
+x
+k
+2
++
+ t
+2
+)
+2
+= 
+(1)
+ and
+ cos(
+
+t
+) =
+t=
+p
+k
+x
+k
+2
++
+ t
+2
+= 
+(1)
+. Setting
+ 
+ = (
+"
+)
+, we conclude
+that the algorithm need only b e rep eated an exp ected
+O
+ (1)
+ nu mb er of ti mes to successfully pro duce an output,
+and once it do es, the output state
+ j
+ ~
+x
+i
+ solves the QLSP
+to error
+ "
+. The total exp ected que ry complexity is
+Q
+ =
+ O
+ (
+
+ log (1
+="
+))
+ :
+ (21)
+Furthermore, if
+ t
+ is exactly equal to the norm
+ k
+x
+k
+, then
+sin(2
+
+t
+) = 1
+ and
+ cos(
+
+t
+) = 1
+=
+p
+2
+, so we may cho ose
+ 
+ =
+5
+
+--- Page 6 ---
+"=
+p
+2
+ and ˝nd that the exp ected total query complexity
+to
+ U
+A
+and
+ U
+y
+A
+is given by
+Q
+ = (1 +
+ O
+ (
+"
+))
+
+ ln
+
+2
+p
+2
+="
+
+:
+ (22)
+See
+ Corollary 1
+ of
+ App endix C
+ for a more precise state-
+ment of the complexity in terms of the approximation
+ratio
+ 
+ .
+Figure 2: Success probability of
+ A lgorithm 1
+ and of the
+kernel pro jection proto col of Eq. (
+26
+), as a function of
+the approximation ratio
+ t=
+k
+x
+ k
+, in the limit that the pre-
+cision parameter
+ 
+ !
+ 0
+.
+5 Estimating the norm
+To achieve
+ O
+ (
+
+ log (1
+="
+))
+ query complexity,
+ Algorithm 1
+requires that the input parameter
+ t
+ is chosen to approx-
+imate
+ k
+x
+k
+ up to a c onstant multiplicative factor. How-
+ever,
+ k
+x
+k
+ is generally not known, other than that it lies
+in the interval
+ [1
+; 
+]
+. Note that the optimal and near-
+optimal QLSSs base d on adiabatic path-following do not
+o˙er a straightforward way to also estimate
+ k
+x
+k
+
+ability to pro duce
+ j
+x
+i
+ in optimal
+ O
+ (
+
+)
+ complexity is
+not alone su˚cient for optimal norm estimation. For
+example, one could try estimating
+ k
+x
+k
+ by applying the
+blo ck-enco ding
+ U
+A
+to the vector
+ j
+0
+i
+
+
+a
+j
+x
+i
+, pro ducing the
+state
+ k
+x
+k
+
+1
+j
+0
+i
+
+
+a
+j
+b
+i
+ +
+ j?i
+, where
+ j?i
+ is a state for which
+(
+h
+0
+j
+
+
+a
+
+
+ I
+2
+s
+)
+j?i
+ = 0
+. The norm
+ k
+x
+k
+ could then b e read
+out via overlap estimation [
+22
+] with the state
+ j
+0
+i
+
+
+a
+j
+b
+i
+.
+Howe ver, gaining a constant factor approximation to
+the overlap in this fashion requires
+ O
+ (
+k
+x
+k
+)
+ queries to
+the pro cedure that prepares
+ j
+x
+i
+, for total complexity
+O
+ (
+
+k
+x
+k
+)
+, which can b e as large as
+ O
+ (
+
+2
+)
+.
+The QLSS based on the variable-time amplitude
+estimation technique provides a metho d to gener-
+ate a
+ (1 +
+ "
+)
+-factor approximation for
+ k
+x
+k
+ in near-
+optimal
+ O
+ (
+"
+
+1
+log
+2
+(
+"
+
+1
+) log
+3
+(
+
+) log log (
+
+))
+ complex-
+ity [
+5
+, Corollary 32]. However, this still leaves c onsid-
+erable ro om for improvement, b oth in p erformance and
+in conceptual transparency. In contrast, our approach
+o˙ers several immediate near-optimal options for esti-
+mating the norm.
+5.1 Exhaustive search in log space
+The simplest metho d for norm estimation is an exhaus-
+tive s earch in log space: we c an recognize when
+ t
+ is a
+go o d approximation of
+ k
+x
+k
+ by the fac t that
+ Algorithm 1
+has high success probabilitus, we can simply run
+Algorithm 1
+ on a geometrically increasing s equence of
+choices of
+ t
+ until we have found one that leads to suc -
+cess.
+We now provide a concrete implementation and
+compact pro of of correctness for this approach. Supp ose
+we seek a multiplicative
+ 2
+-approximation to
+ k
+x
+k
+. Equiv-
+alently, we may ˝nd an additive
+ ln(2)
+-approximation to
+˜
+ = ln(
+k
+x
+ k
+)
+. We consider the set
+T
+ =
+ f
+0
+;
+ ln(2)
+;
+ 2 ln(2)
+; : : : ;
+ d
+log
+2
+(
+
+)
+e
+ ln(2)
+g
+ (23)
+Let
+ ˝
+
+denote the element of
+ T
+ that is nearest to
+˜
+, which is guaranteed to b e an add itive
+ ln(2)
+=
+2
+-
+approximation for
+ ˜
+. Since
+ ˝
+
+is an additive
+ ln(2)
+=
+2
+-
+approximation to
+ ˜
+, we have
+ sin
+2
+(2
+
+e
+˝
+
+) =
+4
+e
+2
+˝
+
++2
+˜
+(
+e
+2
+˝
+
++
+e
+2
+˜
+)
+2
+
+8
+=
+9
+ (see
+ Figure 2
+). Now, ˝ x the precision parame-
+ter for
+ Algorith m 1
+ to
+ 
+ = 0
+:
+025
+, ensuring that
+ (1
+ 
+
+ )
+2
+=
+(1 +
+ 
+ )
+2
+
+ 9
+=
+10
+ and
+ 4
+
+2
+=
+(1 +
+ 
+ )
+2
+
+ 1
+=
+100
+. By
+Eq. (
+17
+), the success probability of
+ Algorithm 1
+ when
+t
+ =
+ e
+˝
+
+satis˝es
+ p
+succ
+
+ (8
+=
+9)(9
+=
+10) = 0
+:
+8
+. Mean-
+while, for any value of
+ ˝
+ that is more than
+ ln(2)
+-far
+from
+ ˜
+, we have
+ sin
+2
+(2
+
+e
+˝
+)
+ <
+16
+25
+, and by Eq. (
+17
+),
+p
+succ
+<
+16
+25
++
+1
+100
+= 0
+:
+65
+. Having established these
+b ounds, we run
+ Algorithm 1
+k
+ =
+ d
+100 ln(20
+jT j
+)
+e
+ =
+ O
+ (log log (
+
+))
+ (24)
+times for each of the
+ jT j
+ candidate values of
+ ˝
+ , and by
+observing the fraction of times it succeeds, we compute
+an estimate
+ ~
+p
+˝
+of the success probability for each candi-
+date. By Ho e˙ding's inequality, for all
+ ˝
+ 2 T
+ , it holds
+that
+ Pr[ ~
+p
+˝
+
+ p
+succ
+
+ 0
+:
+075]
+ 
+ e
+
+2(0
+:
+075)
+2
+k
+
+ 1
+=
+(20
+jT j
+)
+,
+and similarly
+ Pr[
+p
+succ
+
+ ~
+p
+˝
+
+ 0
+:
+075]
+ satis˝es the same
+b ound. By the union b ound, there is at most
+ 0
+:
+05
+ proba-
+bility that either
+ p
+˝
+
+
+ 0
+:
+725
+ or that
+ p
+˝
+
+ 0
+:
+725
+ for s om e
+candidate
+ ˝
+ that is not an additive
+ ln(2)
+-approximation
+to
+ ˜
+. Thus, with probability 0.95, at least one of our
+estimates will satisfy
+ ~
+p
+˝
+>
+ 0
+:
+725
+ and if we output
+ t
+ =
+ e
+˝
+for the ˝rst
+ ˝
+ we ˝ nd for which this is the case, that
+value of
+ t
+ will b e a multiplicative
+ 2
+-approximation to
+k
+x
+k
+. This proves that the output of the algorithm is a
+multiplicative
+ 2
+-approximation to
+ k
+x
+k
+ with high proba-
+bility.
+6
+
+--- Page 7 ---
+The total query complexity to controlled-
+U
+A
+and
+controlled-
+U
+y
+A
+is
+Q
+ = 2
+k
+ jT jd
+
+ ln(2
+=
+ )
+=
+2
+e
+ =
+ O
+ (
+
+ log (
+
+) log log (
+
+))
+ :
+ (25)
+In
+ Lemma 4
+ of
+ App endix D
+, we provide a more for-
+mal analysis of a sl ightly di˙erent implementation that
+achieve s the same complexity, with b e tte r constant pref-
+actors on the complexity. This query complexity can
+b e improved to
+ O
+ (
+
+p
+log (
+
+) log log (
+
+))
+ by straightfor-
+wardly replacing the exhaustive search ab ove with a
+Grover se arch [
+23
+,
+ 24
+], which we analyze in
+ Lemma 5
+of
+ App endix D
+.
+5.2 Binary search in log space
+Furthermore, with a bit more thought, the query com-
+plexity can b e made even closer to linear-in-
+
+ using a
+binary search for
+ ˝
+ = ln(
+t
+)
+. Here, rather than running
+Algorithm 1
+, we use KP to dete ct if a candidate value
+of
+ ˝
+ is to o large or to o small. Sp eci˝cally, supp ose we
+prepare the state
+ j
+e
+n
+i
+, as in step 1 of
+ Algorithm 1
+, and
+then we run step 2 using KP in place of KR. Invoking
+Eq. (
+3
+), we arrive at the state (cf. Eq. (
+15
+))
+cos(
+
+t
+)
+j
+x
+t
+i
+ + sin(
+
+t
+)
+
+1
+j
+y
+t
+i
+ + sin(
+
+t
+)
+
+2
+j
+z
+ i
+ (26)
+where
+p
+
+2
+1
++
+ 
+2
+2
+
+ 
+ . The success probability
+ q
+succ
+of
+KP is given by the squared norm of th e ab ove state,
+which satis˝es
+cos
+2
+(
+
+t
+)
+ 
+ q
+succ
+
+ cos
+2
+(
+
+t
+) +
+ 
+2
+sin
+2
+(
+
+t
+)
+ :
+ (27)
+The function
+ cos
+2
+(
+
+t
+)
+ is plotted in
+ Figure 2
+; it is mono-
+tonically increasing on the relevant interval and equal
+to 1/2 exactly at
+ t
+ =
+ k
+x
+k
+. Thus, estimating the success
+probability
+ q
+succ
+of KP for a certain choice of
+ ˝
+ = ln(
+t
+)
+o˙ers a mechanis m for determining whether
+ ˝
+ 
+ ˜
+ or
+˝ < ˜
+, enabling a (n oi sy) binary search.
+We now provide a conc re te implem entation for this
+noisy binary search. Fix
+ 
+ =
+p
+1
+=
+8
+. We maintain a
+set
+ S
+ of active candidates, and initially set
+ S
+ =
+ T
+ . We
+cho ose
+ ˝
+ to b e the median of
+ S
+ , and we round the median
+to the closest element of
+ S
+ , breaking ties arbitrarily. We
+run KP
+k
+ =
+ d
+72 ln
+
+40
+d
+log
+3
+=
+2
+(
+jT j
+)
+e
+
+e
+ =
+ O
+ (log log log (
+
+))
+ (28)
+times with
+ t
+ =
+ e
+˝
+, and we compute an estimate
+ ~
+q
+ for
+q
+succ
+based on the fraction of these
+ k
+ trials that succeed.
+If
+ ~
+q >
+ 1
+=
+2
+, we eliminate all elements of
+ S
+ less than
+˝
+ ; otherwise we eliminate all elements greater than
+ ˝
+ .
+As long as
+ jS j
+ >
+ 2
+, we are guaranteed to eliminate at
+least
+ 1
+=
+3
+ fraction of the eleme nts. We rep eat the pro cess
+of cho osing
+ ˝
+ to b e the median of
+ S
+ , estimating
+ ~
+q
+ , and
+eliminating part of
+ S
+ , a total of
+ d
+log
+3
+=
+2
+jT je
+ times, which
+reduces the size of
+ S
+ to at most 2. If
+ S
+ =
+ f
+˝
+ g
+, we output
+t
+ =
+ e
+˝
+as the estimate for
+ k
+x
+k
+. I f
+ S
+ =
+ f
+˝ ; ˝
+ + ln(2)
+g
+, we
+output
+ t
+ =
+ e
+˝
+ +ln(2)
+=
+2
+.
+To show correctness, we argue that with high prob-
+ability, at every step of the algorithm there is at least one
+element of the active set
+ S
+ that is an additive
+ ln(2)
+=
+2
+-
+approximation for
+ ˜
+. Hence, in either case (
+S
+ =
+ f
+˝
+ g
+or
+ S
+ =
+ f
+˝ ; ˝
+ + ln(2)
+g
+) the output is a multipli ca-
+tive
+ 2
+-approximation for
+ k
+x
+k
+. Sp eci˝cally, by Ho e˙d-
+ing's inequality,
+ Pr[
+j
+ ~
+q
+ 
+ q
+succ
+j 
+ 1
+=
+12]
+ 
+ 2
+e
+
+2
+k =
+144
+
+1
+=
+(20
+d
+log
+3
+=
+2
+(
+jT j
+)
+e
+)
+, and by the union b ound, there is at
+most 0.05 probability that any of th e estimates across
+all
+ d
+log
+3
+=
+2
+(
+jT j
+)
+e
+ steps have error more th an
+ 1
+=
+12
+. If
+ ˝
+is not an additive
+ ln(2)
+=
+2
+ approximation of
+ k
+x
+k
+, th en
+by Eq. (
+27
+),
+ q
+succ
+lies outside the interval
+ [10
+=
+24
+;
+ 2
+=
+3]
+.
+Thus, in the 0.95 fraction of cases where
+ j
+ ~
+q
+ 
+ q
+succ
+j
+ <
+1
+=
+12
+ holds in all steps, the search always correctly de-
+cides whether
+ ˝ > ˜
+ or
+ ˝
+ 
+ ˜
+, unless
+ ˝
+ is an addi -
+tive
+ ln(2)
+=
+2
+-approximation to
+ ˜
+. However, since we al-
+ways keep
+ ˝
+ in the set (eliminating only elements that
+are larger than or smaller than
+ ˝
+ ), we conclude that,
+whether or not
+ ˝
+ is an additive
+ ln(2)
+=
+2
+-approximation,
+the active set
+ S
+ is guaranteed to retain at least one el-
+ement that is an additive
+ ln(2)
+=
+2
+-approximation of
+ ˜
+.
+This proves that the output of the algorithm is a multi-
+plicative
+ 2
+-ap proximation to
+ k
+x
+k
+ w ith high probability.
+The overall query complexity is
+Q
+ = 2
+k
+ d
+log
+3
+=
+2
+(
+jT j
+)
+ed
+
+ ln(2
+=
+ )
+=
+2
+e
+ (29)
+=
+ O
+ (
+
+ log log (
+
+) log log log (
+
+))
+ (30)
+More sophisticated algorithms for noisy binary
+search may b e able to eliminate the
+ log log log (
+
+)
+ fac -
+tor. This large b o dy of work (e.g., [
+25
+
+28
+]) has estab-
+lished that the optimal approach in settings like this
+one is to maintain a b elief distribution over the p ossible
+estimates
+ ˝
+ , initially uniform. Each step of the algo-
+rithm cho oses
+ ˝
+ to b e the median of the dis tri bution
+and queries whether
+ ˝ > ˜
+. This query returns a noisy
+answer, and the algorithm resp onds by up dating its b e-
+lief distribution according to Bayes ' rule. T his approach
+may allow us to exploit the additional information we
+have in our setting, namely, that the probability that
+KP succeeds follows (up to
+ O
+ (
+
+2
+)
+ precisi on ) a known
+functional form, depicted in
+ Figure 2
+.
+5.3 Achieving linear-in-
+
+ complexity
+The metho ds sketch ed ab ove do not dep end on sophis-
+ticated techniques or analytical metho ds, other than
+QSVT with ˝ltering p olynomi als , yet they achieve
+nearly
+ linear-in-
+
+ asymptotic scaling, sup erior to pre-
+vious known metho ds for estimating the norm.
+We can also comb ine the observations ab ove with
+some of the i deas b ehind adiabatic path-following to
+achieve
+ strictly
+ linear-in-
+
+ complexity. Sp eci˝cally, we
+7
+
+--- Page 8 ---
+prop ose to estimate the norm of a sequence of linear sys-
+tems of inc re as ing condition numb er, where the n orm of
+the solution to the ˝nal linear system in the sequenc e
+equals
+ k
+x
+k
+. The linear s ys tems are related in such a
+way that the norm cannot change by more than a con-
+stant factor from one step to the next. Thus, if we
+have an estimate of the norm for one linear system,
+we need only search over a c onstant-sized interval for
+the norm of the next linear eliminates the
+p olylog (
+
+)
+ factors from the norm estimation metho ds
+prop osed in
+ Section 5.1
+ and
+ Section 5.2
+ (sp eci˝c ally, the
+same analysis go es through with
+ jT j
+ =
+ O
+ (1)
+ rather than
+jT j
+ =
+ O
+ (log (
+
+))
+).
+The sequence of linear systems is parameterized by
+˙
+ 2
+ [
+
+
+1
+;
+ 1]
+ and inspired by the adiabatic path followed
+by the QLSS in Ref. [
+ 6
+] and successors. To de˝ne it, let
+f
+ (
+˙
+ ) =
+r
+˙
+2
+
+2
+
+ 1
+
+2
+
+ 1
+;
+ (31)
+chosen so that
+ f
+ (
+˙
+ )
+2
++ (1
+ 
+ f
+ (
+˙
+ )
+2
+)
+
+
+2
+=
+ ˙
+2
+. Observe
+that
+ f
+ (
+˙
+ )
+ is monotonically increasing for
+ ˙
+ 2
+ [
+
+
+1
+;
+ 1]
+with
+ f
+ (
+
+
+1
+) = 0
+ and
+ f
+ (1) = 1
+. Then, we construct a
+linear system
+
+A
+˙
+
+x
+˙
+=
+ b
+ :
+ (32)
+Here for c larity we interpret
+ b
+ as a length-
+2
+s
+vector by
+padding it with
+ 2
+s
+
+ m
+ zeros. Let
+ 
+n
+ = 2
+s
+
+ n
+ and
+
+m
+ = 2
+s
+
+ m
+ and de˝ne the
+ 2
+s
+
+ 2
+s
++1
+matrix
+
+A
+˙
+as
+follows
+
+A
+˙
+=
+2
+6
+4
+n
+
+n
+m
+
+m
+m
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+A
+0
+f
+ (
+˙
+ )
+I
+m
+0
+
+m
+0
+0
+0
+0
+3
+7
+5
+(33)
+where the sizes of each blo ck are included for conve-
+nience. In ess ence,
+
+A
+˙
+is really an
+ m
+ 
+ (
+n
+ +
+ m
+)
+ matrix,
+but the exp licit zero padding in Eq. (
+33
+) ensures that
+the two parts of the matrix s eparated by the vertical
+line are each s qu are
+ 2
+s
+
+ 2
+s
+blo cks. This convention
+makes it more natural to construct a blo ck-enco ding for
+
+A
+˙
+on an
+ (
+s
+ + 1)
+-qubit system. In particular, if we fur-
+ther zero-pad
+
+A
+˙
+to b e a square
+ 2
+s
++1
+
+ 2
+s
++1
+matrix, we
+may identify it with the
+ (
+s
+ + 1)
+-qubit op erator equivalent
+to
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+j
+0
+ih
+0
+j 
+
+ A
+ +
+ f
+ (
+˙
+ )
+j
+0
+ih
+1
+j 
+
+ I
+m
+(34)
+where
+ I
+m
+is the op erator for which
+ I
+m
+j
+e
+j
+i
+ =
+ j
+e
+j
+i
+ if
+j < m
+ and
+ I
+m
+j
+e
+j
+i
+ = 0
+ othe rwise (although the following
+results woul d still hold if
+ I
+m
+were replace d with
+ I
+2
+s
+).
+Under this identi˝cation, we give a blo ck-enco ding for
+
+A
+˙
+using one controlled-query to
+ U
+A
+in
+ App endix A
+.
+Unlike previous m etho ds [
+17
+], we do not use the standard
+LCU technique to combine the two terms, which wou ld
+have given a normalization factor
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
++
+ f
+ (
+˙
+ )
+ >
+ 1
+when
+ ˙
+ 2
+ (
+
+
+1
+;
+ 1)
+. Note also that here we avoid relying
+up on the Hermitianize d vers ion
+
+0
+ A
+A
+y
+0
+
+of the matrix
+ A
+,
+as in prior work, which saves a factor of two on the query
+complexity.
+Intuitively, the purp ose of
+
+A
+˙
+is that by tun ing the
+value of
+ ˙
+ , we can intro duce information ab out the ma-
+trix
+ A
+ and its sp ectrum gradually: whe n
+ ˙
+ = 1
+,
+
+A
+˙
+has
+no dep endenc e on
+ A
+, and when
+ ˙
+ =
+ 
+
+1
+, it has full de-
+p endence. Crucially, the c on dition numb er of
+
+A
+˙
+grows
+as
+ ˙
+ decreases; it can b e upp er b oun ded by
+ ˙
+
+1
+(as jus -
+ti˝ed later). Thus, as
+ ˙
+ is reduced, we can b egin to
+extract some information ab out
+ k
+x
+k
+ without paying the
+full
+ O
+ (
+
+)
+ cost asso ciated with the matrix
+ A
+.
+We can derive an explicit expression for the solution
+
+x
+˙
+to the equation
+
+A
+˙
+
+x
+˙
+=
+ b
+ in terms of the singular
+value decomp osition (SVD) of
+ A
+. Sp eci˝cally, let
+ A
+ =
+P
+j
+&
+j
+u
+j
+v
+j
+y
+b e a SVD of
+ A
+, with
+ &
+j
+6
+= 0
+ for all
+ j
+ , and
+interpreting
+ u
+j
+and
+ v
+j
+as length-
+2
+s
+normalized vectors.
+Let
+ b
+ =
+P
+j
+w
+j
+u
+j
+b e the decomp osition of
+ b
+ into left
+singular vectors of
+ A
+, which is guaranteed to exist since
+we have ass umed that
+ A
+x
+ =
+ b
+ has a solution. De˝ne
+the length-
+2
+s
++1
+normalized vector
+
+v
+˙;j
+=
+1
+q
+(1
+ 
+ f
+ (
+˙
+ )
+2
+)
+&
+2
+j
++
+ f
+ (
+˙
+ )
+2
+2
+6
+4
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+&
+j
+v
+j
+f
+ (
+˙
+ )
+u
+j
+3
+7
+5
+(35)
+Since the sets
+ f
+u
+j
+g
+ and
+ f
+v
+j
+g
+ are each orthonormal, the
+set
+ f
+ 
+v
+˙;j
+g
+ is also orthonormal. In fact, it can b e veri˝ed
+that
+ f
+ 
+v
+˙;j
+g
+ are the right singular vectors of
+
+A
+˙
+, and the
+corresp onding left singular vector is
+ u
+j
+and correpsond-
+ing singular value is
+q
+f
+ (
+˙
+ )
+2
++ (1
+ 
+ f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+. Thus, by
+applying the inverted singular values to the decomp osi-
+tion of
+ b
+ , we may assert that
+
+x
+˙
+=
+X
+j
+w
+j
+q
+f
+ (
+˙
+ )
+2
++ (1
+ 
+ f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+
+v
+˙;j
+:
+ (36)
+Matrix-vector blo ck multiplication of
+
+A
+˙
+
+x
+˙
+yields
+ b
+,
+verifying that
+ 
+x
+˙
+is a solution to th e system. The fact
+that
+ 
+x
+˙
+is the solution of minimal Euclidean norm fol-
+lows from the fact that it is orthogonal to the kernel of
+
+A
+˙
+(it is a linear combination of right singular vectors
+of
+
+A
+˙
+asso ciated with nonz ero singular value s).
+To apply the framework describ ed in this pap er to
+the matrix
+
+A
+˙
+, we will need to augment the linear sys-
+tem, as describ ed in
+ Section 4
+. In this instance, we
+augment to form the matrix
+
+A
+˙;t
+=
+
+A
+˙
++
+ t
+
+1
+e
+m
+e
+n
+y
+8
+
+--- Page 9 ---
+(cf. Eq. (
+8
+))
+
+A
+˙;t
+=
+2
+6
+6
+6
+6
+6
+4
+n
+1
+
+n
+
+1
+m
+
+m
+m
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+A
+0
+0
+f
+ (
+˙
+ )
+I
+m
+0
+1
+0
+t
+
+1
+0
+0
+0
+
+m
+
+1
+0
+0
+0
+0
+0
+3
+7
+7
+7
+7
+7
+5
+(37)
+for which we have the linear system
+
+A
+˙;t
+
+x
+˙;t
+=
+ b
+0
+. This
+choice of augmentation avoids the need to expand th e
+Hilb ert space and use more than
+ s
+ + 1
+ qubits. The re-
+lationship b etween
+ 
+x
+˙;t
+and
+ 
+x
+˙
+is the same as the rela-
+tionship b etween
+ x
+t
+and
+ x
+, enabling the metho ds from
+prior sections to b e directly applied.
+Before pro ceeding, we mus t establis h a few addi-
+tional prop erties of the linear system.
+1.
+ All nonzero singular values of
+
+A
+˙
+lie in the interval
+[
+˙;
+ 1]
+.
+2.
+ k
+ 
+x
+1
+k
+ = 1
+ and
+ k
+ 
+x
+1
+=
+k
+ =
+ k
+x
+k
+.
+3.
+ For all
+ 
+
+1
+
+ ˙
+ 
+ ˙
+0
+
+ 1
+, it holds that
+ 1
+ 
+k
+ 
+x
+˙
+k
+=
+k
+ 
+x
+˙
+0
+k 
+ ˙
+0
+=˙
+ .
+Prop erty 1 follows from the fact that
+
+A
+˙
+
+A
+y
+˙
+=
+ f
+ (
+˙
+ )
+2
+I
+m
++
+(1
+ 
+ f
+ (
+˙
+ )
+2
+)
+AA
+y
+has all nonze ro eigenvalues in
+ [
+˙
+2
+;
+ 1]
+by construction. Prop erty 2 follows by insp ection of
+Eq. (
+36
+), and the fact that
+ f
+ (1) = 1
+ and
+ f
+ (1
+=
+) = 0
+. In
+particular, we se e that
+ k
+ 
+x
+1
+=
+k
+2
+=
+P
+j
+j
+w
+j
+j
+2
+&
+
+2
+j
+=
+ k
+x
+k
+2
+.
+To verify prop erty 3, ˝rst note that due to the m on o-
+tonicity of
+ f
+ and the fact that
+ 
+
+1
+
+ &
+j
+
+ 1
+, we have
+1
+ 
+(
+f
+ (
+˙
+0
+)
+2
++ (1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+&
+2
+j
+)
+1
+=
+2
+(
+f
+ (
+˙
+ )
+2
++ (1
+ 
+ f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+)
+1
+=
+2
+(38)
+=
+(
+˙
+0
+2
++ (1
+ 
+ f
+ (
+˙
+0
+)
+2
+)(
+&
+2
+j
+
+ 
+
+2
+))
+1
+=
+2
+(
+˙
+2
++ (1
+ 
+ f
+ (
+˙
+ )
+2
+)(
+&
+2
+j
+
+ 
+
+2
+))
+1
+=
+2
+
+˙
+0
+˙
+(39)
+for any
+ ˙
+ 
+ ˙
+0
+. Thus, working from Eq. (
+36
+), we have
+k
+ 
+x
+˙
+k
+k
+ 
+x
+˙
+0
+k
+=
+q
+P
+j
+j
+w
+j
+j
+2
+(
+f
+ (
+˙
+ )
+2
++ (1
+ 
+ f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+)
+
+1
+q
+P
+j
+j
+w
+j
+j
+2
+(
+f
+ (
+˙
+0
+)
+2
++ (1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+&
+2
+j
+)
+
+1
+
+q
+P
+j
+j
+w
+j
+j
+2
+(
+f
+ (
+˙
+ )
+2
++ (1
+ 
+ f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+)
+
+1
+q
+P
+j
+j
+w
+j
+j
+2
+˙
+2
+˙
+0
+2
+(
+f
+ (
+˙
+ )
+2
++ (1
+ 
+ f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+)
+
+1
+=
+˙
+0
+˙
+(40)
+Now we are ready to describ e the algorithm. We
+prop ose to learn
+ k
+x
+k
+ =
+ k
+ 
+x
+1
+=
+k
+ by sequentially estimat-
+ing the norm of
+ k
+ 
+x
+2
+
+j
+k
+ for
+ j
+ = 0
+;
+ 1
+; : : : ;
+ log
+2
+(
+
+)
+ (for sim-
+plicity, here we round
+ 
+ up to the closest exact p ower
+of 2). For
+ j
+ = 0
+, we use the estimate
+ t
+0
+= 1
+, which is
+exact, by prop erty 2 ab ove. We then aim to ge nerate
+estimates
+ t
+1
+; t
+2
+; : : : ; t
+log
+2
+(
+
+)
+such that each
+ t
+j
+is a multi-
+plicative
+ 2
+-ap proximation of
+ k
+ 
+x
+2
+
+j
+k
+.
+The key insight is that, from prop erty 3, if
+ t
+j
+ 
+1
+is
+a valid 2-approximation, i.e.
+ k
+ 
+x
+2
+
+j
+ +1
+k 2
+ [
+t
+j
+ 
+1
+=
+2
+;
+ 2
+t
+j
+ 
+1
+]
+,
+then it must hold that
+ k
+ 
+x
+2
+
+j
+k 2
+ [
+t
+j
+ 
+1
+=
+2
+;
+ 4
+t
+j
+ 
+1
+]
+. We
+can ˝nd a 2-app roximation
+ t
+j
+to
+ k
+ 
+x
+2
+
+j
+k
+ by exhaustively
+(or binarily) searching
+ O
+ (1)
+ candidates in this interv
+that is, whereas the analysis in prior s ubsections re-
+quired the size of the set
+ T
+ of candidates to grow as
+O
+ (log (
+
+))
+ (see Eq. (
+23
+)), here we have
+ jT j
+ =
+ O
+ (1)
+ in-
+stead. Furthermore, the cost of running KR or KP for a
+particular candidate is reduc ed due to the fact that the
+condition numb er of
+
+A
+2
+
+j
+is only
+ 2
+j
+, as seen in prop erty
+1.
+Ultimately, from Eq. (
+25
+), the exp ected query com-
+plexity of pro ducing the es timate
+ t
+j
+using the exhaus-
+tive search metho d is
+ O
+ (2
+j
+jT j
+ log (
+jT j
+)) =
+ O
+ (2
+j
+)
+, and
+the probability that
+ t
+j
+is not a valid
+ 2
+-appro
+conditioned on
+ t
+j
+ 
+1
+b eing a valid 2-appro
+at most
+ 0
+:
+05
+. To suppress this conditional failure prob-
+ability from
+ 0
+:
+05
+ to
+ 
+ , we p erform median ampli˝cation
+[
+29
+, Lemma 1] at multiplicative overhead
+ O
+ (log (1
+=
+ ))
+to the query comple xity. Naively, we might cho ose
+
+ =
+ O
+ (1
+=
+ log (
+
+))
+ so that there is high probability that
+all
+ log
+2
+(
+
+)
+ ste ps succeed; however, if we do so then the
+˝nal step, for which the condition numb er is
+ 
+, will have
+complexity
+ O
+ (
+
+ log (1
+=
+ )) =
+ O
+ (
+
+ log log (
+
+))
+ complexity.
+Instead, we employ a version of the log log trick
+[
+30
+], cho osing
+ 
+ to b e smaller when
+ j
+ is smalle re
+can a˙ord to do more median ampli˝cation at the b e-
+ginning of the sequence b ecause the condition numb er
+is smaller and the norm estimation is cheap er. Sp eci˝-
+cally, we use median ampli˝cation to suppres s the fail-
+ure probability of step
+ j
+ to
+ e
+
+
+(1+log
+2
+(
+
+)
+
+j
+ )
+, at mul-
+tiplicative ove rh ead
+ O
+ (1 + log
+2
+(
+
+)
+ 
+ j
+ )
+, and we con-
+clude that th e overall exp ected query cost of step
+ j
+ is
+O
+ (2
+j
+(1 + log
+2
+(
+
+)
+ 
+ j
+ ))
+. By the union b ound, the proba-
+bility that at least one of the steps fails to generate a
+ 2
+-
+approximation is upp er b ounded by a geometrically de-
+caying series
+P
+log
+2
+(
+
+)
+j
+ =1
+e
+
+
+(1+log
+2
+(
+
+)
+
+j
+ )
+, w hich is at most
+a small c onstant. Thus, with high probability all of
+the steps succeed, and the outpu t is a multiplicative 2-
+approximation for
+ k
+x
+1
+=
+k
+ =
+ k
+x
+k
+.
+The overall total query complexity is upp er
+b ounded by the sum of the query complexity of the
+log
+2
+(
+
+)
+ steps, given by
+Q
+ =
+log
+2
+(
+
+)
+X
+j
+ =1
+O
+ (2
+j
+(1 + log
+2
+(
+
+)
+ 
+ j
+ ))
+ (41)
+
+ O
+ (
+
+)
+1
+X
+j
+0
+=0
+2
+
+j
+0
+(1 +
+ j
+0
+)
+ 
+ O
+ (
+
+)
+ (42)
+where we have substituted
+ j
+0
+= log
+2
+(
+
+)
+ 
+ j
+ and upp er
+b ounded the ˝ni te sum by its in˝nite extension.
+9
+
+--- Page 10 ---
+In summary, the metho d solves the norm estima-
+tion problem up to a constant fac tor with optimal
+ O
+ (
+
+)
+query complexity. It do es so by leveraging an idea that i s
+inspired by adiabatic p ath -following; in fact, it follow s
+essentially the same family of linear systems as p rior
+adiabatic solvers. However, the analysis is fairly simple,
+and crucially it avoids the nee d for rigorous analysis of
+the adiabatic theorem.
+By ˝rst estimating the n orm with this metho d and
+then running
+ Algorithm 1
+ to pro duce
+ j
+ ~
+x
+i
+, we obtain a
+metho d for solving the QLSP with overall query com-
+plexity
+ O
+ (
+
+ log (1
+="
+))
+. In
+ Section E.2
+ of the app endix,
+we give a more detailed sp eci˝cation of an optimal QLSS
+with
+ O
+ (
+
+ log (1
+="
+))
+ complexity, which follows the same
+general approach sketched ab ove, and we analyze its
+complexity, including constant prefactors, in
+ Theorem 4
+.
+Remark on relationship to Zeno metho d.
+ The
+QLSS in Ref. [
+8
+] als o gave nearly optimal-in-
+
+ complex-
+ity of
+ O
+ (
+
+ log (
+
+) log log (
+
+))
+ by leveragin g the
+ quantum
+Zeno e˙ect
+ to traverse an adiabatic eigenpath. Thi s
+b ears resemblance to our metho d, and in particular, i ts
+analysis also do es not require the adiabatic the ore m.
+Whereas our metho d varies
+ ˙
+ and tracks changes in the
+scalar value of the solution norm, the Zeno metho d can
+b e understo o d (in our notation) as tracking the state
+j
+ 
+x
+˙
+i
+ itself. The key to ol is the ability to pro ject onto
+j
+ 
+x
+˙
+i
+ up to accuracy
+ 
+ with KP (i.e., eigenstate ˝ ltering),
+at cost
+ O
+ (
+˙
+
+1
+log (1
+=
+ ))
+. The original analysis in Ref. [
+8
+]
+takes short steps so that each pro jection succeeds with
+probability close to 1. Amplitude ampli˝cation is not
+required, b ut this leads the ˝nal complexity to b e o˙
+from optimal by at least a
+ log (
+
+)
+ factor. As remarked
+in Section 5 of Ref. [
+8
+], one could mo dify the Zeno al-
+gorithm to take a fewer numb er of largerh
+jump then succ eeds with constant success probability,
+and one can us e ˝xed-p oint am plitude ampli˝cation to
+b o ost this probability to 1 b efore moving on to the next
+jump. The (approximate) re˛ection op erators needed
+within the ampli˝cation pro cedure could b e supplied by
+KR. In
+ App endix G
+, we show that the idea to use ˝xed-
+p oint amplitude ampli˝cation works, and together w ith
+the log log trick leads to optimal
+ O
+ (
+
+)
+ complexity for
+the Zeno approach when following the same adiabatic
+path
+ f
+ (
+˙
+ )
+ de˝ned ab ove. In other words, all of the es-
+sential technical to ols and conceptual ingredients needed
+for strictl y optimal-in-
+
+ comple xity have b een in place
+since at least 2019.
+While we have not done a rigorous analysis of the
+constant prefactors of the optimal Zeno metho d, we ex-
+p ect that they would b e strictly worse th an the op-
+timal QLSS prop osed in this pap er. The main rea-
+son is that an optimized version of our norm estim a-
+tion metho d can take
+ very
+ large (constant-sized) jumps
+˙
+0
+7!
+ ˙
+ along the adiabatic path, since (using the bi-
+nary s earch metho d) the norm estimation subroutine
+has cost
+ O
+ (log log (
+˙
+0
+=˙
+ ))
+ calls to KP. In contrast, the
+Zeno metho d requires a numb er of c al ls to KR go-
+ing as
+ jh
+ 
+x
+˙
+0
+j
+ 
+x
+˙
+ij
+
+1
+for ˝xed-p oint am plitude ampli˝-
+cation, and the (p otentially sub optimal) b ound we use
+in
+ App endix G
+ suggests this quantity go es roughly as
+˙
+0
+=˙
+ . T hat is, the complexity of a jump is doubly ex-
+p onentially worse in the Zeno metho d compared to the
+norm estimation metho d, as a function of th e length of
+the jump
+ ˙
+0
+=˙
+ . C onsequently, we exp ect that an op-
+timized Zeno meth o d would either take smaller steps
+and/or sp end larger complexity p er step compared to
+our metho d, leading to larger constant prefactors.
+5.4 Improving the approximation ratio
+We have now seen several metho ds for obtaining a
+constant-factor approximation to the norm
+ k
+x
+k
+. How-
+ever, in many instanc es we may wish to improve the ap-
+proximation ratio of our estimate. For one, the success
+probability of
+ Algorithm 1
+ increase s (approaching 1) as
+the accuracy of the norm estimate improves, motivat-
+ing us to seek the b est p os sible estimate. Additionally,
+some applications re qu ire not only access to the normal-
+ized state
+ j
+x
+i
+, but also a precise estimate for
+ k
+x
+k
+ that
+is correct up to small relative 
+ Section 7
+.
+Given a multiplicative 2-approximation
+ t
+ 2
+[
+k
+x
+k
+=
+2
+;
+ 2
+k
+x
+k
+]
+, one can im prove the estimate to a multi-
+plicative
+ (1 +
+ "
+)
+-approximation
+t
+out
+2
+ [(1 +
+ "
+)
+
+1
+k
+x
+k
+;
+ (1 +
+ "
+)
+k
+x
+k
+]
+ (43)
+using amp litude estimation [
+31
+] (the metho d is eas-
+ily generalized to handle input ap proximations with
+constant-factors worse than 2), as we now explain. Am-
+plitude estimation allows one to estimate the quantity
+k
+
+j
+ 
+ ik
+2
+to additive precision
+ 
+ , using
+ O
+ (1
+=
+ )
+ calls to a
+pro cedure for preparing
+ j
+ 
+ i
+ and the ability to recognize
+when a state is in the image of a pro jector
+ 
+ [
+31
+]. Let
+
+ =
+p
+"=
+100
+ and, as in
+ Section 5.2
+, consider the pro ce-
+dure that prepares
+ j
+e
+n
+i
+ and applies KP for the matrix
+G
+t
+. The success probability
+ q
+ of this pro cedure can b e
+cast as a measurable quantity
+ k
+
+j
+ 
+ ik
+2
+, and by Eq. (
+27
+),
+it lies within
+ 
+2
+=
+ "=
+100
+ of the quantity
+q
+t
+= cos
+2
+(
+
+t
+) =
+ t
+2
+=
+(
+t
+2
++
+ k
+x
+k
+2
+)
+ 2
+ [0
+:
+2
+;
+ 0
+:
+8]
+ :
+ (44)
+Using
+ O
+ (1
+="
+)
+ queries to th is KP pro cedure, amplitude
+estimation can pro duc e an estimate
+ ~
+q
+ for
+ q
+ that is correct
+up to additive error
+ "=
+100
+, with probability 0.95. In
+this 0.95 fraction of cases, by the triangle inequality, we
+have
+ j
+ ~
+q
+ 
+ q
+t
+j 
+ "=
+50
+. Furthermore, de˝ning the relative
+error as
+  = ~
+q =q
+t
+
+ 1
+, we have
+ j
+
+j 
+ "=
+10
+. Then, to
+pro duce an estimate for
+ k
+x
+k
+, one can take the result
+ ~
+q
+10
+
+--- Page 11 ---
+of amplitude estimation and output the quantity
+t
+out
+=
+t
+p
+1
+ 
+ ~
+q
+p
+~
+q
+=
+t
+p
+1
+ 
+ q
+t
+(1 + )
+p
+q
+t
+(1 + )
+=
+t
+q
+k
+x
+k
+2
+t
+2
+
+ 
+p
+1 + 
+=
+ k
+x
+k
+q
+1
+ 
+t
+2
+
+k
+x
+k
+2
+p
+1 + 
+:
+ (45)
+Since
+ t
+2
+=
+k
+x
+k
+2
+
+ 4
+ and
+ j
+
+j 
+ "=
+10
+, the output is guar-
+anteed to b e multiplicative
+ (1 +
+ "
+)
+-approximation for
+k
+x
+k
+. Accounting for
+ O
+ (1
+="
+)
+ calls to KP, each costing
+O
+ (
+
+ log (1
+=
+ ))
+, the total complexity is
+ O
+ (
+
+ log (1
+="
+)
+="
+)
+.
+Since the query complexity of obtaining the
+ 2
+-
+approximation in the ˝rst place is
+ O
+ (
+
+)
+ using the
+metho d from
+ Section 5.3
+, we have thus established that
+the total query c om plexity to obtain a multiplicative
+(1 +
+ "
+)
+-approximation of
+ k
+x
+k
+ is
+Q
+ =
+ O
+ (
+
+ log (1
+="
+)
+="
+)
+ (46)
+In
+ Theorem 5
+ of
+ App endix F
+, building on the metho d
+of Ref. [
+13
+], we derive a lower b ound on the query com-
+plexity of this task when
+ " <
+ 1
+=
+4
+ of
+Q
+ = 
+(min(
+="; N
+ ))
+ ;
+ (47)
+where
+ N
+ is the size of the matrix
+ A
+. Thus, we have
+established optimal-in-
+
+ query complexity for norm es-
+timation, and our
+ "
+ dep enden ce is o˙ by a single loga-
+rithmic factor. It is an interesting ques tion for future
+work to tighten the
+ "
+ dep endence of the complexity of
+norm estimation.
+6 Constant pr efactor analysis
+The constant prefactors and explicit complexity ex-
+pressions for the QLSS are imp ortant for dete rm ining
+whether applications based on the QLSS are viable. We
+derived the asymptotic complexities of se veral distinct
+norm estimation metho ds in
+ Section 5
+; the ability to esti-
+mate the norm up to a constant multiplicative factor im-
+plies a full-˛edged QLSS at the cost of
+ O
+ (
+
+ log (1
+="
+))
+ ad-
+ditional complexity. However, the implementations and
+pro ofs provided for these algorithms we re optimized for
+simplicity and ease of presentation, rather than for their
+constant prefactors. In
+ Section E.1
+ of the app endix, we
+provide detailed analyses of two QLSS metho ds, one that
+uses a variant of th e exhaustive search metho d for learn-
+ing the norm, and one that additionally applies ampli-
+tude ampli˝cation. We arrive at explicit complexity ex-
+pressions in
+ Theorem 2
+ and
+ Theorem 3
+. In d erivin g thes e
+metho ds, we have put a bit more thought into reducing
+the constant factors, although there re mains ro om for
+improveme nt. For example, in
+ Algorithm 3
+ (analyzed
+in
+ Theorem 2
+), rathe r than exhaustively searchi ng over
+a discrete set of candid ate estimates
+ ˝
+ = ln(
+t
+)
+ for the
+norm
+ k
+x
+k
+, we opt to cho ose
+ ˝
+ (nearly) uniformly at ran-
+dom from the continuum, rep eating this pro cess u ntil
+we ˝nd a
+ t
+ for which
+ Algorithm 1
+ succeeds. We do not
+need to sp end queries rep eating
+ Algorithm 1
+ many times
+to b ecome c on ˝dent in this value of
+ t
+, and we need not
+re-run KR using the value of
+ t
+ we ˝nd; we can pro-
+ceed directly to the KP s tep that re˝nes the state to
+error
+ "
+ to solve the QLSP. Ultimately, we achieve c om -
+plexity that scales as
+ O
+ (
+
+ log (
+
+) log log (
+
+))
+, but this is
+upp er b ounded by the easier-to-use expressi on rep orted
+in
+ Table 1
+ and Eq. (
+128
+) when
+ 
+ 2
+ [3
+;
+ 10
+6
+]
+, w hich c ov-
+ers the vast ma jority of practical cases. See Eq. (
+130
+)
+for the analogous expression for the amplitude-ampli˝ed
+metho d.
+In
+ Section E.2
+, we give a detailed analysis of an opti-
+mal QLSS (
+Algorithm 4
+). which resembles the QLSS de-
+scrib ed in
+ Section 5.3
+ and also has optimal
+ O
+ (
+
+ log (1
+="
+))
+complexity. One di˙erence is that with each step in the
+sequence,
+ Algorithm 4
+ inc re as es th e condition numb er
+of the linear system by a factor of ab out 20, rather than
+a factor of 2. Furthermore, rather than learning a mul-
+tiplicative 2-approximation of the norm at each step,
+it targets an approxim ation ratio that b e gins large and
+gradually decreases with each step. The decreasing ap-
+proximation ratio plays the role of median ampli˝cation
+and represents a di˙erent manifestation of the log log
+trick. Some asp ects of the analys is are fairly tedious
+(p erhaps re˛ecting the fact that this metho d is more
+complicated than the others considered), but crucially
+there is no need for the adiabatic theorem. Ultimately,
+we prove in
+ Theorem 4
+ that the metho d achieves ex-
+p ected complexity upp er b ounded by
+Q
+ 
+ 56
+:
+0
+
+ + 1
+:
+05
+
+ ln
+ 
+p
+1
+ 
+ "
+2
+"
+!
++ 2
+:
+78 ln(
+
+)
+3
++ 3
+:
+17
+ ;
+(48)
+which holds for any
+ 
+ and
+ "
+.
+Table 1
+ compares these complexity statements to
+the rigorous b ounds provided for th e quantum walk
+metho d [
+10
+] and the randomization metho d [
+6
+]. We
+see that all of our metho d s yield considerable savings of
+more than an orde r of magnitude . The rigorous guaran-
+tee provided by the asymptotically near-optimal meth o d
+using Grover norm search is actually b etter than the
+asymptotically optimal adiabatic norm search metho d
+for
+ 
+ ˇ
+ 10
+6
+. Inde ed, it is quite p ossible that an asymp-
+totically sub optimal m etho d could ultimately b e the the
+b est option practically, since factors like
+p
+ln(
+
+) ln ln(
+
+)
+evaluate to less than 10 at the scale of
+ 
+ = 10
+6
+, and
+grow e xtrem ely slowly in
+ 
+.
+We b elieve the rigorous b ounds we rep ort could b e
+improved with more work. However, some asp ects of
+the analysis will always b e lo ose; for example, we see no
+way around using worst case error b ounds on the QSVT
+p olynomials used to do KP and KR. We exp ect that the
+empirical p e rformanc e of our algorithms will have lower
+11
+
+--- Page 12 ---
+QLSS metho d
+Asymptotic complexity
++
+ O
+ (
+
+ log (1
+="
+))
+Explicit upp er b ound
+(
+
+ 2
+ [3
+;
+ 10
+6
+])
+Value at
+(
+; "
+) = (10
+5
+;
+ 10
+
+10
+)
+other work
+Quantum walk metho d [
+10
+]
+O
+ (
+
+)
+234470
+
+ + 4
+
+ ln(2
+="
+)
+234562
+
+Randomization metho d [
+6
+]
+O
+ (
+
+ log (
+
+))
+162
+
+ ln(
+
+) + 188
+
+ + 5
+:
+2
+
+ ln(1
+="
+)
+ [
+17
+, arXiv v1]
+2173
+
+Randomization metho d
+with Poissonization [
+11
+,
+ 17
+]
+O
+ (
+
+)
+1671
+
+ + 4
+:
+2
+
+ + 2
+:
+0
+
+ ln(1
+="
+)
+ [
+17
+]
+1728
+
+this work
+Augmented linear system KR
+with exhaustive norm search
+O
+ (
+
+ log (
+
+) log log (
+
+))
+6
+
+ ln(
+
+) + 6
+
+ + 1
+:
+1
+
+ ln(1
+="
+)
+83
+
+Augmented linear system KR
+with Grover norm search
+O
+ (
+
+p
+log (
+
+) log log (
+
+))
+10
+
+p
+ln(
+
+) + 1 + 12
+
+ + 1
+:
+1
+
+ ln(1
+="
+)
+66
+
+Augmented linear system KR
+with binary norm search
+O
+ (
+
+ log log (
+
+) log log log (
+
+))
+not analyzed
+not analyzed
+Augmented linear system KR
+with adiabatic norm search
+O
+ (
+
+)
+56
+
+ + 1
+:
+05
+
+ log (1
+="
+)
+80
+
+Table 1: A comparison of our prop osed QLSS metho ds with previous opti mal and near-optimal metho ds for which
+explicit query complexity b ounds have b een derived . T he explicit upp er b ounds omit subleadi ng terms, and the
+rows for Grover and exhaustive search re place doubly and triply logarithmic factors with their maximum values on
+the domain
+ 
+ 2
+ [3
+;
+ 10
+6
+]
+ for 
+ Section E.1
+ for m ore detailed expressions. In all cases, the e valuation
+of the b ound at
+ 
+ = 10
+5
+and
+ "
+ = 10
+
+10
+is calculate d using the exact expression. For the quantum walk metho d,
+a numerical evaluation of the upp er b ound expression on the domain
+ 
+ 2
+ [1
+;
+ 50]
+ s uggested the b ound is ab out 20
+times smaller, but here we rep ort the fully rigorous b ound [
+10
+]. Additionally, the estimates for the quantum walk
+and ran domization metho d i nclude an additional factor of 2 compared to some of the numerical values rep orted
+elsewhere (e.g., in Re f. [
+10
+]) b ecause when
+ A
+ is non-Hermitian they require two queries to
+ U
+A
+to blo ck-enco de the
+Hermitianized
+
+0
+ A
+A
+y
+0
+
+. We exp ect the practical p erformance of all of these metho ds to b e signi˝cantly b etter than
+their b ounds. Finally, note that the result from the second row comes from arXiv v1 of Ref. [
+17
+], which app eared
+prior to the ˝rst version of this pap er. The third row comes from the published version of Ref. [
+17
+], which app eared
+after.
+constant prefactors than those we have re p orted. In-
+deed, num erical exp eriments conducted in Ref. [
+14
+] sug-
+gest the actual constant prefactors of b oth the random-
+ization metho d and the quantum walk metho d are sig-
+ni˝cantly smaller th an their rigorous b ounds, and that
+the qu antum walk metho d is b etter than the random-
+ization metho d in practice. Concretely, exp eriments on
+16
+ 
+ 16
+ random matrices of increasing condition num-
+b er (up to
+ 
+ = 50
+) suggest that for those instances
+the quantum walk metho d can prepare an ansatz state
+j
+x
+ans
+i
+ with constant overlap
+ 
+ ˇ
+ 0
+:
+98
+ in complexity
+roughly
+ 14
+
+, yielding overall QL SS complexity roughly
+15
+
+ + 2
+ :
+1
+
+ ln(1
+="
+)
+.
+6
+However, the num erical simulations
+were on a sp e ci˝c random ensemble of small matrices
+(no larger than
+ 16
+ 
+ 16
+), and it remains untested if this
+p erformance would b e matched for larger instances, and
+for instances app earing in actual applications. Em pirical
+analyses are valuable, but it is di˚cult to replace a broad
+worst-case guarantee . The question of which approach
+yields the b est practical p erformance on applic ation-
+relevant instances remains an interesting op en problem.
+6
+This uses
+  = 0
+:
+2
+ and assumes
+ =
+
+ walk steps, with
+ 
+ =
+1
+:
+37
+, as rep orted in [
+14
+, Section 4] for no n-Hermitian matrices. We
+also account for the factor o f 2 to Hermitianize the 
+caption of
+ Table 1
+.
+7 Conclusions and summ ary
+Here we have develop ed a new framework for the QLSP,
+one where the Euclidean norm
+ k
+x
+k
+ plays a central role.
+We have shown that if the value of
+ k
+x
+k
+ is know n up to a
+constant factor, the QLSP is simple to solve in optimal
+complexity; the only algorithmic to ols required are well-
+established QSVT-based metho ds for re˛ecting ab out
+the kernel of an op erator.
+Conceptually, then, an imp ortant as p ect of our
+QLSS is that it requires the ability to ˝rst estimate
+ k
+x
+k
+,
+a single real numb er in the interval
+ [1
+; 
+]
+. Norm esti-
+mation replaces the cost-intensive and technically chal-
+lenging task of preparing a high-overlap
+ n
+-dimensional
+ansatz state, which has b een the strategy in prior work.
+One reason to prefer norm estimation over ansatz-state
+preparation is that the norm need only b e learned once,
+whereas ansatz states may need to b e re-prepared each
+time the linear system needs to b e solved. Another rea-
+son is that in certain cases we may have information
+ab out the norm that assists us to obtain a constant-
+factor approximation; for example, if the norm concen-
+trates for a certain class of ins tances, the ensemble av-
+erage may act as a decent guess for the norm for typical
+instances, or at least it can act as a starting p oint that
+enables a faster search.
+12
+
+--- Page 13 ---
+Having established the imp ortance of n orm estima-
+tion for solving the QLSP, we have initiated a systematic
+study of metho ds for ac complishing this task. We have
+proved a lower b ound of
+ 
+(
+"
+
+1
+)
+ query compleixty to es-
+timate the norm to within a factor of
+ 1 +
+ "
+, and we have
+given several metho ds that nearly achieve this b ound.
+For one, any constant factor approximation can b e im-
+proved to a
+ 1 +
+ "
+ approximation at cos t
+ O
+ (
+"
+
+1
+log (1
+="
+))
+;
+matching the lower b ound to within a
+ log (1
+="
+)
+ factor.
+To obtain the initial constant-factor approximation, our
+simple framework o˙ers a straightforward metho d that is
+nearly 
+ 
+ de p endence is o˙ by a doubly log-
+arithmic factor of
+ O
+ (log log (
+
+) log log log (
+
+))
+. Addition-
+ally, we have shown that this factor can b e eliminated,
+yielding a norm estimation algorithm w ith optimal
+ O
+ (
+
+)
+complexity, by combining our framework with ideas from
+the adiabatic path-following metho ds e mployed in prior
+work for ansatz preparation. Here, the relative simplic-
+ity of the norm estimation problem keeps the analysis
+manageable and avoids the need to analyze the adiabatic
+theorem. Our ˝nal complexity of
+ O
+ (
+
+ log (1
+="
+)
+="
+)
+ shaves
+o˙ several logarithmic factors in
+ 
+ and
+ 1
+="
+ from the
+complexity of the b est norm-estimation metho d known
+previously [
+5
+].
+Furthermore, estimating the norm is an imp ortant
+task in i ts ow n right, indep endent of h ow it is used within
+our QLSS. By improvin g the state of the art for norm
+estimation, we reduce the asymptotic complexity for sev-
+eral end-to-end applications [
+32
+]. For example, knowing
+the norm is essential when the computational task b e-
+ing solved is to estimate an inner pro duct
+ W
+ =
+ w
+y
+x
+,
+where
+ w
+ is a ˝xed vector and
+ x
+ is the solution to a
+linear system. This can b e solved by rewriting
+ W
+ as
+k
+w
+ kk
+x
+kh
+w
+ j
+x
+i
+: we may use a QLSS to prepare
+ j
+x
+i
+ and
+then apply overlap estimation [
+22
+] to es timate
+ h
+w
+ j
+x
+i
+,
+but notably we still need to know
+ k
+x
+k
+ to compute the
+output
+ W
+ . This situation is the prototypical problem
+solved by quantum algorithms for di˙erential equations
+[
+33
+,
+ 34
+], where
+ A
+x
+ =
+ b
+ is a discretization of the di˙eren-
+tial equati on and
+ W
+ is some phys ical quantity, such as
+an electromagnetic scattering cross section [
+35
+]. A sim-
+ilar situation arises for quantum algorithms for c ertain
+problems in machine learning, such as Gaussi an pro cess
+regression [
+36
+,
+ 37
+] and supp ort vector machines [
+38
+].
+Although the existe nce of QLSSs with asymptoti-
+cally optimal
+ O
+ (
+
+ log (1
+="
+))
+ query complexity has b een
+previously established in Ref. [
+10
+], our approach matches
+their complexity using a distinct approach with a (we b e-
+lieve) simpler analysis, and o˙ers the p otential for b etter
+rigorous p erformance guarantees. Indeed, we have given
+explicit complexity statements for our metho ds that are
+signi˝cantly b etter than those available previously, al-
+though we exp ect that all of thes e metho ds under consid-
+eration have substantial ro om for further optim ization.
+Moreover, our framework is also slightly more ˛exible
+than much of the previous work on QLS Ss. We do not
+require any assumptions on our lin ear system
+ A
+x
+ =
+ b
+,
+other than that it has at least one solution. In contrast,
+prior work often ass umes
+ A
+ is invertible , and some prior
+work, su ch as Refs. [
+8
+,
+ 10
+], handles non-Hermitian ma-
+trices
+ A
+ indirectly by doubling the dimension, and exam-
+ining the Hermitian matrix
+
+0
+ A
+A
+y
+0
+
+instead. In general,
+this incurs a factor of 2 in the query comple xity to
+ U
+A
+and
+ U
+y
+A
+.
+On the other hand, our framework is not able
+to handle the situation where there is no
+ x
+ satisfying
+A
+x
+ =
+ b
+, and one instead seeks to ˝nd the least-squares
+solution that minimizes
+ k
+ A
+x
+ 
+ b
+k
+. T his task is handled
+by the QLSS based on variable-time amplitude ampli˝ -
+cation of Ref. [
+5
+], and ˝tting it into our frame work is an
+interesting op en problem.
+Acknowledgments
+We thank Fernando Brandao and Grant Salton for dis-
+cussions, Mario Berta and Sam McArdle for extens ive
+comments on a draft of this pap er, and Lin Lin for mo-
+tivating a closer lo ok at the rel ations hip to the Zeno
+metho d. Sp ecial thanks to And rás Gilyén for the sug-
+gestion to generalize eigens tate ˝ltering to kernel pro jec-
+tion and u se
+ Q
+b
+A
+ directly, rather than its doubled Her-
+mitianized version. We are grateful to the AWS Center
+for Quantum Computing for its supp ort.
+References
+[1]
+ Harrow, A. W., Hassidim, A., and Lloyd, S.
+ Quantum algorithm for linear systems of equa-
+tions.
+ Phys. Rev. Lett.
+ 103
+ (2009), 150502.
+arXiv:
+0811.3171
+.
+[2]
+ Babbush, R., McClean, J. R., Newman, M., Gid-
+ney, C., Boixo, S., and Neven, H.  Fo cus b e-
+yond quadratic sp eedu ps for error-corrected quan-
+tum advantage.
+ PRX Quantum
+ 2
+ (2021), 010103.
+arXiv:
+2011.04149
+.
+[3]
+ Ambainis, A.  Variable time amplitude amp li-
+˝cation and quantum algorith ms for linear al-
+gebra problems. In:
+ STACS
+ (2012), 636647.
+arXiv:
+1010.4458
+.
+[4]
+ Childs, A. M., Kothari, R., and Somma, R. D.
+ Quantum algorithm for systems of linear equa-
+tions with e xp onentially improved dep endence on
+precision.
+ SIAM J. Comp.
+ 46
+ (2017), 19201950.
+arXiv:
+1511.02306
+.
+[5]
+ Chakrab orty, S., Gilyén, A., and Je˙ery, S.
+ The p owe r of blo ck-enco ded matrix p owers: Im-
+proved regression te chniques via faster Hamilto-
+nian simulation. In:
+ ICALP
+ (2019), 33:133:14.
+arXiv:
+1804.01973
+.
+[6]
+ Suba³ˇ, Y., Somma, R. D., and Orsucci, D.  Quan-
+tum algorithms for systems of linear equation s in-
+13
+
+--- Page 14 ---
+spired by adiabatic quantum computing.
+ Phys.
+Rev. Lett.
+ 122
+ (2019), 060504. arXiv:
+1805.10549
+.
+[7]
+ An, D. and Lin, L .  Quantum linear system solver
+based on time-optimal ad iabatic quantum com-
+puting and quantum approximate optimization
+algorithm.
+ ACM Trans. Quantum Comput.
+ 3
+(2022). arXiv:
+1909.05500
+.
+[8]
+ Lin, L. and Tong, Y.  Optimal p olynomial based
+quantum eigenstate ˝ltering with application to
+solving quantum linear systems.
+ Quantum
+ 4
+(2020), 361. arXiv:
+1910.14596
+.
+[9]
+ Chakrab orty, S., Morolia, A., and Peduri, A.
+ Quantum regularized least squares.
+ Quantum
+ 7
+(2023), 988. arXiv:
+2206.13143
+.
+[10]
+ Costa, P. C., An, D., Sanders, Y. R., Su, Y.,
+Babbush, R., and Berry, D. W.  Op timal scaling
+quantum linear-systems solver via discrete adia-
+batic theorem.
+ PRX Quantum
+ 3
+ (2022), 040303.
+arXiv:
+2111.08152
+.
+[11]
+ Cunningham, J. and Roland, J.  Eigenpath traver-
+sal by Poisson-distributed phase randomisation.
+In:
+ TQC
+ (2024), 7:17:20. arXiv:
+2406.03972
+.
+[12]
+ Low, G . H. and Su, Y.  Quantum linear sys-
+tem algorithm with optimal queries to initial
+state preparation.
+ Quantum
+ 10
+ (2026), 2041.
+arXiv:
+2410.18178
+.
+[13]
+ Orsucci, D. and Dunjko, V.  On solving
+classes of p ositive-de˝nite quantum li near s ys -
+tems with quadratically improved runtime in
+the condition numb er.
+ Quantum
+ 5
+ (2021), 573.
+arXiv:
+2101.11868
+.
+[14]
+ Costa, P. C., An, D., Babbush, R., and Berry,
+D.  The discrete adiabatic quantum linear system
+solver has lower constant factors than the random-
+ized adiabatic solver.
+ Quantum
+ 9
+ (2025), 1887.
+arXiv:
+2312.07690
+.
+[15]
+ Mori, H., Kikuchi, Y., Benedetti, M., and
+Rosenkranz, M.  Sparsity-dep endent complexity
+lower b oun d of quantum linear s ys te m solvers.
+arXiv:
+2601.16697
+ (2026).
+[16]
+ Albash, T. and Lidar, D. A.  Adiabatic quantum
+computation.
+ Rev. Mod. Phys.
+ 90
+ (2018), 015002.
+arXiv:
+1611.04471
+.
+[17]
+ Jennings, D., Lostaglio, M., Pallister, S., Sorn-
+b orger, A. T., and Suba³ˇ, Y.  Randomized
+adiabatic quantum linear solver algorithm with
+optimal complexity scaling and detailed run-
+ning costs.
+ PRX Quantum
+ 6
+ (2025), 040373.
+arXiv:
+2305.11352
+.
+[18]
+ Dalzell, A. M., Clader, B. D., Salton, G., Berta,
+M., Lin, C. Y. -Y., Bader, D. A., Stamatop oulos,
+N., Schuetz, M. J. A., Brandão, F. G. S. L., Katz-
+grab er, H. G., and Zeng, W. J.  End-to-end re-
+source analysis for quantum interior-p oint m eth-
+o ds and p ortfolio optimization.
+ PRX Quantum
+ 4
+(2023), 040325. arXiv:
+2211.12489
+.
+[19]
+ Jennings, D., Lostaglio, M., Lowrie, R. B., Pallis-
+ter, S., and Sornb orger, A. T.  The cost of solving
+linear di˙erential equations on a quantum com-
+puter: fast-forwarding to explicit resource counts.
+Quantum
+ 8
+ (2024), 1553. arXiv:
+2309.07881
+.
+[20]
+ Gilyén, A., Su, Y., Low, G. H., and Wieb e,
+N.  Quantum s ingular value transformation and
+b eyond: Exp onential improvements for quantum
+matrix arithmetics. In:
+ STOC
+ (2019), 193204.
+arXiv:
+1806.01838
+.
+[21]
+ Martyn, J. M., Rossi, Z. M., Tan, A. K., and
+Chuang, I. L.  Grand uni˝cation of quantum
+algorithms.
+ Phys. Rev. X
+ 2
+ (2021), 040203.
+arXiv:
+2105.02859
+.
+[22]
+ Knill, E., Ortiz, G., and Somma, R. D.  Opti-
+mal quantum measurements of exp ectation values
+of observabl es.
+ Phys. Rev. A
+ 75
+ (2007), 012328.
+arXiv:
+quant-ph/0607019
+.
+[23]
+ Grover, L. K.  A fast quantum mechanical algo-
+rithm for database search. In:
+ STOC
+ (1996), 212
+219. arXiv:
+quant-ph/9605043
+.
+[24]
+ Yo de r, T. J., Low, G. H., and Chuang, I. L.  Fixed-
+p oint quantum search with an optimal numb er
+of queries.
+ Phys. Rev. Lett.
+ 113
+ (2014), 210501.
+arXiv:
+1409.3305
+.
+[25]
+ Burnashev, M. V. and Zigangirov, K.  An interval
+estimation problem for controlled observations .
+Problemy peredachi informatsii
+ 10
+ (1974), 5161.
+In Russian, see [
+27
+] for key pro of in English.
+[26]
+ Ben-Or, M. and Hassidim, A.  The Bayes ian
+learner is optimal for noisy binary search (and
+pretty go o d for quantum as well). In:
+ FOCS
+(2008), 221230. arXiv:
+quant-ph/0703231
+.
+[27]
+ Wang, Z., Ghaddar, N., and Wang, L.  Noisy
+sorting capacity. In:
+ ISIT
+ (2022), 25412546.
+arXiv:
+2202.01446
+.
+[28]
+ Gretta, L. an d Price , E.  Sharp noisy binary search
+with monotonic probabilities. arXiv:
+2311.00840
+(2023).
+[29]
+ Naga j, D., Wo cjan, P., and Zhang, Y.  Fast am-
+pli˝cation of QMA .
+ Quantum Inf. Compu t.
+ 9
+(2009), 10531068. arXiv:
+0904.1549
+.
+[30]
+ Kothari, R. and O'Donnell, R.  Mean estima-
+tion when you have the source co de; or, quantum
+monte carlo metho ds. In:
+ SODA
+ (2023), 1186
+1215. arXiv:
+2208.07544
+.
+[31]
+ Brassard, G., Høyer, P., Mosca, M., and Tapp,
+A.  Quantu m amplitude ampli˝cation and esti-
+mation. In:
+ Quantum Computation and Quantum
+Information: A Mil lennium Volume
+ (2002), 5374.
+arXiv:
+quant-ph/0005055
+.
+14
+
+--- Page 15 ---
+[32]
+ Dalzell, A. M., McArdle, S., Berta, M., Bienias, P.,
+Chen, C.-F., Gilyén, A., Hann, C. T., Kastoryano,
+M. J., Khabi b oulline, E. T., Kubica, A. , Salton,
+G., Wang, S., and Brandão, F. G. S. L.
+ Quantum
+Algorithms: A Survey of Applications and End-
+to-end Complexities
+ . Cambridge University Press
+(2025). arXiv:
+2310.03011
+.
+[33]
+ Berry, D. W.  High-order quantum algorithm for
+solving linear di˙erential equations.
+ J. Phys. A
+47
+ (2014), 105301. arXiv:
+1010.2745
+.
+[34]
+ Montanaro, A. and Pallister, S.  Quantum algo-
+rithms and the ˝nite e lement metho d.
+ Phys. Rev.
+A
+ 93
+ (2016), 032324. arXiv:
+1512.05903
+.
+[35]
+ Clader, B. D., Jacobs, B. C., and Sprouse,
+C. R.  Preconditioned quantum linear system al-
+gorithm.
+ Phys. Rev. Lett.
+ 110
+ (2013), 250504.
+arXiv:
+1301.2340
+.
+[36]
+ Zhao, Z., Fitzsimons, J. K., and Fitzsimons,
+J. F.  Quantum-assi sted Gaussian pro c ess re-
+gression.
+ Phys. Rev. A
+ 99
+ (2019), 052331.
+arXiv:
+1512.03929
+.
+[37]
+ Zhao, Z., Fitzs imons, J. K., Osb orne, M. A.,
+Rob erts, S. J., and Fitzsimons, J. F.  Quantum
+algorithms for training gauss ian pro ces ses.
+ Phys.
+Rev. A
+ 100
+ (2019), 012304. arXiv:
+1803.10520
+.
+[38]
+ Reb entrost, P., Mohseni, M., and Lloyd, S.  Quan-
+tum supp ort vector machine for big data clas-
+si˝cation.
+ Phys. Rev. Lett.
+ 113
+ (2014), 130503.
+arXiv:
+1307.0471
+.
+[39]
+ Nielsen, M. A. and C huang, I. L.
+ Quantum compu-
+tation and quantum information
+ . Cambridge Uni-
+versity Press (2000).
+[40]
+ Nayak, A. and Wu, F.  The quantum query
+complexity of approximating the median and
+related statistics. In:
+ STOC
+ (1999), 384393.
+arXiv:
+quant-ph/9804066
+.
+15
+
+--- Page 16 ---
+A Blo ck-enco ding and state-preparation constructions
+Here we provide circuits for blo ck-enco ding and state preparation of various matrices and vectors used in our
+analysis. We assume access to the
+ (
+
+ = 1
+; a
+)
+-blo ck-enco ding
+ U
+A
+of
+ A
+ and the state prep aration unitary
+ U
+b
+, as well
+as their inverses and controlled versions. Our constructions also involve other gates such as single-qubit rotation
+gates and multi-controlled To˙oli gates . For a pro jector
+ 
+ we d enote
+ C
+
+NOT
+ as the op eration that ˛ips an ancilla
+bit (by applying a Pauli-
+X
+ gate) conditioned on b eing in the image of
+ 
+, and otherwise applying the identity.
+C
+
+NOT = 
+ 
+
+ X
+ + (
+I
+ 
+ )
+ 
+
+ I
+2
+(49)
+In quantum circuits, we draw this with a
+ 
+ b ox on the ˝rst register controlling a target
+ 
+ on the ancilla. When
+ =
+ j
+e
+j
+ih
+e
+j
+j
+, this is a multi-controlled To˙oli gate, with the control bits set to
+ j
+0
+ih
+0
+j
+ or
+ j
+1
+ih
+1
+j
+ dep ending on the
+binary representation of
+ j
+ .
+We denote single qubit rotations by
+ e
+i P
+= cos(
+
+ )
+I
+ +
+ i
+ sin(
+
+ )
+P
+ where
+ P
+ 2 f
+X ; Y ; Z
+ g
+ is a Pauli matrix. Note
+that
+ e
+i Y
+j
+0
+i
+ = cos(
+
+ )
+j
+0
+i
+ + sin(
+
+ )
+j
+1
+i
+.
+Furthermore, we re call the i denti˝cation of the identi ty matrix of dimension
+ d
+ with
+ s
+-qubit op erators , via
+I
+d
+=
+P
+d
+
+1
+j
+ =0
+j
+e
+j
+ih
+e
+j
+j
+.
+A.1 Blo ck-enco ding of
+ G
+The
+ (1
+; a
+ + 1)
+-blo ck-en co ding of
+ G
+ =
+ Q
+b
+A
+ is de picted in
+ Figure 3
+. It has normalization
+ 1
+ and i nvolves
+ a
+ + 1
+ ancilla
+qubits. It costs one query to
+ U
+A
+,
+ U
+b
+and
+ U
+y
+b
+, as well as one multi-controlled To˙oli gate.
+a
+s
+U
+G
+=
+a
+s
+U
+A
+U
+y
+b
+j
+e
+0
+ih
+e
+0
+j
+U
+b
+Figure 3: Quantum circuit implementing
+ (1
+; a
+ + 1)
+-blo ck-enco ding of
+ G
+.
+To verify the correctnes s of the circuit, note that th e ˝nal three gates implement
+ I
+2
+
+
+ I
+2
+a
+
+
+ (
+I
+2
+s
+ j
+b
+ih
+b
+j
+) +
+ X
+ 
+
+I
+2
+a
+
+ j
+b
+ih
+b
+j
+. By sandwiching this op eration with
+ h
+0
+j  j
+0
+i
+ on the ˝rst qubit, the second term vanishes, and we see it
+constitutes a blo ck-enco ding of
+ I
+2
+s
+
+ bb
+y
+with blo ck-enco ding factor 1. The w hole circuit then is a simple pro duct
+of blo ck-e nco dings for
+ A
+ and for
+ I
+2
+s
+
+ bb
+y
+. We then conclude by noting that since
+ e
+j
+y
+A
+ = 0
+ for all
+ j
+ 
+ m
+, we have
+G
+ =
+ Q
+b
+A
+ = (
+I
+m
+
+ bb
+y
+)
+A
+ = (
+I
+2
+s
+
+ bb
+y
+)
+A
+.
+A.2 Blo ck-enco ding of
+ A
+t
+The
+ (1
+; a
+ + 1)
+-blo ck-enco ding of
+ A
+t
+=
+ A
+ +
+ t
+
+1
+j
+e
+m
+ih
+e
+n
+j
+ is shown in
+ Figure 4
+. It uses one controlled query to
+ U
+A
+, two
+multi-controlle d To˙oli gates, one controlled-rotation gate, and up to
+ s
+ CNOT gates. It requires precomputin g the
+angle
+ arccos(1
+=t
+)
+, based on the choice of
+ t
+. We can verify the circu it by setting the input and output of the ancillas
+a
+
+1
+s
+U
+A
+t
+=
+a
+
+1
+s
+U
+A
+e
+i
+ arccos(1
+=t
+)
+Y
+j
+e
+n
+ih
+e
+n
+j
+L
+m
+
+n
+j
+e
+m
+ih
+e
+m
+j
+Figure 4: Quantum circuit implementing
+ (1
+; a
+ + 1)
+-blo ck-enco ding of
+ A
+t
+. The controlled-
+
+m
+
+n
+gate denotes a series
+of at most
+ s
+ CNOT gates controlled by the ˝rst register and acting on di˙erent bits of the ˝nal
+ s
+-qubit register,
+which transform
+ j
+e
+n
+i
+ into
+ j
+e
+m
+i
+ if the control bit is set to 1.
+to
+ j
+0
+i
+ and considering p ossible input and output states on the
+ s
+-qubit sytem. If the input state is not
+ j
+e
+n
+i
+, then
+ U
+A
+16
+
+--- Page 17 ---
+is applied and
+ A
+ is enacted on the
+ s
+-qubit system. Since
+ h
+e
+m
+j
+A
+j
+e
+j
+i
+ = 0
+ for all indi ces
+ j
+ , the ˝nal gate do e s not ˛ip
+the ˝rst ancilla. M eanwhile, if the in put state is
+ j
+e
+n
+i
+ and the output state is
+ j
+e
+m
+i
+, then the ˝rst ancilla is turned
+to
+ j
+1
+i
+ by the ˝rst gate and returned to
+ j
+0
+i
+ by the last gate. Prior to b eing returned to
+ j
+0
+i
+, it controls a single-qubit
+rotation gate that sends
+ j
+0
+i 7!
+ t
+
+1
+j
+0
+i
+ +
+p
+1
+ 
+ t
+
+2
+j
+1
+i
+, and it also c ontrols a set of NOT gates th at transform the
+input
+ j
+e
+n
+i
+ into the output
+ j
+e
+m
+i
+. Postselecting this ancilla on
+ j
+0
+i
+ veri˝ es the correct matrix entry
+ t
+
+1
+for
+ j
+e
+m
+ih
+e
+n
+j
+.
+Finally, if the input is
+ j
+e
+n
+i
+ and the output is not
+ j
+e
+m
+i
+, then the matrix element is seen to b e zero, as exp ected.
+A.3 State preparation unitary
+ U
+b
+0
+The state preparation unitary that prepares
+ j
+b
+0
+i
+ = (
+j
+b
+i
+ +
+ j
+e
+m
+i
+)
+=
+p
+2
+ uses one ancilla qu bit that b egins and ends
+in
+ j
+0
+i
+. It also requires one controlled query to
+ U
+b
+and a controlled-
+U
+e
+m
+gate that prepares
+ j
+e
+m
+i
+ controlled on an
+ can b e accomp lished with up to
+ s
+ CNOT gates (dep ending on the binary representation of
+ m
+ ). Finally,
+it utilizes one multi-controlle d To˙oli gate to disentangle the ancilla after the controlled op verify this
+action, recall that
+ h
+b
+j
+e
+m
+i
+ = 0
+.
+s
+j
+0
+i
+U
+b
+0
+j
+0
+i
+j
+e
+0
+i
+j
+b
+0
+i
+=
+s
+j
+0
+i
+H
+j
+0
+i
+j
+e
+0
+i
+U
+b
+U
+e
+m
+j
+e
+m
+ih
+e
+m
+j
+j
+b
+0
+i
+Figure 5: Quantum circuit impleme nting a state-preparation unitary
+ U
+b
+0
+with the assistance of one anc illa qu bit
+b eginning and endin g in
+ j
+0
+i
+.
+A.4 Blo ck-enco ding of
+ G
+t
+The
+ (1
+; a
+ + 2)
+-blo ck-enco ding of
+ G
+t
+=
+ Q
+b
+0
+A
+t
+is depicted in
+ Figure 6
+. It is the same as the blo ck-enco ding of
+ G
+ from
+Figure 3
+, except with
+ U
+A
+replaced by
+ U
+A
+t
+and
+ U
+b
+0
+replaced by
+ U
+b
+0
+.
+a
+s
+U
+G
+t
+=
+a
+s
+U
+A
+t
+U
+y
+b
+0
+U
+b
+0
+j
+e
+0
+ih
+e
+0
+j
+Figure 6: Quantum circuit implementing
+ (1
+; a
+ + 2)
+-blo ck-enco ding of
+ G
+t
+.
+A.5 Blo ck-enco ding of
+
+A
+˙
+The
+ (1
+; a
+ + 1)
+-blo ck-enco ding of the matrix
+
+A
+˙
+is the m os t complex, and depicte d in
+ Figure 7
+. It uses one controlled
+query to
+ U
+A
+, one CNOT gate, one single-qubit rotation gate, and one
+ C
+
+NOT
+ gate w ith
+  =
+ I
+2
+s
+
+ I
+m
+. The
+C
+
+NOT
+ gate could b e further decomp osed into
+ p oly (
+s
+)
+ To˙oli and CNOT gates, for example, by comparing the
+binary representation of the input state
+ j
+e
+j
+i
+ to that of
+ m
+, starting with the most signi˝cant digit, and computing
+whether
+ m
+ 
+ j
+ into the third register depicted in the ˝gure. This s trate gy would require at least 1 additional
+(unshown) ancilla qubit which would then need to b e uncompute d.
+To enact the single-qubit rotation, we precompute the angle
+ '
+ = arccos
+
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+
+and note that
+ e
+
+i'Y
+j
+0
+i
+ =
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+j
+0
+i 
+ f
+ (
+˙
+ )
+j
+1
+i
+, and
+ e
+
+i'Y
+j
+1
+i
+ =
+ f
+ (
+˙
+ )
+j
+0
+i
+ +
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+j
+1
+i
+.
+To verify the correctness of the circuit, recall that here we view the matrix
+
+A
+˙
+as an
+ (
+s
+ + 1)
+-qubit op erator
+equivalent to
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+j
+0
+ih
+0
+j 
+
+ A
+ +
+ f
+ (
+˙
+ )
+j
+0
+ih
+1
+j 
+
+ I
+m
+, which acts on the ˝nal two registers of the circuit. The
+˝rst two gates are seen to enact a blo ck-enco ding of the op erator
+ j
+0
+ih
+0
+j 
+
+ A
+ +
+ j
+1
+ih
+1
+j 
+
+ I
+m
+, using the second and
+third registers as blo ck-enco ding ancillas. Meanwhile, the ˝nal two gates are seen to enact a blo ck-enco ding of the
+op erator
+ j
+0
+i
+(
+p
+1
+ 
+ f
+ (
+˙
+ )
+2
+h
+0
+j
+ +
+ f
+ (
+˙
+ )
+h
+1
+j
+)
+ 
+
+ I
+2
+s
+, using the ˝rst register as a blo ck-enco ding is b ecause
+sandwiching the ˝rst qubit b etween
+ h
+0
+j  j
+0
+i
+ p ostselec ts on b oth the in put and output of the CNOT gate b eing
+ j
+0
+i
+.
+The correctness of the circuit is then veri˝ed by multiplying the op erators blo ck-enc o ded by thes e two parts of
+the circuit.
+17
+
+--- Page 18 ---
+a
+
+1
+s
+U
+
+A
+˙
+=
+a
+
+1
+s
+U
+A
+P
+2
+s
+
+1
+j
+ =
+m
+j
+e
+j
+ih
+e
+j
+j
+e
+
+i
+ arccos
+
+p
+1
+
+f
+ (
+˙
+ )
+2
+
+Y
+Figure 7: Quantum circuit im plementing
+ (1
+; a
+ + 1)
+-blo ck-enco ding of
+
+A
+˙
+, which acts on a
+ s
+ + 1
+-qubit system.
+A.6 How to pad
+ A
+ in the ˝rst place
+In
+ S ection 2
+, we assumed we are given an instance
+ (
+A;
+ b
+)
+ of the QLSP of size
+ m
+ 
+ n
+, and a blo ck-enco ding
+ U
+A
+that
+views
+ A
+ as an op erator on
+ s
+ qubits with
+ max(
+m; n
+)
+ <
+ 2
+s
+. This means there is at least one row and column of zero
+padding built in. Here we drop this ass umption, and assume that
+ max(
+m; n
+) = 2
+s
+. This means that in order to
+augment the linear system we n eed to intro duce a new basis vec tor
+ j
+e
+m
+i
+ =
+ j
+e
+n
+i
+, and this requires intro ducing a
+whole new qubit and expanding the total vector space to size
+ 2
+s
++1
+. To ˝t this situation into our framework, we
+now give an alternative blo ck-enco ding of
+ A
+ that simply pads it with zeros as
+ [
+A
+ 0
+0 0
+]
+ when viewed as an
+ (
+s
+ + 1)
+-qubit
+op erator rather than as an
+ s
+-qubit op erator, so that
+ max(
+m; n
+ )
+ <
+ 2
+s
++1
+. This cons truction uses
+ a
+ + 1
+ total ancillas,
+a multi -controlled To˙oli and a CNOT gate. It uses one call to
+ U
+A
+but no calls to controlled
+ U
+A
+. This construction
+could then b e used in place of
+ U
+A
+everwhere else that
+ U
+A
+app ears, causing the subs titution
+ a
+ 7!
+ a
+ + 1
+,
+ s
+ 7!
+ s
+ + 1
+.
+To see that this construction is correct, note the follow ing sequence of logic. First, sandwiching the
+ a
+-qubit register
+a
+s
+U
+A
+Figure 8: Quantum circuit implementing
+ (1
+; a
+) = (1
+; a
+ + 1)
+-blo ck-enco ding of
+ A
+ as an op erator on
+ s
+ + 1
+ qubits
+(padded with zeros), given as input a
+ (1
+; a
+)
+-blo ck-enco ding of
+ A
+ as an op erator on
+ s
+ qubits.
+with
+ h
+0
+j  j
+0
+i
+ triggers the multi-controlled To˙oli that ˛ips the ˝rst qubit. Then, sandwhiching the ˝rst qubit with
+h
+0
+j  j
+0
+i
+ requires a second ˛ip to o ccur, meaning n on zero output is only p ossib le if the ˝nal qubit is in
+ j
+0
+i
+.
+B Implementation of kernel pro je ction and kernel re˛ection
+B.1 Quantum s ingular value tranformation
+The formalism of quantu m singular value transformation (QSVT) [
+20
+] allows for p olynomial transformations of the
+singular values of a b lo ck-en co ded matrix.
+Let
+ U
+B
+b e an
+ (1
+; a
+B
+)
+-blo ck-enco ding of a matrix
+ B
+ =
+P
+2
+s
+
+1
+j
+ =0
+P
+2
+s
+
+1
+k
+ =0
+b
+j k
+j
+e
+j
+ih
+e
+k
+j
+ (viewe d as an op erator on
+ s
+qubits with appropriate zero-padding) and let
+ B
+ =
+ W
+ 
+V
+y
+b e a singular value decomp os ition (SVD) of
+ B
+ , where
+
+ is the diagonal matrix of singular values. Let
+ P
+ b e a real, even , degree-
+d
+ p olynomial for which
+ j
+P
+ (
+x
+)
+j 
+ 1
+whenever
+ j
+x
+j 
+ 1
+ (QSVT also works for o dd p olynomials , but we only need even p olynomials in our application).
+Corollary 18 of Ref. [
+20
+, arXiv ve rsion] states that we can ˝nd a quantum circuit implementing
+ U
+(
+B
+ )
+P
+, which is a
+(1
+; a
+B
++ 1)
+-blo ck-enco ding of
+ V P
+ ()
+V
+y
+:
+V P
+ ()
+V
+y
+= (
+h
+0
+j
+
+
+(
+a
+B
++1)
+
+
+ I
+2
+s
+)
+U
+(
+B
+ )
+P
+(
+j
+0
+i
+
+
+(
+a
+B
++1)
+
+
+ I
+2
+s
+)
+ ;
+ (50)
+The unitary
+ U
+(
+B
+ )
+P
+uses
+ d=
+2
+ calls to each of
+ U
+B
+and
+ U
+y
+B
+,
+ 2
+d
+ multi-controlled To˙oli gates, and
+ d
+ single-qubit rotation
+gates. The circuit for
+ U
+(
+B
+ )
+P
+is given in
+ Figure 9
+.
+18
+
+--- Page 19 ---
+a
+B
+s
+U
+(
+B
+ )
+P
+=
+a
+B
+s
+: : :
+: : :
+: : :
+H
+e
+i˚
+2
+`
+Z
+e
+i˚
+2
+`
+
+1
+Z
+e
+i˚
+1
+Z
+H
+U
+B
+U
+y
+B
+U
+y
+B
+Figure 9: Quantum c ircuit implementing the QSVT unitary
+ U
+(
+B
+ )
+P
+. The phases
+ ˚
+j
+must b e chosen to implement
+the p olynomial
+ P
+ . Conditioned on the inpu t and output of the ˝rst
+ a
+B
++ 1
+ qubits b eing
+ j
+0
+i
+
+
+(
+a
+B
++1)
+, the op eration
+V P
+ ()
+V
+y
+is applie d to the state on the third register, where
+ B
+ =
+ W
+ 
+V
+y
+is a SVD of
+ B
+ . The gate
+ H
+ denotes
+Hadamard.
+B.2 Kernel pro jection
+We can apply QSVT to p erform eigenstate ˝ltering (EF) [
+8
+], or more precisely in our application, ke rn el pro jection
+(KP). T his technique gives a pro cedure to pro ject onto the kernel of a matrix by constructing an appropriate
+p olynomial ˝lte r function and applying QSVT. Sp eci˝cally, give n target parameters
+ 
+ 2
+ (0
+;
+ 1)
+ and
+ 
+ 2
+ (0
+;
+ 1]
+, we
+take
+`
+ =
+2
+6
+6
+6
+arccosh(
+
+
+1
+)
+arccosh
+
+1+
+2
+1
+
+
+2
+
+3
+7
+7
+7
+
+˘
+1
+2
+ln
+
+2
+
+ˇ
+(51)
+and we de˝ne the even, degree-
+2
+`
+ p olynomial
+ F
+
+;`
+(
+x
+)
+ give n in Ref. [
+8
+]
+F
+
+;`
+(
+x
+) =
+T
+`
+
+1+
+2
+
+2
+x
+2
+1
+
+
+2
+
+T
+`
+
+1+
+2
+1
+
+
+2
+
+(52)
+where
+ T
+`
+is the
+ `
+th Cheybshev p olynomial of the ˝rst kind, give n by
+T
+`
+(
+z
+ ) =
+8
+>
+<
+>
+:
+cos(
+`
+ arccos(
+z
+ ))
+ if
+ j
+z
+ j 
+ 1
+cosh(
+`
+ arccosh(
+z
+ ))
+ if
+ z >
+ 1
+(
+
+1)
+`
+cosh(
+`
+ arccosh(
+z
+ ))
+ if
+ z <
+ 
+1
+:
+ (53)
+This p olynomial is plotted in
+ Figure 10
+.
+Figure 10: Example of
+ F
+
+;`
+(
+x
+)
+ (kernel pro jection) and
+ R
+
+;`
+(
+x
+)
+ (kernel re˛ection) for
+  = 0
+:
+1
+ and
+ `
+ = 21
+, im plying
+
+ 
+ 0
+:
+03
+.
+Lemma 1.
+ The polynomial
+ F
+
+;`
+is guaranteed to satisfy
+19
+
+--- Page 20 ---
+1.
+ For al l
+ x
+ 2
+ [
+
+1
+;
+ 1]
+, it holds that
+ j
+F
+
+;`
+(
+x
+)
+j 
+ 1
+2.
+ For al l
+ x
+ 2
+ [
+;
+ 1]
+, it holds that
+ j
+F
+
+;`
+(
+x
+)
+j 
+ T
+`
+(
+1+
+2
+1
+
+
+2
+)
+
+1
+
+ 
+ .
+3.
+ F
+
+;`
+(0) = 1
+.
+Proof.
+ This builds on and improves up on L emma 13 of Ref. [
+8
+].
+7
+Note that the Chebys hev p olynomial
+ T
+`
+(
+z
+ )
+ is
+b ounded on
+ [
+
+1
+;
+ 1]
+ when
+ z
+ 2
+ [
+
+1
+;
+ 1]
+. Moreover, for
+ z
+ 
+ 1
+ it is monotonically increasing. Thus, the numerator
+achieve s its maximum on
+ x
+ 2
+ [
+
+1
+;
+ 1]
+ when
+ x
+ = 0
+, where
+ F
+
+;`
+= 1
+ by construction, verifying prop erties 1 and 3.
+To verify Prop erty 2, note that for all
+ x
+ 2
+ [
+;
+ 1]
+, the numerator is b ounded in the range
+ [
+
+1
+;
+ 1]
+. Moreover, the
+absolute value of the denominator evaluates to
+T
+`
+
+1 + 
+2
+1
+ 
+ 
+2
+
+= cosh
+
+`
+ arccosh
+
+1 + 
+2
+1
+ 
+ 
+2
+
+(54)
+We im mediately see that if
+ `
+ 
+ arc cosh(
+
+
+1
+)
+=
+ arccosh((1 + 
+2
+)
+=
+(1
+ 
+ 
+2
+))
+, then the denominator is larger than
+
+
+1
+.
+In other words,
+ F
+
+;`
+(
+x
+)
+ is a ˝lter of width
+ 
+, which maps the zero input to one and all inputs outside the
+window
+ [
+
+
+;
+ ]
+ to a value close to zero. In fact, the p olynom ial
+ F
+
+;`
+(
+x
+)
+ is the optimal ˝lter p ol ynomial of degree
+2
+`
+ in the sense of minimizi ng the maximum of
+ j
+F
+
+;`
+(
+x
+)
+j
+ outside the window
+ [
+
+
+;
+ ]
+ sub ject to
+ F
+
+;`
+(0) = 1
+ [
+8
+,
+App endix E].
+We can apply QSVT using the p olynomial
+ F
+
+;`
+. Su pp ose we have a
+ (1
+; a
+B
+)
+-blo ck-enco ding of
+ B
+ =
+ W
+ 
+V
+y
+,
+which has no sin gu lar values in the interval
+ (0
+;
+ )
+. We apply KP to a state
+ j
+˚
+i
+ =
+ c
+1
+j
+a
+i
+ +
+ c
+2
+j
+b
+i
+, where
+ a
+ is in the
+kernel of
+ B
+ and
+ b
+ is orthogonal to the kernel. The vector
+ j
+b
+i
+ has a decomp osition
+P
+j
+w
+j
+j
+u
+j
+i
+ into right singular
+vectors
+ j
+u
+j
+i
+ of
+ B
+ all of which have singular values
+ &
+j
+in
+ (
+;
+ 1)
+. By Prop erty 2 of
+ Lemma 1
+, for every
+ j
+ ,
+ F
+
+;`
+(
+&
+j
+)
+ lies
+in the interval
+ [
+
+ ; 
+ ]
+. Thus, the application of
+ V F
+
+;`
+()
+V
+y
+maps
+j
+b
+i 7!
+X
+j
+w
+j
+F
+
+;`
+(
+&
+j
+)
+j
+u
+j
+i
+ =
+ 
+1
+j
+b
+i
+ +
+ 
+2
+j
+b
+0
+i
+ (55)
+where
+ b
+0
+is orthogonal to
+ b
+ and to the kernel of
+ B
+ , and
+ 
+2
+1
++
+ 
+2
+2
+
+ 
+2
+. This allows us to assert
+U
+(
+B
+ )
+F
+
+;`
+(
+j
+0
+i
+
+
+(
+a
+B
++1)
+
+ j
+˚
+i
+) =
+h
+j
+0
+i
+
+
+(
+a
+B
++1)
+
+
+ (
+c
+1
+j
+a
+i
+ +
+ c
+2
+
+1
+j
+b
+i
+ +
+ c
+2
+
+2
+j
+b
+0
+i
+)
+i
+|
+{z
+}
+success
++
+ j
+c
+2
+j
+q
+1
+ 
+ 
+2
+1
+
+ 
+2
+j?i
+|
+{z
+}
+failure
+(56)
+where
+ j?i
+ is a normalized state for which
+ (
+h
+0
+j
+
+
+(
+a
+B
++1)
+
+
+ I
+2
+s
+)
+j?i
+ = 0
+. Postselecting on the ˝rst register b eing
+j
+0
+i
+
+
+(
+a
+B
++1)
+, this implements an approximate pro jector onto th e kernel of
+ B
+ . Accordingly, we can detect the success
+of KP by measuring the
+ a
+B
++ 1
+ anc illas and checking if they are all
+ j
+0
+i
+.
+In our application, the matrix
+ B
+ is given by
+ Q
+b
+A
+ or
+ Q
+b
+0
+A
+t
+. The numb er of ancillas in these two c ases is
+a
+B
+=
+ a
+ + 1
+ and
+ a
+B
+=
+ a
+ + 2
+, resp ective ly, where
+ a
+ is the numb er of ancillas for the blo ck-enc o ding
+ U
+A
+. In b oth
+cases, we can give a
+ (1
+; a
+B
+)
+-blo ck-enco ding of
+ B
+ using one (p otentially controlled ) query to each of
+ U
+A
+,
+ U
+b
+, and
+U
+y
+b
+, as i llustrated in
+ App endix A
+.
+Lemma 2
+ (Using KP to re˝ ne QLSS solution)
+.
+ Suppose
+ b
+ is in the column space of
+ A
+, and let
+ x
+ denote the solution
+of minimum
+ k
+x
+k
+ to the equation
+ A
+x
+ =
+ b
+. Suppose
+ A
+ has no singular values in the interval
+ (0
+; 
+
+1
+)
+ and let
+ ~
+ˆ
+ be
+a mixed quant um state for which
+ h
+x
+j
+ ~
+ˆ
+j
+x
+i
+ = 1
+ 
+ 
+2
+and
+ h
+y
+ j
+ ~
+ˆ
+j
+y
+ i
+ = 0
+ for al l
+ y
+ that are in the kernel of
+ A
+. Suppose
+KP is applied to approximately project
+ ~
+ˆ
+ onto the kernel of
+ G
+ =
+ Q
+b
+A
+ using parameters
+ (
+; 
+ )
+. That is, we choose
+`
+ using Eq.
+ (
+51
+)
+ with
+  =
+ 
+
+1
+and apply the unitary
+ U
+(
+G
+)
+F
+
+
+1
+;`
+, and then measure the ancil las t o determine success.
+KP succeeds with probability at least
+ 1
+ 
+ 
+2
+, and when it succeeds it outputs a state
+ ~
+ˆ
+out
+for which
+h
+x
+j
+ ~
+ˆ
+out
+j
+x
+i 
+ 1
+ 
+
+2
+
+2
+1
+ 
+ 
+2
++
+ 
+2
+
+2
+
+ 1
+ 
+
+2
+
+2
+1
+ 
+ 
+2
+(57)
+1
+2
+kj
+x
+ih
+x
+j 
+ ~
+ˆ
+out
+k
+1
+
+
+p
+1
+ 
+ 
+2
++
+ 
+2
+
+2
+
+
+p
+1
+ 
+ 
+2
+(58)
+7
+The lemma stated here has a constant prefactor for
+ `
+ that is b etter than that of Lemma 13 of Ref. [
+8
+] by a factor of
+p
+2
+. Additionally,
+we no longer require the restriction
+ 
+ 2
+ (0
+;
+ 1
+=
+p
+12]
+. We acknowledge communciation with Yu Tong on how the constant prefactor in
+their b ound could b e improved, a fact that was also p ointed out in Ref. [
+10
+, Section V].
+20
+
+--- Page 21 ---
+Proof.
+ Let
+ ~
+ˆ
+ =
+P
+i
+p
+i
+j
+˚
+i
+ih
+˚
+i
+j
+ b e a decomp osition of
+ ~
+ˆ
+ as an ensemble of pure states . We have
+ h
+x
+j
+ ~
+ˆ
+j
+x
+i
+ =
+P
+i
+p
+i
+jh
+x
+j
+˚
+i
+ij
+2
+= 1
+ 
+ 
+2
+. Referenci ng Eq. (
+56
+), here we have
+ j
+a
+i
+ =
+ j
+x
+i
+ and
+ c
+1
+=
+ jh
+x
+j
+˚
+i
+ij
+. Let
+ j
+ 
+i
+i
+ denote the
+output state when KP acts on
+ j
+˚
+i
+i
+ and we p ostselect on succ ess, and let
+ q
+i
+b e the probability of success. We can
+see that
+ q
+i
+ j
+c
+1
+j
+2
+=
+ jh
+x
+j
+˚
+i
+ij
+2
+. We can also see that
+ jh
+x
+j
+ 
+i
+ij
+2
+=
+ j
+c
+1
+j
+2
+=q
+i
+. The overall probability of success of KP is
+given by
+P
+i
+p
+i
+q
+i
+
+P
+i
+p
+i
+jh
+x
+j
+˚
+i
+ij
+2
+= 1
+ 
+ 
+2
+, showing the ˝rst claim of the lemma. Again referring to Eq. (
+56
+), we
+have
+ j
+
+1
+j
+2
++
+ j
+
+2
+j
+2
+
+ 
+2
+, so we can also say
+ q
+i
+ jh
+x
+j
+˚
+i
+ij
+2
++
+ 
+2
+(1
+ jh
+x
+j
+˚
+i
+ij
+2
+)
+. The output state
+ ~
+ˆ
+out
+is given by
+~
+ˆ
+out
+=
+P
+i
+p
+i
+q
+i
+j
+ 
+i
+ih
+ 
+i
+j
+P
+i
+p
+i
+q
+i
+(59)
+where includin g the denominator ensures the state is normalized. We now compute
+h
+x
+j
+ ~
+ˆ
+out
+j
+x
+i
+ =
+P
+i
+p
+i
+q
+i
+jh
+x
+j
+ 
+i
+ij
+2
+P
+i
+p
+i
+q
+i
+=
+P
+i
+p
+i
+jh
+x
+j
+˚
+i
+ij
+2
+P
+i
+p
+i
+q
+i
+=
+1
+ 
+ 
+2
+P
+i
+p
+i
+q
+i
+(60)
+
+1
+ 
+ 
+2
+P
+i
+p
+i
+(
+jh
+x
+j
+˚
+i
+ij
+2
++
+ 
+2
+(1
+ jh
+x
+j
+˚
+i
+ij
+2
+))
+=
+1
+ 
+ 
+2
+
+2
++ (1
+ 
+ 
+2
+)(1
+ 
+ 
+2
+)
+= 1
+ 
+
+2
+
+2
+1
+ 
+ 
+2
++
+ 
+2
+
+2
+(61)
+The trace distance b ound then follows from the general relationship
+1
+2
+kj
+x
+ih
+x
+j 
+ ˙
+ k 
+p
+1
+ h
+x
+j
+˙
+ j
+x
+i
+ for any state
+ ˙
+[
+39
+, Eq. (9.110)].
+B.3 Kernel re˛ection
+We can extend the technique of kernel pro jection to
+ kernel re˛ection
+. In kernel re˛ection, rather than preserving
+the kernel and (approximately) zeroing out its orthogonal complement, we preserve the kernel and (approximately)
+apply a
+ 
+1
+ phase to the orthogonal complem ent. We do so within the frame work of QSVT by constructing a new
+p olynomial
+ K
+
+;`
+. Again, we are given parameters
+ 
+ and
+ 
+ , and we cho ose
+ `
+ as in Eq. (
+51
+). We de˝ne the
+ 2
+`
+-degree
+p olynomial by s caling and shifting
+ F
+
+;`
+to cover the range
+ [
+
+1
+;
+ 1]
+:
+K
+
+;`
+(
+x
+) =
+2
+F
+
+;`
+(
+x
+)
+ 
+ 1 +
+ F
+
+;`
+()
+1 +
+ F
+
+;`
+()
+=
+2
+T
+`
+(
+1+
+2
+
+2
+x
+2
+1
+
+
+2
+) + 2
+T
+`
+(
+1+
+2
+1
+
+
+2
+) + 1
+
+ 1
+ :
+ (62)
+K
+
+;`
+is a degree-
+2
+`
+, even p olynomial.
+Lemma 3.
+ The polynomial
+ K
+
+;`
+(0)
+ is guaranteed to satisfy
+1.
+ For al l
+ x
+ 2
+ [
+
+1
+;
+ 1]
+, it holds that
+ j
+K
+
+;`
+(
+x
+)
+j 
+ 1
+2.
+ For al l
+ x
+ 2
+ [
+;
+ 1]
+, it holds that
+ j
+K
+
+;`
+(
+x
+)
+j  
+1 +
+4
+T
+`
+(
+1+
+2
+1
+
+
+2
+)+1
+ 
+1 +
+4
+
+1+
+
+.
+3.
+ K
+
+;`
+(0) = 1
+.
+Proof.
+ Prop erty 3 is readily veri˝ed by plugging in
+ x
+ = 0
+. Prop erty 1 follows from the fact that for
+ x
+ 2
+ [
+
+1
+;
+ 1]
+, the
+maximum of
+ T
+`
+(
+1+
+2
+
+2
+x
+2
+1
+
+
+2
+)
+ is achieved at
+ x
+ = 0
+ and the minimum is
+ 
+1
+ (as noted in pro of of
+ Lemma 1
+). To verify
+Prop erty 2, ˝rst note that for all
+ x
+ 2
+ [
+;
+ 1]
+,
+ T
+`
+(
+1+
+2
+
+2
+x
+2
+1
+
+
+2
+)
+ 2
+ [
+
+1
+;
+ 1]
+. M ore over, the de nominator evaluates to
+T
+`
+
+1 + 
+2
+1
+ 
+ 
+2
+
++ 1 = cosh
+
+`
+ arccosh
+
+1 + 
+2
+1
+ 
+ 
+2
+
++ 1
+ (63)
+We im mediately see that if
+ `
+ 
+ arc cosh(
+
+
+1
+)
+=
+ arccosh((1 + 
+2
+)
+=
+(1
+ 
+ 
+2
+))
+, then the denominator is larger than
+
+
+1
++ 1 =
+  =
+(1 +
+ 
+ )
+, which completes the veri˝cation.
+We can apply QSVT using the p olynomial
+ K
+
+;`
+. Supp ose we have a
+ (1
+; a
+B
+)
+-blo ck-enco ding of
+ B
+ , which has
+no singular values in the interval
+ (0
+;
+ )
+. We apply kernel re˛ection to a state
+ j
+˚
+ i
+ =
+ c
+1
+j
+a
+i
+ +
+ c
+2
+j
+b
+i
+, where
+ a
+ is in the
+21
+
+--- Page 22 ---
+kernel of
+ B
+ and
+ b
+ is orthogonal to the kernel. Building on Eq. (
+55
+), we have
+j
+b
+i 7!
+X
+j
+w
+j
+K
+
+;`
+(
+&
+j
+)
+j
+u
+j
+i
+ =
+X
+j
+w
+j
+2
+F
+
+;`
+(
+&
+j
+)
+ 
+ 1 +
+ F
+
+;`
+()
+1 +
+ F
+
+;`
+()
+j
+u
+j
+i
+ (64)
+=
+ 
+
+1
+ 
+2
+F
+
+;`
+()
+1 +
+ F
+
+;`
+()
+
+j
+b
+i
+ +
+2
+1 +
+ F
+
+;`
+()
+(
+
+1
+j
+b
+i
+ +
+ 
+2
+j
+b
+0
+i
+)
+ (65)
+=
+ 
+(1
+ 
+ 
+0
+1
+)
+j
+b
+i
+ +
+ 
+0
+2
+j
+b
+0
+i
+ (66)
+where
+ 
+0
+1
+=
+2
+F
+
+;`
+()+2
+
+1
+1+
+F
+
+;`
+()
+and
+ 
+0
+2
+=
+2
+
+2
+1+
+F
+
+;`
+()
+. We know that
+ 
+ 
+ F
+
+;`
+()
+; if we take
+ 
+ =
+ F
+
+;`
+()
+, we recover the
+statements in the main text:
+ 
+0
+1
+=
+2
+
+ +2
+
+1
+1+
+
+and
+ 
+0
+2
+=
+2
+
+2
+1+
+
+.
+U
+(
+B
+ )
+K
+
+;`
+(
+j
+0
+i
+
+
+(
+a
+B
++1)
+
+ j
+˚
+i
+) =
+h
+j
+0
+i
+
+
+(
+a
+B
++1)
+
+
+ (
+c
+1
+j
+a
+i 
+ c
+2
+(1
+ 
+ 
+0
+1
+)
+j
+b
+i
+ +
+ c
+2
+
+0
+2
+j
+b
+0
+i
+)
+i
+|
+{z
+}
+success
++
+ j
+c
+2
+j
+q
+2
+
+0
+1
+
+ 
+0
+2
+1
+
+ 
+0
+2
+2
+j?i
+|
+{z
+}
+failure
+:
+ (67)
+From the b ound
+ j
+
+1
+j 
+ 
+ , we have
+ 0
+ 
+ 
+0
+1
+
+4
+
+1+
+
+. From the b ound
+p
+
+2
+1
++
+ 
+2
+2
+we have
+ 
+0
+2
+
+q
+
+0
+1
+(
+4
+
+1+
+
+
+ 
+0
+1
+)
+.
+C QLSS given norm estimate: detaile d analysis
+First, we provide more sp eci˝c details on how
+ Algorithm 1
+ is implemented by providing a quantum circuit. The
+full circuit is given in
+ Figure 11
+.
+a
++2
+s
+j
+0
+i
+j
+0
+i
+
+
+(
+a
++2)
+U
+(
+G
+t
+)
+K
+
+;`
+j
+e
+n
+i
+j
+e
+n
+ih
+e
+n
+j
+j
+ ~
+x
+i
+ if all measurement outcome s
+ j
+0
+i
+Figure 11: Quantum circuit implementing
+ Algorithm 1
+. The gate
+ U
+(
+G
+t
+)
+K
+
+;`
+is the QSVT circuit dep icted in
+ Figure 9
+that implements the p olynomial
+ K
+
+;`
+on the singular values of
+ G
+t
+, leveraging th e
+ (1
+; a
+ + 1)
+-blo ck-enco ding of
+ G
+t
+from
+ Figure 6
+. Vertical lines separate steps 1, 2, and 3 in the algorithm. Step 2 (KR) succeeds if all
+ a
+ + 2
+ ancillas
+in the second register are measured in
+ j
+0
+i
+. Ste p 3 succeeds if the ˝rst ancilla is measured to b e
+ j
+0
+i
+. Conditione d on
+success, the output is
+ j
+ ~
+x
+i
+.
+Theorem 1.
+ Suppose that
+ k
+b
+k
+ = 1
+, that
+ b
+ is in t he column space of
+ A
+, and that al l nonzero singular values of
+ A
+lie in the interval
+ [
+
+
+1
+;
+ 1]
+. Let
+ U
+A
+be a
+ (1
+; a
+)
+-block-encoding of
+ A
+, and
+ U
+b
+be a state-preparation unitary for
+ j
+b
+i
+.
+Let
+ x
+ denote the unique vector of minimum norm
+ k
+x
+k
+ for which
+ A
+x
+ =
+ b
+.
+Fix parameter choices
+  >
+ 0
+, and
+ t
+ 2
+ [1
+; 
+]
+, letting
+ 
+t
+= arc tan(
+k
+x
+k
+=t
+ )
+. Consider
+ Algorithm 1
+, denoting the
+overal l success probability by
+ p
+succ
+, and the output state condit ioned on success by
+ j
+ ~
+x
+i
+. Then, the stat e
+ j
+ ~
+x
+i
+ has no
+overlap with the kernel of the operator
+ A
+. Furthermore, the fol lowing bounds are satis˝ed (the ˝rst three require
+ =
+ cos(
+
+t
+)
+ 
+ 1
+)
+kj
+x
+i j
+ ~
+x
+ik 
+ arcsin
+
+
+cos(
+
+t
+)
+
+(68)
+1
+2
+kj
+x
+ih
+x
+j j
+ ~
+x
+ih
+ ~
+x
+jk
+1
+
+
+cos(
+
+t
+)
+(69)
+jh
+ ~
+x
+j
+x
+ij 
+s
+1
+ 
+
+2
+cos
+2
+(
+
+t
+)
+(70)
+sin
+2
+(2
+
+t
+)
+
+1
+ 
+ 
+1 +
+ 
+
+2
+
+ p
+succ
+
+ sin
+2
+(2
+
+t
+) +
+4
+
+2
+(1 +
+ 
+ )
+2
+sin
+2
+(
+
+t
+)
+ (71)
+22
+
+--- Page 23 ---
+The query cost of the protocol is
+ `
+ queries to control led-
+U
+A
+,
+ `
+ queries control led-
+U
+y
+A
+,
+ 2
+`
+ queries to control led-
+U
+b
+,
+and
+ 2
+`
+ queries to control led-
+U
+y
+b
+where
+`
+ =
+2
+6
+6
+6
+arccosh(
+
+
+1
+)
+arccosh
+
+1+
+
+
+2
+1
+
+
+
+2
+
+3
+7
+7
+7
+
+˘
+
+2
+ln
+
+2
+
+ˇ
+(72)
+The algorithm requires
+ a
+ + 3
+ total ancil la qubits, including the
+ a
+ ancil la qubits for
+ U
+A
+.
+Proof.
+ The s tated query cost follows from the observations in
+ App endix B
+. This cost is incurred entirely during
+Step 2 of the algorithm (KR).
+Note that sinc e
+ x
+ is de˝ned as the solution to
+ A
+x
+ =
+ b
+ with minimum Euclidean norm
+ k
+x
+ k
+, we have that
+ x
+ is
+orthogonal to the kernel of
+ A
+. If it were not, we could pro ject
+ x
+ onto the orthogonal complement of the kernel and
+obtain a vector
+ x
+0
+for which
+ A
+x
+0
+=
+ b
+ and
+ k
+x
+0
+k  k
+x
+k
+, leading to a contradiction.
+We now justify the stated b ounds by tracking the state of throughout the algorithm. Recall that
+ j
+x
+t
+i
+ =
+sin(
+
+t
+)
+j
+x
+i
+ + cos(
+
+t
+)
+j
+e
+n
+i
+. De˝n e
+ j
+y
+t
+i
+ =
+ 
+ cos(
+
+t
+)
+j
+x
+i
+ + sin(
+
+t
+)
+j
+e
+n
+i
+ orthogonal to
+ j
+x
+t
+i
+. Note that
+ j
+y
+t
+i
+ is orthogonal to
+the ke rn el of
+ A
+. In Step 1, we prepare
+ j
+e
+n
+i
+, which decomp oses as
+j
+e
+n
+i
+ = c os(
+
+t
+)
+j
+x
+t
+i
+ + sin(
+
+t
+)
+j
+y
+t
+i
+ (73)
+In Ste p 2, we apply KR for the matrix
+ G
+t
+=
+ Q
+b
+0
+A
+t
+, which preserves
+ j
+x
+t
+i
+ and approximately ˛ip s the s ign on
+ j
+y
+t
+i
+.
+That is, conditioned on success of KR, using Eq. (
+67
+), the resulting state is (up to normalization)
+cos(
+
+t
+)
+j
+x
+t
+i 
+ (1
+ 
+ 
+0
+1
+) sin(
+
+t
+)
+j
+y
+t
+i
+ +
+ 
+0
+2
+sin(
+
+t
+)
+j
+z
+ i
+ (74)
+where
+ j
+z
+ i
+ is some state orthogonal to b oth
+ j
+x
+t
+i
+ and
+ j
+y
+t
+i
+,
+ 
+0
+1
+
+ 4
+ =
+(1 +
+ 
+ )
+, and
+ 
+0
+2
+
+p
+
+0
+1
+(4
+ =
+(1 +
+ 
+ )
+ 
+ 
+0
+1
+)
+.
+Furthermore, since the kernel of
+ A
+ is contained in the kernel of
+ G
+t
+=
+ Q
+b
+0
+A
+t
+and
+ y
+t
+is orthogonal to the ke rn el of
+A
+, the image of
+ y
+t
+under any QSVT sequence w ill remain orthogonal to the kernel of
+ A
+. In particular, this implies
+that
+ j
+z
+ i
+ is orthogonal to the kernel of
+ A
+.
+In Step 3, we pro ject onto the complement of
+ j
+e
+n
+i
+. Note that
+ j
+z
+ i
+ is orthogonal to
+ j
+e
+n
+i
+ and to
+ j
+x
+i
+, b oth of
+which lie in the span of
+ fj
+x
+t
+i
+;
+ j
+y
+t
+ig
+. The state that results is (up to normaliz ati on )
+j
+ ~
+x
+i /
+h
+sin(
+
+t
+) cos(
+
+t
+) + (1
+ 
+ 
+0
+1
+) cos(
+
+t
+) sin(
+
+t
+)
+i
+j
+x
+i
+ +
+ 
+0
+2
+sin(
+
+t
+)
+j
+z
+ i
+ (75)
+=
+
+1
+ 
+
+0
+1
+2
+
+sin(2
+
+t
+)
+j
+x
+i
+ +
+ 
+0
+2
+sin(
+
+t
+)
+j
+z
+ i
+ (76)
+This state is orthogonal to the kernel of
+ A
+ since b oth
+ x
+ and
+ z
+ are orthogonal to the kernel of
+ A
+.
+We verify th e b ounds in reverse order. The overall probability of success is given by the squared norm of the
+right-hand side of Eq. (
+76
+). T he lower b ound in Eq. (
+71
+) follows from the observation that th e squared norm is
+minimized when
+ 
+0
+1
+= 4
+ =
+(1 +
+ 
+ )
+ and
+ 
+0
+2
+= 0
+. The upp er b ound in Eq. (
+71
+) is a lo ose upp er b ound generated by
+maximizing the norm of each te rm in Eq. (
+76
+) individually, w ithout enforcing
+ 
+0
+2
+2
+
+ 
+0
+1
+(4
+ =
+(1 +
+ 
+ )
+ 
+ 
+0
+1
+)
+ 
+ 4
+
+2
+=
+(1 +
+ 
+ )
+2
+.
+These terms achieve maximum norm at
+ 
+0
+1
+= 0
+ and
+ 
+0
+2
+= 2
+ =
+(1 +
+ 
+ )
+, yielding th e stated upp er b ound.
+To show Eq. (
+70
+), to condense some notation, de˝ne
+ M
+ =
+  =
+(1 +
+ 
+ )
+,
+ ˘
+1
+=
+ 
+0
+1
+=
+2
+ 
+ M
+ ,
+ ˘
+2
+=
+ 
+0
+2
+=
+2
+, and
+
+ = 1
+=
+ cos(
+
+t
+)
+. We have
+ ˘
+2
+1
++
+ ˘
+2
+2
+
+ M
+2
+. After normalizing
+ j
+ ~
+x
+i
+ appropriately, and noting that
+ 
+0
+2
+sin(
+
+t
+) = s in(2
+
+t
+)
+ ˘
+2
+,
+we see that the overlap is given by
+jh
+ ~
+x
+j
+x
+ij
+ =
+1
+ 
+ M
+ 
+ ˘
+1
+p
+(1
+ 
+ M
+ 
+ ˘
+1
+)
+2
++
+ 
+2
+˘
+2
+2
+(77)
+
+1
+ 
+ M
+ 
+  ˘
+1
+p
+(1
+ 
+ M
+ 
+  ˘
+1
+)
+2
++
+ 
+2
+˘
+2
+2
+(78)
+where imp osing the inequality puts the expression in a form that easier to minimize. The pair
+ (
+˘
+1
+; ˘
+2
+)
+ whe re it is
+minimized will b e among the p oints for which
+ j
+˘
+1
+j
+2
++
+ j
+˘
+2
+j
+2
+achieves its maximum of
+ M
+2
+, so we let
+ ˘
+1
+=
+ M
+ sin(
+'
+)
+23
+
+--- Page 24 ---
+and
+ ˘
+2
+=
+ M
+ cos(
+'
+)
+ for some
+ '
+ to b e sp eci˝ed later. Ou r lower b ound on the overlap simpli˝es to
+1
+ 
+ M
+ 
+ M 
+ sin(
+'
+)
+p
+(1
+ 
+ M
+ 
+ M 
+ sin(
+'
+))
+2
++
+ 
+2
+M
+2
+cos(
+'
+))
+2
+(79)
+We can upp er b ound the ˝nal expression by a geometric argument, aided by
+ Figure 12
+.
+A
+D
+B
+C
+'
+'
+Figure 12: Geometric argument for rigorous lower b ound on overlap, see text. The angle
+ \
+B C D
+ is essentially
+de˝ned as
+ '
+. We the n deduce that if
+ C
+ is constrained to lie on the circle, then the maximum value of
+ \
+B AC
+ is
+ '
+which is achieved when
+ AC
+ is tangent to the circle.
+Let
+ AB C
+ b e a triangle, with
+ AB
+ of length
+ 1
+ 
+ M
+ 
+ M 
+ sin(
+'
+)
+,
+ B C
+ of length
+  M
+ cos(
+'
+)
+ and
+ \
+AB C
+ a right
+angle. Then the lower b ound on the overlap is equal to the cosine of the angle
+ \
+B AC
+ . Extend the line segment
+AB
+ to a p oint
+ D
+ for which the length of
+ AD
+ is
+ 1
+ 
+ M
+ and the length of
+ B D
+ is
+ M 
+ sin(
+'
+)
+. Then the le ngth of
+ D C
+is
+ M 
+ , indep endent of
+ '
+, and the lo cus of p oints
+ C
+ as
+ '
+ varies is a circle of radius
+ M 
+ centered at
+ D
+ . The angle
+\
+B AC
+ is maximized when
+ AC
+ is tangent to th is circle, in which case
+ AC
+ is p erp endicular to
+ D C
+ . Noting similar
+triangles, we see that the maximum of
+ \
+B AC
+ is precis ely
+ '
+, and in this case,
+ sin(
+'
+)
+ is
+ M  =
+(1
+ 
+ M
+ )
+. This implies
+jh
+ ~
+x
+j
+x
+ij 
+s
+1
+ 
+M
+2
+
+2
+(1
+ 
+ M
+ )
+2
+=
+s
+1
+ 
+
+2
+cos
+2
+(
+
+t
+)
+:
+ (80)
+This b ound implies Eq. (
+69
+) by the rel ations hip
+ kj
+x
+ih
+x
+j j
+~
+x
+ih
+~
+x
+jk
+1
+= 2
+p
+1
+ jh
+x
+j
+ ~
+x
+ij
+2
+. Finally, to show Eq. (
+68
+),
+we return to the geometric argument. We note that our metho d guarantees that the overlap
+ h
+ ~
+x
+j
+x
+i
+ is a p ositive
+real numb er, an d thus, the lower b ound on the overlap
+ h
+ ~
+x
+j
+x
+i
+ = cos(
+'
+)
+ implies that the length
+ kj
+x
+i j
+ ~
+x
+ik
+ is upp er
+b ounded by the angle
+ '
+ = arcsin(
+ =
+ cos(
+
+t
+))
+.
+Corollary 1.
+ Fix a known constant
+ 
+ 
+ 1
+ and a value
+ t
+ 2
+ [1
+; 
+]
+. Suppose
+ k
+x
+k
+ satis˝es the promise
+ k
+x
+k 2
+ [
+
+
+1
+t;  t
+]
+(the case where
+ k
+x
+k
+ is known exactly corresponds to
+ 
+ = 1
+). Then, the QLSP can be solved with an expected number
+Q
+ of combined control led queries to
+ U
+A
+or
+ U
+y
+A
+, and
+ 2
+Q
+ combined control led queries to
+ U
+b
+or
+ U
+y
+b
+, where
+Q
+ 
+(
+
+2
++ 1)
+2
+
+2
+0
+@
+1 +
+"
+2
+p
+
+2
++1
+1
+ 
+"
+2
+p
+
+2
++1
+1
+A
+2
+&
+
+2
+ln
+ 
+4
+p
+
+2
++ 1
+"
+!'
+:
+ (81)
+Proof.
+ As previously, let
+ 
+t
+= arctan(
+k
+x
+k
+=t
+)
+, implying
+ cos(
+
+t
+) =
+ t=
+p
+t
+2
++
+ k
+x
+k
+2
+
+ 1
+=
+p
+
+2
++ 1
+ and
+ sin(2
+
+t
+) =
+2
+t
+k
+x
+k
+=
+(
+t
+2
++
+ k
+x
+k
+2
+)
+ 
+ 2
+ =
+(
+
+2
++ 1)
+. Cho ose
+ 
+ =
+ "=
+(2
+p
+
+2
++ 1)
+, so that the distance in Eq. (
+69
+) is less than
+ "
+. Run
+Algorithm 1
+. The success probability is lower b ounded in
+ Theorem 1
+ by
+ p
+succ
+
+ [2
+
+ (1
+ 
+ 
+ )]
+2
+=
+[(
+
+2
++ 1)(1 +
+ 
+ )]
+2
+.
+The proto col must b e rep eated an exp ected
+ 1
+=p
+succ
+times to observe success, and the query complexity of each run
+of the proto col contributes a factor
+ 2
+`
+ to
+ Q
+, where
+ `
+ is given in Eq. (
+72
+).
+24
+
+--- Page 25 ---
+D Estimating the norm: detailed analysis
+In
+ Section 5.2
+ of the main text, we showed that it was p ossible to learn a
+ 2
+-approximation to the norm with high
+probability in complexity
+ O
+ (
+
+ log log (
+
+) log log log (
+
+))
+. The metho d sketched there requires many rep etitions at
+each step of the binary search, which would contribute unfavorably toward the constant prefactors and the prac tical
+p erformance. We still think the noisy binary search may b e a promising practical metho d, but here we examine an
+alternative metho d w ith
+ O
+ (
+
+ log (
+
+) log log (
+
+))
+ complexity that more closely resembles the exhaustive search metho d
+from
+ Section 5.1
+. We the n show how to reduce it to
+ O
+ (
+
+p
+log (
+
+) log log (
+
+))
+ with amplitude ampli˝cation. In b oth
+cases we give explicit expressions for the res ou rc e cost. Note that
+p
+log (
+
+)
+ is not much larger than
+ ln ln(
+
+)
+ for many
+practical values of
+ 
+. For e xamp le
+ ln
+
+ln
+
+10
+6
+
+= 2
+:
+6
+, whereas
+p
+ln(10
+6
+) = 3
+ :
+7
+.
+Theted in
+ Algorithm 2
+ to guess random values of
+ t
+, and then run
+ Algorithm 1
+ using that
+value of
+ t
+. If it succeeds, output
+ t
+, and if it fails, output fail. Choices of
+ t
+ that are closer to
+ k
+x
+k
+ will b e output
+more often since they lead to larger values of
+ p
+succ
+for
+ Algorithm 1
+ (see
+ Figure 2
+). When it succeeds,
+ Algorithm 2
+also outputs a state
+ j
+ ~
+x
+i
+. This might b e regard ed as a solution to the QLSP, but its complexity would have a term
+of the form
+ O
+ (
+
+ log (
+
+) log (1
+="
+))
+. This can b e avoided by instead viewing the output of
+ Algorithm 2
+ as an ansatz
+state, and then re˝ning it w ith KP. We analyze this two-step algorithm later in
+ Algorithm 3
+.
+In
+ Algorithm 2
+, we are given as input an interval
+ [
+L
+;
+ R
+]
+ that is known to contain
+ k
+x
+k
+ale ntly
+ ln(
+k
+x
+k
+)
+ 2
+[ln(
+L
+)
+;
+ ln(
+R
+ )]
+. We cho ose
+ ˝
+ essentially uniformly at random from the interval
+ [ln(
+L
+)
+;
+ ln(
+R
+)]
+, but we oversample the
+edge p oints
+ ˝
+ = ln(
+L
+)
+ and
+ ˝
+ = ln(
+R
+)
+. T he reason for this is related to th e fac t that whe n we draw
+ ˝
+ uniformly at
+random from the interval
+ [ln(
+L
+)
+;
+ ln(
+R
+)]
+, the average distance b etween
+ ˝
+ and
+ ln(
+k
+x
+k
+)
+ is larger when
+ k
+x
+k
+ is near a
+b oundary of the interval than when it is not near the b oundary. By oversampling the edge p oints, we comp ensate
+for this e˙ect.
+Algorithm 2:
+ Estimating the norm by randomly cho osing
+ t
+ + p ostselection
+Input:
+ (
+A;
+ b
+;
+ [
+L
+;
+ R
+]
+; ; 
+ )
+Output:
+ (
+t;
+ j
+ ~
+x
+i
+)
+ with probability
+ q
+succ
+, and fail with probability
+ 1
+ 
+ q
+succ
+1
+ Cho ose
+ ˝
+ uniformly at random from
+ [ln(
+L
+)
+ 
+1
+2
+;
+ ln(
+R
+) +
+1
+2
+]
+2
+ if
+ ˝
+ 
+ ln(
+L
+)
+:
+3
+ S et
+ ˝
+ = ln(
+L
+)
+4
+ elif
+ ˝
+ 
+ ln(
+R
+)
+:
+5
+ S et
+ ˝
+ = ln(
+R
+)
+6
+ Set
+ t
+ =
+ e
+˝
+7
+ Run
+ Algorithm 1
+ with parameters
+ (
+A;
+ b
+; ;  ; t
+)
+. If it fails, output fail. If it succ eeds, denote its output by
+j
+ ~
+x
+i
+8
+ return
+ (
+t;
+ j
+ ~
+x
+i
+)
+Lemma 4.
+ Let
+  >
+ 0
+,
+ L
+, and
+ R
+ be ˝xed and known parameters and suppose
+ k
+x
+k 2
+ [
+L
+;
+ R
+]
+. Let
+ q
+succ
+denote the
+success probability of
+ Algorithm 2
+ on parameters
+ (
+A;
+ b
+;
+ [
+L
+;
+ R
+]
+; ; 
+ )
+, and when it succeeds denote its output by
+ (
+t;
+ j
+ ~
+x
+i
+)
+.
+The probability of success satis˝es
+q
+succ
+
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+(ln(
+R
+=
+L
+) + 1)
+(82)
+and the query cost of the algorithm is the same as that of
+ Theorem 1
+. Postselecting on success, for any
+ 
+ the out put
+t
+ satis˝es
+Pr
+
+t
+ 62
+ [
+
+
+1
+k
+x
+k
+; 
+ k
+x
+k
+]
+
+
+(1 +
+ 
+ )
+2
+(1
+ 
+ 
+ )
+2
+4
+
+2
++ 1
++
+2
+
+2
+(2 ln(
+R
+=
+L
+) + 1
+ 
+ 4 ln(
+
+ ))
+(1
+ 
+ 
+ )
+2
+:
+ (83)
+When it succeeds it also out pu ts the same
+ j
+ ~
+x
+i
+ that appears in
+ Theorem 1
+ for the corresponding value of
+ t
+ and
+ 
+ .
+Denoting the ensemble of
+ j
+ ~
+x
+ih
+ ~
+x
+j
+ by the mixed state
+ ~
+ˆ
+, we have
+h
+x
+j
+ ~
+ˆ
+j
+x
+i 
+ 1
+ 
+2
+
+2
+(1
+ 
+ 
+ )
+2
+
+3
+2
++ ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
+(84)
+Proof.
+ Observe that
+ Algorithm 2
+ cho oses
+ ˝
+ randomly as follows. With probability
+ 1
+=
+(2 ln(
+R
+=
+L
+) + 2)
+ it cho oses
+˝
+ = ln(
+L
+)
+, with probability
+ 1
+=
+(2 ln(
+R
+=
+L
+) + 2)
+ it cho oses
+ ˝
+ = ln(
+R
+)
+, and with probability
+ ln(
+R
+=
+L
+)
+=
+(ln(
+R
+=
+L
+) + 1)
+, it
+25
+
+--- Page 26 ---
+cho oses
+ ˝
+ uniformly at random from the interval
+ [ln(
+L
+)
+;
+ ln(
+R
+)]
+. It then runs
+ Algorithm 1
+ (analyze d in
+ Theorem 1
+)
+using
+ t
+ =
+ e
+˝
+, and if it succeeds, outputs
+ t
+ and the resulting state
+ j
+ ~
+x
+i
+. Since
+ Algorithm 1
+ is called exactly on e time,
+the query c os t is identical to that of
+ Algorithm 1
+.
+Let
+ Q
+t
+denote the probability that
+ Algori thm 1
+ succeeds for a c ertain choice of
+ t
+, whi ch can b e lower b ounded
+by Eq. (
+71
+). The overall probability of success is at least
+q
+succ
+=
+1
+2 ln(
+R
+=
+L
+) + 2
+ 
+Q
+L
++
+ Q
+R
++ 2
+Z
+ln(
+R
+)
+ln(
+L
+)
+d˝
+ Q
+t
+!
+(85)
+
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+(2 ln(
+R
+=
+L
+) + 2)
+ 
+sin
+2
+(2
+
+L
+) + sin
+2
+(2
+
+R
+) + 2
+Z
+ln(
+R
+)
+ln(
+L
+)
+d˝
+ sin
+2
+(2
+
+t
+)
+!
+(86)
+where
+ 
+t
+= arctan(
+k
+x
+k
+=e
+˝
+)
+. Computing
+ d
+t
+=d˝
+ =
+ 
+ sin(2
+
+t
+)
+=
+2
+, we make a change of integration variable and
+express the lower b ound as
+q
+succ
+
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+(2 ln(
+R
+=
+L
+) + 2)
+ 
+sin
+2
+(2
+
+L
+) + sin
+2
+(2
+
+R
+) + 4
+Z
+
+L
+
+R
+d
+t
+sin(2
+
+t
+)
+!
+(87)
+=
+(1
+ 
+ 
+ )
+2
+(sin
+2
+(2
+
+L
+) + sin
+2
+(2
+
+R
+) + 2 cos(2
+
+R
+)
+ 
+ 2 cos(2
+
+L
+))
+(1 +
+ 
+ )
+2
+(2 ln(
+R
+=
+L
+) + 2)
+(88)
+=
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+(ln(
+R
+=
+L
+) + 1)
++
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+(2 ln(
+R
+=
+L
+) + 2)
+
+(2 cos(2
+
+R
+)
+ 
+ cos
+2
+(2
+
+R
+)) + (
+
+2 cos(2
+
+L
+)
+ 
+ cos
+2
+(2
+
+L
+)
+
+(89)
+
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+(ln(
+R
+=
+L
+) + 1)
+(90)
+The last line follow s by noting the following two facts. First, since
+ L  k
+x
+k
+, we have
+ 
+1
+ 
+ cos(2
+
+L
+)
+ 
+ 0
+ and hence
+
+2 cos(2
+
+L
+)
+ 
+ cos
+2
+(2
+
+L
+)
+ 
+ 0
+. Sec on d, since
+ R  k
+x
+k
+, we have
+ 0
+ 
+ cos(2
+
+R
+)
+ 
+ 1
+ and hence
+ 2 cos(2
+
+R
+)
+ 
+ cos
+2
+(2
+
+R
+)
+ 
+0
+. This con˝rms Eq. (
+82
+).
+We can now com pute an upp er b ound on the probability that the algorithm succ eeds and outputs an estimate
+for
+ t
+ greater than
+ 
+ k
+x
+k
+, which we denote by
+ P
+>
+. For this to b e the case, ˝rst of all, the random choice of
+ ˝
+ must
+b e greater than
+ 
+ k
+x
+k
+. Then, conditoned on such a choice of
+ ˝
+ , the probability of succes s
+ Q
+t
+is upp er b ounded by
+Eq. (
+71
+). I f
+ k
+x
+k
+ <
+ R
+=
+ , we have
+P
+>
+=
+1
+2 ln(
+R
+=
+L
+) + 2
+ 
+Q
+R
++ 2
+Z
+ln(
+R
+)
+ln(
+
+ k
+x
+k
+)
+d˝
+ Q
+t
+!
+(91)
+
+1
+2 ln(
+R
+=
+L
+) + 2
+ 
+2
+Z
+ln(
+R
+)
+ln(
+
+ k
+x
+k
+)
+d˝
+
+sin
+2
+(2
+
+t
+) +
+4
+
+2
+sin
+2
+(
+
+t
+)
+(1 +
+ 
+ )
+2
+
++ sin
+2
+(2
+
+R
+) +
+4
+
+2
+sin
+2
+(
+
+R
+)
+(1 +
+ 
+ )
+2
+!
+(92)
+and if
+ k
+x
+k 
+ b=
+ , we have
+ P
+>
+= 0
+. Following the metho d that arrived at Eq. (
+90
+), we compute
+2
+Z
+ln(
+R
+)
+ln(
+
+ k
+x
+k
+)
+d˝
+ sin
+2
+(2
+
+t
+) = 2 cos(2
+
+R
+)
+ 
+ 2 cos
+
+2
+
+
+ k
+x
+k
+
+:
+ (93)
+and we note that
+ 2 cos(2
+
+R
+) + s in
+2
+(2
+
+R
+) = 2
+ 
+ 4 sin
+4
+(
+
+R
+)
+ 
+ 2
+. We also note that
+ 2
+ 
+ 2 cos
+
+
+
+ k
+x
+k
+
+= 4 sin
+2
+(
+
+
+ k
+x
+k
+) =
+4
+
+2
++1
+.
+P
+>
+
+1
+2 ln(
+R
+=
+L
+) + 2
+ 
+4
+
+2
++ 1
++
+4
+
+2
+(1 +
+ 
+ )
+2
+ 
+sin
+2
+(
+
+R
+) + 2
+Z
+ln(
+R
+)
+ln(
+
+ k
+x
+k
+)
+d˝
+ sin
+2
+(
+
+t
+)
+!!
+(94)
+26
+
+--- Page 27 ---
+Similarly, we can compute the probabili ty that the algorithm su cceeds and outputs a value of
+ t <
+ k
+x
+k
+=
+ . If
+k
+x
+k 
+ 
+ L
+, then
+ P
+<
+= 0
+. If
+ k
+x
+k
+ > 
+ L
+, we follow the same pro cess as ab ove, and we arrive at
+P
+<
+
+1
+2 ln(
+R
+=
+L
+) + 2
+ 
+4
+
+2
++ 1
++
+4
+
+2
+(1 +
+ 
+ )
+2
+ 
+sin
+2
+(
+
+L
+) + 2
+Z
+ln(
+k
+x
+k
+=
+ )
+ln(
+L
+)
+d˝
+ sin
+2
+(
+
+t
+)
+!!
+(95)
+We will add these two e xpres sions to get an upp er b ound on the overall probability that the output deviates by
+a factor
+ 
+ . To b ound the
+ O
+ (
+
+2
+)
+ terms under the integral, we simply assert that
+ sin
+2
+(
+
+t
+)
+ 
+ 1
+. First, supp ose that
+L
+
+  k
+x
+k  R
+=
+ . Th is implies that b oth
+ P
+<
+and
+ P
+>
+are nonzero, and also that
+ sin
+2
+(
+
+R
+)
+ 
+ 1
+=
+(
+
+2
++ 1)
+ and
+sin
+2
+(
+
+L
+)
+ 
+ 
+2
+=
+(
+
+2
++ 1)
+, s o
+ sin
+2
+(
+
+L
+) + sin
+2
+(
+
+R
+)
+ 
+ 1
+. We ˝nd that
+P
+>
++
+ P
+<
+
+1
+ln(
+R
+=
+L
+) + 1
+
+4
+
+2
++ 1
++
+2
+
+2
+(1 +
+ 
+ )
+2
+(1 + 2 ln(
+R
+=
+L
+)
+ 
+ 4 ln(
+
+ )))
+
+(96)
+If
+ L
+
+  k
+x
+k  R
+=
+ do es not hold, the n this implies that at least one of
+ P
+<
+and
+ P
+>
+is zero and it is easy to see
+that the ab ove expression still holds.
+Now, we divide
+ P
+<
++
+ P
+>
+by the lower b ound on
+ q
+succ
+to yield an upp er b ound on the probability of deviating
+by
+ 
+ , conditioned on the algorithm succeeding. The result is Eq. (
+83
+).
+Finally, we show the lower b ound on
+ h
+x
+ j
+ ~
+ˆ
+j
+x
+i
+. Let the symb ol
+ E
+ denote exp ectation over the ensemble of
+ (
+t;
+ j
+~
+x
+i
+)
+.
+We can equivalently upp er b ound
+ E
+[1
+ jh
+x
+j
+ ~
+x
+ij
+2
+]
+. For any particular value of
+ ˝
+ , denote this quantity by
+ 
+2
+t
+, w hich
+we can compute from Eq. (
+76
+):
+
+2
+t
+= 1
+ jh
+x
+j
+ ~
+x
+ij
+2
+=
+
+2
+2
+sin
+2
+(
+
+t
+)
+Q
+t
+
+4
+
+2
+(1 +
+ 
+ )
+2
+Q
+t
+sin
+2
+(
+
+t
+)
+ (97)
+The probability a certain
+ ˝
+ is observed is prop ortional to the probability
+ ˝
+ is randomly chosen , times the probability
+Q
+t
+that
+ Algorithm 1
+ succeeds. Thus, we have
+1
+ h
+x
+j
+ ~
+ˆ
+j
+x
+i
+ =
+ E
+[1
+ jh
+x
+j
+ ~
+x
+ij
+2
+] =
+1
+q
+succ
+(2 ln(
+R
+=
+L
+) + 2)
+ 
+Q
+L
+
+2
+L
++
+ Q
+R
+
+2
+R
++ 2
+Z
+ln(
+R
+)
+ln(
+L
+)
+d˝
+ Q
+t
+
+2
+t
+!
+(98)
+
+4
+
+2
+(1 +
+ 
+ )
+2
+q
+succ
+(2 ln(
+R
+=
+L
+) + 2)
+ 
+sin
+2
+(
+
+L
+) + sin
+2
+(
+
+R
+) + 2
+Z
+ln(
+R
+)
+ln(
+L
+)
+d˝
+ sin
+2
+(
+
+t
+)
+!
+(99)
+We can use the same substitution as ab ove to say
+2
+Z
+ln(
+R
+)
+ln(
+L
+)
+d˝
+ sin
+2
+(
+
+t
+) = 2
+Z
+
+L
+
+R
+d
+t
+tan(
+
+t
+) = 2 ln
+
+cos(
+
+R
+)
+cos(
+
+L
+)
+
+= ln
+
+R
+2
+(
+k
+x
+k
+2
++
+ L
+2
+)
+L
+2
+(
+k
+x
+k
+2
++
+ R
+2
+)
+
+
+ ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
+(100)
+We also have
+ sin
+2
+(
+
+L
+)
+ 
+ 1
+ and
+ sin
+2
+(
+
+R
+)
+ 
+ 1
+=
+2
+, a fact that follows from the assumption
+ b
+  k
+x
+k
+. We can also
+imp ose the upp er b ound on
+ q
+succ
+. This gives
+1
+ h
+x
+j
+ ~
+ˆ
+j
+x
+i 
+4
+
+2
+(1 +
+ 
+ )
+2
+q
+succ
+(2 ln(
+R
+=
+L
+) + 2)
+
+3
+2
++ ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
+(101)
+
+2
+
+2
+(1
+ 
+ 
+ )
+2
+
+3
+2
++ ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
+(102)
+Brie˛y, we now discuss h ow this theorem enables us to learn the norm up to a constant approximation ratio.
+Supp ose
+ 
+ is a ˝xed cons tant greater than 3. We may take
+ 
+ 
+ 0
+:
+1(2 ln(
+R
+=
+L
+) + 1
+ 
+ 4 ln(
+
+ ))
+
+1
+=
+2
+
+ 
+(
+
+
+1
+=
+2
+)
+ so
+that the right-hand-side of Eq. (
+83
+) is upp er b ounded by 0.45. Thus, there is a strictly greater than 1/2 chance
+the output of
+ Algorithm 2
+ is a 3-approximation of
+ k
+x
+k
+. The exp ected numb er of times we need to run
+ Algorithm 2
+to observe success is upp er b ounded by
+ q
+
+1
+succ
+ˇ
+ ln(
+R
+=
+L
+) + 1
+ 
+ ln(
+
+) + 1
+. Thus, the overall complexity to learn
+a 3-approximation to the norm is
+ O
+ (
+
+ log (
+
+) log log (
+
+))
+. The probability the output is a 3-approximation can b e
+b o osted to
+ 1
+ 
+ 
+ with median ampli˝cation at the cost of multiplicative
+ O
+ (log (1
+=
+ ))
+ overhead. The approximation
+ratio can b e improved from 3 to
+ 1 +
+ "
+ using the metho d from
+ Section 5.4
+.
+27
+
+--- Page 28 ---
+Now we describ e how the
+ O
+ (log (
+
+))
+ complexity coming from the required numb er of rep etitions can b e improved
+to
+ O
+ (
+p
+log (
+
+))
+ with ˝xed-p oint amplitude ampli˝cation.
+Lemma 5.
+ Let
+  >
+ 0
+,
+  >
+ 0
+,
+ L
+, and
+ R
+ be ˝xed constants and suppose
+ k
+x
+k 2
+ [
+L
+;
+ R
+]
+, and let
+ d
+ be a positive integer.
+Suppose we restrict values of
+ t
+ such that
+ ln(
+t
+)
+ L
+ an integer mult iples of
+ 2
+
+d
+, and we ru n
+ Algorithm 2
+ coherently
+by creating a su perposition over a set of discrete
+ t
+ values, rather than a classical random guess. Then, we may wrap
+Algorithm 2
+ in ˝xed-point amplitude ampli˝cation, and boost its probability of success to
+ 1
+ 
+ 
+ . The output
+ (
+t;
+ ~
+x
+)
+ of
+this protocol is identical to that of
+ Algorithm 2
+ up to discretization error of order
+ 2
+
+d
+. Speci˝cal ly
+Pr
+
+t
+ 62
+ [
+
+
+1
+k
+x
+k
+; 
+ k
+x
+k
+]
+
+
+(1 +
+ 
+ )
+2
+(1
+ 
+ 
+ )
+2
+4
+
+2
++ 1
++ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
++
+2
+
+2
+(2 ln(
+R
+=
+L
+) + 1
+ 
+ 4 ln(
+
+ ))
+(1
+ 
+ 
+ )
+2
+(103)
+h
+x
+j
+ ~
+ˆ
+j
+x
+i 
+ 1
+ 
+2
+
+2
+(1
+ 
+ 
+ )
+2
+
+3
+2
++ ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
++ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+
+1
+ 
+ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
+
+
+1
+:
+ (104)
+The query cost of the algorithm is
+ Q
+ total queries to
+ U
+A
+,
+ U
+y
+A
+and their control led versions, and
+ 2
+Q
+ t ot al queries to
+U
+b
+,
+ U
+y
+b
+, and their control led versions, where
+Q
+ 
+ 
+2
+&
+(1 +
+ 
+ )
+p
+ln(
+R
+=
+L
+) + 1
+2(1
+ 
+ 
+ )
+
+1
+ 
+ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
+
+
+1
+=
+2
+ln
+
+2
+p
+
+
+
+1
+2
+'
++ 1
+!
+2
+˘
+
+2
+ln
+
+2
+
+ˇ
+(105)
+The algorithm requires
+ d
+ +
+ d
+log
+2
+ln(
+R
+=
+L
+)
+e
+ additional ancil la qubits, compared to
+ Algorithm 2
+.
+Proof.
+ First, we d escrib e in more detail the mo di˝cations that allow ˝xed-p oint amplitude ampli˝cation to b e
+applied. Let
+ q
+ =
+ d
+ +
+ d
+log
+2
+ln(
+R
+=
+L
+)
+e
+ + 1
+ b e the numb er of ancilla qubits. Let
+ j
+max
+=
+ d
+ln(
+R
+=
+L
+)2
+d
+e 
+ 2
+q
+ 
+1
+. We
+require a u nitary
+ P
+ that prepares the state
+P j
+0
+ij
+0
+q
+i
+ =
+1
+p
+2 ln(
+R
+=
+L
+) + 2
+0
+@
+j
+0
+ij
+0
+q
+i
+ +
+ j
+0
+ij
+10
+q
+ 
+1
+i
+ +
+p
+2 ln(
+R
+=
+L
+)
+p
+j
+max
+j
+max
+
+1
+X
+j
+ =0
+j
+1
+ij
+j
+ i
+1
+A
+(106)
+We require another unitary
+ B
+ which applies the blo ck-enco ding
+ U
+A
+t
+for matrix
+ A
+t
+, where the value of
+ t
+ is controlled
+by the setting of the
+ q
+ + 1
+ qubits depicted in the equation ab ove. Referencing
+ Figure 4
+, to control the value of
+ t
+, we
+merely need to control the value of the rotation angle in the blo ck-enco ding
+ U
+A
+t
+. Let
+ t
+j
+=
+ e
+a
++
+j
+ 2
+
+d
+, so that
+ ln(
+t
+j
+)
+is the left edgep oint of the interval
+ [
+a
+ +
+ j
+ 2
+
+d
+; a
+ + (
+j
+ + 1)2
+
+d
+]
+. Then, we require that
+B
+ =
+ j
+0
+q
+ +1
+ih
+0
+q
+ +1
+j 
+
+ U
+A
+L
++
+ j
+010
+q
+ 
+1
+ih
+010
+q
+ 
+1
+j 
+
+ U
+A
+R
++
+2
+d
+
+1
+X
+j
+ =0
+j
+1
+j
+ ih
+1
+j
+ j 
+
+ U
+A
+t
+j
+(107)
+Then, we may run
+ Algorithm 2
+ by usin g
+ P
+ to ge nerate the rand om di stribution of values of
+ t
+, and replace each
+o ccurrence of
+ U
+A
+t
+by
+ B
+ . The analysis of the algori th m is the same in
+ Lemma 4
+, except that the integrals are
+approximated by discrete sums. To b ound the error in this approximation, we invoke the well-known formula that
+the di˙erence b etween an integral on the interval
+ [
+L; R
+ ]
+ and a sum of the integrand e valuated at the left edge p oint
+of
+ N
+ equally sized subintervals is at mos t
+ K
+1
+(
+R
+ 
+ L
+)
+2
+=
+(2
+N
+ )
+, wh ere
+ K
+1
+is an upp er b ound on the derivative of the
+integrand on the interval. We note the (non-optimized) upp er b ounds
+
+
+
+
+d
+d˝
+(sin
+2
+(2
+
+t
+))
+
+
+
+
+=
+ 
+ sin(2
+
+t
+) sin(4
+
+t
+)
+=
+2
+j 
+ 1
+=
+2
+ (108)
+
+
+
+
+d
+d˝
+(sin
+2
+(
+
+t
+))
+
+
+
+
+=
+
+
+
+ sin
+2
+(2
+
+t
+)
+
+
+
+ 1
+ (109)
+(110)
+28
+
+--- Page 29 ---
+The approximation errors satisfy
+
+
+
+
+
+
+Z
+ln(
+R
+)
+ln(
+L
+)
+d˝
+ sin
+2
+(2
+
+t
+)
+ 
+ 2
+
+d
+j
+max
+ 
+1
+X
+j
+ =0
+sin
+2
+(2
+
+t
+j
+)
+
+
+
+
+
+
+
+ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+2
+(111)
+
+
+
+
+
+
+Z
+ln(
+R
+)
+ln(
+L
+)
+d˝
+ sin
+2
+(
+
+t
+)
+ 
+ 2
+
+d
+j
+max
+ 
+1
+X
+j
+ =0
+sin
+2
+(
+
+t
+j
+)
+
+
+
+
+
+
+
+ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
+(112)
+These integrals are used in
+ Lemma 4
+ in Eqs. (
+90
+) and (
+100
+). Thus, we instead obtain
+q
+succ
+
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+(ln(
+R
+=
+L
+) + 1)
+
+1
+ 
+ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
+
+(113)
+1
+ h
+x
+j
+ ~
+ˆ
+j
+x
+i 
+2
+
+2
+(1
+ 
+ 
+ )
+2
+
+3
+2
++ ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
++ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+
+1
+ 
+ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
+
+
+1
+(114)
+Through a similar metho d, we also obtain
+P
+>
++
+ P
+<
+
+1
+ln(
+R
+=
+L
+) + 1
+
+4
+
+2
++ 1
++ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
++
+2
+
+2
+(1 +
+ 
+ )
+2
+(1 + 2 ln(
+R
+=
+L
+)
+ 
+ 4 ln(
+
+ )))
+
+:
+ (115)
+Using this cohe re nt version of
+ Algorithm 3
+, we c an wrap the algorithm in ˝xed-p oint ampli tude ampli˝cation [
+24
+].
+Given a lower b ound
+ 
+ on the success probability (as in Eq. (
+113
+)), ˝xed-p oint amplitude ampli˝cation allows the
+success probabili ty to b e b o osted to at least
+ 1
+ 
+ 
+ with using
+ L
+ calls to the algorithm, w here
+ L
+ is the s mallest o dd
+integer greater than
+ 
+
+1
+=
+2
+ln
+
+2
+=
+p
+
+
+, and an equal numb er of calls to the oracle that determines success. Here,
+determining success is simply checking whether the ancilla qubits are
+ j
+0
+i
+. Thus, the overall query complexity is th e
+numb er
+ L
+ times the query complexity of
+ Algorithm 1
+, yielding the quoted statement.
+E Explicit complexity b ounds for QLSS
+E.1 Near-optimal QLSSs
+Now, we present a full QLSS that do es not require knowing an estimate for the norm ahead of time. All it need s
+to know is that
+ k
+x
+k 2
+ [
+L
+;
+ R
+]
+ (we can always take
+ [
+L
+;
+ R
+] = [1
+; 
+]
+ i f we have no additional information). In this
+subsection, we do not yet imp lement the adiabatic-inspired ideas describ ed in
+ Section 5.3
+ to achieve linear-in-
+
+complexity; we so so in
+ S ection E.2
+. The algorithm presented here is a randomized algorithm that outputs an
+ensemble of pairs
+ (
+t;
+ j
+ ~
+x
+i
+)
+, where
+ t
+ is an estimate for
+ k
+x
+k
+ and
+ j
+ ~
+x
+i
+ is the asso ciated output of
+ Algorithm 1
+ for that
+choice of
+ t
+. It works by running
+ Algorithm 2
+ to generate a go o d norm estimate
+ t
+ and asso ciated anstatz state
+ j
+x
+ans
+i
+,
+and then using KP to re˝ne that state. The KP step should b e run with precisi on
+
+KP
+=
+"
+
+p
+1
+ 
+ 
+2
+p
+1
+ 
+ "
+2
+(116)
+where
+
+ =
+
+1
+ 
+ 
+s
+3 + 2 ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
+(117)
+We show that the ensemble
+ ~
+ˆ
+ of
+ j
+ ~
+x
+ih
+ ~
+x
+j
+ that the algorithm outputs is
+ "
+-close to
+ j
+x
+ih
+x
+j
+.
+Theorem 2.
+ Suppose that
+ k
+b
+k
+ = 1
+, that
+ b
+ is in t he column space of
+ A
+, and that al l nonzero singular values of
+ A
+lie in the interval
+ [
+
+
+1
+;
+ 1]
+. Let
+ U
+A
+be a
+ (1
+; a
+)
+-block-encoding of
+ A
+, and
+ U
+b
+be a state-preparation unitary for
+ j
+b
+i
+. Let
+x
+ denote the unique vector of minimum norm
+ k
+x
+k
+ for which
+ A
+x
+ =
+ b
+. Fix
+  >
+ 0
+ and
+ " >
+ 0
+, and assume
+ 
+ satis˝es
+ =
+(1
+ 
+ 
+ )
+ <
+ (3 + 2 ln
+
+(
+R
+2
++
+ L
+2
+)
+=
+(2
+L
+)
+2
+
+)
+
+1
+=
+2
+. Let
+ 
+KP
+>
+ 0
+ be given by Eq.
+ (
+116
+)
+. Consider
+ Algorithm 3
+, denoting
+its output by
+ (
+t;
+ j
+ ~
+x
+i
+)
+.
+Then, the ensemble of outputs
+ j
+ ~
+x
+ih
+ ~
+x
+j
+, denoted by
+ ~
+ˆ
+, satis˝es
+1
+2
+kj
+x
+ih
+x
+j 
+ ~
+ˆ
+k
+1
+
+ "
+, meaning the output solves
+the QLSP. Furthermore, the expected number of queries required is
+ Q
+ total queries to
+ U
+A
+,
+ U
+y
+A
+and their control led
+29
+
+--- Page 30 ---
+Algorithm 3:
+ QLSS using random choice of
+ t
+ + p ostse lection + KP
+Input:
+ (
+A;
+ b
+;
+ [
+L
+;
+ R
+]
+; ;  ; "
+)
+Output:
+ (
+t;
+ j
+ ~
+x
+i
+)
+1
+ Let
+ 
+KP
+b e given by Eq. (
+116
+).
+2
+ Run
+ Algorithm 2
+ with parameters
+ (
+A;
+ b
+;
+ [
+L
+;
+ R
+]
+; ; 
+ )
+. If it fails, rep eat this step. If it succeeds, denote its
+output by
+ (
+t;
+ j
+x
+ans
+i
+)
+3
+ Apply KP to
+ j
+x
+ans
+i
+ using the matrix
+ G
+ =
+ Q
+b
+A
+ with parameters
+ (
+; 
+KP
+)
+. If it fails, go to
+ line 2
+. If it
+succeeds, denote its output by
+ j
+ ~
+x
+i
+.
+4
+ return
+ (
+t;
+ j
+ ~
+x
+i
+)
+versions, as wel l as
+ 2
+Q
+ total queries to
+ U
+b
+,
+ U
+y
+b
+, and their control led versions, where
+Q
+ 
+2(1 +
+ 
+ )
+2
+(ln(
+R
+=
+L
+) + 1)
+(1
+ 
+ 
+ )
+2
+˘
+
+2
+ln
+
+2
+
+ˇ
++
+1
+1
+ 
+
+2
+(1
+
+
+ )
+2
+
+3 + 2 ln
+
+R
+2
++
+L
+2
+2
+L
+2
+
+2
+˘
+
+2
+ln
+
+2
+
+KP
+ˇ
+(118)
+Proof.
+ First, we verify that the output solves the QLSP. From
+ Lemma 4
+, the ense mble of outputs of
+ Algorithm 2
+,
+denoted by
+ ~
+ˆ
+ans
+, satis˝es
+h
+x
+j
+ ~
+ˆ
+ans
+j
+x
+i 
+ 1
+ 
+2
+
+2
+(1
+ 
+ 
+ )
+2
+
+3
+2
++ ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
+(119)
+The subse que nt KP step can then b e analyzed with
+ Lemma 2
+, with
+
+ =
+
+1
+ 
+ 
+s
+3 + 2 ln
+
+R
+2
++
+ L
+2
+2
+L
+2
+
+(120)
+It asserts that the output of the KP step satis˝es
+1
+2
+kj
+x
+ih
+x
+j 
+ ~
+ˆ
+k
+1
+
+
+KP
+p
+1
+ 
+ 
+2
++
+ 
+2
+
+2
+KP
+=
+ " :
+ (121)
+where the last equality is ensured by the choice of
+ 
+KP
+in Eq. (
+116
+)
+Next we verify the exp ected query complexity. We examine the exp ec ted complexity from each of the two lines
+separately. For
+ line 2
+, e ach time it is called, it h as the complexity quoted in
+ Theorem 1
+. Th e exp ected numb er of
+times it is called is
+ r
+
+1
+succ
+, where
+ r
+succ
+is the probability that b oth line s
+ line 2
+ and
+ line 3
+ succeed. We can s ee that
+this satis˝es the same lower b ound as
+ q
+succ
+from Eq. (
+90
+), since this lower b ound comes entirely from the p ortion
+of the state that is left invariant by the KP step.
+r
+succ
+
+(1
+ 
+ 
+ )
+2
+(1 +
+ 
+ )
+2
+(ln(
+R
+=
+L
+) + 1)
+:
+ (122)
+Thus, the contribution to the exp ected query complexity from
+ line 2
+ is at most
+(1 +
+ 
+ )
+2
+(ln(
+R
+=
+L
+) + 1)
+(1
+ 
+ 
+ )
+2
+2
+˘
+
+2
+ln
+
+2
+
+ˇ
+(123)
+On the other hand,
+ line 3
+ only executes when
+ line 2
+ succeeds, and the algorithm terminates immediately once
+line 3
+ succeeds for the ˝rst time. By
+ Lemma 2
+, the success probability of
+ line 3
+ is at least
+ 1
+ 
+ 
+2
+. Thus, the
+exp ected numb er of times
+ line 3
+ executes is at most
+ (1
+ 
+ 
+2
+)
+
+1
+, and its contribution to the query complexity is
+upp er b ounded by
+2
+l
+
+2
+ln
+
+2
+
+KP
+m
+1
+ 
+
+2
+(1
+
+
+ )
+2
+
+3 + 2 ln
+
+R
+2
++
+L
+2
+2
+L
+2
+
+:
+ (124)
+This complete s the pro of.
+If one takes
+ [
+L
+ ;
+ R
+] = [1
+; 
+]
+ and
+ 
+ = (1
+=
+ log (
+
+))
+, then
+ 
+ = (1)
+ and
+ 
+KP
+= (
+"
+)
+. The overall query complexity
+is
+ O
+ (
+
+ log (
+
+) log log (
+
+) +
+ 
+ log (1
+="
+))
+. Furthermore, we may p erform a closer insp ection to derive a simpler formula
+30
+
+--- Page 31 ---
+that holds over a w ide range of values of
+ 
+. Supp ose that
+ 
+ 2
+ [3
+;
+ 10
+6
+]
+, so that
+p
+3 + 2 ln((
+
+2
++ 1)
+=
+2)
+ 2
+ [2
+:
+49
+;
+ 7
+:
+55]
+.
+Cho ose
+ 
+ so that
+ 
+ = 0
+:
+25
+. This implies
+
+1 +
+ 
+1
+ 
+ 
+
+2
+=
+
+1 +
+2
+
+1
+ 
+ 
+
+2
+=
+
+1 + 0
+:
+5
+=
+p
+3 + 2 ln((
+
+2
++ 1)
+=
+2)
+
+2
+
+ 1
+:
+442
+ :
+ (125)
+Furthermore
+ln(2
+=
+ ) = ln(2
+
+) + ln
+
+p
+3 + 2 ln((
+
+2
++ 1)
+=
+2)
+
++ ln
+
+1 +
+ 
+p
+3 + 2 ln((
+
+2
++ 1)
+=
+2)
+
+
+ 4
+:
+14
+ (126)
+Then, working from Eq. (
+118
+), we have
+Q
+ 
+ 2
+ 
+ 1
+:
+442(ln(
+
+) + 1)
+d
+(4
+:
+14)
+
+2
+e
+ +
+16
+15
+
+ 2
+  d
+
+2
+ln
+
+"
+
+1
+p
+1
+ 
+ "
+2
+
+
+
+2
+ln
+
+p
+15
+=
+2
+
+e
+ (127)
+Noting that
+ d
+ x
+e 
+ x
+ + 1
+, we can then write
+Q
+ 
+ 5
+:
+97 ln(
+
+)
+
+ + 5
+:
+27
+
+ + 1
+:
+07
+
+ ln
+
+"
+
+1
+p
+1
+ 
+ "
+2
+
++ 2
+:
+89 ln(
+
+) + 5
+:
+02
+ :
+ (128)
+This will b e a lo ose b ound compared to Eq. (
+118
+), esp ecially for smaller
+ 
+, but it is a genuine upp er b ound that
+holds whenever
+ 
+ 2
+ [3
+;
+ 10
+6
+]
+.
+We can reduce the prefactor on the ˝rst term by a qu antity
+p
+log (
+
+)
+ by using (˝xed-p oint) amplitude ampli˝-
+cation to b o ost the chances of s uccessfully preparing
+ ˆ
+ans
+, prior to p e rformin g KP.
+Theorem 3.
+ Consider
+ Algorithm 3
+, with
+ line 2
+ replaced by the ˝xed-point amplit ude ampli˝ed version described in
+Lemma 5
+ for a certain ampli˝cation parameter
+ 
+ , and discretization paramet er
+ d
+. Then one can achieve the same
+results with
+Q
+ =
+1
+1
+
+
+
+2
+˘
+(1+
+
+ )
+p
+ln(
+R
+=
+L
+)+1
+2(1
+
+
+ )
+
+1
+ 
+ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
+
+
+1
+=
+2
+ln
+
+2
+p
+
+
+
+1
+2
+ˇ
++ 1
+
+2
+l
+
+2
+ln
+
+2
+
+m
++ 2
+l
+
+2
+ln
+
+2
+
+KP
+m
+1
+ 
+
+2
+(1
+
+
+ )
+2
+
+3 + 2 ln
+
+R
+2
++
+L
+2
+2
+L
+2
+
++ ln(
+R
+=
+L
+)
+2
+2
+
+d
++1
+ 
+1
+ 
+ ln(
+R
+=
+L
+)
+2
+2
+
+d
+
+1
+
+
+1
+(129)
+Proof.
+ This fol lows by following the same analysis as in
+ Theorem 1
+, except using
+ Lemma 5
+ in place of
+ Lemma 4
+.
+The probability that b oth
+ line 2
+ and
+ line 3
+ succeed is at least
+ (1
+ 
+ 
+ )(1
+ 
+ 
+2
+)
+, so the exp ec ted numb er of time s
+the
+ line 2
+ must run is at most the inverse of this quantity. As b efore
+ line 3
+ must b e rep eated an exp ected numb er
+(1
+ 
+ 
+2
+)
+
+1
+times, leading to the quoted e xpre ssion.
+We now turn the complexity statement of
+ Theorem 3
+ into a lo oser but simpler upp er b ound. First of all, take
+d
+ ! 1
+, as the b ound on the query complexity is monotonically decreasing with
+ d
+. Let
+ [
+L
+ ;
+ R
+] = [1
+; 
+]
+. Cho ose
+
+ = 1
+=
+4
+ and note
+ ln
+
+2
+=
+p
+
+
+=
+(1
+ 
+ 
+ )
+ 
+ 1
+:
+85
+. As previously, cho ose
+ 
+ so that
+ 
+ = 0
+:
+25
+, and note
+ ln(2
+=
+ )
+ 
+ 4
+:
+14
+ when
+
+ 2
+ [3
+;
+ 10
+6
+]
+. We have
+Q
+ 
+
+1
+:
+85
+ 
+p
+1
+:
+45
+ 
+p
+ln(
+
+) + 1 +
+8
+3
+
+(4
+:
+14
+
+ + 2) +
+ 
+ ln
+
+"
+
+1
+p
+1
+ 
+ "
+2
+
+
+ 
+ ln
+
+p
+15
+=
+2
+
++ 2
+15
+=
+16
+(130)
+
+ 9
+:
+84
+p
+log (
+
+) + 1
+
+ + 11
+:
+1
+
+ + 1
+:
+07
+
+ ln
+
+"
+
+1
+p
+1
+ 
+ "
+2
+
++ 4
+:
+76
+p
+ln(
+
+) + 1 + 7
+:
+83
+ (131)
+E.2 Optimal QLSS
+In this subsection, we provide a rigorous and explicit version of the full QLSS with optimal dep endence on
+ 
+,
+following a similar idea as that presented in
+ Secti on 5.3
+. The algorithm leverages the family of matrices
+
+A
+˙
+de˝ned
+in Eq. (
+33
+) to estimate
+ k
+x
+k
+. The algorithm is describ ed in
+ Algorithm 4
+, and we give explicit b ounds on the exp ected
+query complexity in
+ Theorem 4
+.
+The algorithm takes in the QLSP parameters
+ A;
+ b
+; ; "
+. It als o cho oses a few additional free parameters,
+^
+c;
+ ^
+q ;
+^
+ ;
+ ^
+r ;
+ ^
+˜;
+^
+
+; we denote these free parameters with hats for easy reference. These are indep e ndent of
+ 
+ and
+ "
+, and
+they must s ati sfy
+ ^
+c >
+ 1
+,
+ ^
+q >
+ 1
+,
+^
+ >
+ 1
+,
+ 0
+ <
+ ^
+˜ <
+ 1
+, and
+ 0
+ <
+^
+
+ <
+ 1
+. We give an expression for the query complexity
+31
+
+--- Page 32 ---
+that d ep ends on the se parameters. A numerical optimization of this expression suggests a lo cally optimal choice
+for the p arame ters that we rep ort in
+ Table 2
+.
+param
+value
+role
+^
+
+15.4
+target approximation ratio for
+ k
+x
+k
+ prior to ˝nal step
+^
+˜
+0.0398
+magnitude of errors in kernel re˛ection on ˝nal step
+^
+c
+20.0
+factor by which e˙ective condition numb er
+ ˙
+
+1
+is increased each step
+^
+r
+3.37
+factor by which target approximation ratio decreases each step
+^
+q
+5.41
+factor by which kerne l re˛ection error parameter is increased each step
+^
+
+0.00424
+upp er b ound on total probability of rep eated failure of kernel re˛ ection
+Table 2: Summary of free parameters in
+ Algorithm 4
+, along with th eir role. A sp eci˝c choice for each parameter is
+provided w hich leads the ˝nal complexity statement to achieve a lo cal mi nimum.
+Additionally, in its op eration and analysis, we de˝ne the following parameters to dep end on the ab ove. The
+index
+ j
+ ranges from 1 to
+ J
+ , where
+ J
+ is de˝ned in the ˝rst line.
+J
+ =
+ d
+ln(
+
+)
+=
+ ln( ^
+c
+)
+e
+˙
+j
+=
+ 
+
+1
+^
+c
+J
+ 
+j
+2
+ [
+
+
+1
+;
+ 1]
+
+j
+=
+^
+
+ ^
+r
+J
+ 
+j
+ 
+1
+˜
+j
+= ^
+˜
+ ^
+q
+
+J
+ +
+j
+
+j
+=
+ ˜
+j
+=
+(1 +
+ ˜
+j
+)
+m
+j
+= (
+J
+ 
+ j
+ + 1) ln
+
+^
+
+
+1
++ 1
+
+(1 +
+ 
+j
+)
+2
+(ln
+
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+
++ 1)
+(1
+ 
+ 
+j
+)
+2
+
+P
+ =
+4
+^
+
+2
+(1
+ 
+ ^
+r
+
+2
+)
++
+16 ^
+˜
+^
+q
+^
+
+2
+(1
+ 
+ ^
+r
+
+2
+^
+q
+
+1
+)
++
+16 ^
+˜
+2
+^
+q
+2
+^
+
+2
+(1
+ 
+ ^
+r
+
+2
+^
+q
+
+2
+)
++
+2 ^
+˜
+2
+ln
+
+e
+ ^
+c
+2
+^
+r
+4
+
+^
+q
+2
+
+ 1
+
+ =
+v
+u
+u
+t
+1
+ 
+
+1
+ 
+^
+
+ 
+
+P
+
+ 
+1
+ 
+ 2 ^
+˜
+2
+ 
+3
+2
++ ln
+ 
+^
+c
+^
+
+2
++ 1
+2
+!!!
+
+K
+P
+=
+"
+
+p
+1
+ 
+ 
+2
+p
+1
+ 
+ "
+2
+(132)
+Theorem 4.
+ Suppose that
+ k
+b
+k
+ = 1
+, that
+ b
+ is in t he column space of
+ A
+, and that al l nonzero singular values of
+ A
+lie in the interval
+ [
+
+
+1
+;
+ 1]
+. Let
+ U
+A
+be a
+ (1
+; a
+)
+-block-encoding of
+ A
+, and
+ U
+b
+be a state-preparation unitary for
+ j
+b
+i
+. Let
+x
+ denote the unique vector of minimum norm
+ k
+x
+k
+ for which
+ A
+x
+ =
+ b
+. Fix
+ " >
+ 0
+. Consider
+ Algorithm 4
+, denoting
+its output by
+ (
+t;
+ j
+ ~
+x
+i
+)
+, using the parameter choices listed in
+ Table 2
+.
+Then, the ensemble of outputs
+ j
+ ~
+x
+ih
+ ~
+x
+j
+, denoted by
+ ~
+ˆ
+, satis˝es
+1
+2
+kj
+x
+ih
+x
+j 
+ ~
+ˆ
+k
+1
+
+ "
+, meaning the output solves
+the QLSP. Furthermore, the expected number of queries required is
+ Q
+ total queries to
+ U
+A
+,
+ U
+y
+A
+and their control led
+versions, as wel l as
+ 2
+Q
+ total queries to
+ U
+b
+,
+ U
+y
+b
+, and their control led versions, where
+Q
+ 
+ 56
+:
+0
+
+ + 1
+:
+05
+
+ ln
+ 
+p
+1
+ 
+ "
+2
+"
+!
++ 2
+:
+78 ln(
+
+)
+3
++ 3
+:
+17
+ (133)
+Proof.
+ The ˝rst part of the algorithm consists of computing a sequence of e stimates
+ t
+j
+for
+ j
+ = 1
+; : : : ; J
+ =
+d
+ln(
+
+)
+=
+ ln( ^
+c
+)
+e
+ . The ˝nal step of this sequence als o pro duces a state
+ j
+x
+J
+i
+. For any value of
+ j
+ , we say that step
+j
+ succeeds if the al gorithm advances to step
+ j
+ + 1
+, and step
+ j
+ fails if all
+ m
+j
+rep etitions within
+ line 7
+ fail, causing
+32
+
+--- Page 33 ---
+Algorithm 4:
+ Full optimal QLSS
+Input:
+ (
+A;
+ b
+; ; "
+)
+ and tunable parameters
+ ( ^
+c;
+ ^
+q ;
+^
+ ;
+ ^
+r ;
+ ^
+˜;
+^
+)
+Output:
+ (
+t;
+ j
+ ~
+x
+i
+)
+1
+ Let
+ J
+ b e given as in Eq. (
+132
+)
+2
+ Let
+ 
+0
+= 1
+ and
+ t
+0
+= 1
+3
+ for
+ j
+ = 1
+; : : : ; J
+ :
+4
+ L et
+ ˙
+j
+,
+ 
+j
+,
+ m
+j
+,
+ 
+j
+, b e given as in Eq. (
+132
+)
+5
+ L et
+ [
+L
+j
+;
+ R
+j
+] = [m ax(1
+; t
+j
+ 
+1
+=
+j
+ 
+1
+)
+;
+ min(
+˙
+
+1
+j
+;
+ ^
+ct
+j
+ 
+1
+
+j
+ 
+1
+)]
+6
+ L et
+
+A
+˙
+j
+b e given as in Eq. (
+33
+) and its blo ck-enco ding b e constructed as in
+ Figure 7
+7
+ I f
+ j < J
+ , run
+ Algorithm 2
+ with parameters
+ (
+
+A
+˙
+j
+;
+ b
+;
+ [
+L
+j
+;
+ R
+j
+]
+; ˙
+
+1
+j
+; 
+j
+)
+, and if
+ j
+ =
+ J
+ use parameters
+(
+A;
+ b
+;
+ [
+L
+j
+;
+ R
+j
+]
+; ; 
+j
+)
+. If it fails, rep eat this step up to
+ m
+j
+times. If all
+ m
+j
+rep etitions fail, return to
+line 1
+. Up on ˝rst success, denote its output by
+ (
+t
+j
+;
+ j
+x
+j
+i
+)
+ and continue.
+8
+ Let
+ 
+KP
+b e given as in Eq. (
+132
+)
+9
+ Apply KP to
+ j
+x
+J
+i
+ using the matrix
+ G
+ with paramete rs
+ (
+; 
+KP
+)
+. If it fails, go to
+ line 1
+. If it succeeds, denote
+its output by
+ j
+ ~
+x
+i
+.
+10
+ return
+ (
+t
+ =
+ t
+J
+;
+ j
+ ~
+x
+i
+)
+the algorithm to restart and return to
+ line 1
+. We say that the algorithm b egins a new cycle when one of the steps
+fails and it returns to
+ line 1
+, with each cycle b eing completely indep e ndent of the previous cycles.
+Conditioned on steps
+ 1
+;
+ 2
+; : : : ; j
+ all succeeding, there is some ˝xed ensemble of outputs
+ t
+j
+. We argue
+that this ensemble is concentrated near
+ k
+ 
+x
+˙
+j
+k
+ for all
+ j
+ . In particular, we will call an estimate
+ t
+j
+go o d if
+t
+j
+2
+ [
+
+
+1
+j
+k
+ 
+x
+˙
+j
+k
+; 
+j
+k
+ 
+x
+˙
+j
+k
+]
+ and bad otherwise . Furthermore, we recall from Prop e rty 3 shown in
+ Se ction 5.3
+that
+k
+ 
+x
+˙
+j
+k  k
+ 
+x
+˙
+j
+ +1
+k  k
+ 
+x
+˙
+j
+k
+˙
+j
+=˙
+j
+ +1
+= ^
+c
+k
+ 
+x
+˙
+j
+ 
+1
+k
+ (134)
+Thus, if
+ t
+j
+is go o d, it holds that
+ k
+ 
+x
+˙
+j
+ +1
+k 2
+ [
+
+
+1
+j
+t
+j
+; 
+j
+^
+ct
+j
+]
+. Separately we know that
+ k
+ 
+x
+˙
+j
+ +1
+k 2
+ [1
+; ˙
+
+1
+j
+ +1
+]
+ since
+
+x
+˙
+j
+ +1
+is the solution to a linear system with condition numb er at most
+ ˙
+
+1
+j
+ +1
+, s o we conclude that
+ k
+ 
+x
+˙
+j
+ +1
+k 2
+[
+
+
+1
+j
+t
+j
+; 
+j
+^
+ct
+j
+]
+ \
+ [1
+; ˙
+
+1
+j
+ +1
+] = [
+L
+j
+ +1
+;
+ R
+j
+ +1
+]
+.
+Let
+ p
+j
+denote the probability th at
+ t
+j
+is bad conditioned on
+ k
+ 
+x
+˙
+j
+k 2
+ [
+L
+j
+;
+ R
+j
+]
+, and note that by
+ Lem ma 4
+, we
+can b ound
+ p
+j
+by
+p
+j
+:= Pr
+
+t
+j
+is bad
+
+
+k
+ 
+x
+˙
+j
+k 2
+ [
+L
+j
+;
+ R
+j
+]
+
+
+(1 +
+ 
+j
+)
+2
+(1
+ 
+ 
+j
+)
+2
+4
+
+2
+j
++ 1
++
+2
+
+2
+j
+(2 ln(
+R
+j
+=
+L
+j
+) + 1
+ 
+ 4 ln(
+
+j
+))
+(1
+ 
+ 
+j
+)
+2
+:
+ (135)
+Moreover, let
+ 
+j
+b e the probability that all
+ m
+j
+rep etitions of
+ Algorithm 2
+ within step
+ j
+ fail, causing the
+algorithm to return to
+ line 1
+, cond itioned on
+ k
+ 
+x
+˙
+j
+k 2
+ [
+L
+j
+;
+ R
+j
+]
+. We know from
+ Lemma 4
+ that the probability of
+success of each run of
+ Algorithm 2
+ is at least
+ q
+succ
+where
+ q
+succ
+is b ounded i n Eq. (
+82
+), and thus
+ 
+j
+
+ (1
+ 
+ q
+succ
+)
+m
+j
+.
+That is,
+
+j
+
+
+1
+ 
+(1
+ 
+ 
+j
+)
+2
+(1 +
+ 
+j
+)
+2
+(ln(
+R
+j
+=
+L
+j
+) + 1)
+
+m
+j
+:
+ (136)
+De˝ne
+P
+ =
+J
+ 
+1
+X
+j
+ =1
+p
+j
+(137)
+ =
+J
+X
+j
+ =1
+
+j
+:
+ (138)
+If the relation
+ k
+ 
+x
+˙
+j
+k 2
+ [
+L
+j
+;
+ R
+j
+]
+ is satis˝ed, then step
+ j
+ will succeed and output a
+ t
+j
+that is go o d, except with
+probability at most
+ 
+j
++
+ p
+j
+. Then, as argued ab ove, wh en
+ t
+j
+is go o d,
+ k
+ 
+x
+˙
+j
+ +1
+k 2
+ [
+L
+j
+ +1
+;
+ R
+j
+ +1
+]
+ is satis˝ed. By the
+union b ound, the probability that one of the steps fails (resetting the cycle b efore it completes) or all suc ceed but
+33
+
+--- Page 34 ---
+one of the
+ t
+1
+; : : : ; t
+J
+ 
+1
+is bad, c an b e u pp er b ounded by
+ P
+ + 
+.
+ In other words, with probability at least
+ 1
+ 
+ P
+ 
+ 
+,
+steps
+ 1
+; : : : ; j
+ succeed and al l outputs
+ t
+1
+; : : : ; t
+j
+ 
+1
+are good.
+Now, we verify that the output of the algorithm solves the QLSP. With probability
+ 1
+ 
+ P
+ 
+ 
+, in any given
+cycle, step
+ J
+ is e xe cuted on input parameters satisfying
+ k
+ 
+x
+˙
+J
+k
+ =
+ k
+x
+k 2
+ [
+L
+J
+;
+ R
+J
+]
+, and it succeeds. In this scenario,
+Lemma 4
+ applies, and the ensemble
+ ~
+ˆ
+J;
+go o d
+of ouptuts
+ j
+ ~
+x
+J
+ih
+ ~
+x
+J
+j
+ satis˝es
+h
+x
+j
+ ~
+ˆ
+J;
+go o d
+j
+x
+i 
+ 1
+ 
+2
+
+2
+J
+(1
+ 
+ 
+J
+)
+2
+
+3
+2
++ ln
+
+R
+2
+J
++
+ L
+2
+J
+2
+L
+2
+J
+
+(139)
+With probability at most
+ P
+ + 
+, either the cycle do es not reach the KP step (
+line 9
+), or it do es re ach the KP step
+but
+ k
+ 
+x
+˙
+J
+k 2
+ [
+L
+J
+;
+ R
+J
+]
+ do es not hold, and thus
+ Lemma 4
+ do es not ap ply. In this scenario, we may still say that the
+ensemble
+ ~
+ˆ
+J;
+bad
+of outputs of step
+ J
+ (conditioned on an output existing) satis ˝es
+ h
+x
+j
+ ~
+ˆ
+J;
+bad
+j
+x
+i 
+ 0
+. Weighting these
+two ensembles by their (wors t-cas e) probabilities, we conclude that the ensemble
+ ~
+ˆ
+J
+of outputs of step
+ J
+ satis˝es
+h
+x
+j
+ ~
+ˆ
+J
+j
+x
+i 
+ (1
+ 
+ P
+ 
+ )
+h
+x
+j
+ ~
+ˆ
+J;
+go o d
+j
+x
+i 
+ (1
+ 
+ P
+ 
+ )
+
+1
+ 
+2
+
+2
+J
+(1
+ 
+ 
+J
+)
+2
+
+3
+2
++ ln
+
+R
+2
+J
++
+ L
+2
+J
+2
+L
+2
+J
+
+(140)
+We now compute some b ounds on the ab ove using the particular parameter choic es we have made, with the
+goal of showing that
+ h
+x
+j
+ ~
+ˆ
+J
+j
+x
+i 
+ 1
+ 
+ 
+2
+, with
+ 
+ given in Eq. (
+132
+). First, we note that by our de˝nitions, for all
+ j
+ ,
+
+j
+=
+(1 +
+ 
+j
+) =
+ ˜
+j
+, and
+ (1 +
+ 
+j
+)
+=
+(1
+ 
+ 
+j
+) = 1 + 2
+˜
+j
+. Furthermore, for
+ j
+ 
+ 2
+, we have
+ R
+j
+=
+L
+j
+
+ ^
+c
+^
+
+2
+j
+ 
+1
+= ^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+. For
+j
+ = 1
+, we have
+ R
+1
+=
+L
+1
+=
+ ˙
+
+1
+1
+
+ ^
+c
+ 
+ ^
+c
+^
+
+2
+^
+r
+2
+J
+(since
+^
+ >
+ 1
+ and
+ ^
+r >
+ 1
+). Thus, referencing Eq. (
+135
+) and substituting
+k
+ =
+ J
+ 
+ j
+ 
+ 1
+, we have
+P
+ =
+J
+ 
+1
+X
+j
+ =1
+p
+j
+
+J
+ 
+1
+X
+j
+ =1
+"
+(1 +
+ 
+j
+)
+2
+(1
+ 
+ 
+j
+)
+2
+4
+
+2
+j
++ 1
++
+2
+
+2
+j
+(2 ln(
+R
+j
+=
+L
+j
+) + 1
+ 
+ 4 ln(
+
+j
+))
+(1
+ 
+ 
+j
+)
+2
+#
+(141)
+
+J
+ 
+1
+X
+j
+ =1
+h
+4(1 + 2
+˜
+j
+)
+2
+
+
+2
+j
++ 2
+˜
+2
+j
+
+2 ln
+
+^
+c
+^
+
+2
+j
+ 
+1
+
++ 1
+ 
+ 4 ln(
+
+j
+)
+i
+(142)
+=
+J
+ 
+1
+X
+j
+ =1
+h
+4(1 + 2 ^
+˜
+ ^
+q
+
+J
+ +
+j
+)
+2
+^
+
+
+2
+^
+r
+
+2
+J
+ +2
+j
++ 2 ^
+˜
+2
+^
+q
+
+2
+J
+ +2
+j
+
+2 ln
+
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+
++ 1
+ 
+ 4 ln
+
+^
+
+2
+^
+r
+J
+ 
+j
+ 
+1
+i
+(143)
+=
+J
+ 
+2
+X
+k
+ =0
+h
+4(1 + 2 ^
+˜
+ ^
+q
+
+k
+ 
+1
+)
+2
+^
+
+
+2
+^
+r
+
+2
+k
++ 2 ^
+˜
+2
+^
+q
+
+2
+k
+ 
+2
+ln
+
+e
+ ^
+c
+2
+^
+r
+4
+
+i
+(144)
+
+"
+4
+^
+
+2
+1
+X
+k
+ =0
+^
+r
+
+2
+k
+#
++
+"
+16 ^
+˜
+^
+q
+^
+
+2
+1
+X
+k
+ =0
+^
+r
+
+2
+k
+^
+q
+
+k
+#
++
+"
+16 ^
+˜
+2
+^
+q
+2
+^
+
+2
+1
+X
+k
+ =0
+^
+r
+
+2
+k
+^
+q
+
+2
+k
+#
++
+"
+2
+^
+^
+˜
+2
+ln
+
+e
+ ^
+c
+2
+^
+r
+4
+
+^
+q
+2
+1
+X
+k
+ =0
+^
+q
+
+2
+k
+#
+(145)
+=
+4
+^
+
+2
+(1
+ 
+ ^
+r
+
+2
+)
++
+16 ^
+˜
+^
+q
+^
+
+2
+(1
+ 
+ ^
+r
+
+2
+^
+q
+
+1
+)
++
+16 ^
+˜
+2
+^
+q
+2
+^
+
+2
+(1
+ 
+ ^
+r
+
+2
+^
+q
+
+2
+)
++
+2 ^
+˜
+2
+ln
+
+e
+ ^
+c
+2
+^
+r
+4
+
+^
+q
+2
+(1
+ 
+ ^
+q
+
+2
+)
+(146)
+=
+
+P
+(147)
+34
+
+--- Page 35 ---
+where
+
+P
+ was de˝ned in Eq. (
+132
+). Similarly, working from Eq. (
+136
+), we b ound
+ 
+, here utilizing the relation
+1
+=x
+  
+1
+=
+ ln(1
+ 
+ x
+)
+, the substitution
+ k
+ =
+ J
+ 
+ j
+ + 1
+, and the de˝nition of
+ m
+j
+in Eq. (
+132
+),
+ =
+J
+X
+j
+ =1
+
+j
+
+J
+X
+j
+ =
+
+1
+ 
+(1
+ 
+ 
+j
+)
+2
+(1 +
+ 
+j
+)
+2
+(ln(
+R
+j
+=
+L
+j
+) + 1)
+
+m
+j
+(148)
+
+J
+X
+j
+ =1
+0
+@
+1
+ 
+(1
+ 
+ 
+j
+)
+2
+(1 +
+ 
+j
+)
+2
+
+ln
+
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+
++ 1
+
+1
+A
+(
+J
+ 
+j
+ +1) ln
+(
+^
+
+
+1
++1
+)
+(1+
+
+j
+)
+2
+(ln
+(
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+)
++1)
+(1
+
+
+j
+)
+2
+(149)
+
+J
+X
+j
+ =1
+0
+@
+1
+ 
+(1
+ 
+ 
+j
+)
+2
+(1 +
+ 
+j
+)
+2
+(ln
+
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+
++ 1)
+1
+A
+(
+J
+ 
+j
+ +1)
+ln
+
+1
+^
+
+
+1
++1
+
+ln
+ 
+1
+
+(1
+
+
+j
+)
+2
+(1+
+
+j
+)
+2
+(ln
+(
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+)
++1)
+!
+(150)
+=
+J
+X
+j
+ =1
+ 
+^
+
+1 +
+^
+
+!
+J
+ 
+j
+ +1
+
+1
+X
+k
+ =1
+^
+
+k
+(1 +
+^
+)
+k
+=
+^
+
+ (151)
+Thus we have
+h
+x
+j
+ ~
+ˆ
+J
+j
+x
+i 
+ (1
+ 
+^
+
+ 
+
+P
+ )
+
+1
+ 
+2
+
+2
+J
+(1
+ 
+ 
+J
+)
+2
+
+3
+2
++ ln
+
+R
+2
+J
++
+ L
+2
+J
+2
+L
+2
+J
+
+(152)
+
+ 1
+ 
+ 
+1
+ 
+
+1
+ 
+^
+
+ 
+
+P
+
+ 
+1
+ 
+ 2 ^
+˜
+2
+ 
+3
+2
++ ln
+ 
+^
+c
+^
+
+2
++ 1
+2
+!!!!
+(153)
+= 1
+ 
+ 
+2
+:
+ (154)
+where
+ 
+ was de˝ned in Eq. (
+132
+). The subseque nt KP step can then b e analyzed with
+ Lemm a 2
+. We observe that
+the output
+ j
+x
+J
+i
+ has no overlap with the kernel of
+ A
+ (see
+ The ore m 1
+). Thus,
+ Lemma 2
+ asserts that the output of
+the KP step satis˝es
+1
+2
+kj
+x
+ih
+x
+j 
+ ~
+ˆ
+k
+1
+
+
+KP
+p
+1
+ 
+ 
+2
++
+ 
+2
+
+2
+KP
+=
+ " ;
+ (155)
+where the last equality is ensured by the ch oic e of
+ 
+KP
+in Eq. (
+132
+). T hus we have veri˝ed that the en semble output
+by the KP step, when it succeeds, solves the QLSP.
+Next, we give an u pp er b ound on the overall e xp ected query complexity. Since each cyc le is indep endent of
+the previous cycle, this query complexity is given by the e xp ected numb er of cycles times the exp e cted numb er of
+queries p er cycle. The exp ected numb er of cycles is the inverse of the probability that all steps
+ 1
+; : : : ; J
+ succeed, and
+then the KP step al so succeeds. This quantity is at least the probability that all steps
+ 1
+; : : : ; J
+ succeed and that all
+estimates
+ t
+1
+; : : : ; t
+J
+ 
+1
+are go o d, times the probability the KP step succeeds c on ditioned on the output
+ ~
+ˆ
+J;
+go o d
+. This
+can then b e lower b ounde d by
+ (1
+ 
+ P
+ 
+ )
+h
+x
+j
+ ~
+ˆ
+J;
+go o d
+j
+x
+i
+, which was itself lower b ounded by
+ 1
+ 
+ 
+2
+ab ove. Thus, we
+conclude that the exp ected numb er of cycles is at most
+ (1
+ 
+ 
+2
+)
+
+1
+.
+Let
+ Q
+j
+b e the exp ected query complexity incurred by step
+ j
+ within any given cycle, for
+ j
+ = 1
+; : : : ; J
+ , and let
+Q
+KP
+b e the exp ecte d query complexity incurred by the KP step (
+line 9
+) in any given cycle. We may then make the
+upp er b ound on the total exp ected query complexity
+Q
+ 
+Q
+KP
++
+P
+J
+j
+ =1
+Q
+j
+1
+ 
+ 
+2
+(156)
+We now provide expressions upp er b ounding
+ Q
+j
+and
+ Q
+KP
+. We know that when step
+ j
+ executes, the probability that
+k
+ 
+x
+˙
+j
+k 2
+ [
+L
+j
+;
+ R
+j
+]
+ is at least
+ 1
+ 
+ P
+ 
+ 
+. When this is the case, each call to
+ Algorithm 2
+ within step
+ j
+ succeeds with
+probability lower b ounded by Eq. (
+82
+), and the exp ected numb er of calls to
+ Algorithm 2
+ is at most the inverse of
+that quantity. With probability at most
+ P
+ + 
+, we have no such guarantee, but we may still say that the exp ected
+numb er of calls to
+ Algorithm 2
+ is
+ m
+j
+. Each time
+ Algorithm 2
+ is called, it has a ˝xed query comple xity equal to
+35
+
+--- Page 36 ---
+2
+d
+˙
+
+1
+j
+ln(2
+=
+j
+)
+=
+2
+e
+. Thus, in total we have
+Q
+j
+
+0
+@
+(1
+ 
+ P
+ 
+ )
+(1 +
+ 
+j
+)
+2
+
+ln
+
+^
+c
+^
+
+2
+j
+ 
+1
+
++ 1
+
+(1
+ 
+ 
+j
+)
+2
++ (
+P
+ + )
+m
+j
+1
+A
+2
+d
+˙
+
+1
+j
+ln(2
+=
+j
+)
+=
+2
+e
+ (157)
+On the other hand, the KP step exec utes at most once p er cyc le, and it has the same query complexity every time
+it executes, given by
+ 2
+d
+
+ ln(2
+=
+KP
+)
+=
+2
+e
+. Thus we have
+Q
+KP
+
+ 2
+d
+
+ ln(2
+=
+KP
+)
+=
+2
+e 
+ 
+ ln
+ 
+p
+1
+ 
+ "
+2
+"
+!
+
+ 
+ ln
+ 
+p
+1
+ 
+ 
+2
+2
+
+!
++ 2
+ (158)
+where we have used the b ound
+ d
+x
+e 
+ x
+ + 1
+ and substituted the de˝nition of
+ 
+KP
+from Eq. (
+132
+).
+We now up date the b ound on
+ Q
+j
+for our particular parameter choices. We note the relations
+ (1 +
+ 
+j
+)
+=
+(1
+ 
+ 
+j
+)
+ 
+1 + 2 ^
+˜
+ and
+ 1
+=
+j
+= (1 +
+ ˜
+j
+)
+=˜
+j
+
+ (1 + ^
+˜
+)
+=˜
+j
+= (1 + ^
+˜
+) ^
+q
+J
+ 
+j
+=
+ ^
+˜
+. We work from Eq. (
+157
+), using the de˝nition of
+ m
+j
+in Eq. (
+132
+), to write
+Q
+j
+
+0
+@
+ln
+
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+
++ 1
+(1
+ 
+ 
+j
+)
+2
+(1 +
+ 
+j
+)
+
+2
++ (
+P
+ +  )
+0
+@
+m
+j
+
+ln
+
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+
++ 1
+(1
+ 
+ 
+j
+)
+2
+(1 +
+ 
+j
+)
+
+2
+1
+A
+1
+A
+2
+d
+˙
+
+1
+j
+ln(2
+=
+j
+)
+=
+2
+e
+ (159)
+
+ln
+
+^
+c
+^
+
+2
+^
+r
+2
+J
+ 
+2
+j
+
++ 1
+(1
+ 
+ 
+j
+)
+2
+(1 +
+ 
+j
+)
+
+2
+
+1 + (
+
+P
+ +
+^
+)
+
+ln
+
+^
+
+
+1
++ 1
+
+(
+J
+ 
+ j
+ + 1)
+ 
+ 1
+
+
+˙
+
+1
+j
+ln(2
+=
+j
+) + 2
+
+(160)
+= (1 + 2 ^
+˜
+)
+2
+
+ln
+
+e
+ ^
+c
+^
+
+2
+
++ (2
+J
+ 
+ 2
+j
+ ) ln( ^
+r
+ )
+ 
+1 + (
+
+P
+ +
+^
+)
+
+ln
+
+^
+
+
+1
++ 1
+
+(
+J
+ 
+ j
+ + 1)
+ 
+ 1
+
+
+
+
+ ^
+c
+
+J
+ +
+j
+ln
+
+2 ^
+˜
+
+1
+(1 + ^
+˜
+)
+
++
+ 
+ ^
+c
+
+J
+ +
+j
+ln( ^
+q
+ )(
+J
+ 
+ j
+ ) + 2
+
+(161)
+Working from this last expression, we take the sum over
+ j
+ and group terms by their
+ j
+ dep endence, as follows.
+J
+X
+j
+ =1
+Q
+j
+
+ Z
+0
+2
+4
+J
+X
+j
+ =1
+^
+c
+
+J
+ +
+j
+3
+5
++
+ Z
+1
+2
+4
+J
+X
+j
+ =1
+(
+J
+ 
+ j
+ ) ^
+c
+
+J
+ +
+j
+3
+5
++
+ Z
+2
+2
+4
+J
+X
+j
+ =1
+(
+J
+ 
+ j
+ )
+2
+^
+c
+
+J
+ +
+j
+3
+5
++
+ Z
+3
+2
+4
+J
+X
+j
+ =1
+(
+J
+ 
+ j
+ )
+3
+^
+c
+
+J
+ +
+j
+3
+5
++
+ J Z
+4
++
+ J
+2
+Z
+5
+2
+4
+J
+X
+j
+ =1
+J
+ 
+ j
+J
+2
+3
+5
++
+ J
+3
+Z
+6
+2
+4
+J
+X
+j
+ =1
+(
+J
+ 
+ j
+ )
+2
+J
+3
+3
+5
+(162)
+36
+
+--- Page 37 ---
+where
+ Z
+p
+are constants (indep endent of
+ 
+ and
+ "
+), given by
+Z
+0
+= (1 + 2 ^
+˜
+)
+2
+ln
+
+2(1 + ^
+˜
+)
+^
+˜
+
+ln
+
+e
+ ^
+c
+^
+
+2
+ 
+1
+ 
+
+P
+ 
+^
+ + (
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
+(163)
+Z
+1
+= (1 + 2 ^
+˜
+)
+2
+ln
+
+2(1 + ^
+˜
+)
+^
+˜
+
+ln
+
+e
+ ^
+c
+^
+
+2
+
+(
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
++ 2(1 + 2 ^
+˜
+)
+2
+ln
+
+2(1 + ^
+˜
+)
+^
+˜
+
+ln( ^
+r
+ )
+
+1
+ 
+
+P
+ 
+^
+ + (
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
++ (1 + 2 ^
+˜
+)
+2
+ln( ^
+q
+ ) ln
+
+e
+ ^
+c
+^
+
+2
+ 
+1
+ 
+
+P
+ 
+^
+ + (
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
+(164)
+Z
+2
+= 2(1 + 2 ^
+˜
+)
+2
+ln
+
+2(1 + ^
+˜
+)
+^
+˜
+
+ln( ^
+r
+ )(
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
++ 2(1 + 2 ^
+˜
+)
+2
+ln( ^
+q
+ ) ln( ^
+r
+ )
+
+1
+ 
+
+P
+ 
+^
+ + (
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
++ (1 + 2 ^
+˜
+)
+2
+ln( ^
+q
+ ) ln
+
+e
+ ^
+c
+^
+
+2
+
+(
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
+(165)
+Z
+3
+= 2(1 + 2 ^
+˜
+)
+2
+ln( ^
+q
+ ) ln( ^
+r
+ )(
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
+(166)
+Z
+4
+= 2(1 + 2 ^
+˜
+)
+2
+ln
+
+e
+ ^
+c
+^
+
+2
+ 
+1
+ 
+
+P
+ 
+^
+ + (
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
+(167)
+Z
+5
+= 4(1 + 2 ^
+˜
+)
+2
+ln( ^
+r
+ )
+
+1
+ 
+
+P
+ 
+^
+ + (
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
++ 2(1 + 2 ^
+˜
+)
+2
+ln
+
+e
+ ^
+c
+^
+
+2
+
+(
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
+(168)
+Z
+6
+= 4(1 + 2 ^
+˜
+)
+2
+ln( ^
+r
+ )(
+
+P
+ +
+^
+) ln
+
+^
+
+
+1
++ 1
+
+(169)
+Furthermore, each of the sums in brackets evaluates to a quantity th at is upp er b ounded by a constant, indep endent
+of
+ 
+. We can compute upp er b ounds with the substitution
+ k
+ =
+ J
+ 
+ j
+ and extending the sum to in˝nity.
+J
+X
+j
+ =1
+^
+c
+
+J
+ +
+j
+
+1
+X
+k
+ =0
+^
+c
+
+k
+=
+1
+1
+ 
+ ^
+c
+
+1
+(170)
+J
+X
+j
+ =1
+(
+J
+ 
+ j
+ ) ^
+c
+
+J
+ +
+j
+
+1
+X
+k
+ =0
+k
+ ^
+c
+
+k
+=
+^
+c
+
+1
+(1
+ 
+ ^
+c
+
+1
+)
+2
+(171)
+J
+X
+j
+ =1
+(
+J
+ 
+ j
+ )
+2
+^
+c
+
+J
+ +
+j
+
+1
+X
+k
+ =0
+k
+2
+^
+c
+
+k
+=
+^
+c
+
+2
++ ^
+c
+
+1
+(1
+ 
+ ^
+c
+
+1
+)
+3
+(172)
+J
+X
+j
+ =1
+(
+J
+ 
+ j
+ )
+3
+^
+c
+
+J
+ +
+j
+
+1
+X
+k
+ =0
+k
+2
+^
+c
+
+k
+=
+^
+c
+
+3
++ 4 ^
+c
+
+2
++ ^
+c
+
+1
+(1
+ 
+ ^
+c
+
+1
+)
+4
+(173)
+J
+X
+j
+ =1
+J
+ 
+ j
+J
+2
+=
+1
+2
+
+1
+2
+J
+
+1
+2
+(174)
+J
+X
+j
+ =1
+(
+J
+ 
+ j
+ )
+2
+J
+2
+=
+(
+J
+ 
+ 1)(2
+J
+ 
+ 1)
+6
+J
+2
+
+1
+3
+(175)
+We are now ready to conclu de. We plug our b ound on
+P
+J
+j
+ =1
+Q
+j
+from Eq. (
+162
+) and our b ound on
+ Q
+KP
+in
+Eq. (
+158
+) into Eq. (
+156
+). We ˝nd an upp er b ound on
+ Q
+ equal to
+
+1
+ 
+ 
+2
+"
+ln
+ 
+p
+1
+ 
+ "
+2
+"
+!
++
+Z
+0
+1
+ 
+ ^
+c
+
+1
++
+Z
+1
+^
+c
+
+1
+(1
+ 
+ ^
+c
+
+1
+)
+2
++
+Z
+2
+( ^
+c
+
+2
++ ^
+c
+
+1
+)
+(1
+ 
+ ^
+c
+
+1
+)
+3
++
+Z
+3
+( ^
+c
+
+3
++ 4 ^
+c
+
+2
++ ^
+c
+
+1
+)
+(1
+ 
+ ^
+c
+
+1
+)
+4
+
+ ln
+ 
+p
+1
+ 
+ 
+2
+2
+
+!#
++
+ d
+log
+^
+c
+(
+
+)
+e
+
+Z
+4
+1
+ 
+ 
+2
+
++
+ d
+log
+^
+c
+(
+
+)
+e
+2
+
+Z
+5
+2(1
+ 
+ 
+2
+)
+
++
+ d
+log
+^
+c
+(
+
+)
+e
+3
+
+Z
+6
+2(1
+ 
+ 
+2
+)
+
++
+
+3
+1
+ 
+ 
+2
+
+(176)
+37
+
+--- Page 38 ---
+where
+ Z
+p
+are given ab ove. As long as
+ 
+ 
+ ^
+c
+, we can say
+ d
+ log
+^
+c
+(
+
+)
+e 
+ 2(ln(
+
+)
+=
+ ln( ^
+c
+))
+3
+,
+ d
+log
+^
+c
+(
+
+)
+e
+2
+
+ 4(ln(
+
+)
+=
+ ln( ^
+c
+))
+3
+and
+ d
+log
+^
+c
+(
+
+)
+e
+2
+
+ 8(ln(
+
+)
+=
+ ln( ^
+c
+))
+3
+. This allows us to upp er b ound the ˝nal line (sublinear in
+ 
+) by
+ln(
+
+)
+3
+ln( ^
+c
+)
+3
+
+2
+Z
+4
+1
+ 
+ 
+2
+
++
+
+2
+Z
+5
+1
+ 
+ 
+2
+
++
+
+4
+Z
+6
+1
+ 
+ 
+2
+
++
+
+3
+1
+ 
+ 
+2
+
+(177)
+This veri˝es that the ˝nal complexity is
+ O
+ (
+
+) +
+ O
+ (
+
+ log (1
+="
+))
+. By plugging in the parameter choices from
+ Table 2
+,
+the numerical values rep orted can b e veri˝ed from this ˝nal e xpres sion.
+F Lower b ounds on the complexity of norm e stimation
+Our metho d has demonstrated that estimating the norm
+ k
+x
+k
+ to within a constant factor is a key ste p toward
+achieving an optimal QLSS with
+ O
+ (
+
+)
+ complexity. One might hop e that e stimating the norm could b e easier than
+pro ducing the state
+ j
+x
+i
+. Howe ver, here we show an
+ 
+(
+
+)
+ lower b ound on es timating the norm to within a constant
+factor less than 5/4. Our pro of extends the metho d in R ef. [
+13
+], which showed an
+ 
+(
+
+)
+ lower b ound on the query
+complexity of the QLSP even for p ositive semi-de˝ nite matrices.
+The key idea of that metho d was to re duce the
+ PromiseMajority
+ problem to the QLS P, such that solving
+the QLSP yields a solution to
+ PromiseMajority
+. Known lower b ounds on
+ PromiseMajority
+ then imply a lower
+b ound the QLSP. Here we do th e same, mo difying the construction of Ref. [
+13
+] so that we reduce to the problem
+of estimating the norm, rather than the QLSP. Technically, as stated, our b ound leaves op en the p ossibili ty of
+achieving a multiplicative-factor app roximation worse th an
+ 5
+=
+4
+ in
+ o
+(
+
+)
+ complexity.
+Theorem 5.
+ Let
+ A
+ be a quantum algorithm for esitmating the norm in the fol lowing sense. On any input
+ 
+ 2
+ [3
+;
+ 1
+)
+,
+"
+ 2
+ (0
+;
+ 1
+=
+4]
+, and given (control led) access to a
+ (1
+; a
+)
+-block-encoding
+ U
+A
+for the
+ N
+ 
+ N
+ matrix
+ A
+ with singular values
+contained in
+ [
+
+
+1
+;
+ 1]
+, and state-preparation unitary
+ U
+b
+for the
+ N
+ -dimensional vector
+ b
+, the algorithm
+ A
+ outputs a
+value
+ t
+, where, with probability at least 2/3,
+ t
+ 2
+ [(1 +
+ "
+)
+
+1
+k
+x
+k
+;
+ (1 +
+ "
+)
+k
+x
+k
+]
+ where
+ x
+ is the solution of minimum norm
+to the equation
+ A
+x
+ =
+ b
+. Then
+ A
+ must make at least
+
+(min(
+"
+
+1
+; N
+ ))
+ (178)
+queries to
+ U
+A
+and to
+ U
+b
+.
+Proof.
+ First we de˝n e the
+ PromiseMajority
+(
+M ; N
+0
+)
+ problem following Ref. [
+13
+]: Give n a vector
+ y
+ 2 f
+0
+;
+ 1
+g
+N
+0
+and
+a value of
+ M
+ 2 f
+1
+; : : : ; N
+0
+g
+ (where
+ M
+ +
+ N
+0
+is even), and the promise that either (i)
+ y
+i
+= 0
+ for
+ (
+N
+0
++
+ M
+ )
+=
+2
+ of the
+entries, or (ii)
+ y
+i
+= 1
+ for
+ (
+N
+0
++
+ M
+ )
+=
+2
+ of the entries, determine w hether (i) or (ii) is the case . Su pp ose a quantu m
+algorithm has query access to th e entrie s of
+ y
+ via a unitary
+ P
+y
+acting as
+ P
+y
+j
+i
+ij
+z
+ i
+ =
+ j
+i
+ij
+z
+ 
+ y
+i
+i
+. Then, the numb er
+of queries to
+ P
+y
+that the quantum algorithm mus t m ake to solve the
+ PromiseMajority
+(
+M ; N
+0
+)
+ problem with at
+least 2/3 prob ab ility of correctness is
+ 
+(
+N
+0
+=M
+ )
+ (see [
+13
+, Lemm a 19] and [
+40
+, C orollary 1.2]).
+Now, we will de˝ne a family of linear systems, parameterized by
+ 
+,
+ "
+, and
+ N
+ . The linear systems will b e
+size
+ N
+ 
+ N
+ (with ou t loss of generality, we let
+ N
+ b e a p ower of 2) and have condition numb e r
+ 
+. We will show
+that learning the norm of the solution to thes e lin ear system s to within factor
+ 1 +
+ "
+ yields a solution to the
+PromiseMajority
+(
+M ; N
+0
+)
+ problem, where the relationship b etween parameters
+ (
+M ; N
+0
+)
+ and
+ (
+; "; N
+ )
+ is
+N
+0
+=
+ N =
+2
+ (179)
+M
+ = 2 max(1
+;
+ 4
+N "=
+)
+ :
+ (180)
+Furthermore, we will show that the linear systems can b e constructed such that the blo ck-enco ding
+ U
+A
+can b e
+carried out with two queries to the oracle
+ P
+y
+, while
+ U
+b
+requires zero queries; or it can b e constructed such th at
+ U
+A
+requires zero queries, and
+ U
+b
+can b e accomplished in one query. Thu s, the lower b ound of
+ 
+(
+N
+0
+=M
+ )
+ queries to
+ P
+y
+will imply a query lower b ound on the norm estimation problem of
+ 
+(min(
+="; N
+ ))
+.
+To de˝ne the family, let
+ 1
+ = (1; 1;
+ : : :
+ ; 1)
+=
+p
+N
+0
+denote the unit vector of length
+ N
+0
+with equal entries. Let
+ D
+b e the
+ N
+0
+
+ N
+0
+diagonal unitary matrix for which the
+ i
+th diagonal entry of
+ D
+ is equal to
+ (
+
+1)
+y
+i
+, and de˝ne unit
+38
+
+--- Page 39 ---
+vector
+d
+ =
+ D
+ 1
+ =
+1
+p
+N
+0
+2
+6
+6
+6
+6
+6
+4
+(
+
+1)
+y
+0
+.
+.
+.
+(
+
+1)
+y
+N
+0
+
+1
+3
+7
+7
+7
+7
+7
+5
+:
+ (181)
+Finally, let
+C
+ =
+ I
+N
+0
+
+ (1
+ 
+ 
+
+1
+)
+11
+y
+(182)
+where
+ I
+N
+0
+is the
+ N
+0
+
+ N
+0
+identity matrix. We can see that al l singular values of
+ C
+ lie in the interval
+ [
+
+
+1
+;
+ 1]
+. We
+can also see that
+ C
+ is invertible and that its inverse is given by
+C
+
+1
+=
+ I
+N
+0
++ (
+
+ 
+ 1)
+11
+y
+:
+ (183)
+Then, de˝ne the Hermitian
+ N
+ 
+ N
+ matrix
+ A
+ and vector
+ b
+ by
+A
+ =
+1
+2
+2
+6
+4
+C
+ +
+ I
+N
+0
+(
+C
+ 
+ I
+N
+0
+)
+D
+D
+ (
+C
+ 
+ I
+N
+0
+)
+ C
+ +
+ I
+N
+0
+3
+7
+5
+b
+ =
+1
+p
+1 +
+ "
+2
+N
+2
+=M
+2
+2
+6
+4
+1
+"
+N
+M
+1
+3
+7
+5
+:
+ (184)
+We note the factorizations
+A
+ =
+2
+6
+4
+I
+N
+0
+0
+0
+ D
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+I
+N
+0
+=
+p
+2
+ I
+N
+0
+=
+p
+2
+I
+N
+0
+=
+p
+2
+ 
+I
+N
+0
+=
+p
+2
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+C
+ 0
+0
+ I
+N
+0
+3
+7
+5
+2
+6
+4
+I
+N
+0
+=
+p
+2
+ I
+N
+0
+=
+p
+2
+I
+N
+0
+=
+p
+2
+ 
+I
+N
+0
+=
+p
+2
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+I
+N
+0
+0
+0
+ D
+3
+7
+5
+|
+{z
+}
+unitary
+(185)
+b
+ =
+1
+p
+2
+p
+1 +
+ "
+2
+N
+2
+=M
+2
+2
+6
+4
+I
+N
+0
+0
+0
+ D
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+I
+N
+0
+=
+p
+2
+ I
+N
+0
+=
+p
+2
+I
+N
+0
+=
+p
+2
+ 
+I
+N
+0
+=
+p
+2
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+1
+ +
+ "
+N
+M
+d
+1
+ 
+ "
+N
+M
+d
+3
+7
+5
+(186)
+Since all factors of
+ A
+ are unitary except for the th ird factor, and
+ C
+ has singular values in
+ [
+
+
+1
+;
+ 1]
+, we conclude
+that
+ A
+ has singular values in
+ [
+
+
+1
+;
+ 1]
+. This als o implies that
+ A
+ is invertible and
+ A
+x
+ =
+ b
+ has a unique solution.
+Furthermore, from the fac toriz ation we see that this unique solution is
+x
+ =
+1
+p
+2
+p
+1 +
+ "
+2
+N
+2
+=M
+2
+2
+6
+4
+I
+N
+0
+0
+0
+ D
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+I
+N
+0
+=
+p
+2
+ I
+N
+0
+=
+p
+2
+I
+N
+0
+=
+p
+2
+ 
+I
+N
+0
+=
+p
+2
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+C
+
+1
+0
+0
+ I
+N
+0
+3
+7
+5
+2
+6
+4
+1
+ +
+ "
+N
+M
+d
+1
+ 
+ "
+N
+M
+d
+3
+7
+5
+(187)
+=
+1
+p
+2
+p
+1 +
+ "
+2
+N
+2
+=M
+2
+2
+6
+4
+I
+N
+0
+0
+0
+ D
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+I
+N
+0
+=
+p
+2
+ I
+N
+0
+=
+p
+2
+I
+N
+0
+=
+p
+2
+ 
+I
+N
+0
+=
+p
+2
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+"
+N
+M
+d
+ +
+
+
+ +
+ "
+(
+
+ 
+ 1)
+N
+M
+1
+y
+d
+
+1
+1
+ 
+ "
+N
+M
+d
+3
+7
+5
+(188)
+We recall that unitary matrices do not change norms, and compute the norm of
+ x
+ as
+k
+x
+k
+2
+=
+1 + 2
+
+"
+N
+M
+
+2
++
+
+
+ +
+ "
+(
+
+ 
+ 1)
+N
+M
+1
+y
+d
+
+2
+
+ 2
+
+"
+N
+M
+
+1
+y
+d
+ + 2
+
+"
+N
+M
+ 
+
+ +
+ "
+(
+
+ 
+ 1)
+N
+M
+1
+y
+d
+
+1
+y
+d
+2(1 +
+ "
+2
+N
+2
+=M
+2
+)
+(189)
+(190)
+39
+
+--- Page 40 ---
+Now we observe that the value of
+ 1
+y
+d
+ di˙ers in case (i) and case (ii) of the
+ PromiseMajority
+ problem.
+1
+y
+d
+ =
+(
+M =N
+0
+= 2
+M =N
+ in case (i)
+
+M =N
+0
+=
+ 
+2
+M =N
+ in case (ii)
+(191)
+Let
+ k
+x
+k
+(
+i
+)
+and
+ k
+x
+k
+(
+ii
+)
+denote the norm values in the two caes. We have
+k
+x
+k
+2
+(
+i
+)
+k
+x
+k
+2
+(
+ii
+)
+=
+1 + 2
+
+"
+N
+M
+
+2
++ (
+
+ + 2
+"
+(
+
+ 
+ 1))
+2
+
+ 4
+"
+ + 4
+"
+ (
+
+ + 2
+"
+(
+
+ 
+ 1))
+1 + 2
+
+"
+N
+M
+
+2
++ (
+
+ 
+ 2
+"
+(
+
+ 
+ 1))
+2
++ 4
+"
+ 
+ 4
+"
+ (
+
+ 
+ 2
+"
+(
+
+ 
+ 1))
+(192)
+=
+
+
+2
++ 1 + 2
+
+"
+N
+M
+
+2
++ 4
+"
+2
+(
+
+2
+
+ 1)
+
++ 4
+"
+(
+
+2
+
+ 1)
+
+
+2
++ 1 + 2
+
+"
+N
+M
+
+2
++ 4
+"
+2
+(
+
+2
+
+ 1)
+
+
+ 4
+"
+(
+
+2
+
+ 1)
+(193)
+=
+1 +
+4
+
+2
+
+1
+
+2
++1
+"
+1+2
+(
+"
+N
+M
+)
+2
+1
+
+2
++1
++4
+
+2
+
+1
+
+2
++1
+"
+2
+1
+ 
+4
+
+2
+
+1
+
+2
++1
+"
+1+2
+(
+"
+N
+M
+)
+2
+1
+
+2
++1
++4
+
+2
+
+1
+
+2
++1
+"
+2
+(194)
+Now we recall some of our parameter relations. We have chosen
+ M
+ such that
+ M
+ 
+ 4
+"N =
+. We have assumed
+ 
+ 
+ 3
+,
+so
+ (
+
+2
+
+ 1)
+=
+(
+
+2
++ 1)
+ 
+ 4
+=
+5
+. Finally, we have assumed
+ "
+ 
+ 1
+=
+4
+, so
+ 4
+
+2
+
+1
+
+2
++1
+"
+2
+
+ 1
+=
+4
+. This al lows us to assert
+k
+x
+k
+2
+(
+i
+)
+k
+x
+k
+2
+(
+ii
+)
+
+1 +
+16
+5
+"
+1+
+1
+8
++
+1
+4
+1 +
+16
+5
+"
+1+
+1
+8
++
+1
+4
+(195)
+=
+1 +
+128
+55
+"
+1
+ 
+128
+55
+"
+(196)
+Now, if the algorithm
+ A
+ pro duces an estimate
+ t
+ satisfying
+ t
+ 2
+ [(1 +
+ "
+)
+
+1
+k
+x
+k
+;
+ (1 +
+ "
+)
+k
+x
+k
+]
+, then
+t
+2
+2
+ [(1 + 2
+"
+ +
+ "
+2
+)
+
+1
+k
+x
+k
+2
+;
+ (1 + 2
+"
+ +
+ "
+)
+k
+x
+k
+2
+]
+ 
+ [(1 + 9
+"=
+4)
+
+1
+k
+x
+k
+2
+;
+ (1 + 9
+"=
+4)
+k
+x
+k
+2
+]
+ (197)
+where the last inclusion follows under the assumption
+ "
+ 
+ 1
+=
+4
+. Since
+ 9
+=
+4
+ <
+ 128
+=
+55
+, Eqs. (
+196
+) and (
+197
+) together
+imply that by taking the output
+ t
+ and determining whether
+ t
+2
+is closer to
+ k
+x
+k
+2
+(
+i
+)
+or
+ k
+x
+k
+2
+(
+ii
+)
+, we can determine
+whether we are in c as e (i) or case (ii) and solve the
+ PromiseMajority
+ problem.
+It remains to show that we can construct a blo ck-enco di ng
+ U
+A
+and state-preparation untiary
+ U
+b
+for
+ A
+ and
+ b
+as de˝ned. Constucting
+ U
+b
+is simple as the ve ctor do es not dep end on
+ y
+ and need not query
+ P
+y
+, and al l entries of
+the sup erp osition are known. To construct
+ U
+A
+, we refer to its factorization in Eq. (
+185
+). The blo ck-enco ding for
+ A
+multiplies blo ck-enco d ings for each of the factors:
+‹
+ The unitary op eration
+
+I
+N
+0
+0
+0
+ D
+
+=
+ j
+0
+ih
+0
+j 
+
+ I
+N
+0
++
+ j
+1
+ih
+1
+j 
+ P
+y
+is accomplished with a controlled-
+P
+y
+query. Controlled-
+P
+y
+can b e built from
+ P
+y
+as follows. Prior to b eginning the algorithm, we make make
+ T
+ =
+ O
+ (1)
+ queries
+ P
+y
+on random inputs
+ i
+1
+; : : : ; i
+T
+, learning
+ y
+i
+1
+; : : : ; y
+i
+T
+. With high probability we ˝nd a value
+ i
+
+for which
+ y
+i
+
+= 0
+(unless
+ M
+ ˇ
+ N
+ and we are in case (ii), in which case we can already easi ly di˙erentiate case (i ) and case (ii) in
+O
+ (1)
+ classi cal queries). We prepare the state
+ j
+i
+
+i
+ in an ancilla re gi ster. In order to appl y controlled-
+P
+y
+on the
+state
+ j
+i
+
+ij
+c
+ij
+i
+ij
+z
+ i
+, where the ˝rst qubit is the ancilla, the second qubit is the c ontrol, and the ˝ nal two qubits
+are the target of the query, we p erform a c ontrolled swap b etween the registers holding
+ j
+i
+
+i
+ and
+ j
+i
+i
+, controlled
+on the register h ol ding
+ j
+c
+i
+. Then, we query the ˝nal two registers, and un do the controlled swap. Since
+ y
+i
+
+= 0
+,
+there is no action on the ˝nal register when the control is set to 1.
+‹
+ The unitary op eration
+1
+p
+2
+h
+I
+N
+0
+I
+N
+0
+I
+N
+0
+
+I
+N
+0
+i
+is equivalent to a Hadamard gate,
+ H
+ 
+
+ I
+N
+0
+. No queries to
+ P
+y
+are required.
+‹
+ The matrix
+
+C
+ 0
+0
+ I
+N
+0
+
+=
+ j
+0
+ih
+0
+j 
+
+ C
+ +
+ j
+1
+ih
+1
+j 
+
+ I
+N
+0
+is accomplished by controlled-
+U
+C
+op eration, where
+ U
+C
+is a blo ck-
+enco ding of
+ C
+ . We blo ck-enco de
+ C
+ as follows. Let
+ 
+ = arccos
+
+
+
+1
+
+. First, p erform a paralle l layer of Hadmard
+gates, which maps
+ j
+1
+i
+ to
+ j
+e
+0
+i
+. Then, intro duce an anc illa qubit and apply
+ j
+e
+0
+ih
+e
+0
+j 
+
+ e
+i Y
++ (
+I
+N
+0
+ j
+0
+ih
+0
+j
+)
+ 
+
+ I
+2
+.
+Finally, apply another layer of Hadamards to send
+ j
+0
+i
+ back to
+ j
+1
+i
+. Since
+ h
+0
+j
+e
+i Y
+j
+0
+i
+ =
+ 
+
+1
+, we have the correct
+h
+1
+j
+C
+ j
+1
+i
+ matrix element. For any vec tor orthogonal to
+ j
+1
+i
+, the
+ R
+y
+gate i s not triggered, so
+ U
+C
+acts as identity.
+40
+
+--- Page 41 ---
+Overall, each
+ U
+A
+op eration requires two
+ P
+y
+queries, and each
+ U
+b
+op eration requires no queries. This completes the
+pro of that the numb er of queries to
+ U
+A
+must b e at least
+ 
+(min(
+"
+
+1
+; N
+ ))
+.
+The metho d ab ove do es not lower b ound the numb e r of times
+ A
+ must query the state-preparation unitary
+ U
+b
+.
+To make this lower b ound, we slightl y mo d ify the construction to
+A
+ =
+2
+6
+4
+I
+N
+0
+=
+p
+2
+ I
+N
+0
+=
+p
+2
+I
+N
+0
+=
+p
+2
+ 
+I
+N
+0
+=
+p
+2
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+C
+ 0
+0
+ I
+N
+0
+3
+7
+5
+2
+6
+4
+I
+N
+0
+=
+p
+2
+ I
+N
+0
+=
+p
+2
+I
+N
+0
+=
+p
+2
+ 
+I
+N
+0
+=
+p
+2
+3
+7
+5
+|
+{z
+}
+unitary
+(198)
+b
+ =
+1
+p
+2
+p
+1 +
+ "
+2
+N
+2
+=M
+2
+2
+6
+4
+I
+N
+0
+0
+0
+ D
+3
+7
+5
+|
+{z
+}
+unitary
+2
+6
+4
+1
+"
+N
+M
+1
+3
+7
+5
+(199)
+Here, the blo ck-enco ding
+ U
+A
+requires zero queries to
+ P
+y
+, and the unitary
+ U
+b
+can b e implemented with one query.
+Furthermore, the solution
+ x
+ is unitarily related to the solution stated ab ove, and thus has the same norm in case
+(i) and case (ii). The same analysis then implies that the numb er of queries to the state preparati on unitary cannot
+b e smaller than
+ 
+(
+"
+
+1
+; N
+ )
+.
+G Optimal QLSS based on quantum Zeno e˙ect
+In this sec tion, we sketch an analysis for an optimal QLSS based on the Zeno metho d. This is essentially the same
+as the near-optimal me tho d from Ref. [
+8
+], applied to the adiabatic path
+ Section 5.3
+, and incorp orating ˝xed-p oint
+amplitude amplifciation and log log trick to achieve optimality.
+We assume without loss of generality that
+ 
+ is a p ower of 2. First, we note the id entity that when
+ 
+
+1
+
+ &
+ 
+ 1
+and
+ 
+
+1
+
+ ˙ < ˙
+0
+
+ 1
+, we have
+f
+ (
+˙
+ )
+f
+ (
+˙
+0
+) +
+ &
+2
+p
+(1
+ 
+ f
+ (
+˙
+ )
+2
+)(1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+f
+ (
+˙
+0
+)
+2
++
+ &
+2
+(1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+
+f
+ (
+˙
+ )
+f
+ (
+˙
+0
+) +
+ &
+2
+(1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+f
+ (
+˙
+0
+)
+2
++
+ &
+2
+(1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+(200)
+=
+f
+ (
+˙
+0
+)
+2
++
+ &
+2
+(1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+ 
+ f
+ (
+˙
+0
+)(
+f
+ (
+˙
+0
+)
+ 
+ f
+ (
+˙
+ ))
+f
+ (
+˙
+0
+)
+2
++
+ &
+2
+(1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+;
+ (201)
+= 1
+ 
+ (
+f
+ (
+˙
+0
+)
+ 
+ f
+ (
+˙
+ ))
+f
+ (
+˙
+0
+)
+f
+ (
+˙
+0
+)
+2
++
+ &
+2
+(1
+ 
+ f
+ (
+˙
+0
+)
+2
+)
+(202)
+
+ 1
+ 
+ (
+f
+ (
+˙
+0
+)
+ 
+ f
+ (
+˙
+ ))
+f
+ (
+˙
+0
+)
+˙
+0
+2
+(203)
+
+ 1
+ 
+f
+ (
+˙
+0
+)
+ 
+ f
+ (
+˙
+ )
+˙
+0
+(204)
+where the ˝rst line uses monotonicity of
+ f
+ (i .e.,
+ f
+ (
+˙
+ )
+ < f
+ (
+˙
+0
+)
+), the second to last line uses the identity
+ f
+ (
+˙
+0
+)
+2
++
+
+
+2
+(1
+ 
+ f
+ (
+˙
+0
+)
+2
+) =
+ ˙
+0
+2
+and the fact that
+ &
+ 
+ 
+
+1
+, and the ˝nal line uses
+ ˙
+0
+
+ f
+ (
+˙
+0
+)
+. The key fact is that the overlap
+b etween nearby states along the adiabatic path remains close to one (see
+ Section 5.3
+ for de˝nitions):
+jh
+ 
+x
+˙
+j
+ 
+x
+˙
+0
+ij
+ =
+
+x
+˙
+0
+y
+
+x
+˙
+k
+ 
+x
+˙
+0
+kk
+ 
+x
+˙
+k
+
+
+x
+˙
+0
+y
+
+x
+˙
+k
+ 
+x
+˙
+k
+2
+=
+P
+j
+j
+w
+j
+j
+2
+f
+ (
+˙
+ )
+f
+ (
+˙
+0
+)+
+&
+2
+j
+p
+(1
+
+f
+ (
+˙
+ )
+2
+)(1
+
+f
+ (
+˙
+0
+)
+2
+)
+(
+f
+ (
+˙
+ )
+2
++(1
+
+f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+)(
+f
+ (
+˙
+0
+)
+2
++(1
+
+f
+ (
+˙
+0
+)
+2
+)
+&
+2
+j
+)
+P
+j
+j
+w
+j
+j
+2
+f
+ (
+˙
+ )
+2
++(1
+
+f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+(205)
+
+
+1
+ 
+f
+ (
+˙
+0
+)
+ 
+ f
+ (
+˙
+ )
+˙
+0
+
+P
+j
+j
+w
+j
+j
+2
+f
+ (
+˙
+ )
+2
++(1
+
+f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+P
+j
+j
+w
+j
+j
+2
+f
+ (
+˙
+ )
+2
++(1
+
+f
+ (
+˙
+ )
+2
+)
+&
+2
+j
+(206)
+= 1
+ 
+f
+ (
+˙
+0
+)
+ 
+ f
+ (
+˙
+ )
+˙
+0
+:
+ (207)
+41
+
+--- Page 42 ---
+where we have used the identity of Eq. (
+204
+) in the second line. Note that since
+ ˙
+0
+
+ f
+ (
+˙
+0
+)
+, the right-hand side
+is greater than
+ f
+ (
+˙
+ )
+=f
+ (
+˙
+0
+)
+. When
+ ˙; ˙
+0
+
+ 2
+
+
+1
+,
+ f
+ (
+˙
+ )
+ ˇ
+ ˙
+ holds reasonably well, so we may roughly think of the
+overlap as b eing lower b ounded by approximately
+ ˙ =˙
+0
+, as mentioned in the main text.
+We may now construct a Zeno-inspired algorithm using a similar s equence of
+ ˙
+ values as was used for norm
+estimation in
+ Section 5.3
+. There, we chose the geometric sequenc e:
+ 1
+;
+ 2
+
+1
+;
+ 2
+
+2
+; : : : ;
+ 2
+
+ log
+2
+(
+
+)
+
+ 
+
+1
+. Here, we
+cho ose the same sequence wi th the inverse of
+ f
+ applied, app ended with a ˝nal p oint where
+ ˙
+ =
+ 
+
+1
+:
+1
+ 
+ f
+
+1
+(1)
+; f
+
+1
+(2
+
+1
+)
+; f
+
+1
+(2
+
+2
+)
+; : : : ; f
+
+1
+(
+
+
+1
+)
+; f
+
+1
+(0
+:
+5
+
+
+1
+)
+; f
+
+1
+(0)
+ 
+ 
+
+1
+(208)
+This sequence has the prop erty that the overlap b etwe en subs equ ent states in the sequence is always lower b ounded
+by 1/2. We can see this by applying the identity in Eq. (
+207
+) and obtaining
+jh
+ 
+x
+f
+
+1
+(2
+
+j
+)
+j
+ 
+x
+f
+
+1
+(2
+
+j
+ 
+ 1
+)
+ij 
+f
+ (
+f
+
+1
+(2
+
+j
+ 
+1
+))
+f
+ (
+f
+
+1
+(2
+
+j
+))
+=
+1
+2
+(209)
+and also (for the last jump in the sequence)
+jh
+ 
+x
+f
+
+1
+(0
+:
+5
+
+
+1
+)
+j
+ 
+x
+f
+
+1
+(0)
+ij 
+ 1
+ 
+0
+:
+5
+
+
+1
+f
+
+1
+(0
+:
+5
+
+
+1
+)
+
+1
+2
+;
+ (210)
+where the last inequality is true since the the function
+ f
+
+1
+maps all inputs to values greater than
+ 
+
+1
+.
+The main idea of the Zeno algorithm is to jump from on e state in the sequence to the next. Namely, gi ven that
+we have prepared the state
+ j
+ 
+x
+˙
+0
+i
+, we approximately implement the jump
+ j
+ 
+x
+˙
+0
+i 7! j
+ 
+x
+˙
+i
+ by ˝xe d-p oint amplitude
+ampli˝cation [
+24
+]; this requires the ability to re ˛ect ab out b oth
+ j
+ 
+x
+˙
+0
+i
+ and
+ j
+ 
+x
+˙
+0
+i
+, which is supplied by KR to error
+ =
+2
+ at c os t
+ O
+ (
+˙
+
+1
+log (1
+=
+ ))
+. Since the overlap is lower b ounded by a constant, we may ampl ify the jump to success
+probability
+ 1
+ 
+  =
+2
+ at cost
+ O
+ (log (1
+=
+ ))
+ calls to KR. Noting that
+ ˙
+ 
+ f
+ (
+˙
+ )
+, we may conclude that each jump is
+p erformed to error
+ 
+ at cost
+ O
+ (
+f
+ (
+˙
+ )
+
+1
+log
+2
+(1
+=
+ ))
+. As in the analysis in
+ Section 5.3
+, we invoke the log log trick,
+cho osing the value of
+ 
+ on the jump from
+ f
+
+1
+(2
+
+j
+)
+ to
+ f
+
+1
+(2
+
+j
+ 
+1
+)
+ to b e
+ e
+
+(2+log
+2
+(
+
+)
+
+j
+ )
+, and cho osing the value of
+
+ on the ˝nal jump to b e
+ O
+ (1)
+. The total error over the
+ log
+2
+(
+
+) + 2
+ jumps is at most
+ O
+ (1)
+. T he total cost is given
+by the sum (cf. Eq. (
+42
+))
+Q
+ =
+ O
+ (
+
+)
+|
+{z
+}
+˝nal jump
++
+log
+2
+(
+
+)+1
+X
+j
+ =1
+O
+ (2
+j
+(2 + log
+2
+(
+
+)
+ 
+ j
+ )
+2
+)
+ (211)
+
+ O
+ (
+
+)
+1
+X
+j
+0
+=0
+2
+
+j
+0
+(1 +
+ j
+0
+)
+2
+
+ O
+ (
+
+)
+ :
+ (212)
+This shows that a Zeno-based QLSS equipp ed with ˝xed-p oint ampl itude ampli˝cation and the log log trick can
+achieve optimal complexity.
+42

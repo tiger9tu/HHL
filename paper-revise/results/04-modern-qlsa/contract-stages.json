@@ -1,0 +1,151 @@
+[
+  {
+    "id": "q_shortcut_04_optimal",
+    "branch": "quantum",
+    "layer": "logical",
+    "owner": "04",
+    "scope": "per_output",
+    "reuse_key": "none",
+    "multiplicity": {
+      "unit": "1",
+      "note": "Alternative core import; task 05 composes once.",
+      "status": "known",
+      "value": 1
+    },
+    "statistic": "upper_bound",
+    "statistic_note": "upper bound on expectation; trace distance of ensemble, ideal access. Compiled costs unresolved.",
+    "covers": [
+      "q.core"
+    ],
+    "derived_from": [],
+    "assumptions": [
+      "A04-input",
+      "A04-access",
+      "A04-ideal",
+      "A04-compilation"
+    ],
+    "resources": {
+      "gate_basis": "compiled Clifford+T; exclusive buckets, T includes adjoint",
+      "gates": {
+        "T": {
+          "unit": "gate",
+          "note": "Unresolved compilation input.",
+          "status": "symbolic",
+          "expression": "253.91797303088308 * g_A_T + 507.83594606176615 * g_b_T + H_T"
+        },
+        "Clifford": {
+          "unit": "gate",
+          "note": "Unresolved compilation input.",
+          "status": "symbolic",
+          "expression": "253.91797303088308 * g_A_Clifford + 507.83594606176615 * g_b_Clifford + H_Clifford"
+        }
+      },
+      "oracle_queries": {
+        "A": {
+          "unit": "query",
+          "note": "upper bound on expectation; includes controlled and adjoint variants.",
+          "status": "known",
+          "value": 253.91797303088308
+        },
+        "b": {
+          "unit": "query",
+          "note": "upper bound on expectation; includes controlled and adjoint variants.",
+          "status": "known",
+          "value": 507.83594606176615
+        }
+      },
+      "queries_expanded": false,
+      "depth": {
+        "unit": "layer",
+        "note": "Unresolved compilation input.",
+        "status": "unknown"
+      },
+      "t_depth": {
+        "unit": "layer",
+        "note": "Unresolved compilation input.",
+        "status": "unknown"
+      },
+      "logical_qubits_peak": {
+        "unit": "logical_qubit",
+        "note": "Unresolved compilation input.",
+        "status": "unknown"
+      },
+      "schedule": "See model.md. Adaptive internal restarts included in query expectation; no termination cap or compiled schedule."
+    }
+  },
+  {
+    "id": "q_shortcut_04_norm_core",
+    "branch": "quantum",
+    "layer": "logical",
+    "owner": "04",
+    "scope": "per_output",
+    "reuse_key": "none",
+    "multiplicity": {
+      "unit": "1",
+      "note": "Alternative core import; task 05 composes once.",
+      "status": "known",
+      "value": 1
+    },
+    "statistic": "upper_bound",
+    "statistic_note": "deterministic sufficient circuit per attempt; conditional pure-state trace distance, ideal access. Compiled costs unresolved.",
+    "covers": [
+      "q.core"
+    ],
+    "derived_from": [],
+    "assumptions": [
+      "A04-input",
+      "A04-access",
+      "A04-ideal",
+      "A04-compilation",
+      "A04-norm"
+    ],
+    "resources": {
+      "gate_basis": "compiled Clifford+T; exclusive buckets, T includes adjoint",
+      "gates": {
+        "T": {
+          "unit": "gate",
+          "note": "Unresolved compilation input.",
+          "status": "symbolic",
+          "expression": "24 * g_Gt_T + 48 * g_projector_T + 24 * g_rotation_T + g_endpoint_T"
+        },
+        "Clifford": {
+          "unit": "gate",
+          "note": "Unresolved compilation input.",
+          "status": "symbolic",
+          "expression": "24 * g_Gt_Clifford + 48 * g_projector_Clifford + 24 * g_rotation_Clifford + g_endpoint_Clifford"
+        }
+      },
+      "oracle_queries": {
+        "A": {
+          "unit": "query",
+          "note": "deterministic sufficient circuit per attempt; includes controlled and adjoint variants.",
+          "status": "known",
+          "value": 24
+        },
+        "b": {
+          "unit": "query",
+          "note": "deterministic sufficient circuit per attempt; includes controlled and adjoint variants.",
+          "status": "known",
+          "value": 48
+        }
+      },
+      "queries_expanded": false,
+      "depth": {
+        "unit": "layer",
+        "note": "Unresolved compilation input.",
+        "status": "unknown"
+      },
+      "t_depth": {
+        "unit": "layer",
+        "note": "Unresolved compilation input.",
+        "status": "unknown"
+      },
+      "logical_qubits_peak": {
+        "unit": "logical_qubit",
+        "note": "Unresolved compilation input.",
+        "status": "unknown"
+      },
+      "schedule": "See model.md. One serial KR attempt including endpoint/herald operations; external retries excluded."
+    }
+  }
+]

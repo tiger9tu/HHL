@@ -1,0 +1,268 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.92in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,microtype}
+\usepackage[T1]{fontenc}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\ceil}[1]{\left\lceil #1\right\rceil}
+\newcommand{\ket}[1]{\lvert #1\rangle}
+\newcommand{\bra}[1]{\langle #1\rvert}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\clog}{\operatorname{clog}_2}
+\input{numbers.tex}
+\title{Finite T-Gate Upper Bounds for a Modern\\Quantum Linear-System Solver}
+\author{Reproducible resource analysis for the HHL revision}
+\date{14 September 2026\quad---\quad Version 2.0.0}
+\begin{document}
+\maketitle
+\begin{abstract}
+We give an explicit integer function of matrix dimension, a certified condition/gap bound, solution-state accuracy, and permitted abort probability. Its value is a sufficient logical T-gate budget for a capped implementation of Dalzell's near-optimal unknown-norm Shortcut algorithm. Matrix queries are expanded using a stored-data Frobenius block encoding, including controls, right-hand-side preparation, and QSVT overhead. A constructive heralded rotation-synthesis procedure removes unspecified synthesis constants; finite norm sampling and all retry caps are included. The resulting bound is deliberately conservative and is not a practical compiled-cost forecast. For dimension 1024, condition bound 100, state trace error 0.01, and abort probability 0.01, the function returns exactly \GenericT\ T gates. The deliverable is one normalized solution state; classical preprocessing, scientific-output extraction, and quantum error correction are outside this logical budget.
+\end{abstract}
+
+\section{Problem and guarantee}
+Let $A$ be a real nonsingular $N\times N$ matrix and $b\ne0$ a real vector. The requested output is the state
+\begin{equation}
+ \ket{x}=\frac{A^{-1}b}{\norm{A^{-1}b}}.
+\end{equation}
+Put $n=\ceil{\log_2N}$ and $D=2^n$. If necessary, pad $A$ with a positive multiple of the identity whose singular value lies between the original smallest and largest singular values, and pad $b$ with zeros. This preserves the condition number and output. All norms below refer to the padded matrix. The stored-data circuit encodes $A/\alpha_F$, where $\alpha_F=\norm{A}_F$. Consequently the relevant inverse gap is
+\begin{equation}\label{eq:gap}
+ K\ge \max\{3,\alpha_F/\sigma_{\min}(A)\}.
+\end{equation}
+A condition bound $\kappa$ alone is not this inverse gap. A convenient default is
+\begin{equation}
+ \rho=2^{\ceil{n/2}},\qquad K=\max\{3,\kappa\rho\},
+\end{equation}
+since $\norm{A}_F/\norm{A}_2\le\sqrt D\le\rho$. A certified tighter $\rho$ or direct inverse-gap bound may be supplied.
+
+We count T and T$^\dagger$ equally, under ideal logical Clifford gates, T gates, measurements, reset, clean ancillas, and classical feed-forward. The data trees and certified classical QSVT phases/angles must be available; their classical computation and storage are excluded. These are input-access assumptions, not free quantum QRAM queries: the quantum data-loading circuit is charged below. The guarantee concerns the density operator of the ensemble conditioned on a success flag. It does not promise a classical vector, its norm, a signed overlap, or an accurate continuum observable.
+
+\begin{theorem}[Sufficient finite budget]\label{thm:main}
+Let $N\ge2$, $\kappa\ge1$, and $0<\epsilon,\delta\le0.1$, with the normalization/gap promise above. The function $f(p)$ in Eqs.~\eqref{eq:schedule}--\eqref{eq:final}, implemented in \texttt{upper\_bound.py}, is an integer upper bound on the T gates used on every execution path of the construction in this report. The construction aborts with probability at most $\delta$. Conditioned on success, its output $\widetilde\rho$ satisfies
+\begin{equation}
+ \tfrac12\norm{\widetilde\rho-\ket{x}\bra{x}}_1\le\epsilon.
+\end{equation}
+This is an existence and resource-envelope result for the specified logical circuit family, not an optimal T count or a physical runtime bound.
+\end{theorem}
+
+\section{Analytic Shortcut schedule}
+We use Algorithm 3 of Dalzell~\cite{dalzell}, random norm guessing followed by kernel reflection (KR), postselection, and kernel projection (KP). This is the near-optimal unknown-norm algorithm analyzed practically by Costa et al.~\cite{costa}. It is distinct from Dalzell's asymptotically optimal Algorithm 4. For an ideal inverse-gap promise $K$, even filter degrees
+\begin{equation}
+ d_{\rm KR}\ge K\ln(2/\eta),\qquad d_{\rm KP}\ge K\ln(2/\eta_{\rm KP})
+\end{equation}
+are sufficient. A degree-$d$ filter uses $d$ matrix-block queries, at most $2d$ projector NOTs, and $d$ axial rotations~\cite{dalzell}. Each fresh norm-guess cycle runs KR and, on its success, KP. Dalzell's Eq.~(122) bounds their joint success probability below by
+\begin{equation}\label{eq:rsource}
+ r_0=\frac{(1-\eta)^2}{(1+\eta)^2(1+\ln K)}.
+\end{equation}
+The successful ensemble has trace error at most
+\begin{equation}\label{eq:idealerror}
+ \frac{\mu\eta_{\rm KP}}{\sqrt{1-\mu^2+\mu^2\eta_{\rm KP}^2}},\qquad
+ \mu=\frac{\eta}{1-\eta}\sqrt{3+2\ln((K^2+1)/2)}.
+\end{equation}
+These are analytic guarantees; no numerical fit is used.
+
+Define $\clog z=\ceil{\log_2z}$ for positive rational $z$. The following choices use only rational and integer arithmetic:
+\begin{equation}\label{eq:schedule}
+\begin{aligned}
+ h&=\clog K,&\eta&=\frac1{8(3+4h)},&\eta_{\rm KP}&=\epsilon/2,\\
+ d_{\rm KR}&=2\ceil{\frac{K\clog(2/\eta)}2},&
+ d_{\rm KP}&=2\ceil{\frac{K\clog(2/\eta_{\rm KP})}2},\\
+ r&=\frac{(1-\eta)^2}{(1+\eta)^2(h+1)},&\delta_s&=\delta/4,\\
+ C&=\ceil{\frac{\clog(1/\delta_s)}r},& Q&=C(d_{\rm KR}+d_{\rm KP}).
+\end{aligned}
+\end{equation}
+Since $\ln z\le\clog z$ for $z\ge1$, the degrees are sufficient and $r\le r_0$. Also $\mu^2\le1/16$, so Eq.~\eqref{eq:idealerror} is smaller than $\epsilon/2$. Abort after $C$ unsuccessful fresh cycles. Then $(1-r)^C\le2^{-rC}\le\delta_s$. Independence of fresh cycles implies that conditioning on success before the cap preserves the successful output ensemble. Charging both full filters on every cycle gives the deterministic matrix-query cap $Q$, including failed attempts.
+
+For context, the simpler expression quoted as Costa et al.'s Eq.~(19) is
+\begin{equation}\label{eq:costa}
+ K[6\ln K+6+1.07\ln(1/\epsilon)]+6+3\ln K.
+\end{equation}
+It bounds an \emph{expected} ideal query count. Its underlying derivation in Dalzell's Eq.~(128) assumes $3\le K\le10^6$; it must not be extrapolated as a proved formula beyond that domain. Equation~\eqref{eq:schedule} avoids this restriction and converts the analytic algorithm into an explicit delivery cap. The cap and the practical numerical estimates in Ref.~\cite{costa} have different statistical meanings and synthesis choices; their ratio is not a measured worst-case/practical gap.
+
+\section{Expanding each block-encoding query}
+\subsection{Stored-data circuit and controls}
+We select the minimum-T, fixed-precision select-swap Frobenius construction of Clader et al.~\cite{clader}. This provides an explicit baseline for arbitrary real data. Sparsity or a short PDE stencil is not automatically credited as cheaper access. With $t$ stored angle bits and a cost $R$ for each arbitrary unconditioned axial rotation, their Tables 1 and 3 give
+\begin{align}
+ A_T&=8(2t+3)D-16t(n+1)-24+4ntR=:A_0+4ntR,\\
+ b_T&=8(t+1)(D-1)-8tn+2ntR=:b_0+2ntR,\\
+ W_A&=D(t+1)+3n-t+1.
+\end{align}
+The second circuit prepares a normalized real right-hand side. Its inverse has the same cost. The first formula already includes data loading and uncomputation; no separate query-price factor is added to it.
+
+Here are explicit conservative control allowances, derived for this report using the data-gating method of Ref.~\cite{clader}, Sec.~IV.4. Put $L=(D-1)t+D$, the angle/sign tree size. Gate and ungate the tree against a zero tree before and after each of the two state-preparation operations. Four $L$-bit register Fredkin operations implement the controlled matrix preparation; two implement the controlled RHS preparation. Zero angle/sign data makes the preparation the identity. Control the $n$ system swaps as well. Each additional Fredkin is two CNOTs and one exact seven-T Toffoli~\cite{toffoli}. Thus
+\begin{equation}\label{eq:control}
+ cA_0=A_0+28L+7n,\qquad cb_0=b_0+14L.
+\end{equation}
+These additions include ungating and are our composition bounds, not entries copied from the source tables. Existing optimized data-loading gates retain their source costs. Controlled rotations are decomposed into unconditioned rotations before synthesis; an uncontrolled global phase must never be promoted to a relative controlled phase.
+
+\subsection{Shortcut augmentation and filter overhead}
+Writing $\widehat A=A/\alpha_F$ and $\widehat b=b/\norm b$, we implement an equivalent doubled-system augmentation
+\begin{equation}
+ A_\tau=\widehat A\oplus\tau^{-1}I_D,\qquad
+ b'=\tfrac1{\sqrt2}(\widehat b,e_0),\qquad 1\le\tau\le K.
+\end{equation}
+The solution is proportional to $(\widehat A^{-1}\widehat b,\tau e_0)$. Its norm angle and singular-gap promise are the same as in the single-coordinate augmentation in the Shortcut proof. Extra identity coordinates have no RHS support and add no kernel direction. This is our equivalent realization, allowing a single controlled matrix oracle and a controlled rotation in the other branch. Preparation of $b'$ uses a Hadamard and a controlled $U_b$. Projection onto the original branch extracts the desired solution component after reflection. The kernel filters use $G=Q_b\widehat A$ or $G_\tau=Q_{b'}A_\tau$; their block encodings include preparation and unpreparation of the RHS and a zero-state check.
+
+For $c$ controls, a clean-ancilla AND ladder costs
+\begin{equation}
+ M(c)=\begin{cases}0,&c\le1,\\7(2c-3),&c\ge2.\end{cases}
+\end{equation}
+There are $c-2$ computed ANDs, a target Toffoli, and the reversed ladder. Negative controls add only Clifford X gates. Reserve
+\begin{equation}
+ W=W_A+2L+n+8.
+\end{equation}
+Testing additional workspace that is clean at oracle boundaries leaves the projected operator unchanged. The following uniform per-query envelope includes endpoints by charging them on every query:
+\begin{align}\label{eq:slot}
+ g_0&=cA_0+2cb_0+6M(n+1)+2M(W),\\
+ g_R&=8nt+5,\qquad g_{\rm query}=g_0+g_RR.
+\end{align}
+The terms are respectively controlled matrix access, two controlled RHS accesses, six system/branch checks, two QSVT projector NOTs, and rotations. Of the five additional rotation slots, two implement the augmentation's controlled rotation, one is a QSVT phase, and two reserve endpoint work. Six system checks cover the kernel-block checks and state-preparation/projection endpoints with slack; KP is charged the same envelope although it needs less work. Basis-state preparation, measurement, reset, and classical branching contribute no T gates in this convention. This deliberately loose construction does not report minimum ancillas or a compiler-measured gate list.
+
+\section{A finite, constructive rotation budget}\label{sec:rotation}
+A practical synthesis rule such as $R=\ceil{3\log_2(1/\zeta)+10}$ is useful for modeling but the additive 10 is not a uniform theorem implied by an asymptotic synthesis result. We instead give a slower elementary construction with explicit constants. It uses heralded resource-state preparation and angle-doubling injection, techniques consistent with gate-teleportation constructions~\cite{injection}. The particular finite envelope and proof below are derived here.
+
+\begin{lemma}[Phase resource]\label{lem:resource}
+For any classically specified phase $\theta$ and integer $b\ge1$, there is a Clifford+Toffoli attempt costing at most
+\begin{equation}\label{eq:resource}
+ g_{\rm prep}=7+2bM(b+2)
+\end{equation}
+T gates, succeeding with probability at least $1/16$, whose heralded output is within vector norm $2^{1-b}$ of $(\ket0+e^{i\theta}\ket1)/\sqrt2$.
+\end{lemma}
+\begin{proof}
+Set $B=2^b$ and choose integers $c,s\in[-B,B]$ with $|c/B-\cos\theta|,|s/B-\sin\theta|\le1/B$. Certified interval computation with slack gives such integers. Prepare two branch bits and $b$ address bits in uniform superposition. With target and success flag initially zero, accept the following branches: branch 00 accepts every address and has target 0; branch 01 accepts addresses $j<|c|$, has target 1 and phase $\operatorname{sgn}(c)$; branch 10 accepts $j<|s|$, has target 1 and phase $i\operatorname{sgn}(s)$; branch 11 rejects. The target is the XOR of the branch bits. S and Z gates implement the indicated phases; a phase on branch 11 is immaterial.
+
+Each threshold comparison is a disjoint union of at most $b$ binary prefix cubes. Toggle the success flag on these cubes using at most $b+2$ controls, including the branch bits. The always-accepted branch costs one Toffoli; two thresholds cost at most $2bM(b+2)$. Thresholds 0 and $B$ respectively accept none and all and fit the same envelope. Measure the success flag, then Hadamard and measure the branch/address registers, accepting only flag 1 and all other outcomes zero. The unnormalized target is exactly
+\begin{equation}
+ \tfrac14\bigl(\ket0+(c+is)\ket1/B\bigr).
+\end{equation}
+Thus the unconditional success probability of an attempt is $[1+(c^2+s^2)/B^2]/16\ge1/16$. Before normalization the error against $(1,e^{i\theta})$ is at most $\sqrt2/B$. The inequality $\norm{u/\norm u-v/\norm v}\le2\norm{u-v}/\norm v$ gives the claimed $2/B$ error. Failed attempts are discarded before interacting with solver data.
+\end{proof}
+
+For an ideal phase resource, CNOT from the data qubit to the resource followed by a Z measurement of the resource has data Kraus operators
+\begin{equation}
+ \tfrac1{\sqrt2}\operatorname{diag}(1,e^{i\theta}),\qquad
+ \tfrac1{\sqrt2}\operatorname{diag}(e^{i\theta},1).
+\end{equation}
+Both outcomes have probability $1/2$, even for entangled input. Outcome 0 implements the desired phase; outcome 1 has the wrong sign, up to a harmless global phase. Correct by injecting $2\theta$, then $4\theta$, and so on. After $j$ failures the accumulated phase is $-(2^j-1)\theta$; the next successful outcome at phase $2^j\theta$ gives $\theta$. A cap of $J$ injections has ideal abort probability $2^{-J}$. Clifford conjugation implements the unconditioned Y and Z rotations used above. All controls are decomposed before this step.
+
+For $H$ total rotation slots and error allowance $\gamma$, choose
+\begin{equation}\label{eq:synthesis}
+\begin{aligned}
+ J&=\max\{1,\clog(H/\gamma)\},\\
+ P&=16\max\{1,\clog(HJ/\gamma)\},\\
+ b&=\max\{1,\clog(4HJ/\gamma)\},\\
+ R_{\rm upper}&=JP[7+2bM(b+2)].
+\end{aligned}
+\end{equation}
+Each injection gets at most $P$ offline resource attempts. Union bounds give injection-cap abort at most $H2^{-J}\le\gamma$ and offline-preparation abort at most
+$HJ(15/16)^P\le HJ2^{-P/16}\le\gamma$. Replacing the successful resource states by ideal ones changes the full adaptive output instrument in trace distance by at most $2HJ2^{-b}\le\gamma$, by a hybrid argument and channel contractivity. We do not assume that approximate resources preserve exact half-probability injection outcomes; this discrepancy is included in the hybrid bound.
+
+\section{Precision, finite sampling, and the function \texorpdfstring{$f$}{f}}
+Set
+\begin{equation}\label{eq:precision}
+ \gamma=\min\{\epsilon(1-\delta_s)/64,\delta/16\},\quad
+ t=\max\{1,\clog(12nQ/\gamma)\},\quad H=Qg_R.
+\end{equation}
+Clader et al.'s Eq.~(41) bounds full block-encoding unitary error due to stored angle rounding by $\pi n2^{-t}$, before synthesizing the rotations. The RHS circuit fits the same conservative allowance. At most $Q$ occurrences of one matrix and two RHS unitaries therefore contribute less than $12nQ2^{-t}\le\gamma$. This controls full unitary error, not just an encoded matrix subblock. The angle-generation rounding must respect this promise. Rotation errors are handled separately by Eq.~\eqref{eq:synthesis} and are not counted twice.
+
+The ideal norm distribution has atoms of mass $1/[2(1+\ln K)]$ at each endpoint $1,K$, and otherwise samples $\ln\tau$ uniformly on $[0,\ln K]$. This continuous sampling is not granted exact finite implementation. Use a dyadic categorical approximation with $v$ bits and an equally spaced log grid with $2^u$ points, where
+\begin{equation}\label{eq:sampling}
+ u=\max\{1,\clog(8hQ^2/\gamma^2)\},\qquad
+ v=\max\{1,\clog(4C/\gamma)\}.
+\end{equation}
+Approximate each endpoint probability to within $2^{-v}$, keeping probabilities nonnegative and normalized. Total variation over $C$ cycles is at most $2C2^{-v}\le\gamma/2$. For the uniform part, couple $s=\ln\tau$ with its lower grid point. The only norm-dependent matrix-block angle is $a(s)=\arccos(e^{-s})$; its derivative obeys $a'(s)\le(2s)^{-1/2}$, hence
+\begin{equation}
+ |a(s+z)-a(s)|\le\sqrt{2z}.
+\end{equation}
+The corresponding unitary distance, including its control, is at most this angle difference. The $Q$-query hybrid distance is at most $Q\sqrt{2h2^{-u}}\le\gamma/2$. Together the finite norm distribution contributes at most $\gamma$. The grid indices are sampled using fair classical bits; angle values are generated by certified classical computation. These operations add no logical T gates.
+
+The complete formula is
+\begin{equation}\label{eq:final}
+ \boxed{f(p)=Q g_0+HJP\,[7+2bM(b+2)]\in\mathbb N.}
+\end{equation}
+Here $Q$ comes from Eq.~\eqref{eq:schedule}, $t,H$ from Eq.~\eqref{eq:precision}, $g_0,g_R$ from Eq.~\eqref{eq:slot}, and $J,P,b$ from Eq.~\eqref{eq:synthesis}. All ceilings are exact rational logarithmic ceilings; no asymptotic remainder, fitted constant, or floating-point rounding enters the returned integer. It has the anticipated structure ``query cap times the cost of a query,'' with matrix access, RHS access, wrappers, and a uniform synthesis budget expanded inside the query cost.
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+The ideal continuous-parameter capped solver succeeds with probability at least $1-\delta_s$ and conditional trace error at most $\epsilon/2$. Compare its full output instrument (including success/abort flags) with the implemented one. The five contributions bounded above are stored-angle rounding, finite norm sampling, resource-preparation aborts, injection-cap aborts, and approximate resources. The triangle inequality gives full instrument trace distance at most $e=5\gamma$. Consequently implemented abort probability is at most $\delta_s+e$. Normalizing the successful subnormalized states changes the conditional trace distance by at most $2e/(1-\delta_s-e)$, a conservative normalization bound. Therefore
+\begin{equation}\label{eq:guarantee}
+ p_{\rm abort}\le\delta_s+5\gamma\le\delta,\qquad
+ D_{\rm tr}\le\epsilon/2+\frac{10\gamma}{1-\delta_s-5\gamma}\le\epsilon.
+\end{equation}
+The last inequalities follow directly from Eq.~\eqref{eq:precision}. Every actual adaptive execution is capped at $C$ cycles, $Q$ query slots, $H$ rotations, $J$ injections per rotation, and $P$ preparations per injection. Equation~\eqref{eq:final} therefore bounds all paths, including paths whose outcome probabilities are changed by approximation and paths that ultimately abort.
+\end{proof}
+
+A loose logical-qubit allocation is $3W+2(n+1)+4b+30$, permitting serial synthesis attempts, clean ladder ancillas, and retained solver registers. It is an allocation envelope rather than an optimized width. T depth, Clifford depth, physical qubits, distillation throughput, and runtime are not inferred from the T count.
+
+\section{Implementation and reproducible examples}
+\texttt{upper\_bound.py} uses Python's standard-library integers and \texttt{Fraction}. Decimal and rational strings avoid input rounding. \texttt{f(p)} returns the integer in Eq.~\eqref{eq:final}; \texttt{estimate(p)} also exposes every schedule parameter, exclusive cost component, and achieved error/abort bound. The parameter contract is:
+\begin{center}\small
+\begin{tabular}{p{0.29\linewidth}p{0.63\linewidth}}
+\toprule
+Input & Meaning\\\midrule
+\texttt{N} & Original dimension, integer at least 2.\\
+\texttt{kappa} & Certified condition upper bound, at least 1.\\
+\texttt{epsilon\_state} & Conditional trace-distance tolerance, default 0.01.\\
+\texttt{delta} & Overall abort allowance, default 0.01.\\
+\texttt{rho\_upper} & Optional certified Frobenius/spectral norm ratio bound.\\
+\texttt{effective\_inverse\_gap} & Optional direct certified $\alpha_F/\sigma_{\min}$ bound; mutually exclusive with \texttt{rho\_upper}.\\
+\texttt{instance\_id} & Optional provenance label; does not affect the count.\\
+\bottomrule
+\end{tabular}
+\end{center}
+The program checks parameter domains, not the truth of externally supplied matrix promises. A false spectral certificate invalidates the guarantee. A direct inverse-gap input supersedes $\kappa\rho$ but does not reinterpret the separately recorded $\kappa$.
+\begin{lstlisting}[language=Python]
+from upper_bound import f, estimate
+p = {"N": 1024, "kappa": 100,
+     "epsilon_state": "0.01", "delta": "0.01"}
+assert f(p) == 86721425529887187200
+print(estimate(p))
+\end{lstlisting}
+For this example $K=3200$, $C=119$, $Q=\GenericQ$, $t=43$, $g_R=3445$, and $H=24925264000$. Synthesis uses $J=48$, $P=848$, and $b=55$, giving $R_{\rm upper}=3479255808$. The exclusive structural and synthesis contributions are
+\begin{align}
+ T_{\rm structure}&=55991953875200,\\
+ T_{\rm synthesis}&=86721369537933312000,\\
+ f(p)&=\GenericT.
+\end{align}
+The achieved trace-error bound is $1679/255800<0.01$ and abort bound is $1679/512000<0.01$. The large synthesis overhead is the price of this simple, fully bounded construction; it is not a prediction that an optimized implementation needs billions of T gates for each rotation. Certified compiled rotation lists can yield a much tighter upper bound, but are not supplied here.
+
+\subsection{The task-02 diffusion matrix}
+For the existing instance with $m=127$, $N=m^2=16129$, coefficient parameter $\beta=9$, grid spacing $a=1/(m+1)$, and contrast $C_a=1+\beta$, use the scaled matrix $B=a^2A$ and positive padding $4C_aI$. The exact Frobenius normalization is
+\begin{align}
+ \alpha_F^2={}&(18m-2)\sum_{i=1}^{m}(1+\beta ia)^2\nonumber\\
+ &+2m\sum_{i=1}^{m-1}(1+\beta(i+1/2)a)^2
+ +(D-m^2)(4C_a)^2.
+\end{align}
+The reproduction script evaluates the sums rationally, brackets $\pi$ rationally, and uses $\sin z\ge z-z^3/6$ to obtain a rational lower bound $\ell$ on $8\sin^2(\pi a/2)$. It supplies $\kappa=8C_a/\ell$ and the tighter direct inverse gap $K=\ceil{\alpha_F}/\ell$. The ceiling square root is computed by integer comparisons, not floating point. For $\epsilon=10^{-5}$ and $\delta=0.01$ the state-only sufficient budget is
+\begin{equation}
+ f(p_{\rm diffusion})=\ApplicationT.
+\end{equation}
+These are example state tolerances, not a mapping from the task-02 signed scalar tolerance. The sparse normalization used by another access circuit must not replace this Frobenius normalization without changing the BE adapter.
+\begin{center}
+\begin{tabular}{lrrrrr}
+\toprule
+Example & $N$ & $K$ (rounded) & $t$ & $b$ & $J$\\\midrule
+\input{parameter-table.tex}
+\end{tabular}
+\end{center}
+
+\subsection{Reproduction and validation}
+Run \texttt{python3 reproduce.py} in the report directory with NumPy installed for the small component checks. The callable estimator itself has no third-party dependency. Reproduction writes the two inputs and outputs, a 24-row sensitivity table, source/input hashes, and validation results. Tests cover exact logarithmic ceilings, all cap/error inequalities with rational arithmetic, disjoint comparator truth tables through six bits, explicit heralded phase-resource amplitudes, angle-doubling injection identities, the norm-angle continuity bound, parameter rejection, and monotonicity checks. These checks support the construction; the mathematical guarantee is proved above and is not inferred from testing a few matrices. No complete QLSA circuit or physical schedule has been compiled.
+
+\section{Interpretation and manuscript handoff}
+The result answers the logical resource question: a known finite number of T gates is sufficient to prepare a solution-state ensemble with specified trace error and failure allowance, given the stated access and classical preprocessing promises. It is an upper bound, not an exact required/minimum gate count. Internal solver retries, input-unitary calls, oracle controls, filter projectors, finite sampling, and synthesis retries are already included and must not receive another success-probability multiplier.
+
+The older task-local \texttt{t\_count.py} remains a separate practical model of an expected T count. For the generic example it reports approximately $1.4771\times10^{12}$ under a heuristic finite rotation-synthesis rule. Comparing that number directly with this report's $8.6721\times10^{19}$ would mix expectation with a cap and heuristic synthesis with a deliberately inefficient certified construction. It does not establish the numerical tightness of the analytic QLSA query bound. Costa et al.'s empirical study is relevant to practical constants, but does not remove the need to price the chosen data-access circuit and certify its finite synthesis assumptions.
+
+For the revision, this supplies a reproducible modern-solver alternative for reviewer C1-1 and an explicit access-cost contribution for C1-2. Task 05 must still price input representation and the required scientific observable, including any coherent reference, norm recovery, repetitions, and error allocation. Task 06 must supply logical scheduling and QEC; tasks 07--09 must supply physical costs and comparisons. A fair end-to-end HHL comparison requires that common output and hardware contract. No physical crossover or practical quantum advantage follows from this state-only upper bound.
+
+\begin{thebibliography}{9}
+\bibitem{dalzell} A. M. Dalzell, ``A shortcut to an optimal quantum linear system solver,'' arXiv:2406.12086v2 (8 April 2026). Algorithm 3, Theorem 2, Eqs. (118), (122), and (128). \url{https://arxiv.org/abs/2406.12086v2}.
+\bibitem{costa} P. C. S. Costa, A. M. Dalzell, D. An, and D. W. Berry, ``Constant Factor Analysis of Optimal Quantum Linear Solvers in Practice,'' arXiv:2604.22185v2 (27 April 2026). \url{https://arxiv.org/abs/2604.22185v2}.
+\bibitem{clader} B. D. Clader, A. M. Dalzell, N. Stamatopoulos, G. Salton, M. Berta, and W. J. Zeng, ``Quantum Resources Required to Block-Encode a Matrix of Classical Data,'' \emph{IEEE Transactions on Quantum Engineering} \textbf{3}, 3103323 (2022). Formulas pinned to arXiv:2206.03505v1, Tables 1 and 3, Sec. IV.4, and Eq. (41). \url{https://doi.org/10.1109/TQE.2022.3231194}.
+\bibitem{toffoli} P. Selinger, ``Quantum circuits of T-depth one,'' \emph{Physical Review A} \textbf{87}, 042302 (2013). \url{https://doi.org/10.1103/PhysRevA.87.042302}.
+\bibitem{injection} X. Zhou, D. W. Leung, and I. L. Chuang, ``Methodology for quantum logic gate construction,'' \emph{Physical Review A} \textbf{62}, 052316 (2000). \url{https://doi.org/10.1103/PhysRevA.62.052316}.
+\end{thebibliography}
+\end{document}

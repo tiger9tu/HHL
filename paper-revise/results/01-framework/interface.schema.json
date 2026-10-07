@@ -1,0 +1,1397 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "symbolic",
+        "partial",
+        "evaluated"
+      ]
+    },
+    "pp": {
+      "$ref": "#/definitions/pp"
+    },
+    "cq": {
+      "$ref": "#/definitions/cq"
+    },
+    "cc": {
+      "$ref": "#/definitions/cc"
+    },
+    "symbols": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/quantity"
+      }
+    },
+    "budgets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "output_error",
+              "failure_probability"
+            ]
+          },
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/quantity"
+              },
+              {
+                "properties": {
+                  "unit": {
+                    "const": "1"
+                  }
+                }
+              }
+            ]
+          },
+          "scope": {
+            "enum": [
+              "per_output",
+              "batch"
+            ]
+          },
+          "conversion_or_event": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "branch": {
+            "enum": [
+              "quantum",
+              "classical"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "value",
+          "scope",
+          "conversion_or_event",
+          "owner",
+          "branch"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "boundary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metric": {
+          "enum": [
+            "operational_gross",
+            "operational_incremental"
+          ]
+        },
+        "included": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "excluded": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "allocation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "window": {
+          "type": "string",
+          "minLength": 1
+        },
+        "facility_overhead": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "metric",
+        "included",
+        "excluded",
+        "allocation",
+        "window",
+        "facility_overhead"
+      ],
+      "additionalProperties": false
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/stage"
+      },
+      "minItems": 1
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "established",
+              "assumed",
+              "measured",
+              "unresolved"
+            ]
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "statement",
+          "source"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "uncertainty": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "joint_parameters": {
+          "type": "string",
+          "minLength": 1
+        },
+        "discrete_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reporting": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "method",
+        "joint_parameters",
+        "discrete_policy",
+        "reporting"
+      ],
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "input_manifest": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_versions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "input_manifest",
+        "model_versions",
+        "commands",
+        "sources"
+      ],
+      "additionalProperties": false
+    },
+    "feasibility": {
+      "type": "object",
+      "properties": {
+        "quantum": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "feasible",
+                "infeasible",
+                "unresolved"
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "classical": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "feasible",
+                "infeasible",
+                "unresolved"
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "quantum",
+        "classical"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "record_id",
+    "status",
+    "pp",
+    "cq",
+    "cc",
+    "symbols",
+    "budgets",
+    "boundary",
+    "stages",
+    "assumptions",
+    "uncertainty",
+    "provenance",
+    "feasibility"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HHL comparison framework contract v1.0.0",
+  "definitions": {
+    "quantity": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "enum": [
+            "1",
+            "gate",
+            "query",
+            "layer",
+            "logical_qubit",
+            "physical_qubit",
+            "operation",
+            "byte",
+            "bit",
+            "code_cycle",
+            "s",
+            "J",
+            "W",
+            "operation/s",
+            "byte/s",
+            "s/code_cycle",
+            "W/physical_qubit",
+            "m2"
+          ]
+        },
+        "status": {
+          "enum": [
+            "known",
+            "symbolic",
+            "unknown"
+          ]
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0
+        },
+        "expression": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "unit",
+        "status",
+        "note"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "known"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "value"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "expression"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "symbolic"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "expression"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "value"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "unknown"
+              }
+            }
+          },
+          "then": {
+            "required": [],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "value"
+                  ]
+                },
+                {
+                  "required": [
+                    "expression"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "pp": {
+      "type": "object",
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "matrix_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "matrix_representation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_access": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_location": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rhs": {
+          "type": "string",
+          "minLength": 1
+        },
+        "N": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "s_row": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "s_col": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "kappa_2": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "scaling": {
+          "type": "string",
+          "minLength": 1
+        },
+        "output": {
+          "type": "object",
+          "properties": {
+            "definition": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unit": {
+              "type": "string",
+              "minLength": 1
+            },
+            "metric": {
+              "type": "string",
+              "minLength": 1
+            },
+            "epsilon": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/quantity"
+                },
+                {
+                  "properties": {
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                }
+              ]
+            },
+            "normalization": {
+              "type": "string",
+              "minLength": 1
+            },
+            "delta_total": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/quantity"
+                },
+                {
+                  "properties": {
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                }
+              ]
+            },
+            "reference_solution": {
+              "type": "string",
+              "minLength": 1
+            },
+            "success_scope": {
+              "enum": [
+                "per_output",
+                "batch"
+              ]
+            }
+          },
+          "required": [
+            "definition",
+            "unit",
+            "metric",
+            "epsilon",
+            "normalization",
+            "delta_total",
+            "reference_solution",
+            "success_scope"
+          ],
+          "additionalProperties": false
+        },
+        "reuse": {
+          "type": "object",
+          "properties": {
+            "outputs": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/quantity"
+                },
+                {
+                  "properties": {
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                }
+              ]
+            },
+            "groups": {
+              "type": "string",
+              "minLength": 1
+            },
+            "invalidation": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "outputs",
+            "groups",
+            "invalidation"
+          ],
+          "additionalProperties": false
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/quantity"
+          }
+        }
+      },
+      "required": [
+        "instance_id",
+        "matrix_class",
+        "matrix_representation",
+        "input_access",
+        "input_location",
+        "rhs",
+        "N",
+        "s_row",
+        "s_col",
+        "kappa_2",
+        "scaling",
+        "output",
+        "reuse",
+        "parameters"
+      ],
+      "additionalProperties": false
+    },
+    "cq": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transformed_operator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preconditioner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "precision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "io_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hardware": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/quantity"
+          }
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/quantity"
+          }
+        },
+        "optimization_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "compilation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "qec": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "algorithm",
+        "transformed_operator",
+        "preconditioner",
+        "precision",
+        "io_model",
+        "hardware",
+        "limits",
+        "parameters",
+        "optimization_policy",
+        "model_version",
+        "compilation",
+        "qec"
+      ],
+      "additionalProperties": false
+    },
+    "cc": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transformed_operator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preconditioner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "precision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "io_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hardware": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/quantity"
+          }
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/quantity"
+          }
+        },
+        "optimization_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "algorithm",
+        "transformed_operator",
+        "preconditioner",
+        "precision",
+        "io_model",
+        "hardware",
+        "limits",
+        "parameters",
+        "optimization_policy",
+        "model_version"
+      ],
+      "additionalProperties": false
+    },
+    "stage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "branch": {
+          "enum": [
+            "quantum",
+            "classical"
+          ]
+        },
+        "layer": {
+          "enum": [
+            "logical",
+            "classical_work",
+            "qec",
+            "hardware"
+          ]
+        },
+        "owner": {
+          "enum": [
+            "03",
+            "04",
+            "05",
+            "06",
+            "07",
+            "08",
+            "09"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "setup",
+            "per_output",
+            "batch"
+          ]
+        },
+        "reuse_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "multiplicity": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "statistic": {
+          "enum": [
+            "deterministic",
+            "expected",
+            "upper_bound",
+            "quantile"
+          ]
+        },
+        "statistic_note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "covers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "derived_from": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "resources": {}
+      },
+      "required": [
+        "id",
+        "branch",
+        "layer",
+        "owner",
+        "scope",
+        "reuse_key",
+        "multiplicity",
+        "statistic",
+        "statistic_note",
+        "covers",
+        "derived_from",
+        "assumptions",
+        "resources"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "layer": {
+                "const": "logical"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resources": {
+                "$ref": "#/definitions/logical"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "layer": {
+                "const": "classical_work"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resources": {
+                "$ref": "#/definitions/classical"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "layer": {
+                "const": "qec"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resources": {
+                "$ref": "#/definitions/qec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "layer": {
+                "const": "hardware"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resources": {
+                "$ref": "#/definitions/hardware"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "logical": {
+      "type": "object",
+      "properties": {
+        "gate_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gates": {
+          "type": "object",
+          "additionalProperties": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/quantity"
+              },
+              {
+                "properties": {
+                  "unit": {
+                    "const": "gate"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "oracle_queries": {
+          "type": "object",
+          "additionalProperties": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/quantity"
+              },
+              {
+                "properties": {
+                  "unit": {
+                    "const": "query"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "queries_expanded": {
+          "type": "boolean"
+        },
+        "depth": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "layer"
+                }
+              }
+            }
+          ]
+        },
+        "t_depth": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "layer"
+                }
+              }
+            }
+          ]
+        },
+        "logical_qubits_peak": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "logical_qubit"
+                }
+              }
+            }
+          ]
+        },
+        "schedule": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "gate_basis",
+        "gates",
+        "oracle_queries",
+        "queries_expanded",
+        "depth",
+        "t_depth",
+        "logical_qubits_peak",
+        "schedule"
+      ],
+      "additionalProperties": false
+    },
+    "classical": {
+      "type": "object",
+      "properties": {
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "minLength": 1
+              },
+              "precision": {
+                "type": "string",
+                "minLength": 1
+              },
+              "count": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/quantity"
+                  },
+                  {
+                    "properties": {
+                      "unit": {
+                        "const": "operation"
+                      }
+                    }
+                  }
+                ]
+              },
+              "convention": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "kind",
+              "precision",
+              "count",
+              "convention"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "memory_peak": {
+          "type": "object",
+          "additionalProperties": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/quantity"
+              },
+              {
+                "properties": {
+                  "unit": {
+                    "const": "byte"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "data_movement": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "interface": {
+                "type": "string",
+                "minLength": 1
+              },
+              "direction": {
+                "type": "string",
+                "minLength": 1
+              },
+              "bytes": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/quantity"
+                  },
+                  {
+                    "properties": {
+                      "unit": {
+                        "const": "byte"
+                      }
+                    }
+                  }
+                ]
+              },
+              "accounting": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "interface",
+              "direction",
+              "bytes",
+              "accounting"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "synchronizations": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "schedule": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "operations",
+        "memory_peak",
+        "data_movement",
+        "synchronizations",
+        "schedule"
+      ],
+      "additionalProperties": false
+    },
+    "qec": {
+      "type": "object",
+      "properties": {
+        "code_cycles": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "code_cycle"
+                }
+              }
+            }
+          ]
+        },
+        "physical_qubits_peak": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "physical_qubit"
+                }
+              }
+            }
+          ]
+        },
+        "distance": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "factory_count": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "failure_bound": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "schedule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "occupancy": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "code_cycles",
+        "physical_qubits_peak",
+        "distance",
+        "factory_count",
+        "failure_bound",
+        "schedule",
+        "occupancy"
+      ],
+      "additionalProperties": false
+    },
+    "hardware": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "s"
+                }
+              }
+            }
+          ]
+        },
+        "energy": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "J"
+                }
+              }
+            }
+          ]
+        },
+        "physical_qubits_peak": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/quantity"
+            },
+            {
+              "properties": {
+                "unit": {
+                  "const": "physical_qubit"
+                }
+              }
+            }
+          ]
+        },
+        "memory_peak": {
+          "type": "object",
+          "additionalProperties": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/quantity"
+              },
+              {
+                "properties": {
+                  "unit": {
+                    "const": "byte"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "boundary_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schedule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "energy_model": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "time",
+        "energy",
+        "physical_qubits_peak",
+        "memory_peak",
+        "boundary_id",
+        "schedule",
+        "energy_model"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

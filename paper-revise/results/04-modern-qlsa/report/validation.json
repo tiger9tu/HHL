@@ -1,0 +1,15 @@
+{
+  "result": "passed",
+  "checks": [
+    "exact rational logarithmic ceilings, including powers of two and subunit inputs",
+    "all six cap/error inequalities verified with exact rational arithmetic at four parameter points",
+    "complete prefix-comparator truth tables through six bits, including thresholds 0 and 2^b",
+    "132 explicit phase-resource branch sums: amplitudes, success>=1/16, state error<=2/2^b",
+    "angle-doubling injection recovers desired gate after zero through four failed outcomes",
+    "endpoint-inclusive numerical checks of the proved norm-angle Holder bound",
+    "resource monotonicity and rejection of invalid/ambiguous inputs"
+  ],
+  "python": "3.6.15",
+  "max_phase_resource_error_times_2_to_b": 0.3973235755495779,
+  "scope": "Exact schedule inequalities and small component simulations; mathematical proof is in the report, not inferred from sampling."
+}

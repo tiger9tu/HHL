@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "scope": "stage fragment structural validation; not a full-record lineage or accuracy certificate",
+  "schema_sha256": "61a459f4dcdb22bd21d9f2b84f0e5d8ca6deefd2e4e045b2300d7efabd7b0920",
+  "stage_schema_validation": "passed",
+  "schedule_and_budget_checks": "passed"
+}

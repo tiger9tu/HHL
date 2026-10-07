@@ -1,0 +1,264 @@
+{
+  "python": "3.6.15",
+  "numpy": "1.17.3",
+  "status": "passed",
+  "cases": [
+    {
+      "m": 3,
+      "beta": 0.0,
+      "iterations": 5,
+      "scalar": 0.030517578125,
+      "continuum_error": 0.004204644097222224,
+      "disc_bound": 0.004204644097222222,
+      "residual_scalar_bound": 1.0417500911620098e-17,
+      "mesh_admissible": false,
+      "kappa_measured": 5.82842712474619,
+      "preconditioned_kappa_measured": 1.0000000000000044
+    },
+    {
+      "m": 3,
+      "beta": 1.0,
+      "iterations": 9,
+      "scalar": 0.030387930030773655,
+      "continuum_error": 0.004334292191448569,
+      "disc_bound": 0.0044824935082226364,
+      "residual_scalar_bound": 1.4393846002295302e-17,
+      "mesh_admissible": false,
+      "kappa_measured": 6.2885381409093535,
+      "preconditioned_kappa_measured": 1.425220022963988
+    },
+    {
+      "m": 3,
+      "beta": 9.0,
+      "iterations": 9,
+      "scalar": 0.03016163742056273,
+      "continuum_error": 0.004560584801659495,
+      "disc_bound": 0.0067052887962259534,
+      "residual_scalar_bound": 1.1167108647839522e-16,
+      "mesh_admissible": false,
+      "kappa_measured": 8.602784543773822,
+      "preconditioned_kappa_measured": 2.51100003390474
+    },
+    {
+      "m": 3,
+      "beta": 99.0,
+      "iterations": 9,
+      "scalar": 0.030060026179542603,
+      "continuum_error": 0.004662196042679621,
+      "disc_bound": 0.03171173578626327,
+      "residual_scalar_bound": 1.1443570976171899e-15,
+      "mesh_admissible": false,
+      "kappa_measured": 10.077502948717353,
+      "preconditioned_kappa_measured": 3.128664627129955
+    },
+    {
+      "m": 7,
+      "beta": 0.0,
+      "iterations": 22,
+      "scalar": 0.03364562988278143,
+      "continuum_error": 0.0010765923394407961,
+      "disc_bound": 0.0010765923394097222,
+      "residual_scalar_bound": 1.6932641557013265e-11,
+      "mesh_admissible": false,
+      "kappa_measured": 25.274142369087905,
+      "preconditioned_kappa_measured": 1.000000000000017
+    },
+    {
+      "m": 7,
+      "beta": 1.0,
+      "iterations": 29,
+      "scalar": 0.03360969457758191,
+      "continuum_error": 0.0011125276446403154,
+      "disc_bound": 0.0011675398774383912,
+      "residual_scalar_bound": 2.4209694870892507e-11,
+      "mesh_admissible": false,
+      "kappa_measured": 29.210906869554783,
+      "preconditioned_kappa_measured": 1.7004009060990593
+    },
+    {
+      "m": 7,
+      "beta": 9.0,
+      "iterations": 36,
+      "scalar": 0.03354142192438045,
+      "continuum_error": 0.0011808002978417748,
+      "disc_bound": 0.001895120181667744,
+      "residual_scalar_bound": 4.7729906837526035e-11,
+      "mesh_admissible": false,
+      "kappa_measured": 44.907739944949114,
+      "preconditioned_kappa_measured": 4.504085729518377
+    },
+    {
+      "m": 7,
+      "beta": 99.0,
+      "iterations": 44,
+      "scalar": 0.033501904719784675,
+      "continuum_error": 0.0012203175024375484,
+      "disc_bound": 0.01008039860424796,
+      "residual_scalar_bound": 2.4699669058947216e-11,
+      "mesh_admissible": false,
+      "kappa_measured": 58.70980831691054,
+      "preconditioned_kappa_measured": 7.4281365082200335
+    },
+    {
+      "m": 15,
+      "beta": 0.0,
+      "iterations": 47,
+      "scalar": 0.03445148468017419,
+      "continuum_error": 0.0002707375420480315,
+      "disc_bound": 0.000270737542046441,
+      "residual_scalar_bound": 3.333029352322512e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 15,
+      "beta": 1.0,
+      "iterations": 64,
+      "scalar": 0.03444227208287851,
+      "continuum_error": 0.0002799501393437112,
+      "disc_bound": 0.00029658779557872585,
+      "residual_scalar_bound": 3.3055545408046704e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 15,
+      "beta": 9.0,
+      "iterations": 85,
+      "scalar": 0.03442422580368137,
+      "continuum_error": 0.0002979964185408565,
+      "disc_bound": 0.0005033898238370047,
+      "residual_scalar_bound": 4.442743635255335e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 15,
+      "beta": 99.0,
+      "iterations": 109,
+      "scalar": 0.03441169204068048,
+      "continuum_error": 0.0003105301815417433,
+      "disc_bound": 0.002829912641742642,
+      "residual_scalar_bound": 3.3986845573335896e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 31,
+      "beta": 0.0,
+      "iterations": 96,
+      "scalar": 0.034654438495642786,
+      "continuum_error": 6.778372657943732e-05,
+      "disc_bound": 6.778372658623589e-05,
+      "residual_scalar_bound": 4.171606095058092e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 31,
+      "beta": 1.0,
+      "iterations": 136,
+      "scalar": 0.03465212091038897,
+      "continuum_error": 7.010131183325663e-05,
+      "disc_bound": 7.466769406097454e-05,
+      "residual_scalar_bound": 4.9632333979919884e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 31,
+      "beta": 9.0,
+      "iterations": 184,
+      "scalar": 0.0346475400647,
+      "continuum_error": 7.468215752222396e-05,
+      "disc_bound": 0.0001297394338588837,
+      "residual_scalar_bound": 4.7823862975169973e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 31,
+      "beta": 99.0,
+      "iterations": 243,
+      "scalar": 0.03464400108973999,
+      "continuum_error": 7.822113248223683e-05,
+      "disc_bound": 0.0007492965065853616,
+      "residual_scalar_bound": 4.6300247587321136e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 63,
+      "beta": 0.0,
+      "iterations": 195,
+      "scalar": 0.034705270081768616,
+      "continuum_error": 1.695214045360771e-05,
+      "disc_bound": 1.6952140463723077e-05,
+      "residual_scalar_bound": 4.976098100753385e-11,
+      "mesh_admissible": true
+    },
+    {
+      "m": 63,
+      "beta": 1.0,
+      "iterations": 283,
+      "scalar": 0.03470468978103566,
+      "continuum_error": 1.7532441186567105e-05,
+      "disc_bound": 1.8728025697415286e-05,
+      "residual_scalar_bound": 4.456917946480154e-11,
+      "mesh_admissible": true
+    },
+    {
+      "m": 63,
+      "beta": 9.0,
+      "iterations": 386,
+      "scalar": 0.03470354005621146,
+      "continuum_error": 1.8682166010766665e-05,
+      "disc_bound": 3.293510756695297e-05,
+      "residual_scalar_bound": 4.451634001184694e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 63,
+      "beta": 99.0,
+      "iterations": 514,
+      "scalar": 0.03470260625834671,
+      "continuum_error": 1.961596387551473e-05,
+      "disc_bound": 0.00019276477859925188,
+      "residual_scalar_bound": 4.635309247806646e-11,
+      "mesh_admissible": false
+    },
+    {
+      "m": 127,
+      "beta": 0.0,
+      "iterations": 397,
+      "scalar": 0.03471798379906474,
+      "continuum_error": 4.238423157484905e-06,
+      "disc_bound": 4.238423167003526e-06,
+      "residual_scalar_bound": 4.5766289733305304e-11,
+      "mesh_admissible": true
+    },
+    {
+      "m": 127,
+      "beta": 1.0,
+      "iterations": 579,
+      "scalar": 0.034717838667323,
+      "continuum_error": 4.383554899220488e-06,
+      "disc_bound": 4.689401680610383e-06,
+      "residual_scalar_bound": 4.6724671664540725e-11,
+      "mesh_admissible": true
+    },
+    {
+      "m": 127,
+      "beta": 9.0,
+      "iterations": 797,
+      "scalar": 0.03471755095073313,
+      "continuum_error": 4.671271489092854e-06,
+      "disc_bound": 8.297229789465236e-06,
+      "residual_scalar_bound": 4.636045479541652e-11,
+      "mesh_admissible": true
+    },
+    {
+      "m": 127,
+      "beta": 99.0,
+      "iterations": 1065,
+      "scalar": 0.034717312866887846,
+      "continuum_error": 4.909355334377363e-06,
+      "disc_bound": 4.8885296014082336e-05,
+      "residual_scalar_bound": 5.0430263646820605e-11,
+      "mesh_admissible": false
+    }
+  ],
+  "scope": "FP64 numerical diagnostics; analytic proof in specification.md; no timing or interval certification"
+}

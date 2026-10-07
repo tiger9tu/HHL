@@ -1,0 +1,5 @@
+{"started_unix": 1788972565.7856796, "hostname": "nid006997", "slurm_job_id": "58123095", "workers": 32, "blas_threads": "2", "python": "3.6.15", "numpy": "1.19.5", "scipy": "1.5.4", "source_sha256": "1f0c7e1a429bd34a695e24fb5f1118690d7bc59163675c82619b1ce9fe969a91", "base_seed": 20260909, "total_matrix_cases": 850, "scheduled_cases": 4, "times": [0.1, 1.0, 4.0], "repetitions": [1, 2, 4, 8, 16, 32], "normalized_microsteps": [0.025, 0.1, 0.25, 0.5, 0.75, 1.25], "comparison_absolute_tolerance": 5e-10}
+case=846 N=64 family=cancelling rows=24 seconds=0.081 done=1/4
+case=844 N=8 family=cancelling rows=24 seconds=0.389 done=2/4
+case=848 N=256 family=cancelling rows=24 seconds=1.326 done=3/4
+case=276 N=1024 family=fixed_band rows=24 seconds=48.930 done=4/4

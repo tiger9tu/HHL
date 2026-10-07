@@ -1,0 +1,9 @@
+{
+  "source": "https://arxiv.org/pdf/2211.12489v1#page=22",
+  "sha256": {
+    "table-v/paper_table_v.py": "1830cd88c945a998bbfba9e66c4dec2d33b86afe9320737ee73120f70b571ddd",
+    "table-v/reproduce.py": "6b68a815d2243cfa7e25ed2065e9206d144e47be6a77db4c57780ceb5cbac4ca",
+    "table-v/input.json": "4a878237ee2d4b5443d47903cf37bd9073c04a3d103c10a39e2a9533fe868718",
+    "sources/2211.12489v1.pdf": "a489aa40c2780478f67a69d8738bfdf69e4943bb0ed89fef52290a091b7f6833"
+  }
+}

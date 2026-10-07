@@ -1,0 +1,9 @@
+{
+  "pp": {"instance_id": "task03-2x2-diagnostic-not-task02", "N": 2, "s_row": 2, "s_col": 2, "kappa_2": 3},
+  "cq": {
+    "mode": "unknown_norm_optimal",
+    "operator_norm": 0.75,
+    "block_encoding_alpha": 1.0,
+    "epsilon_trace_algorithm": 0.01
+  }
+}

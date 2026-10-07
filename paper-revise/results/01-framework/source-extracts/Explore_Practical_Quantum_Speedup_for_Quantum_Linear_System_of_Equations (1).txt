@@ -1,0 +1,1723 @@
+
+--- PDF page 1 ---
+T owards identifying possible fault-tolerant advantage of quantum linear system
+algorithms in terms of space, time and energy
+Y ue T u,1, 2Mark Dubynskyi,3, 4Mohammad Mohammadisiahroudi,5Katia
+Riashchentceva,4Jinglei Cheng,1Dmitry Ryashchentse,6T amás T erlaky ,5and Junyu Liu1
+1Department of Computer Science, The University of Pittsburgh, Pittsburgh, P A 15260, USA
+2Department of Computational and Applied Mathematics,
+The University of Chicago, Chicago, IL 60637, USA
+3Mason Experimental Geometry Lab, F airfax, V A 22030, USA
+4The University of Oregon, Eugene, OR 97403, USA
+5Department of Industrial and Systems Engineering, Lehigh University, Bethlehem, P A 18015, USA
+6Charles Schwab Corporation, W estlake, TX 76262, USA
+(Dated: F ebruary 15, 2025)
+Quantum computing, a prominent non-V on Neu-
+mann paradigm beyond Moore’s law, offers su-
+perpolynomial speedups over classical methods
+for specific problems. However, its practical ad-
+vantages in terms of space, time, and energy ef-
+ficiency remain unclear. F urthermore, its appli-
+cability to critical real-world problems in science
+and industry , such as machine learning, is still un-
+certain. Finally , quantum noise in current devices
+entails significant overheads for error correction
+and fault tolerance, complicating fair comparisons
+with their classical counterparts. In this paper,
+we address all three issues through a detailed re-
+source estimation of space, time, and energy for
+fault-tolerant superconducting quantum devices.
+W e focus on the Harrow–Hassidim–Lloyd (HHL)
+algorithm, a quantum linear system algorithm
+with practical applications in machine learning.
+F or the pure computing process of these algo-
+rithms (excluding memory and data transfer) and
+compared to the exact classical counterpart (the
+conjugate gradient method), we find that pos-
+sible quantum advantages could emerge around
+the matrix size N≈233∼248, requiring O(105)
+physical qubits, O(1012∼1013)Joules of energy ,
+and approximately 10 days of computational time
+(O(106)seconds) under precise settings of sur-
+face code fault-tolerant computation and magic
+state distillation, with condition number, spar-
+sity , and precision κ,s≈ O(10∼100),ϵ∼0.01. Key
+parameters for the algorithm, including N,κ,s,ϵ ,
+are all adjustable in our resource estimator. A
+precise map of the quantum-classical comparison
+for these parameters is provided, illustrating the
+boundary of a practical, potential quantum ad-
+vantage. Our work demonstrates that significant
+benefits from quantum computing in important
+real-world problems, such as quantum linear sys-
+tem algorithms, are achievable and quantitatively
+determines how advanced a fault-tolerant quan-
+tum computer must be to realize this goal.I. INTRODUCTION
+Quantum computing [1] stands as the leading
+paradigm of next-generation computing technology . Un-
+like traditional computing, quantum computers can ac-
+cess and manipulate quantum states, which serve as car-
+riers of information for computational purposes. One of
+the primary motivations for developing quantum com-
+puting is its potential to achieve a possible quantum ad-
+vantage over its classical counterparts in solving certain
+problems. This potential quantum advantage, studied
+primarily in terms of time cost within computational
+complexity theory , has been theoretically demonstrated
+in problems such as factoring [2], searching [3], and simu-
+lation [4]. These advancements offer hope for sustaining
+or surpassing Moore’s law in the semiconductor industry .
+However, beyond the time complexity estimated in the
+gate models from theoretical computer science, it is chal-
+lenging to estimate and justify the possible quantum ad-
+vantage in practice. First, practical cost estimation of
+quantum computing requires state-of-the-art knowledge,
+from detailed theory covering prefactors in front of the
+big-O notation of complexity [5, 6], to explicit designs
+of quantum hardware, and it includes more comprehen-
+sive measurement such as time costs (measured in sec-
+onds), space costs (number of physical qubits), and in
+particular energy costs. Especially , the complex nature
+of quantitative energy sustainability estimation is highly
+uninvestigated, although the possible energy advantage
+of quantum computing algorithm is discussed mostly in
+the qualitative argument [7, 8]. Second, although the
+existence of potential quantum advantage for some algo-
+rithms is solidly justified in theory , it is challenging to
+prove that those algorithms can turn into real-world, sig-
+nificant benefits especially for commercial applications
+[9]. Finally , quantum states are extremely fragile and
+current quantum processors are noisy , making quantum
+error correction the only possible way to make large-scale,
+fault-tolerant quantum computing. F ault-tolerance, al-
+though sustainable in theory , requires lots of additional
+resources and experimental challenges, making precise re-
+source estimation much more challenging.
+In this work, we address all three of these challenges
+
+--- PDF page 2 ---
+2
+by conducting a full-stack, energy-aware resource esti-
+mation for the so-called Harrow–Hassidim–Lloyd (HHL)
+algorithm [10]. The HHL algorithm provides a Quantum
+Linear System Algorithm (QLSA) that can be used for
+matrix inversion. Given a linear equation A|x⟩=|b⟩,
+the algorithm returns a quantum state |x⟩=A−1|b⟩as a
+solution. F or certain classes of matrices, it has been theo-
+retically shown that the algorithm runs in logN time for
+anN×N matrix, making it exponentially faster than any
+known classical counterpart. Since linear algebra appli-
+cations are ubiquitous in modern science and technology ,
+the algorithm is regarded as one of the most promising
+applications for large-scale, fault-tolerant quantum pro-
+cessors [11].
+T o identify the regime of possible, practical quantum
+advantages, we systematically investigate the costs of
+QLSA. The primary input of QLSA is a general Hermi-
+tian matrix A of dimension N= 2n, with row sparsity s
+(wheres= max j(# of nonzero entries in row jofA)),
+precisionϵ, and condition number κ. F or non-Hermitian
+matrices, one can effectively solve a corresponding Her-
+mitian matrix instead, requiring only one additional
+qubit [10, 11]. At the logical level, we primarily adopt the
+original and classical HHL framework [10, 11]. F or quan-
+tum simulation, we employ the one-sparse Hamiltonian
+simulation model to implement eiAt, using [12] to esti-
+mate the T rotter error. Finally , we provide an explicit
+formula for estimating resource requirements at the log-
+ical level for HHL, particularly focusing on the number
+of different types of quantum gates. These estimates are
+validated using a quantum circuit state-vector simulation
+code.
+Moreover, we extend our analysis to resource estima-
+tions at the fault-tolerant level. T o achieve this, we utilize
+the framework proposed by Litinski [13] to estimate the
+fault-tolerance resource. The framework assume clifford
+gates are cheap and only accepts the number of T-gates
+as input, then search for the optimal surface code scheme
+that will minimize the space-time cost with logical error
+rate below one percent. . Finally , we compare our fault-
+tolerant resource estimates with those of classical algo-
+rithms. In particular, we discuss the classical counterpart
+to the Quantum Linear System Algorithm (QLSA): the
+conjugate gradient (CG) method [14]. The CG method
+is widely regarded as the classical analogue of QLSA,
+as it similarly exploits the sparsity and well-conditioned
+nature of the problem. Its time complexity is given by
+O(Nsκ log(1/ϵ)). W e conduct a detailed analysis of its
+exact scaling behavior and provide an estimation of its
+clock cycle requirements.
+The primary energy costs associated with executing
+the HHL algorithm stem from the cooling system. On
+the quantum side, we estimate the energy consumption
+based on the model proposed in [15], assuming that the
+energy cost scales linearly with the number of qubits, the
+total energy cost is given by the product of the runtime,
+the number of physical qubits, and a cooling eﬀiciency
+factor.T o estimate the cooling eﬀiciency , we refer to [16],
+which provides an approximation based on IBM Quan-
+tum System T wo’s dilution refrigerator, with an esti-
+mated energy eﬀiciency of 6.25 W atts per qubit. How-
+ever, it is important to note that cooling eﬀiciency is
+highly dependent on the quantum computer’s architec-
+ture and may vary significantly as quantum hardware
+evolves. Consequently , this estimation should be viewed
+as a rough approximation rather than a precise metric.
+On the classical side, we estimate the energy consump-
+tion using the power requirements of a typical desktop
+CPU. A standard desktop processor operating at a clock
+frequency of 1 GHz consumes approximately 50 W atts.
+This provides a baseline for evaluating the comparative
+energy eﬀiciency of classical and quantum computations
+in the context of the QLSA algorithm.
+Note that we consider only the costs incurred dur-
+ing the computation process. The costs associated with
+the interface between classical and quantum processors—
+such as uploading the matrix A and the vector |b⟩to
+the quantum device, as well as downloading the state
+|x⟩to classical memory—are not addressed in this work.
+The uploading problem can be mitigated by fast quan-
+tum memory solutions, such as Quantum Random Ac-
+cess Memory (QRAM) [17], whose circuits are, in fact,
+classically simulatable [18]. Meanwhile, the downloading
+process depends on the specific needs of the user. Since
+classical users cannot handle exponentially large datasets
+[19], quantum tomography techniques [20, 21] can be em-
+ployed to extract partial information from |x⟩.
+Our work is organized as follows. In Section II, we
+discuss our results comparing quantum and classical ap-
+proaches, along with their implications for computational
+speed and energy eﬀiciency . In Section III, we outline
+the key methodologies employed to obtain these results.
+At the logical level, this includes circuit implementation
+and exact scaling derivation, while at the physical level,
+it encompasses the implementation of the surface code
+optimizer . In Section IV, we provide conclusions and an
+outlook on future research directions. Additional techni-
+cal details, including a detailed formulation of the HHL
+algorithm, T rotter simulation strategies, surface code se-
+tups, classical counterparts, and energy analysis, are pro-
+vided in the Supplementary Material.
+II. RESUL TS
+In this chapter, we present the main conclusions of
+our study , structured in two parts. The first part ex-
+amines the operation count overhead associated with the
+algorithm’s execution, independent of hardware param-
+eters. F or the quantum component, this is quantified
+by the logical T-gate count—the bottleneck logical re-
+source in surface code-based quantum computing—while
+the classical component is evaluated based on the number
+of floating-point operations (FLOPs).
+
+--- PDF page 3 ---
+3
+Proposition 1. Consider a system of linear equations
+Ax=b, whereAhas been scaled such that its eigenvalues
+lie in the interval [1
+κ,1]. Denote by |b⟩the normalized
+quantum state proportional to b. Assume access to an
+oracle that provides access to the elements of a sparse
+submatrix of A. Then, there exists a quantum algorithm
+that takes the input state |b⟩and outputs the normalized
+solution state |˜x⟩with additive error ||˜x−x||less thanϵ.
+The algorithm requires T T -gates and Q queries to the
+oracle, where:
+T=q
+320
+3πκ2s
+ϵ2×(18 logN+ 90r+ 15), (1)
+Q=q
+320
+3πκ2s
+ϵ2×2, (2)
+whereN is the matrix size, κis the condition number, s
+is the sparsity of A, andϵis the error.
+W e refer the reader to appendix A for a detailed
+derivation of 1. Here, we emphasize that 1 exhibit
+different scaling compared to the results presented in
+the original paper, where the complexity was given by
+O 
+log(N)·s2κ2/ϵ
+.In our work, we have increased the
+dependence on ϵto order 2 while reducing the depen-
+dence onsto order 1.
+The dependence on ϵis because we comprehensively
+analised the error introduced by trotterization and QFT,
+while the original paper’s error estimation only account
+for the latter. F or detailed derivation we refer readers to
+B.
+The reduction in s-dependence is achieved by assum-
+ing that the matrix is perfectly decomposed into exactly
+ssub matrices at the oracle level. Although this as-
+sumption does not hold for general sparse matrices, many
+QLSA applications involve fixed matrix structures, which
+allow for eﬀicient oracle implementation that satisfies this
+assumption, for example, in [22] and [23]. If we remove
+this assumption, we’ll have to additionally implement
+the decomposition procedure, one approach is to utilize
+graph coloring algorithm, which decompose the matrix
+into 6s2one sparse matrices, thus increase a prefactor of
+6and square the dependence on sparsity . F urthermore,
+the graph coloring procedure is being called in each HS1,
+and according to our implementation, the graph coloring
+procedure involve around 200×logN T -gates, this cost is
+about 10 times the other cost in HS1 ( 18 logN+90r+15 ),
+thus introducing another prefactor of 10, so overall, the
+cost for graph coloring based general QLSA will have a
+scaling of 60sT .
+Proposition 2. F or the CG method solving the linear
+systemAx=b, the algorithm runs in C FLOPs, where:
+C= (4Ns+ 14N)×1
+2κlog2
+ϵ
+(3)
+N is the matrix size, kis the condition number, sis the
+sparsity, and ϵis the error threshold.The detailed derivation of 2 we refer readers to ap-
+pendix 4
+Next, we incorporate hardware parameters to illustrate
+the specific runtime overhead and its relationship with
+various input parameters. The assumed hardware pa-
+rameters are as follows: the quantum computer has an
+infinite number of physical qubits, a physical qubit er-
+ror rate of 10−5, a logical cycle execution time of 10 ns,
+and an energy consumption of 6.25 watts per physical
+qubit. W e present heatmaps 1 and 1, which illustrate
+the runtime and energy cost ratio between classical and
+quantum algorithms. In these heatmaps, blue regions
+indicate a ratio less than 1, implying that the quantum
+algorithm incurs lower overhead than its classical coun-
+terpart. Consequently , these regions can be interpreted
+as exhibiting possible quantum advantage. Also, we pro-
+vide line charts 1, 1, and 1 to depict how runtime, space,
+and energy costs vary with matrix size, where we assume
+conditional number to be fixed to 10, the sparsity to be
+logN. Of course, this assumption may not perfectly align
+with future quantum computers. F or readers interested
+in different configurations, the runtime estimation and
+energy consumption can be easily rescaled based on the
+ratio of the new parameters for clock cycle time and en-
+ergy consumption per qubit.
+III. METHODS
+A. Quantum part
+In this work, we present the first end-to-end analysis
+of the QLSA, covering the resource cost from logical level
+to runtime-level. The overall workflow of this study is il-
+lustrated in Fig. 1 and is broadly divided into two stages:
+logical resource analysis and physical resource analysis.
+At the logical level, we first implemented the quan-
+tum circuit for the Quantum Linear Systems Algorithm
+(QLSA) using Q#, a programming language designed for
+circuit-based quantum computing. This implementation
+allowed us to estimate the logical qubit and T-gate re-
+quirements for each submodule. Among all submodules
+in the QLSA algorithm, the primary bottleneck lies in one
+specific subroutine—the one-sparse Hamiltonian simula-
+tion (HS1). This subroutine is responsible for construct-
+ing a unitary operation that implements eiAt, whereA
+is the input matrix. The high resource demand of HS1
+stems from the T rotterization process, which requires ap-
+plying HS1 repeatedly to suppress the error to a desired
+level. Additionally , the unitary operation itself must be
+executed multiple times as part of the Quantum Phase
+Estimation (QPE) procedure, further increasing the to-
+tal number of HS1 invocations. T o precisely determine
+the scaling behavior of HS1, it is essential to analyze
+the algorithm’s error. There are two primary sources of
+error in the QLSA algorithm: (1) errors introduced by
+T rotterization and (2) errors from the Quantum F ourier
+T ransform (QFT). While previous analyses of QLSA have
+
+--- PDF page 4 ---
+4
+0.0 0.5 1.0 1.5
+n 1e101020304050s = 10,  = 0.01
+Boundary
+0.0 0.5 1.0 1.5
+n 1e1051015202530
+s = 100,  = 0.01
+Boundary
+0 2 4
+n 1e8510152025301/
+ = 10, s = 100
+Boundary
+246
+246810
+51015202530
+(a) Runtime Ratio: Classical / Quantum, the blue region corresponds to possible quantum advantage.
+0 2 4
+n 1e141020304050s = 10,  = 0.01
+Boundary
+0 2 4
+n 1e1451015202530
+s = 100,  = 0.01
+Boundary
+0.0 0.5 1.0 1.5
+n 1e13510152025301/
+ = 10, s = 100
+Boundary
+123456
+2468
+51015202530
+(b) Energy Ratio, Classical / Quantum, the blue region corresponds to possible quantum advantage.
+5 10 15 20 25 30 35
+log2(n)012345Runtime (s)1e5Runtime Comparison: =s=log2(n),=0.01
+Quantum
+Classical
+Crossing at log2(n)  33
+(c) Runtime Comparison
+10 20 30 40 50
+log2(n)0246Energy (J)1e12Energy Comparison: =s=log2(n),=0.01
+Quantum
+Classical
+Crossing at n  48
+ (d) Energy Comparison
+20 40 60
+log(n)
+0.40.60.81.01.2Quantum Space (qubits)1e5
+Quantum Space (qubits)
+Runtime (s)
+0.00.20.40.60.81.0
+Runtime (s)1e6Quantum Space and Runtime vs. log (n)
+ (e) Runtime and Space Cost
+FIG. 1: Comparison of Quantum Linear System Algorithm (QLSA) and Classical Conjugate Gradient
+Algorithm. In the plots, N represents matrix size, s is the sparsity , k is the condition number, ϵis the error
+tolerance in terms of vector-2 norm. (a) & (b): Heatmaps showing the ratio of classical runtime to quantum runtime
+and classical energy consumption to quantum energy consumption under different problem parameters. Blue regions
+indicate a possible quantum advantage. (c) & (d): Runtime and energy comparison between quantum and classical
+algorithms, assuming condition number and sparsity scale as log2(N), andϵto be 0.01. (e): Runtime and qubit
+count scaling for the quantum algorithm over larger matrix sizes.
+not explicitly addressed T rotterization, our work pro-
+vides the first comprehensive error analysis that accounts
+for both error sources simultaneously . Through mathe-
+matical derivation, we obtained an exact upper bound
+for the total error and found that this bound is signifi-cantly higher than the average-case error. T o refine this
+analysis, we conducted numerical experiments to give a
+probabilistic bound, revealing that the expected cost of
+the HHL algorithm is substantially lower than its worst-
+case estimate.
+
+--- PDF page 5 ---
+5
+Based on our error estimation, we determined the re-
+quired number of HS1 repetitions for specific input cases.
+The gate count per HS1 operation was obtained from our
+earlier code implementation. Since T-gates represent the
+primary resource bottleneck in our analysis, we focus on
+tracking only the T-gate count. The total number of T-
+gates required is given by the product of the total number
+of HS1 invocations and the T-gate count per HS1 opera-
+tion, which give us result as shown in 1.
+After determining the number of logical qubits and
+logicalT-gates required by the algorithm, the next step
+is to translate these logical resources into the fault-
+tolerant physical resource under a quantum error cor-
+rection (QEC) scheme. Among the various existing QEC
+schemes, we adopt the surface code in this study as it has
+the highest fault tolerant error threshold, and has been
+demonstrated by recent experiments [24].
+In essence, when executing quantum algorithms using
+the surface code model, physical qubits are categorized
+into data blocks and distillation blocks. Data blocks are
+responsible for storing logical qubits and consuming the
+so-called ”magic states,” while distillation blocks gener-
+ate these magic states. Each time a data block con-
+sumes a magic state produced by a distillation block,
+aT-gate operation is executed. Consequently , the to-
+tal physical qubit count is simply the sum of physical
+qubits in the data and distillation blocks. The runtime of
+surface code-based quantum computing is approximately
+given by the number of T-gates divided by their execution
+speed, which is determined by the specific configuration
+of data and distillation blocks as well as the hardware
+parameters of the quantum computer.
+T o determine the physical qubit count and runtime, it
+is essential to establish an optimal configuration of data
+and distillation blocks. Our goal is to find a configura-
+tion that minimizes the space-time volume, defined as
+the product of the number of physical qubits and the
+runtime. Achieving this requires considering several con-
+straints and trade-offs, which are listed as follows:
+• The distillation block must be large enough to
+achieve the desired T-state error rate.
+• The code distance of the surface code must be large
+enough to achieve the desired logical error rate.
+• The data block’s eﬀiciency to consume magic states
+comes at a price of using more physicla qubits.
+• The distillation block’s eﬀiciency to produce magic
+states comes at a price of using more physical
+qubits.
+W e use the procedure proposed in [13] to optimize
+space-time volume under such considerations. The pro-
+cedure includes 4 steps:
+1. Determine the distillation protocol. W e select
+the most cost-effective distillation protocol that
+achieves the required T-state error rate.2. Construct a minimal setup. W e design the space-
+optimal protocol.
+3. Determine the code distance. W e identify the min-
+imum code distance that ensures the error rate re-
+mains below the threshold.
+4. Add distillation blocks. Building on the space-
+optimal protocol, we incrementally adopt data
+block and distillation block protocols with larger
+space overhead but reduced time overhead until the
+optimal space-time cost is achieved.
+W e implemented these four steps in a script, which will
+be further discussed in Appendix . By inputting the al-
+gorithm’s logical T-gate count, logical qubits count, and
+reasonably assumed quantum computer parameters (in-
+cluding quantum gate fidelity , the number of physical
+qubits, and clock frequency), the script identifies the con-
+figuration of distillation and data blocks that minimizes
+space-time volume. It then outputs the corresponding
+runtime and physical qubits overhead.
+So now we are only left with energy estimation. W e
+use the model proposed in [15], where the primary energy
+cost of quantum computers is cooling, and the energy
+consumption grows with number of qubits because they
+assume that a single refrigeration unit can accommodate
+a limited number of qubits for super-conducting qubits.
+As a result, the quantum computer’s power consumption
+is proportional to the number of physical qubits. Now
+we define the energy eﬀiciency as the power consump-
+tion per qubit, we use the data provided by [16], where
+they targeted at IBM Quantum System T wo’s dilution
+refrigerator, the system houses 4158 physical qubits and
+operates at a power of 27 KW, thus, in interms of single
+qubit, the power eﬀiciency is 6.25 W atts.
+These results provide an intuitive and detailed refer-
+ence for end-to-end runtime estimation of the resources
+required to run the QLSA algorithm and serve as a practi-
+cal basis for developing QLSA-related applications. How-
+ever, we emphasize that current quantum computers are
+far from being capable of running the HHL algorithm,
+and future quantum hardware may differ significantly
+from existing systems. Also, there has been significant
+progress in the QLSA algorithm, such that the algorithm
+we are esitmating may not be the optimal. Therefore,
+the specific results we provide should be viewed as rough
+baseline predictions based on the current state of quan-
+tum computing technology .
+B. Classical part
+In this work, we address two classical linear system
+solver: the conjugate gradient (CG) method and the
+Cholesky decomposition (CD) method. W e mainly fo-
+cus on former as CG is generally considere as the classi-
+cal cournterparat of QLSA due to its iterative nature and
+ability to handle sparse and well-conditioned systems. on
+
+--- PDF page 6 ---
+6
+the other hand, the CD method is not a direct correspon-
+dence to QLSA as it is deterministic with no dependence
+onϵ, however CD is more often used in supercomputers
+and we include it in D.
+F or detailed derivation of the resource cost for boths
+methods we refer readers to appendix D.
+IV. CONCLUSION AND OUTLOOK
+In this work, we perform an end-to-end resource esti-
+mation of the HHL algorithm in terms of time, space, and
+energy . Unlike existing resource estimations, including
+[5], our work provides a detailed analysis of fault toler-
+ance based on surface codes. Moreover, we precisely ad-
+dress energy sustainability by employing physical models
+of superconducting quantum devices. Our findings con-
+firm that quantum computing will indeed have an energy
+advantage at a large scale based on current supercon-
+ducting quantum technologies, resolving a long-standing
+concern about the energy sustainability of quantum com-
+puting in practical applications [7, 8]. Other innovative
+aspects of our work include a detailed comparison be-
+tween quantum and classical approaches to solving linear
+systems and matrix inversion, an analysis of theoretical
+upper bounds versus practical average cases, and a quan-
+tum circuit simulator for end-to-end HHL algorithms, the
+details of which are summarized in the Supplementary
+Materials.
+Although we confirm that potential quantum advan-
+tages might appear at the scale of 235∼250matrix sizes
+and105physical qubits, the practical costs could be lower
+due to the overestimation of resource counts in the T rot-
+ter simulation. Moreover, smarter designs for quantum
+error correction and energy-sustainable innovations in
+quantum hardware might further enhance performance.On the other hand, compared to other resource estima-
+tions of quantum algorithms in different domains (such as
+cryptography used for digital signatures and blockchains
+[25]), the HHL algorithm appears to achieve potential
+quantum advantages with a smaller number of physical
+qubits [25]. However, better designs, including quantum
+memories, might further improve the capabilities of cryp-
+tographically relevant quantum computers [26].
+Our work presents significant opportunities for bring-
+ing quantum computing into practice. F or example, we
+do not address the uploading and downloading challenges
+of the HHL algorithm, which may be critical for data-
+intensive applications. Active developments are under-
+way on both the hardware side [27] and the system de-
+sign side [28, 29] toward large-scale and error-resilient
+QRAMs [18] in promising hardware platforms such as
+circuit/cavity QED/QAD [27]. Notably , since QRAM
+circuits are classically simulatable, precise estimates of
+QRAM costs can be investigated on a large scale [18].
+Moreover, for the downloading process, a detailed classi-
+fication of quantum computing user needs may be essen-
+tial. If quantum customers are classical, what will classi-
+cal customers require? The first few elements of the state
+|x⟩? Some expectation value of operators [20]? Other im-
+portant directions include further exploration of energy
+sustainability . Can we provide energy estimations for
+other hardware, such as neutral-atom quantum comput-
+ers? Can we make device-independent statements about
+energy advantages? Can we generalize such estimations
+to a broader range of quantum algorithms? Finally , it
+would also be interesting to investigate more advanced
+versions of quantum algorithms [30–34] and classical al-
+gorithms [14], as well as improved designs for quantum
+error correction codes [35–37] and quantum memories
+[26].
+[1] Michael A Nielsen and Isaac L Chuang. Quantum compu-
+tation and quantum information . Cambridge university
+press, 2010.
+[2] Peter W Shor. Polynomial-time algorithms for prime fac-
+torization and discrete logarithms on a quantum com-
+puter. SIAM review , 41(2):303–332, 1999.
+[3] Lov K Grover. A fast quantum mechanical algorithm
+for database search. In Proceedings of the twenty-eighth
+annual ACM symposium on Theory of computing , pages
+212–219, 1996.
+[4] Seth Lloyd. Universal quantum simulators. Science ,
+273(5278):1073–1078, 1996.
+[5] David Jennings, Matteo Lostaglio, Sam Pallister, An-
+drew T Sornborger, and Yiğit Subaşı. Eﬀicient quantum
+linear solver algorithm with detailed running costs. arXiv
+preprint arXiv:2305.11352 , 2023.
+[6] Alexander M Dalzell, B David Clader, Grant Salton,
+Mario Berta, Cedric Y en-Y u Lin, David A Bader, Niki-
+tas Stamatopoulos, Martin JA Schuetz, F ernando GSL
+Brandão, Helmut G Katzgraber, et al. End-to-end re-source analysis for quantum interior-point methods and
+portfolio optimization. PRX Quantum , 4(4):040325,
+2023.
+[7] Alexia Auffèves. Quantum technologies need a quantum
+energy initiative. PRX Quantum , 3(2):020101, 2022.
+[8] T ravis L Scholten, Carl J Williams, Dustin Moody ,
+Michele Mosca, William Hurley , William J Zeng,
+Matthias T royer, Jay M Gambetta, et al. Assessing the
+benefits and risks of quantum computers. arXiv preprint
+arXiv:2401.16317 , 2024.
+[9] John Preskill. Beyond NISQ: The Megaquop Machine ,
+Q2B 2024.
+[10] Aram W Harrow, A vinatan Hassidim, and Seth Lloyd.
+Quantum algorithm for linear systems of equations.
+Physical review letters , 103(15):150502, 2009.
+[11] Danial Dervovic, Mark Herbster, Peter Mountney , Si-
+mone Severini, Naïri Usher, and Leonard W ossnig. Quan-
+tum linear systems algorithms: a primer. arXiv preprint
+arXiv:1802.08227 , 2018.
+[12] Andrew M Childs, Y uan Su, Minh C T ran, Nathan
+
+--- PDF page 7 ---
+7
+Wiebe, and Shuchen Zhu. Theory of trotter error with
+commutator scaling. Physical Review X , 11(1):011020,
+2021.
+[13] Daniel Litinski. A game of surface codes: Large-scale
+quantum computing with lattice surgery . Quantum ,
+3:128, 2019.
+[14] Magnus R. Hestenes and Eduard Stiefel. Methods of con-
+jugate gradients for solving linear systems. Journal of
+Research of the National Bureau of Standards , 49(6):409–
+436, 1952.
+[15] Michael James Martin, Caroline Hughes, Gilberto
+Moreno, Eric B. Jones, David Sickinger, Sreekant Naru-
+manchi, and Ray Grout. Energy use in quantum data
+centers: Scaling the impact of computer architecture,
+qubit performance, size, and thermal parameters, 2021.
+[16] Edward Parker and Michael JD V ermeer. Estimat-
+ing the energy requirements to operate a cryptana-
+lytically relevant quantum computer. arXiv preprint
+arXiv:2304.14344 , 2023.
+[17] Vittorio Giovannetti, Seth Lloyd, and Lorenzo Maccone.
+Quantum random access memory . Physical review letters ,
+100(16):160501, 2008.
+[18] Connor T Hann, Gideon Lee, SM Girvin, and Liang
+Jiang. Resilience of quantum random access memory to
+generic noise. Prx Quantum , 2(2):020311, 2021.
+[19] Scott Aaronson. Read the fine print. Nature Physics ,
+11(4):291–293, 2015.
+[20] Hsin-Y uan Huang, Richard Kueng, and John Preskill.
+Predicting many properties of a quantum system from
+very few measurements. Nature Physics , 16(10):1050–
+1057, 2020.
+[21] Junyu Liu, Minzhao Liu, Jin-Peng Liu, Ziyu Y e, Y unfei
+W ang, Y uri Alexeev, Jens Eisert, and Liang Jiang. T o-
+wards provably eﬀicient quantum algorithms for large-
+scale machine-learning models. Nature Communications ,
+15(1):434, 2024.
+[22] Jin-Peng Liu, Herman Øie Kolden, Hari K. Krovi,
+Nuno F. Loureiro, Konstantina T rivisa, and Andrew M.
+Childs. Eﬀicient quantum algorithm for dissipative non-
+linear differential equations. Proceedings of the National
+Academy of Sciences , 118(35), August 2021.
+[23] Junyu Liu, Minzhao Liu, Jin-Peng Liu, Ziyu Y e, Y unfei
+W ang, Y uri Alexeev, Jens Eisert, and Liang Jiang. T o-
+wards provably eﬀicient quantum algorithms for large-
+scale machine-learning models. Nature Communications ,
+15(1), January 2024.
+[24] Rajeev Acharya, Laleh Aghababaie-Beni, Igor Aleiner,
+T rond I. Andersen, Markus Ansmann, F rank Arute,
+Kunal Arya, Abraham Asfaw, Nikita Astrakhantsev,
+Juan Atalaya, Ryan Babbush, Dave Bacon, Brian Bal-
+lard, Joseph C. Bardin, Johannes Bausch, Andreas
+Bengtsson, Alexander Bilmes, Sam Blackwell, Sergio
+Boixo, Gina Bortoli, Alexandre Bourassa, Jenna Bovaird,
+Leon Brill, Michael Broughton, David A. Browne, Brett
+Buchea, Bob B. Buckley , David A. Buell, Tim Burger,
+Brian Burkett, Nicholas Bushnell, Anthony Cabrera,
+Juan Campero, Hung-Shen Chang, Y u Chen, Zijun
+Chen, Ben Chiaro, Desmond Chik, Charina Chou, Ja-
+han Claes, Agnetta Y. Cleland, Josh Cogan, Roberto
+Collins, Paul Conner, William Courtney , Alexander L.
+Crook, Ben Curtin, Sayan Das, Alex Davies, Laura De
+Lorenzo, Dripto M. Debroy , Sean Demura, Michel De-
+voret, Agustin Di Paolo, Paul Donohoe, Ilya Droz-
+dov, Andrew Dunsworth, Clint Earle, Thomas Edlich,Alec Eickbusch, A viv Moshe Elbag, Mahmoud Elzouka,
+Catherine Erickson, Lara F aoro, Edward F arhi, Vini-
+cius S. F erreira, Leslie Flores Burgos, Ebrahim F orati,
+Austin G. F owler, Brooks F oxen, Suhas Ganjam, Gon-
+zalo Garcia, Robert Gasca, Élie Genois, William Giang,
+Craig Gidney , Dar Gilboa, Raja Gosula, Alejandro Gra-
+jales Dau, Dietrich Graumann, Alex Greene, Jonathan A.
+Gross, Steve Habegger, John Hall, Michael C. Hamilton,
+Monica Hansen, Matthew P . Harrigan, Sean D. Har-
+rington, F rancisco J. H. Heras, Stephen Heslin, Paula
+Heu, Oscar Higgott, Gordon Hill, Jeremy Hilton, George
+Holland, Sabrina Hong, Hsin-Y uan Huang, Ashley Huff,
+William J. Huggins, Lev B. Ioffe, Sergei V. Isakov,
+Justin Iveland, Evan Jeffrey , Zhang Jiang, Cody Jones,
+Stephen Jordan, Chaitali Joshi, Pavol Juhas, Dvir Kafri,
+Hui Kang, Amir H. Karamlou, Kostyantyn Kechedzhi,
+Julian Kelly , T rupti Khaire, T anuj Khattar, Mostafa
+Khezri, Seon Kim, Paul V. Klimov, Andrey R. Klots,
+Bryce Kobrin, Pushmeet Kohli, Alexander N. Korotkov,
+F edor Kostritsa, Robin Kothari, Borislav Kozlovskii,
+John Mark Kreikebaum, Vladislav D. Kurilovich, Nathan
+Lacroix, David Landhuis, Tiano Lange-Dei, Brandon W.
+Langley , Pavel Laptev, Kim-Ming Lau, Loïck Le Guevel,
+Justin Ledford, Kenny Lee, Y uri D. Lensky , Shannon
+Leon, Brian J. Lester, Wing Y an Li, Yin Li, Alexan-
+der T. Lill, W ayne Liu, William P . Livingston, Aditya
+Locharla, Erik Lucero, Daniel Lundahl, Aaron Lunt, Sid
+Madhuk, Fionn D. Malone, Ashley Maloney , Salvatore
+Mandrá, Leigh S. Martin, Steven Martin, Orion Martin,
+Cameron Maxfield, Jarrod R. McClean, Matt McEwen,
+Seneca Meeks, Anthony Megrant, Xiao Mi, Kevin C.
+Miao, Amanda Mieszala, Reza Molavi, Sebastian Molina,
+Shirin Montazeri, Alexis Morvan, Ramis Movassagh,
+W ojciech Mruczkiewicz, Ofer Naaman, Matthew Nee-
+ley , Charles Neill, Ani Nersisyan, Hartmut Neven,
+Michael Newman, Jiun How Ng, Anthony Nguyen,
+Murray Nguyen, Chia-Hung Ni, Thomas E. O’Brien,
+William D. Oliver, Alex Opremcak, Kristoffer Ottos-
+son, Andre Petukhov, Alex Pizzuto, John Platt, Re-
+becca Potter, Orion Pritchard, Leonid P . Pryadko, Chris
+Quintana, Ganesh Ramachandran, Matthew J. Reagor,
+David M. Rhodes, Gabrielle Roberts, Eliott Rosen-
+berg, Emma Rosenfeld, Pedram Roushan, Nicholas C.
+Rubin, Negar Saei, Daniel Sank, Kannan Sankarago-
+mathi, Kevin J. Satzinger, Henry F. Schurkus, Christo-
+pher Schuster, Andrew W. Senior, Michael J. Shearn,
+Aaron Shorter, Noah Shutty , Vladimir Shvarts, Shrad-
+dha Singh, V olodymyr Sivak, Jindra Skruzny , Spencer
+Small, V adim Smelyanskiy , W. Clarke Smith, Rolando D.
+Somma, Sofia Springer, George Sterling, Doug Strain,
+Jordan Suchard, Aaron Szasz, Alex Sztein, Douglas
+Thor, Alfredo T orres, M. Mert T orunbalci, Abeer V aish-
+nav, Justin V argas, Sergey V dovichev, Guifre Vidal, Ben-
+jamin Villalonga, Catherine V ollgraff Heidweiller, Steven
+W altman, Shannon X. W ang, Brayden W are, Kate W e-
+ber, Theodore White, Kristi W ong, Bryan W. K. W oo,
+Cheng Xing, Z. Jamie Y ao, Ping Y eh, Bicheng Ying, Juh-
+wan Y oo, Noureldin Y osri, Grayson Y oung, Adam Zal-
+cman, Y axing Zhang, Ningfeng Zhu, and Nicholas Zo-
+brist. Quantum error correction below the surface code
+threshold, 2024.
+[25] Daniel Litinski. How to compute a 256-bit elliptic curve
+private key with only 50 million toffoli gates. arXiv
+preprint arXiv:2306.08585 , 2023.
+
+--- PDF page 8 ---
+8
+[26] Élie Gouzien and Nicolas Sangouard. F actoring 2048-bit
+rsa integers in 177 days with 13 436 qubits and a mul-
+timode memory . Physical review letters , 127(14):140503,
+2021.
+[27] Connor T Hann, Chang-Ling Zou, Y axing Zhang, Yi-
+wen Chu, Robert J Schoelkopf, Steven M Girvin, and
+Liang Jiang. Hardware-eﬀicient quantum random access
+memory with hybrid quantum acoustic systems. Physical
+review letters , 123(25):250501, 2019.
+[28] DK W eiss, Shifan Xu, Shruti Puri, Y ongshan Ding, and
+Steven M Girvin. F aulty towers: recovering a function-
+ing quantum random access memory in the presence of
+defective routers. arXiv preprint arXiv:2411.15612 , 2024.
+[29] Y unfei W ang, Y uri Alexeev, Liang Jiang, F rederic T
+Chong, and Junyu Liu. F undamental causal bounds of
+quantum random access memories. npj Quantum Infor-
+mation , 10(1):71, 2024.
+[30] Andris Ambainis. V ariable time amplitude amplification
+and a faster quantum algorithm for solving systems of
+linear equations, 2010.
+[31] Andrew M. Childs, Robin Kothari, and Rolando D.
+Somma. Quantum algorithm for systems of linear equa-
+tions with exponentially improved dependence on preci-
+sion. SIAM J. Comp. , 46(6):1920–1950, January 2017.
+[32] Guang Hao Low and Y uan Su. Quantum linear system
+algorithm with optimal queries to initial state prepara-
+tion, 2024.
+[33] Pedro C. S. Costa, Dong An, Y uval R. Sanders, Y uan Su,
+Ryan Babbush, and Dominic W. Berry . Optimal scaling
+quantum linear systems solver via discrete adiabatic the-
+orem, 2021.
+[34] Alexander M. Dalzell. A shortcut to an optimal quantum
+linear system solver, 2024.
+[35] Sergey Bravyi, Andrew W Cross, Jay M Gambetta,
+Dmitri Maslov, Patrick Rall, and Theodore J Y oder.
+High-threshold and low-overhead fault-tolerant quantum
+memory . Nature , 627(8005):778–782, 2024.
+[36] Qian Xu, J Pablo Bonilla Ataides, Christopher A Pat-
+tison, Nithin Raveendran, Dolev Bluvstein, Jonathan
+W urtz, Bane V asić, Mikhail D Lukin, Liang Jiang, and
+Hengyun Zhou. Constant-overhead fault-tolerant quan-
+tum computation with reconfigurable atom arrays. Na-
+ture Physics , pages 1–7, 2024.
+[37] Joshua Viszlai, Willers Y ang, Sophia F uhui Lin, Junyu
+Liu, Natalia Nottingham, Jonathan M Baker, and F red-
+eric T Chong. Matching generalized-bicycle codes to
+neutral atoms for low-overhead fault-tolerance. arXiv
+preprint arXiv:2311.16980 , 2023.
+[38] Dominic W. Berry , Graeme Ahokas, Richard Cleve, and
+Barry C. Sanders. Eﬀicient quantum algorithms for sim-
+ulating sparse hamiltonians. Communications in Mathe-
+matical Physics , 270(2):359–371, December 2006.
+[39] John Preskill. Reliable quantum computers. Proceedings
+of the Royal Society of London. Series A: Mathematical,
+Physical and Engineering Sciences , 454(1969):385–410,
+January 1998.
+[40] Barbara M. T erhal. Quantum error correction for quan-
+tum memories. Rev. Mod. Phys. , 87:307–346, Apr 2015.
+[41] Earl T. Campbell, Barbara M. T erhal, and Christophe
+V uillot. Roads towards fault-tolerant universal quan-
+tum computation. Nature , 549(7671):172–179, Septem-
+ber 2017.
+[42] A.Y u. Kitaev. F ault-tolerant quantum computation by
+anyons. Annals of Physics , 303(1):2–30, January 2003.[43] Austin G. F owler, Matteo Mariantoni, John M. Martinis,
+and Andrew N. Cleland. Surface codes: T owards prac-
+tical large-scale quantum computation. Phys. Rev. A ,
+86:032324, Sep 2012.
+[44] Y ousef Saad. Iterative methods for sparse linear systems.
+SIAM, 2003.
+[45] Jonathan R Shewchuk. An introduction to the conjugate
+gradient method without the agonizing pain. T echni-
+cal report, Carnegie Mellon University , Pittsburgh, P A,
+USA, 1994.
+[46] TOP500.org. T op500 list - november 2024, November
+2024.
+[47] Wikipedia contributors. Processor power dissipation,
+2024. [Online; accessed 4-F ebruary-2025].
+
+--- PDF page 9 ---
+9
+Supplemental Material
+Appendix A: QLSA algorithm implementation
+1. A brief introduction to QLSA
+The Quantum Linear Systems Algorithm (QLSA) is a quantum algorithm designed to solve systems of linear
+equations eﬀiciently . It relies on principles of quantum mechanics to provide a possible superpolynomial advantage
+for specific cases compared to classical methods.
+The core idea is to represent the solution to a linear system Ax=bin the quantum state |x⟩, whereA is a sparse
+and well-conditioned matrix. The algorithm involves several key steps:
+• Preparation of the Input State: The algorithm starts with the quantum encoding of the input vector |b⟩
+into a quantum state.
+• Quantum Phase Estimation (QPE): QPE approximate the eigenvalues of the matrix A by estimating the
+phase of the unitary eiAt. Such unitary is implemented using the T rotter decomposition method.
+• Matrix Inversion: The eigenvalues of A are inverted conditionally , enabling the construction of the quantum
+state corresponding to the solution.
+• Measurement: Finally , measurements are performed to extract information about the solution vector.
+QLSA’s eﬀiciency is highly dependent on the sparsity and condition number of the matrix A, making it particularly
+useful for problems where these constraints are satisfied
+2. Resource bottleneck in QLSA
+A significant computational bottleneck in the QLSA arises from the repetitive application of one-sparse Hamiltonian
+simulation, which is a fundamental component of the algorithm. This challenge emerges due to the following reasons:
+• Quantum Phase Estimation (QPE): The QPE step requires the Hamiltonian simulation of A, which is an
+s-sparse matrix, to be applied multiple times to achieve suﬀicient precision. The repetition ensures the accurate
+estimation of eigenvalues, which directly affects the correctness of the algorithm.
+• Simulation of s-Sparse Hamiltonians: T o implement the simulation of s-sparse Hamiltonians, the T rotter
+decomposition method is often employed. However, this approach introduces further overhead, as it decomposes
+thes-sparse Hamiltonian into a series of one-sparse Hamiltonians.
+• One-Sparse Hamiltonian Simulation: Eachs-sparse Hamiltonian simulation requires the repetitive appli-
+cation of one-sparse Hamiltonian simulations. This nested structure compounds the computational cost, making
+one-sparse Hamiltonian simulation a critical bottleneck for resource eﬀiciency .
+In essence, the hierarchical nature of the QLSA—where QPE requires multiple iterations of s-sparse simulations,
+ands-sparse Hamiltonian simulations depend on repeatedly applying a series of one-sparse simulations—highlights
+the algorithm’s computational resource bottleneck.
+Therefore, our resource estimation focuses solely on the one-sparse Hamiltonian simulations, reducing the overall
+resource estimation to (1) the number of one-sparse Hamiltonian simulations. (2) the resource cost of each one-sparse
+Hamiltonian simulation. Next we will discuss the resource cost of each one-sparse Hamiltonian simulation by giving
+a concrete code implementation of such step. W e left the analysis for number of one-sparse Hamiltonian simulation
+in the error analysis section.
+3. One-sparse Hamiltonian simulation implementation
+In general, directly implementing the unitary eiHtis infeasible because H is an extremely large matrix, and com-
+puting its exponential is highly complex. Here we use the methods in [38]. The core idea for implementing eiHtrelies
+
+--- PDF page 10 ---
+10
+on the unitary conjugation theorem , which states that for a matrix exponential of the form eiUHU†, it is equivalent
+toUeiHU†.
+Thus, if we can decompose H into the form U1U2...H′...U†
+2U†
+1, where each UiandeiH′tcan be eﬀiciently
+implemented, we effectively achieve the implementation of eiHt.
+In the following, we first explain the decomposition process and then discuss the implementation of the resulting
+unitary operations.
+Lemma 1. F or a one-sparse Hermitian matrix H with real valued entries, it can be decomposed into the form (we
+ignore the tensor with identity matrix):
+H=M(T⊗F)M†(A1)
+whereM is the oracle, T is the swap operator on two registers, and F is diagonal operator, specifical ly:
+M|x⟩|0⟩|0⟩|0⟩=|x⟩|m(x)⟩|0⟩|w(x)⟩ (A2)
+T|x⟩|y⟩=|y⟩|x⟩ (A3)
+F|x⟩=x|x⟩ (A4)
+Proof. Suppose the x’s column of H has the non-zero element w(x)at position m(x), then we have:
+H|x⟩=w(x)|m(x)⟩.
+Thus to construct the operator H, is equivalent to mimic such behavior. W e can achieve this by the following steps:
+1. ApplyM to|x⟩and the ancilla:
+|x⟩|0⟩|0⟩|0⟩M− → |x⟩|m(x)⟩|0⟩|w(x)⟩.
+2. ApplyT=A†ZA :
+T− → |m(x)⟩|x⟩|0⟩|w(x)⟩.
+3. ApplyF:
+F− →w(x)|m(x)⟩|x⟩|0⟩|w(x)⟩.
+4. ApplyM†:
+M†
+− − →w(x)|m(x)⟩|x⊕m(m(x))⟩|0⟩|w(x)⊕w(m(x))⟩=w(x)|m(x)⟩|0⟩|0⟩|0⟩.
+ThusH is equivalent to M(T⊗F)M†.
+Now we are left to implement eiTtandeiFt. Later, we will see that eiFtcan be directly implemented. F or eiTt, we
+have to apply unitary conjugation again:
+Lemma 2. F or a swap operator T, it can be decomposed into the form:
+T=nO
+l=1Wl,n+lnO
+l=1El,n+lnO
+l=1Wl,n+l=˜W˜E˜W.
+whereW andE are two qubits operators with the fol lowing matrix representation:
+W=2
+6641 0 0 0
+01√
+21√
+20
+01√
+2−1√
+20
+0 0 0 13
+775E=2
+641 0 0 0
+0 1 0 0
+0 0−1 0
+0 0 0 13
+75.
+Proof. Notice that T is equivalent to the swap operator on npairs of qubits, i.e., T=Nn
+l=1Sl,n+l. By diagonalizing
+S, we obtain WEW , which completes the proof.
+
+--- PDF page 11 ---
+11
+n
+n
+3r|x⟩
+|0⟩ |0⟩
+|0⟩ |0⟩
+|0⟩ |0⟩M˜W
+˜T ˜T†˜W
+M†eiHt|x⟩
+eiZt
+eiFt
+FIG. 2: Quantum circuit for one sparse Hamiltonian simulation.
+Again the operator ˜E has to be decomposed, notice that the behavior ofNn
+l=1El,n+lis just compute the parity of
+xiyi, and add a phase 1 for even parity , and -1 for odd parity . This can be implemented by using nT offli-like gates
+to compute the parity and store in an ancilla qubit, and then apply Z gate to the ancilla. This gives us:
+Lemma 3. F or ˜E=Nn
+l=1El,n+l, it can be decomposed into the form:
+˜E=˜TfZ˜Tf†
+where ˜Tfare set of T offli-like gates that is used to compute the parity, Z isZ-gate on parity qubit.
+By lemma 1, 2, and 3, we have the following theorem:
+Theorem 1. F or a one-sparse Hermitian matrix H with real valued entries, eiHtcan be implemented by:
+eiHt=M˜W˜Tf(eiZt⊗eiFt)˜Tf†˜W†M†.
+Proof. By lemma 1, we have:
+eiHt=eiM(T⊗F)M†t=Mei(T⊗F)tM†.
+By lemma 2, we have:
+ei(T⊗F)t=ei˜W˜E˜Wt=˜Wei˜Et˜W†.
+By lemma 3, we have:
+ei˜Et=ei˜TfCZ˜Tf†t=˜Tf(CeiZt⊗eiFt)˜Tf†.
+Alltogether, we have:
+eiHt=M˜W˜Tf(CeiZt⊗eiFt)˜Tf†˜WM†.
+The corresponding quantum circuit for theorem 1 is shown in Figure 2.
+In the quantum circuit 2, the oracle M is taken as assumption and we do not count into resource estimation, eiZt
+is a single qubit rotation gate. Next we’ll discuss the implementation of the operators ˜W ,˜T, andeiFt.
+a. Implementation of eiFt
+The behavior of eiFtis to apply a phase eiλtto the state |λ⟩, where |λ⟩is the binary representation of the value λ.
+Supposingλis greater than 0, we have:
+eiλt|λ⟩=ei∑n
+j=12λ
+jt|λ1···λn⟩ (A5)
+=ei2λ
+1t|λ1⟩ ⊗ei2λ
+2t|λ2⟩ ⊗ ··· ⊗ei2λ
+nt|λn⟩. (A6)
+Thus we can implement eiFtby applying phase gate ei2λ
+iton each of the qubit |λi⟩.
+In order to allow negative λ, we have to add another ancilla |p⟩to indicate the sign, and making the rotation
+direction of the phase gates controlled by the ancilla. The corresponding circuit is shown in Figure 3.
+F or each controlled phase gate, we can implement it by using the circuit shown in Figure 4.
+
+--- PDF page 12 ---
+12
+|p⟩
+|an−1⟩
+...
+|a1⟩
+|a0⟩e2n−1ite2n−1it
+e2ite−2it
+eite−it
+FIG. 3: Quantum circuit for eiFt.
+|p⟩
+|a⟩Rz(λ
+2)
+Rz(λ
+2) Rz(−λ
+2)
+FIG. 4: Controlled phase gate.
+b. Implementation of ˜W
+Since ˜W=Nn
+l=1Wl,n+l,˜W is just apply W onnpairs of qubits, the circuit is shown in Figure 5. Now for each
+W , since it has the matrix representation 2, we can implement it using the quantum circuit shown in 6.
+c. Implementation of ˜T
+The operator ˜T computes the parity of each pair xiyiand stores the result in an ancilla qubit. This can be
+implemented using T offoli-like gates to compute the parity of each pair xiyi. The corresponding quantum circuit is
+shown in Figure 7.
+4. Logical resource count
+Now we have a concret implementation of one sparse Hamiltonian simulation, we can count the logical resource by
+adding up the cost of each component. The logical resource is defined as the number of logical qubits and the number
+ofClifford +T gates.
+n
+n|x⟩
+|y⟩˜W =...x1
+W
+y1
+xn
+W
+yn
+FIG. 5: Quantum circuit implementing the swap operator ˜W .
+
+--- PDF page 13 ---
+13
+W =
+H
+=
+S H T T†H S†
+FIG. 6: Quantum circuit implementing the gate W .
+n
+n|x⟩
+|y⟩
+|0⟩˜Tf =...x1
+y1
+x2
+y2
+xn
+yn
+0
+FIG. 7: Quantum circuit implementing the swap operator T.
+|q1⟩
+|q2⟩
+|q3⟩T
+T†T†S
+H T†T T†T H
+FIG. 8: Quantum circuit implementing the T offli-like gate.
+Component T gates CNOT S H Explanation
+˜W 4n 10n 4n 4n 2˜W gates, each contains n W gates, and each W gate
+requires 2 T gates, 5 CNOT gates, 2 S gates and 2 H
+gates
+˜T 14n 12n 2n 4n 2˜T gates, each contains n T offoli-like gates, and each
+T offoli-like gate requires 7 T gates, 6 CNOT gates, 1 S
+gate and 2 H gates.
+eiZt15 0 3 3 Assumes, on average, the rotation gates consume 15 T
+gates, 3 Sgates and H gates.
+eiFt90r 4r 6r 6r 2rcontrolled rotation gates, each contains 2 CNOT gate
+and 3 rotation gates.
+T otal 18n+ 90r+ 15 22n+ 4r6n+ 6r+ 3 8n+ 6r+ 3 Summing up all the components.
+T ABLE I: Logical T gate count for each component in the algorithm.
+
+--- PDF page 14 ---
+14
+Thus we have the following theorem:
+Theorem 2. F or a one-sparse Hermitian matrix H with real valued entries, the gate count of the quantum circuit
+implementing eiHtis given by:
+Tcount = 90r+ 18n+ 15,
+CNOT count = 22n+ 4r,
+Scount = 6n+ 6r+ 3,
+Hcount = 8n+ 6r+ 3.
+whereris the number of precision bits, nis the number of qubits for input state vector |x⟩.
+Appendix B: Scaling analysis
+In this section, we derive the exact scaling of the QLSA algorithm. As mentioned in A 2, the bottleneck of the QLSA
+algorithm lies in the number of one-sparse Hamiltonian simulations (nHS1) we have to perform. This is determined
+by two factors:
+1. The number of one-sparse Hamiltonian simulations required to implement the s-sparse Hamiltonian simulation
+(the unitary).
+2. The number of unitaries (the number of clock qubits, nC) in the quantum phase estimation.
+It is crucial to recognize that the QLSA algorithm is essentially an iterative method. T o suppress the error to a
+certain level, we need to perform the subroutine for a specific number of iterations. Thus, analyzing the scaling of
+the QLSA algorithm is equivalent to bounding the error.
+The error of the QLSA algorithm is mainly introduced by two parts: the error introduced by the T rotterization
+and the error introduced by the Quantum F ourier T ransform (QFT). Previous error analyses mainly focused on the
+latter, and a comprehensive error analysis of both parts has not been provided. Here, we will provide a detailed error
+analysis of the QLSA algorithm.
+The main idea to bound the error of both parts simultaneously is to use an exponential-type error to express the
+error introduced by T rotterization. W e define the Exponential Type Error (ETE) as
+ETE :=∥˜A−A∥. (B1)
+This error measure quantifies the deviation in the exponent matrix of the Hamiltonian evolution, which can be
+viewed as the error of the input. Thus, we can separate the error analysis of T rotterization and QFT, and then add
+the errors together.
+Next, we first derive the exponential-type error of T rotterization, followed by the error of QFT. The derivation
+is heavily inspired by [12]. Although the paper does not provide an exact error bound for exponential-type error,
+it provides the main idea of how to derive the error bound. Therefore, it is relatively straightforward to derive it
+ourselves. W e start with:
+f(t) =eiH1teiH2t···eiHnt(B2)
+Since f(t) is a unitary operator, we have:
+f(t) =eiH′t(B3)
+and we want to bound:
+∥H′−H∥
+∥H∥(B4)
+Given in the paper, we have:
+f(t) = expTZt
+0dτ(iH+E(τ))
+(B5)
+
+--- PDF page 15 ---
+15
+T aking to 1st order in the dysen series expansion of (B5), we have:
+f(t) =I+iHt+Zt
+0dτE(τ) +O(t2) (B6)
+Also taking 1st order tyler expansion of (B3), we have:
+f(t) =I+iH′t+O(t2) (B7)
+Comparing (B6) and (B7), we have:
+H′=H+1
+itZt
+0dτE(τ) (B8)
+Thus:
+∥H′−H∥=1
+tZt
+0dτE(τ)(B9)
+In order to get E(τ), we differentiate f(t), get:
+df(t)
+dt= (iH1+eiH1t(iH2)e−iH1t+...+eiH1t...eiHn−1t(iHn)e−iHn−1t...e−iH1t)f(t)
+= (nX
+j=1(j−1Y
+k=1eiHk)(iHjt)(1Y
+k=j−1e−iHkt))f(t)
+= (nX
+j=1Sj(t))f(t) (B10)
+where:
+Sj(t) = (j−1Y
+k=1eiHkt)(iHj)(1Y
+k=j−1eiHkt) (B11)
+Now we have:
+df(t)
+dt= (iH+E(t))f(t) = (nX
+j=1Sj(t))f(t) (B12)
+E(t) =nX
+j=1Sj(t)−iH (B13)
+Next we will separate iHj fromSj(t), the way to achieve this is by recursive expansion. W e start with the innermost
+term. By fundamental theorem of calculus, we have:
+eiHj−1t(iHj)e−iHj−1t=iHj+Zt
+0dτ(eiHj−1τ(iHj)e−iHj−1τ)′
+=iHj+Zt
+0dτeiHj−1τ[iHj−1,iHj]e−iHj−1τ
+=iHj+Zt
+0dτeiHj−1τ[Hj,Hj−1]e−iHj−1τ(B14)
+F or the second layer, we have:
+
+--- PDF page 16 ---
+16
+eiHj−2eiHj−1t(iHj)e−iHj−1te−iHj−2=eiHj−2t(iHj+Zt
+0dτeiHj−1τ[Hj,Hj−1]e−iHj−1τ)e−iHj−2t
+=eiHj−2tiHje−iHj−2t
++ (eiHj−2t)Zt
+0dτeiHj−1τ[Hj,Hj−1]e−iHj−1τ(e−iHj−2t)
+=iHj+Zt
+0dτeiHj−2τ[Hj,Hj−2]e−iHj−2τ+
++ (eiHj−2t)Zt
+0dτeiHj−1τ[Hj,Hj−1]e−iHj−1τ(e−iHj−2t) (B15)
+Repeat this procedure until all the layers are expanded, we have:
+Sj(t) = (j−1Y
+k=1eiHkt)(iHj)(1Y
+k=j−1eiHkt)
+=iHj+j−1X
+k=1(j−k−1Y
+l=1eiHlt)Zt
+0dτeiHj−kτ[Hj,Hj−k]e−iHj−kτ(1Y
+l=j−k−1e−iHjt) (B16)
+Then substitute Sj(t)into (B13), we have:
+E(t) =nX
+j=1Sj(t)−iH
+=nX
+j=1j−1X
+k=1(j−k−1Y
+l=1eiHlt)Zt
+0dτeiHj−kτ[Hj,Hj−k]e−iHj−kτ(1Y
+l=j−k−1e−iHjt) +nX
+j=1iHj−iH
+=nX
+j=1j−1X
+k=1(j−k−1Y
+l=1eiHlt)Zt
+0dτeiHj−kτ[Hj,Hj−k]e−iHj−kτ(1Y
+l=j−k−1e−iHjt) (B17)
+
+--- PDF page 17 ---
+17
+Now with E(t)in hand, we can bound (B4) using triangle inequalities:
+∥H′−H∥=1
+tZt
+0dτE(τ)
+≤1
+tZt
+0dτ∥E(τ)∥
+=1
+tZt
+0dt1nX
+j=1j−1X
+k=1(j−k−1Y
+l=1eiHlt1)Zt1
+0dτeiHj−kτ[Hj,Hj−k]e−iHj−kτ(1Y
+l=j−k−1e−iHjt1)
+≤1
+tZt
+0dt1nX
+j=1j−1X
+k=1(j−k−1Y
+l=1eiHlt1)Zt1
+0dτeiHj−kτ[Hj,Hj−k]e−iHj−kτ(1Y
+l=j−k−1e−iHjt1)
+=1
+tZt
+0dt1nX
+j=1j−1X
+k=1Zt1
+0dτeiHj−kτ[Hj,Hj−k]e−iHj−kτ
+≤1
+tZt
+0dt1nX
+j=1j−1X
+k=1Zt1
+0dτeiHj−kτ[Hj,Hj−k]e−iHj−kτ
+=1
+tZt
+0dt1nX
+j=1j−1X
+k=1Zt1
+0dτ∥[Hj,Hj−k]∥
+≤1
+tZt
+0dt1nX
+j=1j−1X
+k=1Zt1
+0dτ2max m∥Hm∥2
+=1
+tn(n−1)
+2t2
+22max m∥Hm∥2
+=n(n−1)t
+2max m∥Hm∥2
+(B18)
+This bound is tight, as we can take example of n= 2,t= 0.2,H1 = [[1,0],[0,−1]] , andH2 = [[0,1],[1,0]] , the
+bound and the actual error gives the same value 0.1. However, this bound is significantly above average, the intuition
+behind this is that in (B13), the error term is a sum of all the commutators, and the commutators can cancel each
+other, but the bound adds up the norm of all the commutators.
+Intuitively this is similar to bounding the sum of random numbers, the bound is the number of random numbers
+times the maximum of the random numbers.
+So the better strategy here is to use probabilistic bound instead, where we tries to bound the error with failure rate
+below certain threshold.
+F rom the numerical result, we can see that the error does not depend on n. Thus, we can simply do the numerical
+experiment on small matrix size, and take the upper bound around the edge of distribution, we have:
+ϵ=∥t
+r∥ (B19)
+Where t is the time step and r is the trotter repetition. Now we have the probabilistic bound on the matrix norm,
+we can transform it into error on xby applying the following formula:
+∥∆x∥
+∥x∥≤κ∥∆A∥
+∥A∥
+1−κ∥∆A∥
+∥A∥(B20)
+Since ∥A∥= 1 , and∥x∥= 1 , we have:
+∥∆x∥ ≤κ∥∆A∥
+1−κ∥∆A∥≤κt
+r−κt(B21)
+
+--- PDF page 18 ---
+18
+Trotter error distribution
+00.020.040.060.080.10.120.140.160.180.20510152025
+Commutator distribution
+00.5 11.5 22.5 33.5 400.20.40.60.811.21.4Figure 1: Trotter error and commutator distributions
+1
+FIG. 9: T rotter error and commutator distribution.
+∥∆x1∥ ≤r
+20
+3πk
+t0(B22)
+Under the constraint:
+t0≤2πT⇒1
+T≤1−2πκ
+t0(B23)
+Here,T represents the number of repetitive unitaries, which is 2 to the power of number of clock qubits, and t0is
+the maximum evolution time, given by tT . These constraints ensure that the eigenvalues fall within the range of the
+QPE estimation. F or simplicity , let’s assume t0=πT to meet the first constraint, and later we’ll see that the second
+constraint is satisfied automatically . Then the error in this step is given by:
+∥∆x2∥ ≤r
+20
+3k
+T(B24)
+Now let’s combine the error in both steps, by using the triangular inequality:
+∥∆x∥=∥∆x1+ ∆x2∥ ≤ ∥ ∆x1∥+∥∆x2∥ (B25)
+F or simplicity we let ∥∆x1≤ϵ
+2and∥∆x2≤ϵ
+2, then we have:
+r≥2
+ϵ+ 1
+πκ≈2πκ
+ϵ(B26)
+T≥r
+80
+3κ
+ϵ(B27)
+Finally , we combine those two to get the number of HS1 operations needed:
+nHS1=Trs≥q
+320
+3πκ2s
+ϵ2(B28)
+Where we assume that there are s number of HS1 per HS, this assumption requires that the oracle needs to
+implement the seperation of an s-sparse matrix into s number of one sparse matrices, this does not hold in general,
+but for applications with certain structures this can be done.
+
+--- PDF page 19 ---
+19
+0 10 20 30 40 50
+log(N) (assuming log(N) = k = s)0.00.51.01.52.02.53.03.5T otal Number of Gates1e9
+ Scaling of Gate Counts with Respect to n
+T gates
+CNOT gates
+S gates
+H gates
+FIG. 10: Scaling of the logical gates with respect to the problem size.
+1. Logical resource scaling
+In [appendix 1] we derived the scaling of the logical resource of each HS1 operation, and in this section we derived
+the scaling of number of HS1 operations. By multiply both scaling together, we have the following theorem:
+Theorem 3. The scaling of the logical gates is given by:
+ngates =q
+320
+3πκ2s
+ϵ2×HS1gates
+Proof. The proof is straightforward, we just need to multiply the scaling of the logical resource of each HS1 operation
+with the scaling of the number of HS1 operations.
+Assuming (ϵ= 0.1,κ=s= log2N), we have the scaling of the different gates in plot 10.
+Appendix C: Surface code protocol
+1. Introduction to surface code
+T o reliably store and process quantum information over extended periods, active error correction is essential. This is
+achieved by encoding multiple physical qubits into logical qubits using quantum error-correcting codes [39–41]. Among
+these, the surface code is not only the most widely used but also one of the most crucial due to its compatibility
+with the locality constraints of practical quantum hardware, such as superconducting qubits, which only support
+two-dimensional local operations [42, 43].
+However, despite its importance and widespread adoption, the surface code introduces significant computational
+overhead. The replacement of physical qubits with logical qubits drastically increases space requirements, while the
+restriction to two-dimensional local operations imposes additional time costs. Arbitrary quantum gates may require
+multiple time steps instead of executing in a single step, making the choice of surface code schemes—which define
+parameters such as code distance, logical gate protocols, and resource allocation—critical in determining the actual
+overhead.
+T o accurately assess the resource demands of a quantum algorithm, it is essential to analyze the specific surface
+code scheme under which it is executed. By optimizing these schemes, we can minimize space-time overhead and
+better evaluate the feasibility of quantum computations within a surface-code-based architecture.
+
+--- PDF page 20 ---
+20
+T ABLE II: Distillation Protocol Parameters
+Protocol Number of Magic Tiles Production Time Error Rate Coeﬀicient (c)
+15-1 11 11 35p3
+116-12 44 9.27 4.125p4
+225-1 176 5.5 1.5p7
+2. Key concepts
+a. Patch
+A patch is a two-dimensional regular lattice of entangled physical qubits that serves as the substrate on which
+logical qubits are defined. Physical qubits within a patch are categorized into two types:
+• Data qubits : These qubits store quantum information and are measured less frequently , primarily during
+computational operations.
+• Syndrome qubits : These qubits interact repeatedly with neighboring data qubits and are frequently measured
+to detect the presence of errors.
+Logical qubits within a patch can perform logical operations (or gates) using a technique known as lattice surgery ,
+which is beyond the scope of this discussion. The code distance, denoted as d, determines the error-correcting
+capability of the patch. A patch of code distance dconsists of d2physical qubits, with larger values of dyielding
+higher fidelity computations.
+b. Blocks
+Blocks are functional units that organize multiple patches according to specific rules. Blocks are categorized as
+follows:
+• Data blocks : These accommodate logical data qubits and execute logical operations, including logical gates.
+• Distillation blocks : These are responsible for generating magic states , which are necessary for executing
+certain non-Clifford gates.
+F or Clifford gates, computations can be eﬀiciently performed within the data block. However, executing a T-gate
+requires magic state resources, making it significantly more challenging. The distillation block produces magic states,
+which are then consumed by the data block to enable T-gate operations. Since both processes rely on complex and
+time-consuming protocols, T-gates become the primary bottleneck of quantum computation.
+c. Protocols
+Protocols define how patches within data blocks and distillation blocks are organized and how magic states are
+produced and consumed. Protocol selection is crucial in optimizing the space-time trade-off of quantum computations.
+• Distillation protocols : By allocating more patches to a distillation block, magic states can be generated more
+quickly or with higher fidelity .
+• Data block protocols : Increasing the number of patches in a data block enables faster consumption of magic
+states, enhancing computational speed.
+A comprehensive set of protocols is described in [13]. The parameters of these protocols are summarized in T able
+II and III. Later in this work, we optimize the space-time cost of an algorithm with a given T-gate count and physical
+parameters by selecting appropriate protocols.
+
+--- PDF page 21 ---
+21
+T ABLE III: Data Protocol Parameters
+Protocol Magic Consumption Time Number of Tiles per nQubits
+Compact 9 1.5n+ 3
+Intermediate 5 2n+ 4
+F ast 1 2n+√
+8n+ 1
+d. Surface code scheme
+A surface code scheme provides a complete description of a surface code implementation. It is defined by four key
+parameters:
+1. The code distance of the patches.
+2. The data block protocol.
+3. The distillation protocol.
+4. The number of distillation blocks.
+These parameters collectively determine the eﬀiciency and reliability of the quantum computation. By carefully
+selecting and optimizing these elements, it is possible to achieve an optimal balance between resource utilization and
+computational fidelity .
+3. Surface-code-based physical resource estimator
+The physical resource estimator is a function that takes the logical resource requirements and quantum computer
+hardware parameters as inputs and outputs the surface code scheme with the lowest space-time cost. It also provides
+the corresponding runtime and the number of physical qubits required.
+F undamentally , finding the optimal surface code scheme is a constrained optimization problem. The primary
+constraint is that both the magic state and the logical qubits must achieve a certain level of fidelity to ensure the
+final error rate remains below a predefined threshold of 0.01. The objective of the optimization is to minimize the
+space-time cost, which is defined as the product of runtime and the number of physical qubits. The optimization
+parameters consist of four key aspects of the surface code scheme: the distillation protocol, the number of distillation
+blocks, the data block protocol, and the code distance.
+W e have implemented the optimization procedure outlined in [13] to determine the most eﬀicient surface code
+scheme. The corresponding pseudocode can be found in 11.
+The procedure consists of four steps, which we describe as follows:
+a. Step 1: Determine the distil lation protocol
+A more sophisticated distillation protocol produces magic states with higher fidelity but at the cost of using more
+patches (and thus more physical qubits). The parameters of several distillation protocols are listed in [reference]. In
+this step, our goal is to select the most cost-effective distillation protocol that achieves suﬀicient fidelity to keep the
+overall computation error rate below 1
+The fidelity threshold is defined as the error rate divided by the total number of T gates. W e simply choose the
+least expensive distillation protocol that surpasses this fidelity threshold.
+b. Step 2: Construct a minimal setup
+In this step, we construct a surface code scheme that occupies the smallest possible space. While this minimal
+setup is not optimal, it serves as a starting point to determine the code distance. Subsequent optimizations of the
+data block protocol will build upon this minimal setup.
+
+--- PDF page 22 ---
+22
+Algorithm 1 Optimal Surface Code Scheme
+Input: (1) Logical qubit count Lqcount. (2) Number of T gates Tcount. (3)
+Target logical error rate ϵ. (4) Quantum computer error rate p.
+Output: Optimized surface code configuration S.
+1:Step 1: Select Distillation Protocol
+2:Fthreshold =ϵ
+Tcount
+3:LetTopt= min( T|F(T)< F threshold )
+4:Step 2: Construct Minimal Setup
+5:Smin={Dcompact , Topt, NT= 1, d= undefined }
+6:Compute total runtime:
+truntime =Tcount×max( Dcompact .tconsume , Topt.tproduce )
+7:Step 3: Determine Code Distance
+8:ford=dmintodmaxdo
+9: Compute logical error rate:
+pL(p, d) = 0 .1(100 p)(d+1)/2
+10: ifC·d·pL(10−4, d)< ϵthen
+11: Setdopt←d
+12: break
+13: end if
+14:end for
+15:Step 4: Optimize Data Block and Distillation Block Count
+16:optspace time = space time(S)
+17:while Truedo
+18: while rproduce < rconsume do
+19: Ndistill←Ndistill + 1
+20: end while
+21: while S[D].tproduce > S[T].tconsume /S[nT]do
+22: S[D] =D′, where D′is the next larger data block protocol
+23: end while
+24:end while
+25:Return: Optimized configuration S
+1
+FIG. 11: Optimizer Pseudo Code
+The minimal setup consists of a compact data block combined with a single distillation block determined in Step
+1. The total runtime of this setup is given by the number of Tgates multiplied by the clock cycle required to execute
+eachT gate. The latter is determined by the slower operation between magic state production and consumption.
+F or example, referring to III, the compact data block consumes a magic state every 9 clock cycles, while the 15-to-1
+distillation block occupies 11 tiles and outputs a magic state every 11 clock cycles. Since the slower operation dictates
+the runtime, the effective clock cycle for T gate execution is 11 cycles. If the total T gate count is 108, then the
+algorithm completes in 11×108time steps.
+c. Step 3: Determine the code distance
+A higher code distance reduces the logical qubit error rate but requires more physical qubits. Denoting the code
+distance by d, the number of physical qubits per patch is d2. The logical error rate per logical qubit per code cycle
+can be approximated as [12]:
+
+--- PDF page 23 ---
+23
+10 20 30 40 50 60
+logN050000100000150000200000250000Optimal Time (s)10 9 8 7 6 5 4 3 2
+Optimal Time
+Physical Qubit Count
+nd = distillation block count
+Compact data block
+Intermediate data block
+Fast data block4250045000475005000052500550005750060000
+Optimal Physical Qubit Count
+FIG. 12: Optimizer Result. This figure shows the optimization results for different protocols, where we used the
+same setting as 1 except that the physical qubits is restricted to 60000. The red and blue lines represent the optimal
+time and physical qubit count, respectively . The black dashed lines indicate changes in the distillation block count.
+The colored background represents different data block protocols.
+pL(p,d) = 0.1(100p)(d+1)/2. (C1)
+The code distance must be suﬀiciently large to suppress the logical error rate such that the total logical error
+probability for the entire algorithm remains below 1
+164×11×108×d×pL(10−4,d)<0.01. (C2)
+d. Step 4: Optimize the data block protocol and distil lation block count
+Starting from the minimal setup, we identify the performance bottleneck, which typically lies in the speed of magic
+state production. T o accelerate T gate execution, we increase the number of distillation blocks until the magic state
+production rate surpasses the consumption rate. At this point, we switch to a larger data block protocol to further
+enhance magic state consumption.
+In principle, repeating this process eventually yields a time-optimal surface code scheme, though not necessarily
+a space-time optimal one. However, for our limited set of distillation and data block protocols, we observe that the
+time-optimal scheme coincides with the space-time optimal scheme. This suggests that, in the absence of physical
+qubit constraints, the optimal surface code scheme always employs a ”fast block” configuration, with a number of
+distillation blocks precisely matching the magic state consumption rate.
+Thus, in the setting of infinite physicla qubits, what our optimizer does is simply decide the distillation protocol,
+and code distance, then the data protocol must be fast block, and the number of distillation block must be the smallest
+number such that the speed of magic state production matches the magic state consumption speed of fast block.
+However, more intriguing patterns emerge when the number of physical qubits is constrained. The optimized surface
+code scheme, as shown in Figure 12, illustrates how the optimal strategy evolves with increasing matrix size. When
+the matrix size is small, the surface code prioritizes a time-optimal scheme. As the matrix size grows (the sparsity also
+grows with logN), the scheme gradually reduces the distillation block count, reaching a minimum of three distillation
+blocks. Beyond this point, further increases in matrix size lead to a transition in data block types, shifting from a
+standard block to an intermediate block, and eventually to a compact block. Notably , as the data block type changes,
+the runtime increases significantly .
+
+--- PDF page 24 ---
+24
+CGNE Algorithm
+Algorithm 1 CGNE
+Require: A∈Rn×m, b∈Rm, x0
+1:k←0
+2:r0←b−Ax0,z0←ATr0,p0←z0
+3:while ∥rk∥> ϵdo
+4: wk←Apk
+5: αk←∥zk∥2
+∥wk∥2
+6: xk+1←xk+αkpk
+7: rk+1←rk−αkwk
+8: zk+1←ATrk+1
+9: βk←∥zk+1∥2
+∥zk∥2
+10: pk+1←zk+1+βkpk
+11: k←k+ 1
+12:end while
+Ensure: xk
+1
+FIG. 13: CGNE Algorithm
+Appendix D: The classical counterparts
+1. Conjugate Gradient Method
+In this section we introduce the runtime resource estimation of the Conjugate Gradient method.
+Definition 1 (LSP) .The Linear System Problem: Find a vector x∈Rnsuch that it satisfies equation Ax=bwith
+coeﬀicient matrix A∈Rm×nand right-hand side (RHS) vector b∈Rn.
+A basic approach for solving an LSP is Gaussian elimination, or LU factorization, with O(N3)arithmetic operations.
+IfA is a square symmetric positive semi definite (PSD) matrix, we can also apply Cholesky factorization with
+O(N3)arithmetic operations. The best complexity for an iterative algorithm with respect to N isO(Ns√κlog(1/ϵ))
+arithmetic operations for the Conjugate Gradient (CG) method solving systems with symmetric PSD matrices, where
+sis the maximum number of non-zero elements in any row or column of A,κis the condition number of A, andϵis
+the error allowed. If matrix A is just symmetric, one can use the Lanczos algorithm with higher complexity . F or an
+LSP with a general square matrix A, the best iterative method is the GMRES algorithm, which has O(n3)worst-case
+complexity [44]. F or problems in the form of ETEx=ETψ, known as normal equations, one can use a version of CG
+methods with complexity O(ndκElog(1/ϵ)), whereκEis the condition number of matrix E [44]. F or a linear system
+in general form with a non-PSD non-symmetric matrix, one can use the reformulation ATAx=ATband use a CG
+method to solve it. Although CG methods for this reformulation have better worst-case complexity than GMRES
+for the original system, practically GMRES has better performance, especially for large sparse systems with a large
+condition number [44].
+Here, we want to use CGNE (Algorithm 8.5 of [44]) as indicated in Algorithm 13.
+As we can see, there is no matrix-matrix product in the CG algorithm. At each iteration, we need to perform two
+mat-vec products. F or each sparse mat-vec product, we require 2Ns FLOPs. Additionally , we need three times vector
+summation with 2N FLOPs. Also, 8N FLOPs needed for calculating αandβ. T otal FLOPs needed in each iteration
+is4Ns+ 6N+ 8N. Thus the dominant cost is for mat-vec products.
+Theorem 4. Starting from x0= 0 , Algorithm 13 reaches to∥xk−x∥
+∥x∥≤ϵafterk≥1
+2κlog 2
+ϵ
+.
+Proof can be found in [45].
+F or as-sparse Hermitian matrix, the total number of the FLOPs are
+(1
+2κlog2
+ϵ
+)×(4Ns+ 6N+ 8N) (D1)
+
+--- PDF page 25 ---
+25
+2. Cholesky Decomposition Method
+Cholesky decomposition, combined with subsequent Gaussian elimination, can be eﬀiciently parallelized with min-
+imal overhead, particularly for large matrices. This allows us to maintain intermediate matrices in a sparse form,
+enabling storage within GPU memory .
+The algorithm based on Cholesky decomposition consists of the following steps:
+1. Given a permutation of rows and columns of the linear equation matrix P and vector b, optimize the process
+for solving Px=b.
+2. Construct the necessary data structures to compute and store P.
+3. Perform Cholesky decomposition: P=LL⊤, whereLis a sparse lower triangular matrix.
+4. Solve the triangular systems: first, solve Ly=bfory, then solve L⊤x=yforx.
+F or comparison with quantum algorithm performance evaluations, we exclude GPU data loading and unloading
+time from our analysis.
+Additionally , we conclude that each step of the algorithm is fully parallelizable, with the exception of synchronization
+overhead, which remains negligible.
+W e calculate the number of floating-point operations (FLOPs) for each step, where:
+•N represents the size of matrix P and vector b.
+•sis the maximum number of non-zero elements per row (or column), assuming the matrix is symmetric.
+Step 1: Permutation of Rows and Columns
+Exploiting matrix symmetry , we traverse each row and swap matrix elements as necessary , leading to:
+FLOPs =N·s·(s+ 1) (D2)
+Step 2: Data Structure Construction
+Assuming the matrix is already stored in an optimal format, the primary operation is generating the index structures,
+which takes:
+FLOPs =N·s (D3)
+Step 3: Cholesky Decomposition
+F or each row, we perform factorization computations, resulting in:
+FLOPs =N·(1 +s+ 2s2) (D4)
+Step 4: T riangular Solve
+This involves solving two triangular systems, first for yand then for x:
+FLOPs =N·(1 +s)·4 (D5)
+T otal FLOPs
+Summing all the FLOPs from the above steps:
+T otal FLOPs =N·s·(s+ 1) +N·s+N·(1 +s+ 2s2) +N·(1 +s)·4 (D6)
+=N·(3s2+ 7s+ 5) (D7)
+Since the CD method is fully parallelizable, we can estimate the runtime by simply divide the FLOPS by the
+supercomputer’s execution speed. According to [46], some of the state-of-the-art supercomputer parameters are
+summerized in IV.
+Using these parameters—assuming k= 10 ,s= logN,ϵ= 0.01, and a quantum computer clock cycle of 10 ns—
+along with a fast block implementation where a logical T operation is executed per clock cycle, we can compute the
+runtime of the CD method on a supercomputer and compare it with the Quantum Linear Systems Algorithm (QLSA).
+The results of this comparison are presented in Figure 14.
+Our analysis indicates that the CD method exhibits a time complexity of 3Ns2, which, in contrast to the CG
+method (see 2), has a less favorable dependence on s. However, a key advantage of this algorithm is its high degree
+of parallelizability , enabling eﬀicient execution on supercomputers. Leveraging this capability significantly enhances
+its performance in terms of runtime. Consequently , the onset of potential quantum advantage may be delayed,
+as illustrated in Figure 14, where it is projected to emerge at a problem size of 2100≈1030. Nevertheless, since
+the runtime of QLSA doesn’t scaling much with matrix size, the runtime required to reach the potential quantum
+advantage threshold remains approximately 200 hours.
+
+--- PDF page 26 ---
+26
+Name FLOP/s
+Aurora 1.012×1018
+El Capitan FP64 2.726×1018
+El Capitan FP32 5.453×1018
+El Capitan FP16 4.361×1019
+El Capitan FP8 8.721×1019
+F rontier FP64/32 1.810×1018
+T ABLE IV: Supercomputer FLOP/s Comparison
+101102
+Matrix size, 2^n1017
+1012
+107
+102
+103108101310181023HoursExecution time
+Aurora
+El Capitan FP64
+El Capitan FP32
+El Capitan FP16
+El Capitan FP8
+Frontier FP64/32
+Quantum
+FIG. 14: Runtime comparison of the CD method across different supercomputers.
+Appendix E: Quantum energy analysis
+The energy consumption of a quantum computer can be estimated as the product of three factors: the scale of the
+quantum computer (i.e., the number of physical qubits), the energy eﬀiciency of the quantum computer (i.e., power
+consumption per qubit), and the operating time. This relationship is expressed as:
+E=nq×Pq×T, (E1)
+where:
+•E is the total energy consumption,
+•nqis the number of physical qubits,
+•Pqis the power consumption per physical qubit, and
+•T is the total operating time.
+The values of nqandT are determined from prior analysis, leaving Pqas the main parameter to be explained in
+detail.
+a. Power consumption per qubit
+As derived in [15], the power consumption per physical qubit, Pq, can be expressed as:
+Pq=q"
+1 +ϕ 
+1 +βn−1/3
+p
+ηcCOP (Tc)|c!
++1−ϕ
+FOM (To)#
+, (E2)
+where:
+
+--- PDF page 27 ---
+27
+•qis the computational power per physical qubit,
+•ϕrepresents the fraction of power used for direct cooling,
+•βis the external heat conduction ratio,
+•npis the number of physical qubits per logical qubit,
+•ηcis the eﬀiciency of the cooling system,
+• COP (Tc)|cis the coeﬀicient of performance (COP) of the cooling system at the chip temperature Tc, and
+• FOM (To)is the figure of merit for the secondary cooling system.
+The second term in Eq. (E2) accounts for direct heat dissipation, while the third term represents secondary cooling
+power. Given the early development stage of quantum computers, accurate hardware parameter values for future
+large-scale fault-tolerant quantum computers remain uncertain, and parameter estimates can vary widely .
+b. Simplified estimation of Pq
+F or a rough estimation of Pqbased on current quantum computer parameters, we make the following assumptions:
+• The direct heat dissipation power dominates over computational power and secondary cooling power, allowing
+the omission of the first and third terms in Eq. (E2).
+• The volume of the quantum computer is proportional to the number of physical qubits.
+Under these assumptions, Pqsimplifies to:
+Pq=˜q
+ηcCOP (Tc)|c, (E3)
+where ˜qis a parameter to be determined.
+c. Determination of ˜q
+Based on data from [16], IBM’s Quantum System T wo dilution refrigerator can house 4,158 qubits while consuming
+26 k W of power. This yields a per-qubit power consumption of approximately 6.25 W:
+Pq=26,000 W
+4,158≈6.25 W. (E4)
+F or superconducting qubits used by IBM, the coeﬀicient of performance (COP) of the cooling system is approxi-
+mately 10−5. Substituting into Eq. (E3), we obtain:
+˜q= 6.25×105. (E5)
+d. Range of Pqfor different architectures
+Assuming ˜qremains constant across different architectures, Pqdepends primarily on the COP . F or a COP ranging
+from 10−5to10−2, the power consumption per qubit varies between 6.25 W and 0.0625 W.
+1. Conclusion
+This analysis provides an approximate estimation of the energy consumption for quantum computers, highlighting
+the dependence of power consumption on cooling eﬀiciency and quantum computer architecture. F uture work will
+refine these estimates as hardware parameters become more concrete.
+
+--- PDF page 28 ---
+28
+Appendix F: Classical energy analysis
+The estimation of classical energy consumption follows the formula:
+Ec=tPc=op
+fcPc=opPc
+fc(F1)
+whereEcrepresents the total energy consumption, tdenotes the runtime, op is the total number of clock cycles, fc
+stands for the clock frequency , and Pcis the power consumption. Consequently , determining the energy eﬀiciency of
+CPUs, expressed asPc
+fc, is crucial for performance evaluation.
+Most mainstream desktop CPUs exhibit power consumption ranging from 50 watts to 400 watts, with clock fre-
+quencies spanning from 1 GHz to 5 GHz. Given that power and frequency are positively correlated [47], the power
+eﬀiciency typically falls within the range of 50 watts per GHz to 80 watts per GHz. In this analysis, we assume a
+representative value of 50 watts per GHz to estimate the CPU energy consumption of the algorithm.

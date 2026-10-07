@@ -1,0 +1,4 @@
+paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py:122: RuntimeWarning: divide by zero encountered in double_scalars
+  base=dict(c,L=len(terms),s=s,B=B,C_comm=C,H_scale=scale,H_norm=float(max(abs(evals[0]),abs(evals[-1]))),lambda_min=float(evals[0]),kappa=float(max(abs(evals))/min(abs(evals))))
+srun: error: nid004922: task 0: Exited with exit code 1
+srun: Terminating StepId=58122970.0

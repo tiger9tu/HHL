@@ -1,0 +1,13 @@
+{
+  "result": "passed",
+  "pages": 9,
+  "checks": [
+    "visual page layout reviewed",
+    "no overfull boxes or unresolved references",
+    "text within page bounds",
+    "example totals match estimator JSON",
+    "source and estimator attached"
+  ],
+  "pdf_sha256": "1027eb7e401d2729a2e8944094cf467531316c2ec9c3979c99f12687b56788a0",
+  "source_sha256": "e306fd8ec6ac0a831d9a75be47d16f586fca731c25b904080f2d916cf99a6334"
+}

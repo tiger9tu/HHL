@@ -1,0 +1,49 @@
+[
+  {
+    "case": {
+      "family": "cancelling",
+      "N": 64,
+      "matching_terms": 0,
+      "sample": 0,
+      "amplitude": 4.0,
+      "case_id": 846,
+      "seed": 20261755
+    },
+    "traceback": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"/usr/lib64/python3.6/concurrent/futures/process.py\", line 175, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 136, in run_case\n    EU=opnorm(S-exact);BUraw=t*t*C/(2*r);BU=min(2.,BUraw)\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 41, in opnorm\n    value=la.eigh(gram,eigvals_only=True,subset_by_index=[len(a)-1,len(a)-1],check_finite=False)[0]\n  File \"/global/u2/y/yuetu/proj/HHL/paper-revise/results/03-hhl-analysis/trotter-error/experiments/.venv/lib64/python3.6/site-packages/scipy/linalg/decomp.py\", line 604, in eigh\n    raise LinAlgError(msg)\nnumpy.linalg.LinAlgError: Internal Error.\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 177, in main\n    cid,n,seconds=future.result();completed+=1\n  File \"/usr/lib64/python3.6/concurrent/futures/_base.py\", line 425, in result\n    return self.__get_result()\n  File \"/usr/lib64/python3.6/concurrent/futures/_base.py\", line 384, in __get_result\n    raise self._exception\nnumpy.linalg.LinAlgError: Internal Error.\n"
+  },
+  {
+    "case": {
+      "family": "cancelling",
+      "N": 8,
+      "matching_terms": 0,
+      "sample": 0,
+      "amplitude": 4.0,
+      "case_id": 844,
+      "seed": 20261753
+    },
+    "traceback": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"/usr/lib64/python3.6/concurrent/futures/process.py\", line 175, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 136, in run_case\n    EU=opnorm(S-exact);BUraw=t*t*C/(2*r);BU=min(2.,BUraw)\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 41, in opnorm\n    value=la.eigh(gram,eigvals_only=True,subset_by_index=[len(a)-1,len(a)-1],check_finite=False)[0]\n  File \"/global/u2/y/yuetu/proj/HHL/paper-revise/results/03-hhl-analysis/trotter-error/experiments/.venv/lib64/python3.6/site-packages/scipy/linalg/decomp.py\", line 604, in eigh\n    raise LinAlgError(msg)\nnumpy.linalg.LinAlgError: Internal Error.\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 177, in main\n    cid,n,seconds=future.result();completed+=1\n  File \"/usr/lib64/python3.6/concurrent/futures/_base.py\", line 425, in result\n    return self.__get_result()\n  File \"/usr/lib64/python3.6/concurrent/futures/_base.py\", line 384, in __get_result\n    raise self._exception\nnumpy.linalg.LinAlgError: Internal Error.\n"
+  },
+  {
+    "case": {
+      "family": "cancelling",
+      "N": 256,
+      "matching_terms": 0,
+      "sample": 0,
+      "amplitude": 4.0,
+      "case_id": 848,
+      "seed": 20261757
+    },
+    "traceback": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"/usr/lib64/python3.6/concurrent/futures/process.py\", line 175, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 136, in run_case\n    EU=opnorm(S-exact);BUraw=t*t*C/(2*r);BU=min(2.,BUraw)\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 41, in opnorm\n    value=la.eigh(gram,eigvals_only=True,subset_by_index=[len(a)-1,len(a)-1],check_finite=False)[0]\n  File \"/global/u2/y/yuetu/proj/HHL/paper-revise/results/03-hhl-analysis/trotter-error/experiments/.venv/lib64/python3.6/site-packages/scipy/linalg/decomp.py\", line 604, in eigh\n    raise LinAlgError(msg)\nnumpy.linalg.LinAlgError: Internal Error.\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 177, in main\n    cid,n,seconds=future.result();completed+=1\n  File \"/usr/lib64/python3.6/concurrent/futures/_base.py\", line 425, in result\n    return self.__get_result()\n  File \"/usr/lib64/python3.6/concurrent/futures/_base.py\", line 384, in __get_result\n    raise self._exception\nnumpy.linalg.LinAlgError: Internal Error.\n"
+  },
+  {
+    "case": {
+      "family": "fixed_band",
+      "N": 1024,
+      "matching_terms": 4,
+      "sample": 0,
+      "case_id": 276,
+      "seed": 20261185
+    },
+    "traceback": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"/usr/lib64/python3.6/concurrent/futures/process.py\", line 175, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 157, in run_case\n    shard=HERE/'shards'/('%04d.json'%c['case_id']);tmp=shard.with_suffix('.tmp');tmp.write_text(json.dumps(result,allow_nan=False));tmp.replace(shard)\n  File \"/usr/lib64/python3.6/json/__init__.py\", line 238, in dumps\n    **kw).encode(obj)\n  File \"/usr/lib64/python3.6/json/encoder.py\", line 199, in encode\n    chunks = self.iterencode(o, _one_shot=True)\n  File \"/usr/lib64/python3.6/json/encoder.py\", line 257, in iterencode\n    return _iterencode(o, 0)\nValueError: Out of range float values are not JSON compliant\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py\", line 177, in main\n    cid,n,seconds=future.result();completed+=1\n  File \"/usr/lib64/python3.6/concurrent/futures/_base.py\", line 425, in result\n    return self.__get_result()\n  File \"/usr/lib64/python3.6/concurrent/futures/_base.py\", line 384, in __get_result\n    raise self._exception\nValueError: Out of range float values are not JSON compliant\n"
+  }
+]

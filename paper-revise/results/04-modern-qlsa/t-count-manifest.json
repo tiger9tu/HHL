@@ -1,0 +1,20 @@
+{
+  "model_version": "04-T-count-v1.0.0",
+  "captured_utc": "2026-09-10",
+  "git_head": "66a01648db95465abbd2f099d9b8f103679555b6",
+  "command": "python3 paper-revise/results/04-modern-qlsa/reproduce_t_count.py",
+  "inputs_sha256": {
+    "paper-revise/results/04-modern-qlsa/t_count.py": "699f5863c84ec034dd572182bf8627d99784c49ee7fa1a839d396c8851a62f08",
+    "paper-revise/results/04-modern-qlsa/reproduce_t_count.py": "144a5bcba28adc96c3bfbf16bdd0dc8b0c71f88f5aacafa94e437a6cdb95c664",
+    "paper-revise/results/04-modern-qlsa/t-count-model.md": "e0dc0153a4f4c45491e47a5f2b0613dd334f5106b31ef8c1f3bc3e1f4d2b97be",
+    "paper-revise/results/04-modern-qlsa/t-count-input.json": "d9a4fa11cce729463d54487763a6b2eb886a9395ec9e83eb2d8a3f52aca7d59b",
+    "paper-revise/results/02-application/instance.json": "6c6630ae605575da11c35fb38bcafd1ffb33d8b275d94f2777218e974ab7a670",
+    "paper-revise/results/02-application/specification.md": "12db141643103146d288b24e02f8e58ec05ca93728d0efd3d2afa7fb5f0488b2",
+    "paper-revise/results/01-framework/interface.schema.json": "61a459f4dcdb22bd21d9f2b84f0e5d8ca6deefd2e4e045b2300d7efabd7b0920",
+    "paper-revise/results/04-modern-qlsa/sources/2604.22185v2.pdf": "48523045f25f5ffa2b4417257171c5af5b3be5ba2ec3664d55530331bab12b2c",
+    "paper-revise/results/04-modern-qlsa/sources/2406.12086v2.pdf": "9d1fdc238b2324d5be6831020a79f136cec4589471a6b5eaae8d9189813c583f",
+    "paper-revise/results/04-modern-qlsa/sources/2206.03505v1.html": "5f941477ad2404982e648cd774a033165f97c8e31de1490e7e634b12640fde39"
+  },
+  "instance_id": "02-smooth-diffusion-v1-stored-data-state-budget-proxy",
+  "task05_available": false
+}

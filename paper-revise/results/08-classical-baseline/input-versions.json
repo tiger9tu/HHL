@@ -1,0 +1,36 @@
+{
+  "git_head": "66a01648db95465abbd2f099d9b8f103679555b6",
+  "sha256": {
+    "paper-revise/prompts/tasks/08-classical-baseline.md": "88a2651ac13ea6e09462bbc67eaaa96f7796c633c52b3423c5096480287c2fc0",
+    "paper-revise/prompts/tasks/README.md": "f2728d40d1561af87a2fb56a7d87e3ef6b2b6383198684963eccc9aa726d3455",
+    "paper-revise/prompts/paper-revise.md": "13b7342709c8ae669f010e9536d7a872a8fa6a3511f9ecc9e883cb9c036c8584",
+    "paper-revise/results/01-framework/interface.md": "eb92548fb494eabed82bd80441e0671c5a8c22bdc7f9bf90ce24611b2901857e",
+    "paper-revise/results/01-framework/interface.schema.json": "61a459f4dcdb22bd21d9f2b84f0e5d8ca6deefd2e4e045b2300d7efabd7b0920",
+    "paper-revise/results/02-application/specification.md": "12db141643103146d288b24e02f8e58ec05ca93728d0efd3d2afa7fb5f0488b2",
+    "paper-revise/results/02-application/benchmark-pp.json": "82699f121b1e74dff989de5b5c250f2db715a5d31de06198c908bcf28ecc4b7d",
+    "tools/heatmap.ipynb": "69d652a0ad11a36a854481bbe34cffeeb898742d02d12fb7367ea4367140a370",
+    "paper/Explore_Practical_Quantum_Speedup_for_Quantum_Linear_System_of_Equations (1).pdf": "775cc22c04e0d578198406adc539c4b40e2b4823b4068d27eb2cbfe2ebe051fc",
+    "paper-revise/docs/comment2.pdf": "d24b96fab65ecd59454acfc5cd0bf34a894cb360dd2a95914dceffdcf1296df8",
+    "paper-revise/docs/comment1.pdf": "f1533f5507b5a163a3974f5ae42d85bfa3f229f041868872e1b24fa301ce1800",
+    "paper-revise/results/08-classical-baseline/sources/hpcg-sc25.html": "9b9dd643daa64e493176f31b66a38aebd32f16059d42e36fe3d37d18171a6494",
+    "paper-revise/results/08-classical-baseline/sources/Explore_Practical_Quantum_Speedup_for_Quantum_Linear_System_of_Equations (1).txt": "7eed39f347fa32be7933ba6091e7c17685035e2cc37da690e03fd193976dd94e",
+    "paper-revise/results/08-classical-baseline/sources/comment2.txt": "6293630ca293818c6ae979afb236918fe55dffe245d1f45f7b2c43025a46d1e5",
+    "paper-revise/results/08-classical-baseline/sources/comment1.txt": "940af5917a12c54c7b67450179f63a8a8f5723936072124d761633156b50e021",
+    "paper-revise/results/08-classical-baseline/sources/hpcg-faq.html": "46ad020830601807b70ea693223dcfdd67a23b98222f52526ff410110f0c102e",
+    "paper-revise/results/08-classical-baseline/sources/top500-2025-11.html": "5c7aa6f34d0155b2ed273aaf15d793e4d0a8a53ac8cc73412b5998cdefa7fc2c",
+    "paper-revise/results/08-classical-baseline/cg_hpcg.py": "c669050d7a56a57774af28618321e1ac547505e852d32f8685823160e13468d9",
+    "paper-revise/results/08-classical-baseline/reproduce.py": "30dd99fc3b670334d121d6b54029302c9e6ca7dddf945b95031f97b2da543c13",
+    "paper-revise/results/08-classical-baseline/sources.md": "78e20af679b926b190480a400dd8a89d09d43b0d90ffcab216918d0f2fed549b",
+    "paper-revise/results/08-classical-baseline/README.md": "7d331e19267d52c9dc0a1634c73f6ec1973e723f965ecd939428107142eeed54",
+    "paper-revise/results/08-classical-baseline/report.md": "bdf9429bc667d59dcafbafb3e0e7fba96f0a9295c2a6e0804871292eabdc1387",
+    "paper-revise/results/08-classical-baseline/manuscript-text.md": "c4314da128c99615e490892eaabac625162563b9930501256a584f79ef67b6f9",
+    "paper-revise/results/08-classical-baseline/hardware.json": "90c4ab4f00c934d6e2f78deeda5d41de5dfa2527504a996b597200edc2a69956",
+    "paper-revise/results/08-classical-baseline/model-input.json": "0bbfa248b4a30771dd09960e05a27b074f8fc83b790ae77eddff0626cb96d2ee",
+    "paper-revise/results/08-classical-baseline/report/hardware-table.tex": "2ee1a89651d412be99f132c85dcb1c9175f8fe31fb64e04489e68f44f72db36a",
+    "paper-revise/results/08-classical-baseline/report/cg-hpcg.tex": "fa885e622902dcd68b8b705c5295b3649320678459906cebe28e178417d978c6"
+  },
+  "missing_handoffs": [
+    "05-input-output",
+    "07-hardware-energy"
+  ]
+}

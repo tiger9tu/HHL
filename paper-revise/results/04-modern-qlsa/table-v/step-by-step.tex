@@ -1,0 +1,321 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,microtype}
+\usepackage[T1]{fontenc}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible}
+\newcommand{\ket}[1]{\lvert#1\rangle}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+\title{Constructing the Modern QLSA T-Count\\A Step-by-Step Explanation of Table V}
+\author{HHL paper revision: task 04}
+\date{20 September 2026}
+\input{readout-numbers.tex}
+\begin{document}
+\maketitle
+This note explains the implemented function \texttt{paper\_table\_v.py:f(p)}, based on Table V (PDF page 22) of Dalzell et al., arXiv:2211.12489v1~\cite{qipm}. It follows the discrete-adiabatic QLSA used inside that paper's quantum interior-point method. It does not use the earlier Shortcut cost construction.
+
+\textbf{Result for the running example.} For $(N,\kappa,\epsilon,\delta)=(1024,100,0.01,0.01)$, our stated parameter choices give
+\[
+ T_{\rm attempt}\approx1.2386477814166392\times10^{16},\qquad
+ f(p)=86{,}705{,}344{,}699{,}164{,}751.
+\]
+The first quantity prices one circuit attempt; the second budgets seven attempts. These are evaluations of the paper's resource \emph{model}, not certified finite circuit upper bounds. In particular, the source uses approximations for the adiabatic schedule and rotation synthesis. Rounding a model value to an integer does not remove those approximations.
+
+\section*{Step 1. Define the problem and what is being counted}
+The task is to prepare the normalized quantum solution of $Ax=b$:
+\[
+ \ket{x}=\frac{A^{-1}b}{\norm{A^{-1}b}},\qquad
+ p=(N,\kappa,\epsilon,\delta).
+\]
+Here $N$ is the original matrix dimension, $\kappa$ bounds its ordinary spectral condition number, $\epsilon$ is the solution-state error target used in the paper's error model, and $\delta$ is our allowed abort probability. The state-error convention follows the source's vector-norm formulation, rather than a complete scientific-output error budget.
+
+The T count includes T and T$^\dagger$ gates in matrix access, RHS preparation, adiabatic evolution, and filtering. The default state-only mode excludes tomography, interior-point iterations, classical preprocessing, and quantum error correction. Step 10 adds optional full-vector tomography. QLSA is only one subroutine of QIPM; we do not multiply by the number of optimization iterations.
+
+The calculation proceeds in this order:
+\[
+\boxed{N,\kappa\ \longrightarrow\ L,K\ \longrightarrow\ Q,d
+\ \longrightarrow\ \hbox{gate precisions}\ \longrightarrow\ T_{\rm attempt}}
+\]
+\[
+\boxed{\delta\ \longrightarrow\ \hbox{retry cap}\ \longrightarrow\ f(p).}
+\]
+
+\newpage
+\section*{Step 2. Convert the input to the block-encoding normalization}
+Pad to $L=2^\ell$, where $\ell=\ceil{\log_2N}$. Positive nonsingular padding within the original singular-value range preserves the condition bound; zero-padding the matrix would introduce unwanted singularity.
+
+The paper's block encoding contains $A/\norm A_F$ as a block of a larger unitary. Therefore its effective inverse gap is
+\begin{equation}\label{eq:K}
+ K\ge\kappa_F(A):=\norm A_F\norm{A^{-1}}_2
+   =\frac{\norm A_F}{\sigma_{\min}(A)}.
+\end{equation}
+The ordinary condition number is instead $\norm A_2/\sigma_{\min}(A)$. Thus, writing $\rho=\norm A_F/\norm A_2$, we need $K\ge\kappa\rho$. The default adapter uses $\rho\le\sqrt L$ and sets $K=\kappa\sqrt L$. This is a conservative bound, not a claim that every matrix attains it.
+
+For our example,
+\[
+ L=1024,\quad\ell=10,\quad\sqrt L=32,\quad K=100\times32=3200.
+\]
+A certified tighter ratio can be passed as \texttt{frobenius\_over\_spectral}; a direct $K$ can be passed as \texttt{effective\_inverse\_gap}. Using $K=100$ would describe a different normalization assumption from our default example.
+
+\section*{Step 3. Determine the adiabatic schedule and filter degree}
+The solver first uses discrete adiabatic evolution to obtain a constant-accuracy state, then QSVT eigenstate filtering to improve its accuracy. This is the solver of Costa et al.~\cite{costa}, as adapted in the QIPM paper's Proposition 2.
+
+\textbf{Adiabatic parameter.} The source gives $Q=2CK+O(\sqrt K)$, and its numerical calculation uses $Q\approx2CK$ (Eq. 66). We implement
+\begin{equation}
+ Q=\ceil{2CK},\qquad C=2000\quad\hbox{by default}.
+\end{equation}
+The value $C=2000$ is the paper's numerical assumption for general matrices, not its proven analytic constant. The omitted remainder is not bounded by this estimator.
+
+\textbf{Filter degree.} With polynomial-error allowance $\epsilon_{\rm qsp}$, Eq. (67) gives $d=2K\ln(2/\epsilon_{\rm qsp})$. Our adapter rounds upward to an even integer:
+\begin{equation}
+ d=2\ceil{K\ln(2/\epsilon_{\rm qsp})}.
+\end{equation}
+Step 4 sets $\epsilon_{\rm qsp}=\epsilon/5=0.002$, giving
+\[
+ \boxed{Q=12{,}800{,}000,\qquad d=44{,}210.}
+\]
+$Q$ is a schedule parameter, not the total matrix-query count. There are $Q+d$ forward and $Q+d$ inverse matrix calls per attempt.
+
+\newpage
+\section*{Step 4. Allocate the error before pricing the gates}
+More accurate synthesized gates cost more T gates, so the total accuracy target must first be converted into per-operation tolerances. Following the error accounting displayed in the source's Eq. (64), we use
+\begin{align}\label{eq:error}
+ \epsilon_{\rm QLSP}\ \lesssim\ &\epsilon_{\rm qsp}
+ +2(Q+d)\epsilon_G+4(Q+d)\epsilon_h\nonumber\\
+ &+4Q\epsilon_{\rm ar}+2d\epsilon_z.
+\end{align}
+Here the approximate relation emphasizes our use of the source's resource/error model; it is not a fresh certification of the implemented circuit and its postselection.
+
+\begin{center}\small
+\begin{tabular}{p{0.18\linewidth}p{0.7\linewidth}}
+\toprule
+Tolerance & What it measures\\\midrule
+$\epsilon_{\rm qsp}$ & Approximation error of the eigenstate-filtering polynomial.\\
+$\epsilon_G$ & Error in one matrix block-encoding unitary.\\
+$\epsilon_h$ & Error in one RHS state-preparation unitary.\\
+$\epsilon_{\rm ar}$ & Error in each synthesized adiabatic interpolation rotation.\\
+$\epsilon_z$ & Error in each synthesized QSVT phase rotation.\\
+\bottomrule
+\end{tabular}
+\end{center}
+The coefficients count repeated uses, or give the source's error allowance for those uses. Matrix and RHS errors must consequently be much smaller than the final state error.
+
+\textbf{Our explicit adapter choice:} split $\epsilon$ equally among the five contributions. For $s=\epsilon/5$, set
+\begin{align}
+ \epsilon_{\rm qsp}&=s,&
+ \epsilon_G&=\frac{s}{2(Q+d)},&
+ \epsilon_h&=\frac{s}{4(Q+d)},\\
+ \epsilon_{\rm ar}&=\frac{s}{4Q},&
+ \epsilon_z&=\frac{s}{2d}.&&
+\end{align}
+First choose $\epsilon_{\rm qsp}$, then compute $d$, then the remaining tolerances; there is no circular dependency. This equal allocation is our choice, not the paper's tomography-dominated 90\% allocation. Eq. (65) uses a different coefficient for $\epsilon_z$; we retain the larger $2d$ coefficient in Eq. (64).
+
+For the running example:
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Tolerance & Value\\\midrule
+$\epsilon_{\rm qsp}$ & $0.002$\\
+$\epsilon_G$ & $7.7856092356\times10^{-11}$\\
+$\epsilon_h$ & $3.8928046178\times10^{-11}$\\
+$\epsilon_{\rm ar}$ & $3.90625\times10^{-11}$\\
+$\epsilon_z$ & $2.2619316897\times10^{-8}$\\\bottomrule
+\end{tabular}
+\end{center}
+Substitution into the right side of Eq.~\eqref{eq:error} gives five contributions of $0.002$, summing to $0.01$.
+
+\newpage
+\section*{Step 5. Price one matrix block encoding and one RHS preparation}
+A matrix block encoding is a unitary $U_A$ with an encoded block $A/\alpha$, where here $\alpha=\norm A_F$. The source constructs it from two data-dependent state-preparation operations, with coherent data loading and uncomputation. It imports the circuit costs from Clader et al.~\cite{clader} and selects the \emph{minimum-depth} dense-data construction. It does not assume a free unit-cost QRAM query, and it does not exploit matrix sparsity.
+
+For $L=2^\ell$, Table III supplies
+\begin{align}\label{eq:BE}
+ T_{C\rm be}={}&[12\log_2(1/\epsilon_G)+56]L^2-24L\nonumber\\
+ &-12\log_2(1/\epsilon_G)-32\ell-32,\\
+ T_{C\rm cbe}={}&T_{C\rm be}+16(L-1).
+\end{align}
+Subscript $C$ means T \emph{count}, ``be'' means block encoding, and ``cbe'' adds a quantum control. The $16(L-1)$ term is the source's incremental control cost. The dominant $L^2$ term reflects this particular general dense-data circuit; it is not a universal lower bound for matrix access.
+
+Table IV supplies the RHS preparation cost
+\begin{equation}\label{eq:SP}
+ T_{C\rm sp}=[12\log_2(1/\epsilon_h)+40]L
+             -12\log_2(1/\epsilon_h)-16\ell-40.
+\end{equation}
+It prices the unitary preparing $\ket b$ from a basis state; its inverse has the same cost. The source assigns the same T count to its controlled version. These data-loading rotations are already priced inside Eqs.~\eqref{eq:BE}--\eqref{eq:SP}; do not charge them again as solver-level rotations.
+
+Both tables suppress some doubly/triply logarithmic synthesis terms. Their constants are imported circuit-accounting results, not fitted by our program. The source's rotation-synthesis model is $R_T(\zeta)=3\log_2(1/\zeta)$; actual compiled gate lists are not provided by this estimator.
+
+Numerically,
+\begin{align*}
+ T_{C\rm be}&\approx481{,}234{,}131.9233,\\
+ 16(L-1)&=16{,}368,\\
+ \boxed{T_{C\rm cbe}}&\boxed{\approx481{,}250{,}499.9233},\\
+ T_{C\rm sp}&\approx465{,}268.9794.
+\end{align*}
+These noninteger values are resource-model evaluations. The final function rounds the complete per-attempt total; it does not assert that a fractional number of physical gates can be executed.
+
+\newpage
+\section*{Step 6. Multiply primitive costs by their use counts}
+Table V combines the data-access primitives with the remaining adiabatic and filtering gates. The bookkeeping is:
+\begin{center}\small
+\begin{tabular}{p{0.28\linewidth}p{0.25\linewidth}p{0.35\linewidth}}
+\toprule
+Operation & Multiplicity & Contribution to T count\\\midrule
+Controlled matrix BE and inverse & $2(Q+d)$ & $2(Q+d)T_{C\rm cbe}$\\
+RHS preparation and inverse & $4(Q+d)$ & $4(Q+d)T_{C\rm sp}$\\
+Adiabatic axial rotations & $4Q$ & $4Q[3\log_2(1/\epsilon_{\rm ar})]$\\
+Other adiabatic gates & $Q$ groups & $Q(24\ell+31)$\\
+QSVT phase rotations & $d$ & $d[3\log_2(1/\epsilon_z)]$\\
+Other filter gates & $d$ groups & $d(32\ell-2)$\\\bottomrule
+\end{tabular}
+\end{center}
+The two oracle multiplicities include adjoints. There are $2Q$ adiabatic interpolation gates, each decomposed into two axial rotations, explaining $4Q$ and hence the factor $12Q$ in the rotation cost. The QSVT phase count is $d$; the $2d$ in the error allocation is the larger source error-accounting coefficient, not twice as many priced phase gates.
+
+The terms $24\ell+31$ and $32\ell-2$ are the source's residual T costs after expanding its circuit decompositions (Sec. IV.F and Figs. 1--6). They account for the remaining controlled logic/reflections. We retain these aggregate gate counts rather than inventing a new Toffoli decomposition or replacing them with unspecified overhead.
+
+Adding the six contributions gives the QLSS column of Table V:
+\begin{align}\label{eq:TV}
+ T_{\rm attempt}={}&2(Q+d)T_{C\rm cbe}+4(Q+d)T_{C\rm sp}\nonumber\\
+ &+12Q\log_2(1/\epsilon_{\rm ar})+Q(24\ell+31)\nonumber\\
+ &+3d\log_2(1/\epsilon_z)+d(32\ell-2).
+\end{align}
+Thus the matrix-access contribution has exactly the form
+\[
+ \underbrace{\hbox{number of matrix calls}}_{2(Q+d)}
+ \ \times\ 
+ \underbrace{\hbox{T count per matrix call}}_{T_{C\rm cbe}}.
+\]
+It is only one term of the full solver cost. In particular, $Q\,T_{C\rm cbe}$ alone would omit forward/inverse multiplicity, filtering, RHS access, and other gates.
+
+\textbf{The other column.} ``Controlled QLSS'' prices the source's tomography sign-recovery circuit. Its extra T cost relative to Eq.~\eqref{eq:TV} is
+\[
+ 20Q+3d\log_2(1/\epsilon_z)
+ +12(L-1)\log_2(1/\epsilon_{\rm tsp})+16(L-\ell-1).
+\]
+It is not automatically added to ordinary state preparation. Our low-level \texttt{table\_v()} exposes it when \texttt{epsilon\_tsp} is supplied.
+
+\newpage
+\section*{Step 7. Evaluate the single-attempt cost}
+For $Q=12{,}800{,}000$ and $d=44{,}210$,
+\[
+ n_{\rm BE}=2(Q+d)=25{,}688{,}420,\qquad
+ n_{\rm RHS}=4(Q+d)=51{,}376{,}840.
+\]
+Using the per-call values from Step 5 gives the following exclusive contributions, rounded here for display:
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Contribution & T count\\\midrule
+Controlled matrix access & $1.2362564967240332\times10^{16}$\\
+RHS preparation/unpreparation & $2.3904049913518\times10^{13}$\\
+Adiabatic rotations & $5.3107852430\times10^9$\\
+Other adiabatic gates & $3{,}468{,}800{,}000$\\
+QSVT phase rotations & $3.3685194183\times10^6$\\
+Other filter gates & $14{,}058{,}780$\\\midrule
+Total & $1.2386477814166392\times10^{16}$\\\bottomrule
+\end{tabular}
+\end{center}
+The unrounded total begins $12{,}386{,}477{,}814{,}166{,}392.186487\ldots$. Matrix block encoding accounts for approximately 99.8\% of it. Its size is driven by the dense $L^2$ access circuit, tight per-call precision, and large adiabatic schedule parameter. It does not imply that every modern QLSA implementation has this cost.
+
+\section*{Step 8. Apply a retry cap for the requested failure allowance}
+Table V prices one attempt. The ideal algorithm's stated success probability is at least $1/2$. Assuming independent attempts with that success lower bound, $r$ consecutive failures have probability at most $2^{-r}$. Our adapter therefore chooses
+\begin{equation}
+ r=\ceil{\log_2(1/\delta)},\qquad
+ \boxed{f(p)=r\,\ceil{T_{\rm attempt}}.}
+\end{equation}
+For $\delta=0.01$, $r=7$ and $2^{-7}=0.0078125<0.01$. Hence
+\begin{align*}
+ \ceil{T_{\rm attempt}}&=12{,}386{,}477{,}814{,}166{,}393,\\
+ f(p)&=7\times12{,}386{,}477{,}814{,}166{,}393\\
+ &=\boxed{86{,}705{,}344{,}699{,}164{,}751}.
+\end{align*}
+Execution may stop on the first success. The expected number of attempts is at most two under the same ideal success model, whereas seven is a cap. The source's tomography-failure parameter is a different quantity. Success after approximate circuit synthesis has not been recertified here, so this retry calculation remains conditional on the stated success assumption.
+
+\newpage
+\section*{Step 9. Reproduce the calculation and interpret it correctly}
+The implementation uses Python 3.11 or later and only the standard library. In the \texttt{table-v} directory:
+\begin{lstlisting}[language=Python]
+from paper_table_v import f, estimate
+p = {"N": 1024, "kappa": 100,
+     "epsilon_state": "0.01", "delta": "0.01"}
+assert f(p) == 86705344699164751
+result = estimate(p)
+print(result["T_per_attempt_ceiling"])
+print(result["matrix_calls"])
+print(result["T_controlled_BE"])
+\end{lstlisting}
+Run \texttt{python3.11 reproduce.py} to regenerate the JSON results and validation. The estimator uses 80-digit decimal arithmetic. The rounded example agrees at 40 and 100 digits; the tests also check both Table V columns against an independent small hand calculation and verify error allocation, query multiplicities, and retry boundaries.
+
+\begin{center}\small
+\begin{tabular}{p{0.43\linewidth}p{0.45\linewidth}}
+\toprule
+Ingredient & Status in this estimator\\\midrule
+Table III/IV/V algebra & Implemented as displayed in the source.\\
+Frobenius ratio $\rho=\sqrt L$ & Our generic upper-bound choice; replaceable by certified matrix information.\\
+$C=2000$, $Q\approx2CK$ & Paper's numerical assumption/approximation; a schedule remainder is omitted.\\
+Five equal error contributions & Our state-only allocation, using Eq. (64).\\
+Even-degree and final integer rounding & Our reporting/implementation conventions.\\
+Synthesis and access costs & Source approximations; some subleading terms omitted.\\
+Seven attempts & Our cap, conditional on success probability at least $1/2$.\\
+\bottomrule
+\end{tabular}
+\end{center}
+\textbf{What this result establishes.} It makes the chosen published resource model evaluable as a function of problem parameters, with an auditable decomposition. It does not prove a minimum cost or provide a fully certified sufficient T budget. Full certification would require a finite valid adiabatic schedule, verified gate synthesis, and a success/error analysis for the resulting approximate circuit. This distinction also prevents a direct claim of algorithmic superiority from comparison with the much looser earlier Shortcut construction.
+
+\textbf{Relation to original HHL.} The original HHL phase-estimation algorithm requires controlled Hamiltonian simulation. A controlled block encoding is not itself time evolution; Table III's per-call cost cannot simply replace a Hamiltonian-simulation cost. This note specifically prices the discrete-adiabatic solver.
+
+
+\newpage
+\section*{Step 10. Optionally include full-vector readout}
+The estimator now offers two separate output tasks. With \texttt{include\_readout=False} (the default), Steps 1--9 and their numerical result are unchanged. With \texttt{include\_readout=True}, it uses the paper's real-vector tomography protocol (Sec. IV.D, Proposition 4). This returns a classical approximation of the \emph{normalized} solution vector, including relative signs. It does not recover its physical norm or implement the PDE's scalar observable.
+
+Let $\xi=$\texttt{epsilon\_readout} be the total normalized-vector error target, and let $\delta_{\rm ro}=$\texttt{delta\_readout}. They default to the input state-error and failure targets, but have distinct meanings. Our explicit allocation is
+\begin{align*}
+ \epsilon_{\rm tomo}&=0.9\xi,\\
+ \epsilon_{\rm core}&=\min\{\epsilon_{\rm state},0.05\xi/1.58\},\\
+ \epsilon_{\rm tsp}&=0.05\xi/(1.58\sqrt L).
+\end{align*}
+The solver schedule/precisions are recomputed using $\epsilon_{\rm core}$. These choices ensure the source's modeled output-error expression
+\[
+ \epsilon_{\rm tomo}+1.58\sqrt L\epsilon_{\rm tsp}
+                      +1.58\epsilon_{\rm core}\le\xi.
+\]
+The program also checks the applicability condition
+$\epsilon_{\rm tomo}+\sqrt{2L}\epsilon_{\rm tsp}+\sqrt2\epsilon_{\rm core}\le1/2$.
+The 90/5/5 split is our adapter choice, not an additional theorem from the paper.
+
+The required repetitions \emph{of each circuit family} are
+\[
+ k_{\rm tomo}=\left\lceil\frac{57.5L\ln(6L/\delta_{\rm ro})}
+ {\epsilon_{\rm tomo}^2(1-\epsilon_{\rm tomo}^2/4)}\right\rceil.
+\]
+Use $k_{\rm tomo}$ ordinary QLSS circuits for magnitudes and $k_{\rm tomo}$ controlled sign-recovery circuits (the right column of Table V). With both costs evaluated at the tightened precisions,
+\[
+ \boxed{T_{\rm with\ readout}=k_{\rm tomo}
+ (\ceil{T_{\rm QLSS}}+\ceil{T_{\rm controlled\ QLSS}}).}
+\]
+The sample formula counts the unsuccessful solver flags already: there is no extra seven-attempt or $1/p$ multiplier, nor a separately added state-only delivery. An exclusive breakdown is one solver execution plus $(k_{\rm tomo}-1)$ further ordinary executions and $k_{\rm tomo}$ sign-recovery executions.
+
+For $N=1024$, $\kappa=100$, $\epsilon_{\rm state}=\xi=0.01$, and $\delta_{\rm ro}=0.01$,
+\[
+ k_{\rm tomo}=\ReadoutSamples,\qquad
+ T_{\rm with\ readout}=\ReadoutTotal.
+\]
+This large total describes full-vector tomography, not the cost of a single scalar readout. It inherits the source model's success and synthesis assumptions. Classical reconstruction, norm recovery, and QEC remain excluded.
+\begin{lstlisting}[language=Python]
+f(p)  # unchanged state-only mode
+f(dict(p, include_readout=True,
+       epsilon_readout="0.01", delta_readout="0.01"))
+\end{lstlisting}
+The returned \texttt{readout} object records the retuned schedule, error budget, both circuit prices, and their exclusive contributions. Top-level \texttt{Q}, \texttt{d}, and \texttt{T\_retry\_budget} retain the state-only baseline for comparison; \texttt{T\_total} and \texttt{f(p)} select the requested workload.
+
+\begin{thebibliography}{3}\small
+\bibitem{qipm} A. M. Dalzell et al., \emph{End-to-end resource analysis for quantum interior point methods and portfolio optimization}, arXiv:2211.12489v1 (2022). Tables III--IV, p. 14; Table V, p. 22; Eqs. (64)--(67), p. 26. \url{https://arxiv.org/pdf/2211.12489v1}.
+\bibitem{costa} P. C. S. Costa et al., \emph{Optimal Scaling Quantum Linear-Systems Solver via Discrete Adiabatic Theorem}, PRX Quantum \textbf{3}, 040303 (2022). \url{https://doi.org/10.1103/PRXQuantum.3.040303}.
+\bibitem{clader} B. D. Clader et al., \emph{Quantum Resources Required to Block-Encode a Matrix of Classical Data}, IEEE Transactions on Quantum Engineering \textbf{3}, 3103323 (2022). \url{https://doi.org/10.1109/TQE.2022.3231194}.
+\end{thebibliography}
+\end{document}

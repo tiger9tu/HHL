@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "checks": [
+    "paper D1 hand-computable example",
+    "integer count and rounding error less than one iteration",
+    "PFLOP/s -> FLOP/s",
+    "kW -> W and J -> kWh",
+    "rate/power sensitivity",
+    "capacity lower-bound rejection",
+    "seven invalid-input rejections",
+    "task-02 mesh admissibility and separate output/solver tolerance"
+  ],
+  "python": "3.6.15",
+  "scaling_rows": 16,
+  "sensitivity_rows": 48,
+  "solver_executed": false,
+  "HPCG_executed": false,
+  "accuracy_certificate_validated": false
+}

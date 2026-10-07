@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "alpha/sigma_min normalization yields K=4, not kappa=3",
+    "stricter precision and larger access normalization increase query bounds",
+    "invalid precision and normalization rejected",
+    "Chebyshev minimax attenuation satisfies requested eta over full gapped interval",
+    "dense augmented ideal reflection recovers exact solution and success law for three norm ratios"
+  ],
+  "stage_schema": "passed, task01 v1.0.0 fragments only",
+  "scope": "Analytic formula/domain checks and dense ideal reflection identity. No compiled circuit, QEC, full workload, or task02 acceptance validation.",
+  "benchmark_reconciled": false,
+  "qec_ready": false,
+  "python": "3.6.15",
+  "numpy": "1.17.3",
+  "jsonschema": "3.2.0"
+}

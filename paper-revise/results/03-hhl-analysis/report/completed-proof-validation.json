@@ -1,0 +1,10 @@
+{
+  "seed": 20260909,
+  "effective_matrix_cases": 32,
+  "qpe_eigenphase_cases": 30,
+  "max_effective_error_to_bound": 0.4999302055200729,
+  "max_single_qpe_bad_probability": 0.02481762367399386,
+  "max_median_bad_probability": 1.1102230263831296e-16,
+  "passed": true,
+  "scope": "dense logarithm and inverse perturbation; exact scalar QPE and median distributions; no full coherent median-circuit simulation"
+}

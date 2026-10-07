@@ -1,0 +1,57 @@
+{
+  "ZX_t_0.2": {
+    "effective_error": 0.200886815854269,
+    "old_B18_rhs": 0.2,
+    "unitary_error": 0.03964588352895139
+  },
+  "ZX_t_0.1": {
+    "effective_error": 0.10011104862423681,
+    "old_B18_rhs": 0.1,
+    "unitary_error": 0.009977800297338633
+  },
+  "cancelling_decomposition": {
+    "t": 0.001,
+    "N": 2,
+    "L": 5,
+    "A": "identity",
+    "effective_error": 0.007999989333631666
+  },
+  "local_order_ratios": {
+    "False": 7.998411114859778,
+    "True": 3.9989532481164827
+  },
+  "qpe_validation": [
+    {
+      "r": 16,
+      "conditioned_state_error": 0.03642487807305708,
+      "ideal_success": 0.19999999999999973,
+      "actual_success": 0.20029797899997578,
+      "full_circuit_eta_bound": 3.108925386343148,
+      "conditioned_error_bound": 13.90353700167616
+    },
+    {
+      "r": 64,
+      "conditioned_state_error": 0.00880125795289595,
+      "ideal_success": 0.19999999999999973,
+      "actual_success": 0.20001754737243052,
+      "full_circuit_eta_bound": 0.777231346585787,
+      "conditioned_error_bound": 3.47588425041904
+    },
+    {
+      "r": 256,
+      "conditioned_state_error": 0.0021955707615787324,
+      "ideal_success": 0.19999999999999973,
+      "actual_success": 0.2000010926118308,
+      "full_circuit_eta_bound": 0.19430783664644674,
+      "conditioned_error_bound": 0.86897106260476
+    },
+    {
+      "r": 4096,
+      "conditioned_state_error": 0.0001372034900678365,
+      "ideal_success": 0.19999999999999973,
+      "actual_success": 0.20000000426698283,
+      "full_circuit_eta_bound": 0.012144239790402921,
+      "conditioned_error_bound": 0.0543106914127975
+    }
+  ]
+}

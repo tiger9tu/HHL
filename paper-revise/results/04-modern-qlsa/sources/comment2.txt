@@ -1,0 +1,251 @@
+--- Page 1 ---
+Comments to the Authors
+This manuscript addresses a timely and important question for the quantum 
+computing community: how to identify regimes where fault-tolerant quantum 
+computing may provide practical advantages over classical computing when 
+evaluated not only in terms of runtime, but also in terms of space and energy 
+consumption. The authors present a substantial amount of technical work, 
+including logical-level resource estimation, fault-tolerant resource estimation using 
+surface-code-based methods, and energy modeling for superconducting quantum 
+hardware applied to the HHL/QLSA framework. The quantum algorithm analysis 
+appears thorough, technically sophisticated, and carefully executed. The 
+manuscript also addresses a topic that is becoming increasingly important as the 
+community transitions from asymptotic complexity arguments toward practical 
+assessments of quantum advantage.
+Overall, I believe the paper contains the foundation of a valuable contribution. 
+However, I also believe the manuscript currently undersells what may be its most 
+signi
+Þ
+cant scienti
+Þ
+c contribution and would bene
+Þ
+t from substantial revision 
+before publication.
+Major Comment 1: The manuscript's strongest 
+contribution is the framework, not the speci
+Þ
+c HHL 
+case study
+The manuscript is presently framed primarily as a resource-analysis study of the 
+HHL quantum linear systems algorithm. However, after reading the paper, I found 
+the more compelling contribution to be the broader methodology developed by the 
+authors.
+In particular, the paper combines:
+¥
+algorithmic resource estimation,
+¥
+fault-tolerant compilation and error correction,
+¥
+hardware-level assumptions,
+Page 
+ of 
+1
+5
+
+--- Page 2 ---
+¥
+energy consumption modeling, and
+¥
+classical performance comparisons
+into a single work
+ß
+ow intended to identify potential regions of practical quantum 
+advantage.
+This framework-oriented contribution appears more broadly impactful than the 
+speci
+Þ
+c HHL analysis itself. The manuscript repeatedly emphasizes identifying 
+practical quantum advantage boundaries and mapping regions of space-time-
+energy tradeoffs. As a result, I believe the paper would bene
+Þ
+t signi
+Þ
+cantly from 
+elevating this framework to a more prominent position in the narrative.
+I am not suggesting that the paper cease to be an HHL study. Rather, I believe the 
+authors may be underselling what is arguably their most important contribution. 
+The HHL analysis can serve naturally as a case study demonstrating the 
+methodology.
+A revised framing along these lines would also strengthen the paper's broader 
+relevance to researchers interested in practical quantum advantage beyond QLSA.
+Major Comment 2: The energy model needs greater 
+robustness and sensitivity analysis
+The energy analysis is one of the most interesting aspects of the paper, but it is also 
+the area where I have the greatest concerns.
+A signi
+Þ
+cant portion of the conclusions rely on assumptions regarding the energy 
+cost per physical qubit. While the manuscript appropriately acknowledges that 
+these estimates are architecture-dependent and subject to change, many of the 
+numerical conclusions are nevertheless presented using speci
+Þ
+c 
+Þ
+xed values.
+My concern is that future architectural improvements could materially alter these 
+assumptions. For example, changes in cryogenic design, qubit packaging density, 
+control architectures, or cooling-system ef
+Þ
+ciency could signi
+Þ
+cantly affect the 
+effective energy cost per physical qubit.
+Page 
+ of 
+2
+5
+
+--- Page 3 ---
+Because of this, I strongly encourage the authors to treat energy-per-qubit as a 
+Þ
+rst-
+class model parameter rather than as a 
+Þ
+xed quantity.
+More importantly, I believe the paper would bene
+Þ
+t substantially from a sensitivity 
+analysis that explores the stability of the reported quantum advantage boundaries 
+under perturbations of key assumptions.
+Examples include:
+¥
+energy cost per physical qubit,
+¥
+physical error rate,
+¥
+logical cycle time,
+¥
+fault-tolerance overhead assumptions,
+¥
+condition number 
+!
+,
+¥
+sparsity s,
+¥
+precision 
+"
+.
+At present, many of the 
+Þ
+gures represent point estimates. It is dif
+Þ
+cult to assess 
+how robust the resulting quantum advantage regions are with respect to uncertainty 
+in these assumptions.
+A systematic sensitivity analysis would signi
+Þ
+cantly strengthen the credibility and 
+long-term relevance of the conclusions.
+Major Comment 3: Practical benchmarking should 
+be more closely tied to scienti
+Þ
+c computing practice
+I do not object to the use of conjugate gradient (CG) as a classical comparison. CG 
+is a natural algorithmic counterpart to QLSA and provides a useful theoretical 
+baseline.
+However, the manuscript frequently discusses practical quantum advantage in the 
+context of real-world scienti
+Þ
+c computing. In that context, I believe the 
+benchmarking discussion should be grounded more carefully in contemporary 
+high-performance computing practice.
+Page 
+ of 
+3
+5
+
+--- Page 4 ---
+For example:
+¥
+Which scienti
+Þ
+c computing workloads motivate the selected parameter 
+regimes?
+¥
+How do representative values of 
+!
+, s, and 
+"
+ compare with those encountered 
+in production HPC simulations?
+¥
+How might the conclusions change under realistic preconditioning 
+strategies?
+¥
+How do the results compare with state-of-the-art HPC implementations 
+rather than desktop-scale assumptions?
+The manuscript brie
+ß
+y discusses HPC considerations, but I believe this connection 
+should be strengthened.
+At minimum, I encourage the authors to justify their selected parameter ranges 
+using representative scienti
+Þ
+c computing workloads.
+More ambitiously, it would be highly valuable if the authors could identify one or 
+more canonical application classes (for example, PDE-based simulation, 
+Þ
+nite-
+element methods, inverse problems, etc.) and evaluate their framework using 
+parameter ranges motivated by those workloads.
+Doing so would considerably improve the practical relevance of the reported 
+quantum advantage boundaries.
+Major Comment 4: Clarify audience and 
+manuscript positioning
+I found the intended audience somewhat unclear.
+The introduction begins with a high-level discussion of quantum computing as a 
+non-Von-Neumann paradigm beyond Moore's Law, which suggests an audience 
+that may not be deeply familiar with quantum computing.
+Page 
+ of 
+4
+5
+
+--- Page 5 ---
+However, the technical portions of the manuscript rapidly transition into detailed 
+discussions of HHL, Hamiltonian simulation, fault tolerance, and magic-state 
+distillation.
+The resulting narrative occasionally feels caught between an introductory article 
+and a specialized technical resource-estimation paper.
+I encourage the authors to consider more carefully:
+¥
+who the primary audience is,
+¥
+what prior knowledge is assumed,
+¥
+and how the introduction and framing can more naturally connect to the 
+technical contributions.
+Improving this narrative alignment would make the paper easier to follow and 
+increase its impact.
+Major Comment 5: Future work and conclusions
+The discussion of future work raises many interesting questions. However, I felt 
+that the conclusion section could be more focused and more clearly aligned with 
+the manuscript's central contribution.
+In particular, several future directions appear to follow naturally from the 
+framework developed in the paper:
+¥
+application-driven benchmarking,
+¥
+hardware-independent energy modeling,
+¥
+sensitivity and uncertainty quanti
+Þ
+cation,
+¥
+extension to additional quantum algorithms,
+¥
+identi
+Þ
+cation of quantum advantage regions across diverse application 
+domains.
+I believe emphasizing these directions would strengthen the conclusion and further 
+highlight the broader signi
+Þ
+cance of the methodology introduced in the 
+manuscript.
+Page 
+ of 
+5
+5

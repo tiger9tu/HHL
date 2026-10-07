@@ -1,0 +1,16 @@
+{
+  "version": "08-hpcg-2025-11-v1",
+  "retrieved": "2026-09-20",
+  "edition": "November 2025, deliberately pinned",
+  "hpcg_source": "https://www.hpcg-benchmark.org/custom/sc25.html",
+  "power_source": "https://www.top500.org/lists/top500/2025/11/",
+  "rate_status": "published HPCG benchmark performance, rounded as displayed",
+  "power_status": "published TOP500 system power, used as a proxy; not verified contemporaneous HPCG power",
+  "energy_boundary": "reported system-power proxy times projected solver-core time; facility boundary unspecified; no extra PUE applied",
+  "profiles": [
+    {"id":"el_capitan", "name":"El Capitan", "hpcg_rank":1, "hpcg_pflop_s":17.41, "power_kW":29685, "listed_cores":11340000},
+    {"id":"fugaku", "name":"Fugaku", "hpcg_rank":2, "hpcg_pflop_s":16.00, "power_kW":29899, "listed_cores":7630848},
+    {"id":"frontier", "name":"Frontier", "hpcg_rank":3, "hpcg_pflop_s":14.05, "power_kW":24607, "listed_cores":9066176},
+    {"id":"aurora", "name":"Aurora", "hpcg_rank":4, "hpcg_pflop_s":5.613, "power_kW":38698, "listed_cores":9264128}
+  ]
+}

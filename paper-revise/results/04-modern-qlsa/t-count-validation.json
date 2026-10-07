@@ -1,0 +1,20 @@
+{
+  "checks": [
+    "Clader Table1 count equals independently expanded Table4 at lambda=0",
+    "multi-control ladder truth tables and ancilla cleanup, 2 through 6 controls",
+    "Eq19 versus finite bound and mandatory switch outside published domain",
+    "monotonic resource sensitivity with fixed Eq118 policy",
+    "invalid inputs, ambiguous normalization and unsupported Eq19 extrapolation rejected",
+    "precision allocation, ideal delivery cap and disjoint T accounting",
+    "analytic padded Frobenius norm and spectral-gap bound: m=3, beta=0",
+    "analytic padded Frobenius norm and spectral-gap bound: m=3, beta=9",
+    "analytic padded Frobenius norm and spectral-gap bound: m=5, beta=9",
+    "unitary/block, solution and success checks for doubled identity augmentation, three norm ratios",
+    "both task01 v1.0.0 stage fragments validate structurally"
+  ],
+  "result": "passed",
+  "python": "3.6.15",
+  "numpy": "1.17.3",
+  "jsonschema": "3.2.0",
+  "limitations": "No stochastic full circuit, rotation synthesis, signed scalar readout or QEC validation."
+}

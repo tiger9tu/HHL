@@ -1,0 +1,15 @@
+{
+  "version": "04-sufficient-T-v2.0.0",
+  "date_utc": "2026-09-14",
+  "inputs_sha256": {
+    "04-modern-qlsa/report/upper_bound.py": "3e602e223467b6ab801b824c4e2519a4e8910d05b4a2925247831ca4931d3f55",
+    "04-modern-qlsa/report/reproduce.py": "2a20640a382a90389caf284e75afbc581d176709e53260fc15cd26a6f4f5665b",
+    "04-modern-qlsa/t_count.py": "699f5863c84ec034dd572182bf8627d99784c49ee7fa1a839d396c8851a62f08",
+    "04-modern-qlsa/t-count-model.md": "e0dc0153a4f4c45491e47a5f2b0613dd334f5106b31ef8c1f3bc3e1f4d2b97be",
+    "02-application/instance.json": "6c6630ae605575da11c35fb38bcafd1ffb33d8b275d94f2777218e974ab7a670",
+    "04-modern-qlsa/sources/2604.22185v2.pdf": "48523045f25f5ffa2b4417257171c5af5b3be5ba2ec3664d55530331bab12b2c",
+    "04-modern-qlsa/sources/1212.6253v2.pdf": "4327e5e1b0241cc60d0506218bea3f283a04b22bbf62b0223add23d15e06d3b7",
+    "04-modern-qlsa/sources/2406.12086v2.pdf": "9d1fdc238b2324d5be6831020a79f136cec4589471a6b5eaae8d9189813c583f",
+    "04-modern-qlsa/sources/2206.03505v1.html": "5f941477ad2404982e648cd774a033165f97c8e31de1490e7e634b12640fde39"
+  }
+}

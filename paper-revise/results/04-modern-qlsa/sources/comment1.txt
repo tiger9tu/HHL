@@ -1,0 +1,161 @@
+--- Page 1 ---
+Referee Rep ort - Towards identifying p ossible fault-tolerant
+advantage of quantum linear system algorithms in terms of space,
+time and energy
+March 10, 2026
+The authors provide a detailed resource estimation for the HHL quantum linear system algorithm
+running on a fault-tolerant sup erconducting device, including energy cost es tim ates. Logic al re-
+sources (T-gate counts, qubit counts) are estimated via a Q# imple mentation, and Trotter and
+QFT errors are b ounded using exp onential-typ e error b ounds from Ref. [13]. These logical re-
+sources are then mapp e d to physical resources using a surface co de optimization framework, and
+the authors compare the resulting quantum overhead against the classical conjugate gradient (CG)
+metho d, rep orting p ossible quantum advantages at matrix sizes
+ N
+ ˘
+ 2
+33
+to 2
+48
+, requiring
+ O
+ (10
+5
+)
+physical qubits. Energy estimates are based on IBM Quantum System Two.
+The central question in this work, namely the energy and quantum resource cos t crossover p oint for
+an imp ortant quantum algorithm, is an imp ortant and timely question for the community. Overall,
+the authors provide a useful metho dology for p erforming detailed complexity estimates across
+time, space, and energy. The error analysis using exp onential-typ e error b ounds is interesting and
+valuable to the c ommunity. However, in its current state, I do not b elieve the pap er is suitable for
+publication without ma jor revisions or clarications. Several assumptions underlying the crossover
+claims with classical metho ds need to b e claried and discrepancies b etween the main text and
+app endices need to b e addressed for the results to b e reliable .
+Ma jor Comments
+1. The use of the original HHL algorithm as opp os ed to state-of-the-art (SOTA) QLSA reduces the
+practical relevance of the results. The authors acknowledge that \p olynomial scalings on
+ s
+,
+ 
+,
+1
+="
+ has b een up dated for the convenience of exact pre-factor derivation" (p. 3), implying that
+they intentionally use the original HHL framework with
+ O
+ (
+
+2
+s="
+2
+) scaling rather than mo dern
+QLSA variants (Refs. [33{37]) that achieve dramatically improve d dep endence on the condition
+numb er (e.g., linear in
+ 
+). However, since the central result of the work is a crossover analysis
+b etween quantum and classical metho ds, using an outdated algorithm reduces the relevance of
+the c laim ed advantage b oundaries. At a minimum, the authors should discuss/estimate the shift
+in the crossover p oints with SOTA algorithms.
+2. The authors exclude data loading and readout costs from the resource es timates. However,
+ecient data loading remains a ma jor challenge for general classes of matrices, and hence the
+claimed advantage b oundary could shift signicantly when these costs are included. The cap-
+tion for Figure 1 s hould caution the readers regarding this assumption. Additionally, it would
+1
+
+--- Page 2 ---
+strengthen the pap er to provide even rough es timates of how the crossover p oints would shit
+under realistic data loading mo dels.
+3. The comparison with classical baselines is not c omple tely cle ar. The main te xt refers to the
+conjugate gradient (CG) metho d as the equivale nt classical baseline, which requires symmetric
+p ositive denite (SPD) syste ms, as noted in App endix D. However, the analysis in App endix D
+is based on CGNE. These are dierent algorithms, as CGNE squares the condition numb er and
+requires more ops p er iteration. It app ears that this square factor was included in Thm. 4,
+but this is not readily apparent from the text. Moreover, the analysis seems to mix dierent
+classes of matrices { some p ositive semi-denite, some symme tric. The authors should clarify
+whether or not they are assuming the input matrix is Hermitian during the classical baseline.
+If so, along with the assumption on the eigenvalues of A, CG is a reasonable comparison, but
+in the app endix the authors compare with CGNE. Regardless, one s hould ensure a comparison
+against state-of-the-art classical metho ds including preconditioned, sparse solvers, rather than
+costly normal equation-based metho ds. All in all, the comparison with classical metho ds is not
+clear and do es not seem to b e prop erly handled b etween the b o dy and the app endices.
+4. The classical CG runtime is estimated on a single desktop CPU at 1 GHz / 50 W, while the
+quantum side uses an optimized fault-tolerant architecture with
+ O
+ (10
+5
+) physical qubits. This is
+not an apples-to-apples comparison. App endix D c ompare s against Cholesky decomp osition on
+sup ercomputers, pushing the crossover to
+ ˘
+ 2
+100
+, yet this result app ears only in the app endix.
+The Cholesky/sup ercomputer comparison should b e featured in the main text and the main
+text should clearly state that the advantage b oundaries would dep end on the classical hardware
+used. Moreover, the classical hardware assumed for comparison is likely not representative of the
+hardware that would likely b e used for these classes of problems. The energy cost for quantum
+hardware is estimated using numb ers found in Ref. 18, but these numb ers are based on
+ current
+estimates and are, in the words of the authors of Ref. 18, \
+extremely
+ rough". These numb ers
+also ignore economies of sc ale that are likely aorded by larger system sizes.
+5. The probabilis tic b ound (Eq. B19) used to prove Statement 1 is derived from numerical exp er-
+iments on \small m atrix s ize" (pg. 17), with the claim that \the error do es not dep end on
+ n
+."
+This claim is crucial for the entire scaling analysis, yet: (a) Figure 9 lacks axis lab els and a
+description of the exp erimental setup; (b) the matrix sizes, distributions, and numb er of sam-
+ples are not rep orte d; (c) no rigorous justication is given for why small-matrix b ehavior should
+extrap olate to larger matrices. This needs to b e explained clearly.
+6. Figure 1 assumes
+ 
+ =
+ s
+ = log (
+N
+ ). (1) This is an optimistic assumption on
+ 
+ that may only
+b e valid in limited settings. Many real-world linear systems have condition numb ers that grow
+p olynomially with
+ N
+ . Since the quantum cost scales as
+ 
+2
+and CG scales linearly in
+ 
+, the
+crossover p oint is very sensitive to this assumption. The authors should validate this assumption
+using examples of matrix classes where this holds true. It would also strengthen the pap er to
+present crossover estimates under more realistic ass um ptions (e.g.,
+ 
+ =
+ N
+
+). (2) The assumption
+on
+ s
+ = log (
+N
+ ) is quite interesting. The sparsity is usually a xed prop erty of the matrix structure
+and not a function of its size. The authors should again validate this assumption using examples
+of real matrix classes.
+Minor Comments
+1. Many of the relevant symb ols are either ill dene d, overloaded, or not dened. For e xample ,
+T
+ represents at least four distinct quantities throughout: the numb er of
+ T
+ -gates, the SWAP
+2
+
+--- Page 3 ---
+op erator, the numb er of rep eated unitaries, and the total op erating time.
+2. In pg. 17, Fig. 19, the axes are unlab eled and the caption do es not desc rib e the exp erimental
+setup (matrix typ es, sizes, numb er of samples).
+3. Multiple grammatic al and sp elling errors are found throughout the pap er. A few examples:
+\primarly" (p. 3), \physicla" (p. 5, p. 22), \Toi" (throughout; should b e \Tooli"), \tyler ex-
+pansion" (p. 15; should b e \Taylor"), \dividingng" (App endix D), \changable" (p. 3), \Tranvis"
+(p. 6). Please check for typ os and grammatical errors.
+4. The limitations and assumptions used in the work such as exclusion of data loading and oracle
+costs, use of original HHL, and classical baseline on 1 CPU, should b e restated in the Conclusions.
+3

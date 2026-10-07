@@ -1,0 +1,948 @@
+{"started_unix": 1788972174.4740584, "hostname": "nid004922", "slurm_job_id": "58122970", "workers": 32, "blas_threads": "2", "python": "3.6.15", "numpy": "1.19.5", "scipy": "1.5.4", "source_sha256": "e5602f2db8cab4312d3ebd8d6186ef1a5d118e451d64aedd968bdcecda986eec", "base_seed": 20260909, "total_matrix_cases": 850, "scheduled_cases": 849, "times": [0.1, 1.0, 4.0], "repetitions": [1, 2, 4, 8, 16, 32], "normalized_microsteps": [0.025, 0.1, 0.25, 0.5, 0.75, 1.25], "comparison_absolute_tolerance": 5e-10}
+case=10 N=8 family=fixed_band rows=24 seconds=0.045 done=1/849
+case=11 N=8 family=fixed_band rows=24 seconds=0.045 done=2/849
+case=12 N=8 family=fixed_band rows=24 seconds=0.044 done=3/849
+case=9 N=8 family=fixed_band rows=24 seconds=0.045 done=4/849
+case=8 N=8 family=fixed_band rows=24 seconds=0.045 done=5/849
+case=14 N=8 family=fixed_band rows=24 seconds=0.044 done=6/849
+case=13 N=8 family=fixed_band rows=24 seconds=0.044 done=7/849
+case=27 N=8 family=fixed_band rows=24 seconds=0.040 done=8/849
+case=30 N=8 family=fixed_band rows=24 seconds=0.039 done=9/849
+case=28 N=8 family=fixed_band rows=24 seconds=0.040 done=10/849
+case=29 N=8 family=fixed_band rows=24 seconds=0.039 done=11/849
+case=2 N=8 family=fixed_band rows=24 seconds=0.048 done=12/849
+case=7 N=8 family=fixed_band rows=24 seconds=0.048 done=13/849
+case=15 N=8 family=fixed_band rows=24 seconds=0.045 done=14/849
+case=5 N=8 family=fixed_band rows=24 seconds=0.052 done=15/849
+case=25 N=8 family=fixed_band rows=24 seconds=0.044 done=16/849
+case=6 N=8 family=fixed_band rows=24 seconds=0.051 done=17/849
+case=17 N=8 family=fixed_band rows=24 seconds=0.049 done=18/849
+case=23 N=8 family=fixed_band rows=24 seconds=0.045 done=19/849
+case=1 N=8 family=fixed_band rows=24 seconds=0.053 done=20/849
+case=26 N=8 family=fixed_band rows=24 seconds=0.045 done=21/849
+case=31 N=8 family=fixed_band rows=24 seconds=0.045 done=22/849
+case=4 N=8 family=fixed_band rows=24 seconds=0.052 done=23/849
+case=24 N=8 family=fixed_band rows=24 seconds=0.046 done=24/849
+case=3 N=8 family=fixed_band rows=24 seconds=0.053 done=25/849
+case=19 N=8 family=fixed_band rows=24 seconds=0.050 done=26/849
+case=21 N=8 family=fixed_band rows=24 seconds=0.049 done=27/849
+case=20 N=8 family=fixed_band rows=24 seconds=0.050 done=28/849
+case=18 N=8 family=fixed_band rows=24 seconds=0.050 done=29/849
+case=22 N=8 family=fixed_band rows=24 seconds=0.047 done=30/849
+case=56 N=16 family=fixed_band rows=24 seconds=0.015 done=31/849
+case=33 N=8 family=fixed_band rows=24 seconds=0.026 done=32/849
+case=34 N=8 family=fixed_band rows=24 seconds=0.026 done=33/849
+case=35 N=8 family=fixed_band rows=24 seconds=0.026 done=34/849
+case=36 N=8 family=fixed_band rows=24 seconds=0.026 done=35/849
+case=40 N=8 family=fixed_band rows=24 seconds=0.026 done=36/849
+case=37 N=8 family=fixed_band rows=24 seconds=0.026 done=37/849
+case=38 N=8 family=fixed_band rows=24 seconds=0.026 done=38/849
+case=39 N=8 family=fixed_band rows=24 seconds=0.036 done=39/849
+case=41 N=8 family=fixed_band rows=24 seconds=0.026 done=40/849
+case=42 N=8 family=fixed_band rows=24 seconds=0.026 done=41/849
+case=43 N=8 family=fixed_band rows=24 seconds=0.025 done=42/849
+case=44 N=8 family=fixed_band rows=24 seconds=0.026 done=43/849
+case=49 N=16 family=fixed_band rows=24 seconds=0.020 done=44/849
+case=46 N=8 family=fixed_band rows=24 seconds=0.027 done=45/849
+case=47 N=8 family=fixed_band rows=24 seconds=0.035 done=46/849
+case=45 N=8 family=fixed_band rows=24 seconds=0.028 done=47/849
+case=50 N=16 family=fixed_band rows=24 seconds=0.018 done=48/849
+case=52 N=16 family=fixed_band rows=24 seconds=0.013 done=49/849
+case=53 N=16 family=fixed_band rows=24 seconds=0.017 done=50/849
+case=54 N=16 family=fixed_band rows=24 seconds=0.016 done=51/849
+case=55 N=16 family=fixed_band rows=24 seconds=0.013 done=52/849
+case=57 N=16 family=fixed_band rows=24 seconds=0.013 done=53/849
+case=58 N=16 family=fixed_band rows=24 seconds=0.019 done=54/849
+case=59 N=16 family=fixed_band rows=24 seconds=0.019 done=55/849
+case=51 N=16 family=fixed_band rows=24 seconds=0.018 done=56/849
+case=61 N=16 family=fixed_band rows=24 seconds=0.013 done=57/849
+case=60 N=16 family=fixed_band rows=24 seconds=0.013 done=58/849
+case=62 N=16 family=fixed_band rows=24 seconds=0.013 done=59/849
+case=66 N=16 family=fixed_band rows=24 seconds=0.019 done=60/849
+case=67 N=16 family=fixed_band rows=24 seconds=0.017 done=61/849
+case=63 N=16 family=fixed_band rows=24 seconds=0.013 done=62/849
+case=65 N=16 family=fixed_band rows=24 seconds=0.017 done=63/849
+case=68 N=16 family=fixed_band rows=24 seconds=0.017 done=64/849
+case=70 N=16 family=fixed_band rows=24 seconds=0.017 done=65/849
+case=69 N=16 family=fixed_band rows=24 seconds=0.018 done=66/849
+case=72 N=16 family=fixed_band rows=24 seconds=0.017 done=67/849
+case=71 N=16 family=fixed_band rows=24 seconds=0.020 done=68/849
+case=73 N=16 family=fixed_band rows=24 seconds=0.017 done=69/849
+case=74 N=16 family=fixed_band rows=24 seconds=0.017 done=70/849
+case=77 N=16 family=fixed_band rows=24 seconds=0.018 done=71/849
+case=78 N=16 family=fixed_band rows=24 seconds=0.018 done=72/849
+case=79 N=16 family=fixed_band rows=24 seconds=0.018 done=73/849
+case=76 N=16 family=fixed_band rows=24 seconds=0.017 done=74/849
+case=85 N=16 family=fixed_band rows=24 seconds=0.029 done=75/849
+case=84 N=16 family=fixed_band rows=24 seconds=0.030 done=76/849
+case=81 N=16 family=fixed_band rows=24 seconds=0.029 done=77/849
+case=83 N=16 family=fixed_band rows=24 seconds=0.046 done=78/849
+case=82 N=16 family=fixed_band rows=24 seconds=0.046 done=79/849
+case=75 N=16 family=fixed_band rows=24 seconds=0.018 done=80/849
+case=86 N=16 family=fixed_band rows=24 seconds=0.041 done=81/849
+case=87 N=16 family=fixed_band rows=24 seconds=0.042 done=82/849
+case=89 N=16 family=fixed_band rows=24 seconds=0.029 done=83/849
+case=88 N=16 family=fixed_band rows=24 seconds=0.035 done=84/849
+case=90 N=16 family=fixed_band rows=24 seconds=0.030 done=85/849
+case=91 N=16 family=fixed_band rows=24 seconds=0.029 done=86/849
+case=16 N=8 family=fixed_band rows=24 seconds=0.680 done=87/849
+case=92 N=16 family=fixed_band rows=24 seconds=0.031 done=88/849
+case=93 N=16 family=fixed_band rows=24 seconds=0.029 done=89/849
+case=48 N=16 family=fixed_band rows=24 seconds=0.486 done=90/849
+case=32 N=8 family=fixed_band rows=24 seconds=0.700 done=91/849
+case=64 N=16 family=fixed_band rows=24 seconds=0.295 done=92/849
+case=94 N=16 family=fixed_band rows=24 seconds=0.031 done=93/849
+case=96 N=32 family=fixed_band rows=24 seconds=0.025 done=94/849
+case=97 N=32 family=fixed_band rows=24 seconds=0.024 done=95/849
+case=95 N=16 family=fixed_band rows=24 seconds=0.028 done=96/849
+case=98 N=32 family=fixed_band rows=24 seconds=0.024 done=97/849
+case=99 N=32 family=fixed_band rows=24 seconds=0.025 done=98/849
+case=100 N=32 family=fixed_band rows=24 seconds=0.032 done=99/849
+case=101 N=32 family=fixed_band rows=24 seconds=0.024 done=100/849
+case=80 N=16 family=fixed_band rows=24 seconds=0.322 done=101/849
+case=102 N=32 family=fixed_band rows=24 seconds=0.024 done=102/849
+case=103 N=32 family=fixed_band rows=24 seconds=0.024 done=103/849
+case=104 N=32 family=fixed_band rows=24 seconds=0.029 done=104/849
+case=105 N=32 family=fixed_band rows=24 seconds=0.025 done=105/849
+case=108 N=32 family=fixed_band rows=24 seconds=0.032 done=106/849
+case=109 N=32 family=fixed_band rows=24 seconds=0.032 done=107/849
+case=106 N=32 family=fixed_band rows=24 seconds=0.024 done=108/849
+case=107 N=32 family=fixed_band rows=24 seconds=0.028 done=109/849
+case=110 N=32 family=fixed_band rows=24 seconds=0.029 done=110/849
+case=112 N=32 family=fixed_band rows=24 seconds=0.028 done=111/849
+case=113 N=32 family=fixed_band rows=24 seconds=0.037 done=112/849
+case=114 N=32 family=fixed_band rows=24 seconds=0.036 done=113/849
+case=111 N=32 family=fixed_band rows=24 seconds=0.032 done=114/849
+case=115 N=32 family=fixed_band rows=24 seconds=0.029 done=115/849
+case=116 N=32 family=fixed_band rows=24 seconds=0.029 done=116/849
+case=117 N=32 family=fixed_band rows=24 seconds=0.029 done=117/849
+case=131 N=32 family=fixed_band rows=24 seconds=0.043 done=118/849
+case=118 N=32 family=fixed_band rows=24 seconds=0.029 done=119/849
+case=119 N=32 family=fixed_band rows=24 seconds=0.029 done=120/849
+case=121 N=32 family=fixed_band rows=24 seconds=0.028 done=121/849
+case=122 N=32 family=fixed_band rows=24 seconds=0.029 done=122/849
+case=120 N=32 family=fixed_band rows=24 seconds=0.029 done=123/849
+case=124 N=32 family=fixed_band rows=24 seconds=0.028 done=124/849
+case=123 N=32 family=fixed_band rows=24 seconds=0.029 done=125/849
+case=126 N=32 family=fixed_band rows=24 seconds=0.030 done=126/849
+case=125 N=32 family=fixed_band rows=24 seconds=0.030 done=127/849
+case=127 N=32 family=fixed_band rows=24 seconds=0.028 done=128/849
+case=128 N=32 family=fixed_band rows=24 seconds=0.051 done=129/849
+case=129 N=32 family=fixed_band rows=24 seconds=0.043 done=130/849
+case=130 N=32 family=fixed_band rows=24 seconds=0.051 done=131/849
+case=132 N=32 family=fixed_band rows=24 seconds=0.044 done=132/849
+case=134 N=32 family=fixed_band rows=24 seconds=0.043 done=133/849
+case=133 N=32 family=fixed_band rows=24 seconds=0.040 done=134/849
+case=137 N=32 family=fixed_band rows=24 seconds=0.044 done=135/849
+case=136 N=32 family=fixed_band rows=24 seconds=0.050 done=136/849
+case=135 N=32 family=fixed_band rows=24 seconds=0.044 done=137/849
+case=138 N=32 family=fixed_band rows=24 seconds=0.042 done=138/849
+case=139 N=32 family=fixed_band rows=24 seconds=0.042 done=139/849
+case=141 N=32 family=fixed_band rows=24 seconds=0.043 done=140/849
+case=142 N=32 family=fixed_band rows=24 seconds=0.044 done=141/849
+case=140 N=32 family=fixed_band rows=24 seconds=0.051 done=142/849
+case=143 N=32 family=fixed_band rows=24 seconds=0.043 done=143/849
+case=144 N=64 family=fixed_band rows=24 seconds=0.073 done=144/849
+case=145 N=64 family=fixed_band rows=24 seconds=0.074 done=145/849
+case=146 N=64 family=fixed_band rows=24 seconds=0.076 done=146/849
+case=147 N=64 family=fixed_band rows=24 seconds=0.081 done=147/849
+case=148 N=64 family=fixed_band rows=24 seconds=0.075 done=148/849
+case=149 N=64 family=fixed_band rows=24 seconds=0.088 done=149/849
+case=150 N=64 family=fixed_band rows=24 seconds=0.085 done=150/849
+case=151 N=64 family=fixed_band rows=24 seconds=0.075 done=151/849
+case=152 N=64 family=fixed_band rows=24 seconds=0.075 done=152/849
+case=153 N=64 family=fixed_band rows=24 seconds=0.087 done=153/849
+case=154 N=64 family=fixed_band rows=24 seconds=0.070 done=154/849
+case=156 N=64 family=fixed_band rows=24 seconds=0.076 done=155/849
+case=157 N=64 family=fixed_band rows=24 seconds=0.080 done=156/849
+case=158 N=64 family=fixed_band rows=24 seconds=0.074 done=157/849
+case=155 N=64 family=fixed_band rows=24 seconds=0.091 done=158/849
+case=161 N=64 family=fixed_band rows=24 seconds=0.081 done=159/849
+case=159 N=64 family=fixed_band rows=24 seconds=0.076 done=160/849
+case=162 N=64 family=fixed_band rows=24 seconds=0.083 done=161/849
+case=163 N=64 family=fixed_band rows=24 seconds=0.084 done=162/849
+case=166 N=64 family=fixed_band rows=24 seconds=0.079 done=163/849
+case=160 N=64 family=fixed_band rows=24 seconds=0.094 done=164/849
+case=165 N=64 family=fixed_band rows=24 seconds=0.089 done=165/849
+case=167 N=64 family=fixed_band rows=24 seconds=0.082 done=166/849
+case=164 N=64 family=fixed_band rows=24 seconds=0.105 done=167/849
+case=169 N=64 family=fixed_band rows=24 seconds=0.084 done=168/849
+case=168 N=64 family=fixed_band rows=24 seconds=0.107 done=169/849
+case=170 N=64 family=fixed_band rows=24 seconds=0.100 done=170/849
+case=171 N=64 family=fixed_band rows=24 seconds=0.086 done=171/849
+case=172 N=64 family=fixed_band rows=24 seconds=0.085 done=172/849
+case=173 N=64 family=fixed_band rows=24 seconds=0.094 done=173/849
+case=175 N=64 family=fixed_band rows=24 seconds=0.083 done=174/849
+case=174 N=64 family=fixed_band rows=24 seconds=0.079 done=175/849
+case=179 N=64 family=fixed_band rows=24 seconds=0.116 done=176/849
+case=180 N=64 family=fixed_band rows=24 seconds=0.110 done=177/849
+case=177 N=64 family=fixed_band rows=24 seconds=0.118 done=178/849
+case=176 N=64 family=fixed_band rows=24 seconds=0.103 done=179/849
+case=178 N=64 family=fixed_band rows=24 seconds=0.121 done=180/849
+case=181 N=64 family=fixed_band rows=24 seconds=0.126 done=181/849
+case=183 N=64 family=fixed_band rows=24 seconds=0.112 done=182/849
+case=182 N=64 family=fixed_band rows=24 seconds=0.104 done=183/849
+case=184 N=64 family=fixed_band rows=24 seconds=0.109 done=184/849
+case=187 N=64 family=fixed_band rows=24 seconds=0.100 done=185/849
+case=186 N=64 family=fixed_band rows=24 seconds=0.125 done=186/849
+case=185 N=64 family=fixed_band rows=24 seconds=0.122 done=187/849
+case=188 N=64 family=fixed_band rows=24 seconds=0.127 done=188/849
+case=189 N=64 family=fixed_band rows=24 seconds=0.131 done=189/849
+case=190 N=64 family=fixed_band rows=24 seconds=0.141 done=190/849
+case=191 N=64 family=fixed_band rows=24 seconds=0.142 done=191/849
+case=193 N=128 family=fixed_band rows=24 seconds=0.406 done=192/849
+case=192 N=128 family=fixed_band rows=24 seconds=0.458 done=193/849
+case=194 N=128 family=fixed_band rows=24 seconds=0.448 done=194/849
+case=196 N=128 family=fixed_band rows=24 seconds=0.467 done=195/849
+case=195 N=128 family=fixed_band rows=24 seconds=0.506 done=196/849
+case=201 N=128 family=fixed_band rows=24 seconds=0.472 done=197/849
+case=199 N=128 family=fixed_band rows=24 seconds=0.510 done=198/849
+case=198 N=128 family=fixed_band rows=24 seconds=0.500 done=199/849
+case=197 N=128 family=fixed_band rows=24 seconds=0.526 done=200/849
+case=203 N=128 family=fixed_band rows=24 seconds=0.463 done=201/849
+case=202 N=128 family=fixed_band rows=24 seconds=0.487 done=202/849
+case=200 N=128 family=fixed_band rows=24 seconds=0.530 done=203/849
+case=205 N=128 family=fixed_band rows=24 seconds=0.488 done=204/849
+case=206 N=128 family=fixed_band rows=24 seconds=0.481 done=205/849
+case=208 N=128 family=fixed_band rows=24 seconds=0.473 done=206/849
+case=207 N=128 family=fixed_band rows=24 seconds=0.498 done=207/849
+case=210 N=128 family=fixed_band rows=24 seconds=0.477 done=208/849
+case=204 N=128 family=fixed_band rows=24 seconds=0.540 done=209/849
+case=209 N=128 family=fixed_band rows=24 seconds=0.513 done=210/849
+case=213 N=128 family=fixed_band rows=24 seconds=0.511 done=211/849
+case=218 N=128 family=fixed_band rows=24 seconds=0.486 done=212/849
+case=215 N=128 family=fixed_band rows=24 seconds=0.519 done=213/849
+case=216 N=128 family=fixed_band rows=24 seconds=0.513 done=214/849
+case=212 N=128 family=fixed_band rows=24 seconds=0.565 done=215/849
+case=211 N=128 family=fixed_band rows=24 seconds=0.575 done=216/849
+case=217 N=128 family=fixed_band rows=24 seconds=0.528 done=217/849
+case=214 N=128 family=fixed_band rows=24 seconds=0.558 done=218/849
+case=221 N=128 family=fixed_band rows=24 seconds=0.526 done=219/849
+case=220 N=128 family=fixed_band rows=24 seconds=0.541 done=220/849
+case=222 N=128 family=fixed_band rows=24 seconds=0.540 done=221/849
+case=219 N=128 family=fixed_band rows=24 seconds=0.575 done=222/849
+case=223 N=128 family=fixed_band rows=24 seconds=0.543 done=223/849
+case=227 N=128 family=fixed_band rows=24 seconds=0.504 done=224/849
+case=225 N=128 family=fixed_band rows=24 seconds=0.576 done=225/849
+case=224 N=128 family=fixed_band rows=24 seconds=0.608 done=226/849
+case=233 N=128 family=fixed_band rows=24 seconds=0.486 done=227/849
+case=236 N=128 family=fixed_band rows=24 seconds=0.460 done=228/849
+case=237 N=128 family=fixed_band rows=24 seconds=0.459 done=229/849
+case=226 N=128 family=fixed_band rows=24 seconds=0.646 done=230/849
+case=238 N=128 family=fixed_band rows=24 seconds=0.476 done=231/849
+case=229 N=128 family=fixed_band rows=24 seconds=0.582 done=232/849
+case=228 N=128 family=fixed_band rows=24 seconds=0.660 done=233/849
+case=231 N=128 family=fixed_band rows=24 seconds=0.604 done=234/849
+case=230 N=128 family=fixed_band rows=24 seconds=0.646 done=235/849
+case=232 N=128 family=fixed_band rows=24 seconds=0.634 done=236/849
+case=234 N=128 family=fixed_band rows=24 seconds=0.619 done=237/849
+case=239 N=128 family=fixed_band rows=24 seconds=0.606 done=238/849
+case=235 N=128 family=fixed_band rows=24 seconds=0.647 done=239/849
+case=244 N=256 family=fixed_band rows=24 seconds=1.973 done=240/849
+case=247 N=256 family=fixed_band rows=24 seconds=2.215 done=241/849
+case=246 N=256 family=fixed_band rows=24 seconds=2.357 done=242/849
+case=249 N=256 family=fixed_band rows=24 seconds=2.357 done=243/849
+case=252 N=256 family=fixed_band rows=24 seconds=2.346 done=244/849
+case=250 N=256 family=fixed_band rows=24 seconds=2.390 done=245/849
+case=243 N=256 family=fixed_band rows=24 seconds=2.559 done=246/849
+case=242 N=256 family=fixed_band rows=24 seconds=2.614 done=247/849
+case=279 N=8 family=random_matching rows=24 seconds=0.018 done=248/849
+case=241 N=256 family=fixed_band rows=24 seconds=2.690 done=249/849
+case=280 N=8 family=random_matching rows=24 seconds=0.017 done=250/849
+case=245 N=256 family=fixed_band rows=24 seconds=2.646 done=251/849
+case=281 N=8 family=random_matching rows=24 seconds=0.013 done=252/849
+case=282 N=8 family=random_matching rows=24 seconds=0.017 done=253/849
+case=283 N=8 family=random_matching rows=24 seconds=0.019 done=254/849
+case=240 N=256 family=fixed_band rows=24 seconds=2.767 done=255/849
+case=284 N=8 family=random_matching rows=24 seconds=0.012 done=256/849
+case=285 N=8 family=random_matching rows=24 seconds=0.017 done=257/849
+case=286 N=8 family=random_matching rows=24 seconds=0.017 done=258/849
+case=287 N=8 family=random_matching rows=24 seconds=0.019 done=259/849
+case=288 N=8 family=random_matching rows=24 seconds=0.012 done=260/849
+case=289 N=8 family=random_matching rows=24 seconds=0.017 done=261/849
+case=290 N=8 family=random_matching rows=24 seconds=0.017 done=262/849
+case=291 N=8 family=random_matching rows=24 seconds=0.017 done=263/849
+case=251 N=256 family=fixed_band rows=24 seconds=2.731 done=264/849
+case=253 N=256 family=fixed_band rows=24 seconds=2.709 done=265/849
+case=292 N=8 family=random_matching rows=24 seconds=0.013 done=266/849
+case=256 N=256 family=fixed_band rows=24 seconds=2.490 done=267/849
+case=293 N=8 family=random_matching rows=24 seconds=0.017 done=268/849
+case=295 N=8 family=random_matching rows=24 seconds=0.023 done=269/849
+case=296 N=8 family=random_matching rows=24 seconds=0.026 done=270/849
+case=297 N=8 family=random_matching rows=24 seconds=0.017 done=271/849
+case=298 N=8 family=random_matching rows=24 seconds=0.017 done=272/849
+case=300 N=8 family=random_matching rows=24 seconds=0.024 done=273/849
+case=299 N=8 family=random_matching rows=24 seconds=0.027 done=274/849
+case=301 N=8 family=random_matching rows=24 seconds=0.024 done=275/849
+case=302 N=8 family=random_matching rows=24 seconds=0.024 done=276/849
+case=304 N=8 family=random_matching rows=24 seconds=0.017 done=277/849
+case=303 N=8 family=random_matching rows=24 seconds=0.025 done=278/849
+case=278 N=8 family=random_matching rows=24 seconds=0.367 done=279/849
+case=305 N=8 family=random_matching rows=24 seconds=0.025 done=280/849
+case=306 N=8 family=random_matching rows=24 seconds=0.020 done=281/849
+case=248 N=256 family=fixed_band rows=24 seconds=2.924 done=282/849
+case=254 N=256 family=fixed_band rows=24 seconds=2.868 done=283/849
+case=307 N=8 family=random_matching rows=24 seconds=0.026 done=284/849
+case=308 N=8 family=random_matching rows=24 seconds=0.023 done=285/849
+case=309 N=8 family=random_matching rows=24 seconds=0.017 done=286/849
+case=262 N=256 family=fixed_band rows=24 seconds=2.599 done=287/849
+case=255 N=256 family=fixed_band rows=24 seconds=2.932 done=288/849
+case=312 N=8 family=random_matching rows=24 seconds=0.032 done=289/849
+case=313 N=8 family=random_matching rows=24 seconds=0.031 done=290/849
+case=311 N=8 family=random_matching rows=24 seconds=0.047 done=291/849
+case=257 N=256 family=fixed_band rows=24 seconds=2.812 done=292/849
+case=314 N=8 family=random_matching rows=24 seconds=0.047 done=293/849
+case=315 N=8 family=random_matching rows=24 seconds=0.036 done=294/849
+case=316 N=8 family=random_matching rows=24 seconds=0.041 done=295/849
+case=317 N=8 family=random_matching rows=24 seconds=0.046 done=296/849
+case=318 N=8 family=random_matching rows=24 seconds=0.055 done=297/849
+case=319 N=8 family=random_matching rows=24 seconds=0.044 done=298/849
+case=294 N=8 family=random_matching rows=24 seconds=0.361 done=299/849
+case=260 N=256 family=fixed_band rows=24 seconds=2.761 done=300/849
+case=322 N=8 family=random_matching rows=24 seconds=0.031 done=301/849
+case=320 N=8 family=random_matching rows=24 seconds=0.045 done=302/849
+case=321 N=8 family=random_matching rows=24 seconds=0.044 done=303/849
+case=323 N=8 family=random_matching rows=24 seconds=0.039 done=304/849
+case=324 N=8 family=random_matching rows=24 seconds=0.029 done=305/849
+case=325 N=8 family=random_matching rows=24 seconds=0.035 done=306/849
+case=327 N=16 family=random_matching rows=24 seconds=0.020 done=307/849
+case=328 N=16 family=random_matching rows=24 seconds=0.020 done=308/849
+case=329 N=16 family=random_matching rows=24 seconds=0.021 done=309/849
+case=331 N=16 family=random_matching rows=24 seconds=0.020 done=310/849
+case=259 N=256 family=fixed_band rows=24 seconds=2.856 done=311/849
+case=258 N=256 family=fixed_band rows=24 seconds=2.903 done=312/849
+case=330 N=16 family=random_matching rows=24 seconds=0.020 done=313/849
+case=332 N=16 family=random_matching rows=24 seconds=0.014 done=314/849
+case=333 N=16 family=random_matching rows=24 seconds=0.015 done=315/849
+case=334 N=16 family=random_matching rows=24 seconds=0.019 done=316/849
+case=261 N=256 family=fixed_band rows=24 seconds=2.869 done=317/849
+case=335 N=16 family=random_matching rows=24 seconds=0.020 done=318/849
+case=336 N=16 family=random_matching rows=24 seconds=0.015 done=319/849
+case=337 N=16 family=random_matching rows=24 seconds=0.015 done=320/849
+case=338 N=16 family=random_matching rows=24 seconds=0.015 done=321/849
+case=339 N=16 family=random_matching rows=24 seconds=0.019 done=322/849
+case=340 N=16 family=random_matching rows=24 seconds=0.019 done=323/849
+case=341 N=16 family=random_matching rows=24 seconds=0.019 done=324/849
+case=343 N=16 family=random_matching rows=24 seconds=0.018 done=325/849
+case=345 N=16 family=random_matching rows=24 seconds=0.025 done=326/849
+case=310 N=8 family=random_matching rows=24 seconds=0.396 done=327/849
+case=346 N=16 family=random_matching rows=24 seconds=0.019 done=328/849
+case=347 N=16 family=random_matching rows=24 seconds=0.020 done=329/849
+case=344 N=16 family=random_matching rows=24 seconds=0.019 done=330/849
+case=263 N=256 family=fixed_band rows=24 seconds=2.986 done=331/849
+case=348 N=16 family=random_matching rows=24 seconds=0.026 done=332/849
+case=349 N=16 family=random_matching rows=24 seconds=0.018 done=333/849
+case=351 N=16 family=random_matching rows=24 seconds=0.019 done=334/849
+case=350 N=16 family=random_matching rows=24 seconds=0.026 done=335/849
+case=352 N=16 family=random_matching rows=24 seconds=0.019 done=336/849
+case=353 N=16 family=random_matching rows=24 seconds=0.019 done=337/849
+case=354 N=16 family=random_matching rows=24 seconds=0.026 done=338/849
+case=326 N=16 family=random_matching rows=24 seconds=0.317 done=339/849
+case=355 N=16 family=random_matching rows=24 seconds=0.027 done=340/849
+case=342 N=16 family=random_matching rows=24 seconds=0.157 done=341/849
+case=356 N=16 family=random_matching rows=24 seconds=0.020 done=342/849
+case=357 N=16 family=random_matching rows=24 seconds=0.020 done=343/849
+case=359 N=16 family=random_matching rows=24 seconds=0.031 done=344/849
+case=360 N=16 family=random_matching rows=24 seconds=0.032 done=345/849
+case=361 N=16 family=random_matching rows=24 seconds=0.031 done=346/849
+case=362 N=16 family=random_matching rows=24 seconds=0.032 done=347/849
+case=363 N=16 family=random_matching rows=24 seconds=0.031 done=348/849
+case=365 N=16 family=random_matching rows=24 seconds=0.035 done=349/849
+case=366 N=16 family=random_matching rows=24 seconds=0.032 done=350/849
+case=364 N=16 family=random_matching rows=24 seconds=0.046 done=351/849
+case=367 N=16 family=random_matching rows=24 seconds=0.046 done=352/849
+case=368 N=16 family=random_matching rows=24 seconds=0.038 done=353/849
+case=370 N=16 family=random_matching rows=24 seconds=0.037 done=354/849
+case=369 N=16 family=random_matching rows=24 seconds=0.032 done=355/849
+case=373 N=16 family=random_matching rows=24 seconds=0.033 done=356/849
+case=372 N=16 family=random_matching rows=24 seconds=0.048 done=357/849
+case=371 N=16 family=random_matching rows=24 seconds=0.032 done=358/849
+case=374 N=32 family=random_matching rows=24 seconds=0.030 done=359/849
+case=375 N=32 family=random_matching rows=24 seconds=0.028 done=360/849
+case=376 N=32 family=random_matching rows=24 seconds=0.029 done=361/849
+case=377 N=32 family=random_matching rows=24 seconds=0.024 done=362/849
+case=379 N=32 family=random_matching rows=24 seconds=0.027 done=363/849
+case=378 N=32 family=random_matching rows=24 seconds=0.035 done=364/849
+case=380 N=32 family=random_matching rows=24 seconds=0.026 done=365/849
+case=382 N=32 family=random_matching rows=24 seconds=0.030 done=366/849
+case=381 N=32 family=random_matching rows=24 seconds=0.038 done=367/849
+case=386 N=32 family=random_matching rows=24 seconds=0.028 done=368/849
+case=384 N=32 family=random_matching rows=24 seconds=0.036 done=369/849
+case=383 N=32 family=random_matching rows=24 seconds=0.032 done=370/849
+case=385 N=32 family=random_matching rows=24 seconds=0.039 done=371/849
+case=387 N=32 family=random_matching rows=24 seconds=0.028 done=372/849
+case=388 N=32 family=random_matching rows=24 seconds=0.028 done=373/849
+case=391 N=32 family=random_matching rows=24 seconds=0.034 done=374/849
+case=389 N=32 family=random_matching rows=24 seconds=0.037 done=375/849
+case=392 N=32 family=random_matching rows=24 seconds=0.034 done=376/849
+case=390 N=32 family=random_matching rows=24 seconds=0.042 done=377/849
+case=394 N=32 family=random_matching rows=24 seconds=0.029 done=378/849
+case=393 N=32 family=random_matching rows=24 seconds=0.039 done=379/849
+case=395 N=32 family=random_matching rows=24 seconds=0.032 done=380/849
+case=358 N=16 family=random_matching rows=24 seconds=0.393 done=381/849
+case=397 N=32 family=random_matching rows=24 seconds=0.031 done=382/849
+case=398 N=32 family=random_matching rows=24 seconds=0.033 done=383/849
+case=399 N=32 family=random_matching rows=24 seconds=0.031 done=384/849
+case=401 N=32 family=random_matching rows=24 seconds=0.041 done=385/849
+case=400 N=32 family=random_matching rows=24 seconds=0.031 done=386/849
+case=396 N=32 family=random_matching rows=24 seconds=0.043 done=387/849
+case=402 N=32 family=random_matching rows=24 seconds=0.031 done=388/849
+case=404 N=32 family=random_matching rows=24 seconds=0.033 done=389/849
+case=403 N=32 family=random_matching rows=24 seconds=0.042 done=390/849
+case=405 N=32 family=random_matching rows=24 seconds=0.032 done=391/849
+case=406 N=32 family=random_matching rows=24 seconds=0.050 done=392/849
+case=408 N=32 family=random_matching rows=24 seconds=0.047 done=393/849
+case=407 N=32 family=random_matching rows=24 seconds=0.067 done=394/849
+case=410 N=32 family=random_matching rows=24 seconds=0.051 done=395/849
+case=411 N=32 family=random_matching rows=24 seconds=0.047 done=396/849
+case=409 N=32 family=random_matching rows=24 seconds=0.057 done=397/849
+case=412 N=32 family=random_matching rows=24 seconds=0.048 done=398/849
+case=413 N=32 family=random_matching rows=24 seconds=0.049 done=399/849
+case=414 N=32 family=random_matching rows=24 seconds=0.055 done=400/849
+case=415 N=32 family=random_matching rows=24 seconds=0.051 done=401/849
+case=418 N=32 family=random_matching rows=24 seconds=0.048 done=402/849
+case=419 N=32 family=random_matching rows=24 seconds=0.051 done=403/849
+case=416 N=32 family=random_matching rows=24 seconds=0.073 done=404/849
+case=417 N=32 family=random_matching rows=24 seconds=0.068 done=405/849
+case=420 N=32 family=random_matching rows=24 seconds=0.048 done=406/849
+case=421 N=32 family=random_matching rows=24 seconds=0.049 done=407/849
+case=423 N=64 family=random_matching rows=24 seconds=0.086 done=408/849
+case=422 N=64 family=random_matching rows=24 seconds=0.108 done=409/849
+case=425 N=64 family=random_matching rows=24 seconds=0.091 done=410/849
+case=424 N=64 family=random_matching rows=24 seconds=0.120 done=411/849
+case=428 N=64 family=random_matching rows=24 seconds=0.089 done=412/849
+case=427 N=64 family=random_matching rows=24 seconds=0.104 done=413/849
+case=426 N=64 family=random_matching rows=24 seconds=0.119 done=414/849
+case=432 N=64 family=random_matching rows=24 seconds=0.099 done=415/849
+case=430 N=64 family=random_matching rows=24 seconds=0.091 done=416/849
+case=429 N=64 family=random_matching rows=24 seconds=0.111 done=417/849
+case=431 N=64 family=random_matching rows=24 seconds=0.112 done=418/849
+case=435 N=64 family=random_matching rows=24 seconds=0.089 done=419/849
+case=433 N=64 family=random_matching rows=24 seconds=0.088 done=420/849
+case=434 N=64 family=random_matching rows=24 seconds=0.109 done=421/849
+case=439 N=64 family=random_matching rows=24 seconds=0.097 done=422/849
+case=436 N=64 family=random_matching rows=24 seconds=0.124 done=423/849
+case=440 N=64 family=random_matching rows=24 seconds=0.098 done=424/849
+case=437 N=64 family=random_matching rows=24 seconds=0.120 done=425/849
+case=438 N=64 family=random_matching rows=24 seconds=0.131 done=426/849
+case=442 N=64 family=random_matching rows=24 seconds=0.111 done=427/849
+case=441 N=64 family=random_matching rows=24 seconds=0.125 done=428/849
+case=444 N=64 family=random_matching rows=24 seconds=0.123 done=429/849
+case=443 N=64 family=random_matching rows=24 seconds=0.135 done=430/849
+case=446 N=64 family=random_matching rows=24 seconds=0.128 done=431/849
+case=447 N=64 family=random_matching rows=24 seconds=0.116 done=432/849
+case=448 N=64 family=random_matching rows=24 seconds=0.104 done=433/849
+case=445 N=64 family=random_matching rows=24 seconds=0.119 done=434/849
+case=452 N=64 family=random_matching rows=24 seconds=0.088 done=435/849
+case=449 N=64 family=random_matching rows=24 seconds=0.118 done=436/849
+case=450 N=64 family=random_matching rows=24 seconds=0.123 done=437/849
+case=451 N=64 family=random_matching rows=24 seconds=0.123 done=438/849
+case=453 N=64 family=random_matching rows=24 seconds=0.121 done=439/849
+case=454 N=64 family=random_matching rows=24 seconds=0.129 done=440/849
+case=455 N=64 family=random_matching rows=24 seconds=0.176 done=441/849
+case=457 N=64 family=random_matching rows=24 seconds=0.135 done=442/849
+case=458 N=64 family=random_matching rows=24 seconds=0.141 done=443/849
+case=456 N=64 family=random_matching rows=24 seconds=0.173 done=444/849
+case=459 N=64 family=random_matching rows=24 seconds=0.142 done=445/849
+case=460 N=64 family=random_matching rows=24 seconds=0.170 done=446/849
+case=461 N=64 family=random_matching rows=24 seconds=0.171 done=447/849
+case=466 N=64 family=random_matching rows=24 seconds=0.148 done=448/849
+case=462 N=64 family=random_matching rows=24 seconds=0.181 done=449/849
+case=464 N=64 family=random_matching rows=24 seconds=0.167 done=450/849
+case=469 N=64 family=random_matching rows=24 seconds=0.138 done=451/849
+case=463 N=64 family=random_matching rows=24 seconds=0.175 done=452/849
+case=465 N=64 family=random_matching rows=24 seconds=0.175 done=453/849
+case=467 N=64 family=random_matching rows=24 seconds=0.179 done=454/849
+case=468 N=64 family=random_matching rows=24 seconds=0.174 done=455/849
+case=470 N=128 family=random_matching rows=24 seconds=0.447 done=456/849
+case=476 N=128 family=random_matching rows=24 seconds=0.408 done=457/849
+case=471 N=128 family=random_matching rows=24 seconds=0.508 done=458/849
+case=477 N=128 family=random_matching rows=24 seconds=0.417 done=459/849
+case=474 N=128 family=random_matching rows=24 seconds=0.500 done=460/849
+case=472 N=128 family=random_matching rows=24 seconds=0.549 done=461/849
+case=480 N=128 family=random_matching rows=24 seconds=0.395 done=462/849
+case=482 N=128 family=random_matching rows=24 seconds=0.397 done=463/849
+case=473 N=128 family=random_matching rows=24 seconds=0.570 done=464/849
+case=475 N=128 family=random_matching rows=24 seconds=0.560 done=465/849
+case=481 N=128 family=random_matching rows=24 seconds=0.457 done=466/849
+case=478 N=128 family=random_matching rows=24 seconds=0.527 done=467/849
+case=479 N=128 family=random_matching rows=24 seconds=0.528 done=468/849
+case=484 N=128 family=random_matching rows=24 seconds=0.525 done=469/849
+case=485 N=128 family=random_matching rows=24 seconds=0.557 done=470/849
+case=483 N=128 family=random_matching rows=24 seconds=0.532 done=471/849
+case=486 N=128 family=random_matching rows=24 seconds=0.541 done=472/849
+case=487 N=128 family=random_matching rows=24 seconds=0.542 done=473/849
+case=489 N=128 family=random_matching rows=24 seconds=0.402 done=474/849
+case=494 N=128 family=random_matching rows=24 seconds=0.392 done=475/849
+case=488 N=128 family=random_matching rows=24 seconds=0.487 done=476/849
+case=491 N=128 family=random_matching rows=24 seconds=0.462 done=477/849
+case=495 N=128 family=random_matching rows=24 seconds=0.401 done=478/849
+case=490 N=128 family=random_matching rows=24 seconds=0.533 done=479/849
+case=498 N=128 family=random_matching rows=24 seconds=0.416 done=480/849
+case=492 N=128 family=random_matching rows=24 seconds=0.534 done=481/849
+case=493 N=128 family=random_matching rows=24 seconds=0.571 done=482/849
+case=497 N=128 family=random_matching rows=24 seconds=0.567 done=483/849
+case=499 N=128 family=random_matching rows=24 seconds=0.544 done=484/849
+case=496 N=128 family=random_matching rows=24 seconds=0.587 done=485/849
+case=500 N=128 family=random_matching rows=24 seconds=0.535 done=486/849
+case=501 N=128 family=random_matching rows=24 seconds=0.551 done=487/849
+case=505 N=128 family=random_matching rows=24 seconds=0.595 done=488/849
+case=506 N=128 family=random_matching rows=24 seconds=0.504 done=489/849
+case=504 N=128 family=random_matching rows=24 seconds=0.620 done=490/849
+case=507 N=128 family=random_matching rows=24 seconds=0.472 done=491/849
+case=503 N=128 family=random_matching rows=24 seconds=0.646 done=492/849
+case=502 N=128 family=random_matching rows=24 seconds=0.710 done=493/849
+case=510 N=128 family=random_matching rows=24 seconds=0.513 done=494/849
+case=509 N=128 family=random_matching rows=24 seconds=0.530 done=495/849
+case=508 N=128 family=random_matching rows=24 seconds=0.589 done=496/849
+case=512 N=128 family=random_matching rows=24 seconds=0.543 done=497/849
+case=511 N=128 family=random_matching rows=24 seconds=0.664 done=498/849
+case=516 N=128 family=random_matching rows=24 seconds=0.540 done=499/849
+case=513 N=128 family=random_matching rows=24 seconds=0.690 done=500/849
+case=514 N=128 family=random_matching rows=24 seconds=0.697 done=501/849
+case=515 N=128 family=random_matching rows=24 seconds=0.690 done=502/849
+case=517 N=128 family=random_matching rows=24 seconds=0.730 done=503/849
+case=522 N=256 family=random_matching rows=24 seconds=1.841 done=504/849
+case=518 N=256 family=random_matching rows=24 seconds=2.242 done=505/849
+case=521 N=256 family=random_matching rows=24 seconds=2.035 done=506/849
+case=520 N=256 family=random_matching rows=24 seconds=2.312 done=507/849
+case=523 N=256 family=random_matching rows=24 seconds=2.314 done=508/849
+case=519 N=256 family=random_matching rows=24 seconds=2.638 done=509/849
+case=530 N=256 family=random_matching rows=24 seconds=2.300 done=510/849
+case=528 N=256 family=random_matching rows=24 seconds=2.454 done=511/849
+case=531 N=256 family=random_matching rows=24 seconds=2.313 done=512/849
+case=527 N=256 family=random_matching rows=24 seconds=2.564 done=513/849
+case=524 N=256 family=random_matching rows=24 seconds=2.608 done=514/849
+case=529 N=256 family=random_matching rows=24 seconds=2.530 done=515/849
+case=525 N=256 family=random_matching rows=24 seconds=2.852 done=516/849
+case=533 N=256 family=random_matching rows=24 seconds=2.855 done=517/849
+case=532 N=256 family=random_matching rows=24 seconds=2.957 done=518/849
+case=526 N=256 family=random_matching rows=24 seconds=3.359 done=519/849
+case=535 N=256 family=random_matching rows=24 seconds=3.028 done=520/849
+case=534 N=256 family=random_matching rows=24 seconds=3.186 done=521/849
+case=536 N=256 family=random_matching rows=24 seconds=2.412 done=522/849
+case=538 N=256 family=random_matching rows=24 seconds=2.540 done=523/849
+case=537 N=256 family=random_matching rows=24 seconds=2.629 done=524/849
+case=556 N=8 family=random_spd rows=24 seconds=0.110 done=525/849
+case=557 N=8 family=random_spd rows=24 seconds=0.022 done=526/849
+case=558 N=8 family=random_spd rows=24 seconds=0.023 done=527/849
+case=559 N=8 family=random_spd rows=24 seconds=0.022 done=528/849
+case=540 N=256 family=random_matching rows=24 seconds=2.587 done=529/849
+case=560 N=8 family=random_spd rows=24 seconds=0.022 done=530/849
+case=561 N=8 family=random_spd rows=24 seconds=0.015 done=531/849
+case=562 N=8 family=random_spd rows=24 seconds=0.022 done=532/849
+case=563 N=8 family=random_spd rows=24 seconds=0.022 done=533/849
+case=564 N=8 family=random_spd rows=24 seconds=0.022 done=534/849
+case=541 N=256 family=random_matching rows=24 seconds=2.573 done=535/849
+case=565 N=8 family=random_spd rows=24 seconds=0.022 done=536/849
+case=566 N=8 family=random_spd rows=24 seconds=0.022 done=537/849
+case=567 N=8 family=random_spd rows=24 seconds=0.022 done=538/849
+case=568 N=8 family=random_spd rows=24 seconds=0.023 done=539/849
+case=569 N=8 family=random_spd rows=24 seconds=0.022 done=540/849
+case=571 N=8 family=random_spd rows=24 seconds=0.021 done=541/849
+case=570 N=8 family=random_spd rows=24 seconds=0.021 done=542/849
+case=573 N=8 family=random_spd rows=24 seconds=0.030 done=543/849
+case=574 N=8 family=random_spd rows=24 seconds=0.030 done=544/849
+case=539 N=256 family=random_matching rows=24 seconds=3.036 done=545/849
+case=575 N=8 family=random_spd rows=24 seconds=0.025 done=546/849
+case=576 N=8 family=random_spd rows=24 seconds=0.031 done=547/849
+case=578 N=8 family=random_spd rows=24 seconds=0.021 done=548/849
+case=577 N=8 family=random_spd rows=24 seconds=0.021 done=549/849
+case=579 N=8 family=random_spd rows=24 seconds=0.030 done=550/849
+case=580 N=8 family=random_spd rows=24 seconds=0.024 done=551/849
+case=572 N=8 family=random_spd rows=24 seconds=0.192 done=552/849
+case=581 N=8 family=random_spd rows=24 seconds=0.031 done=553/849
+case=582 N=8 family=random_spd rows=24 seconds=0.031 done=554/849
+case=583 N=8 family=random_spd rows=24 seconds=0.030 done=555/849
+case=584 N=8 family=random_spd rows=24 seconds=0.033 done=556/849
+case=585 N=8 family=random_spd rows=24 seconds=0.033 done=557/849
+case=586 N=8 family=random_spd rows=24 seconds=0.030 done=558/849
+case=587 N=8 family=random_spd rows=24 seconds=0.030 done=559/849
+case=589 N=8 family=random_spd rows=24 seconds=0.057 done=560/849
+case=591 N=8 family=random_spd rows=24 seconds=0.035 done=561/849
+case=590 N=8 family=random_spd rows=24 seconds=0.057 done=562/849
+case=592 N=8 family=random_spd rows=24 seconds=0.060 done=563/849
+case=593 N=8 family=random_spd rows=24 seconds=0.061 done=564/849
+case=594 N=8 family=random_spd rows=24 seconds=0.057 done=565/849
+case=595 N=8 family=random_spd rows=24 seconds=0.058 done=566/849
+case=596 N=8 family=random_spd rows=24 seconds=0.055 done=567/849
+case=597 N=8 family=random_spd rows=24 seconds=0.057 done=568/849
+case=588 N=8 family=random_spd rows=24 seconds=0.262 done=569/849
+case=599 N=8 family=random_spd rows=24 seconds=0.058 done=570/849
+case=598 N=8 family=random_spd rows=24 seconds=0.068 done=571/849
+case=600 N=8 family=random_spd rows=24 seconds=0.056 done=572/849
+case=601 N=8 family=random_spd rows=24 seconds=0.061 done=573/849
+case=602 N=8 family=random_spd rows=24 seconds=0.045 done=574/849
+case=605 N=16 family=random_spd rows=24 seconds=0.025 done=575/849
+case=603 N=8 family=random_spd rows=24 seconds=0.060 done=576/849
+case=606 N=16 family=random_spd rows=24 seconds=0.019 done=577/849
+case=608 N=16 family=random_spd rows=24 seconds=0.025 done=578/849
+case=607 N=16 family=random_spd rows=24 seconds=0.025 done=579/849
+case=609 N=16 family=random_spd rows=24 seconds=0.018 done=580/849
+case=610 N=16 family=random_spd rows=24 seconds=0.025 done=581/849
+case=611 N=16 family=random_spd rows=24 seconds=0.024 done=582/849
+case=264 N=512 family=fixed_band rows=24 seconds=11.717 done=583/849
+case=612 N=16 family=random_spd rows=24 seconds=0.021 done=584/849
+case=613 N=16 family=random_spd rows=24 seconds=0.025 done=585/849
+case=615 N=16 family=random_spd rows=24 seconds=0.028 done=586/849
+case=614 N=16 family=random_spd rows=24 seconds=0.027 done=587/849
+case=616 N=16 family=random_spd rows=24 seconds=0.027 done=588/849
+case=617 N=16 family=random_spd rows=24 seconds=0.026 done=589/849
+case=619 N=16 family=random_spd rows=24 seconds=0.027 done=590/849
+case=618 N=16 family=random_spd rows=24 seconds=0.027 done=591/849
+case=621 N=16 family=random_spd rows=24 seconds=0.034 done=592/849
+case=622 N=16 family=random_spd rows=24 seconds=0.034 done=593/849
+case=623 N=16 family=random_spd rows=24 seconds=0.027 done=594/849
+case=624 N=16 family=random_spd rows=24 seconds=0.036 done=595/849
+case=626 N=16 family=random_spd rows=24 seconds=0.025 done=596/849
+case=625 N=16 family=random_spd rows=24 seconds=0.037 done=597/849
+case=627 N=16 family=random_spd rows=24 seconds=0.037 done=598/849
+case=628 N=16 family=random_spd rows=24 seconds=0.035 done=599/849
+case=629 N=16 family=random_spd rows=24 seconds=0.037 done=600/849
+case=630 N=16 family=random_spd rows=24 seconds=0.037 done=601/849
+case=631 N=16 family=random_spd rows=24 seconds=0.031 done=602/849
+case=632 N=16 family=random_spd rows=24 seconds=0.037 done=603/849
+case=633 N=16 family=random_spd rows=24 seconds=0.036 done=604/849
+case=634 N=16 family=random_spd rows=24 seconds=0.024 done=605/849
+case=635 N=16 family=random_spd rows=24 seconds=0.035 done=606/849
+case=604 N=16 family=random_spd rows=24 seconds=0.582 done=607/849
+case=637 N=16 family=random_spd rows=24 seconds=0.040 done=608/849
+case=638 N=16 family=random_spd rows=24 seconds=0.064 done=609/849
+case=639 N=16 family=random_spd rows=24 seconds=0.062 done=610/849
+case=640 N=16 family=random_spd rows=24 seconds=0.064 done=611/849
+case=620 N=16 family=random_spd rows=24 seconds=0.455 done=612/849
+case=641 N=16 family=random_spd rows=24 seconds=0.059 done=613/849
+case=642 N=16 family=random_spd rows=24 seconds=0.060 done=614/849
+case=643 N=16 family=random_spd rows=24 seconds=0.062 done=615/849
+case=644 N=16 family=random_spd rows=24 seconds=0.061 done=616/849
+case=645 N=16 family=random_spd rows=24 seconds=0.062 done=617/849
+case=646 N=16 family=random_spd rows=24 seconds=0.061 done=618/849
+case=647 N=16 family=random_spd rows=24 seconds=0.060 done=619/849
+case=648 N=16 family=random_spd rows=24 seconds=0.047 done=620/849
+case=636 N=16 family=random_spd rows=24 seconds=0.332 done=621/849
+case=651 N=16 family=random_spd rows=24 seconds=0.042 done=622/849
+case=649 N=16 family=random_spd rows=24 seconds=0.066 done=623/849
+case=650 N=16 family=random_spd rows=24 seconds=0.063 done=624/849
+case=265 N=512 family=fixed_band rows=24 seconds=12.499 done=625/849
+case=652 N=32 family=random_spd rows=24 seconds=0.045 done=626/849
+case=653 N=32 family=random_spd rows=24 seconds=0.045 done=627/849
+case=655 N=32 family=random_spd rows=24 seconds=0.036 done=628/849
+case=654 N=32 family=random_spd rows=24 seconds=0.032 done=629/849
+case=657 N=32 family=random_spd rows=24 seconds=0.033 done=630/849
+case=656 N=32 family=random_spd rows=24 seconds=0.041 done=631/849
+case=658 N=32 family=random_spd rows=24 seconds=0.042 done=632/849
+case=659 N=32 family=random_spd rows=24 seconds=0.046 done=633/849
+case=661 N=32 family=random_spd rows=24 seconds=0.043 done=634/849
+case=660 N=32 family=random_spd rows=24 seconds=0.040 done=635/849
+case=662 N=32 family=random_spd rows=24 seconds=0.042 done=636/849
+case=663 N=32 family=random_spd rows=24 seconds=0.039 done=637/849
+case=664 N=32 family=random_spd rows=24 seconds=0.040 done=638/849
+case=665 N=32 family=random_spd rows=24 seconds=0.044 done=639/849
+case=266 N=512 family=fixed_band rows=24 seconds=12.643 done=640/849
+case=666 N=32 family=random_spd rows=24 seconds=0.031 done=641/849
+case=667 N=32 family=random_spd rows=24 seconds=0.041 done=642/849
+case=669 N=32 family=random_spd rows=24 seconds=0.049 done=643/849
+case=668 N=32 family=random_spd rows=24 seconds=0.054 done=644/849
+case=670 N=32 family=random_spd rows=24 seconds=0.044 done=645/849
+case=672 N=32 family=random_spd rows=24 seconds=0.038 done=646/849
+case=673 N=32 family=random_spd rows=24 seconds=0.040 done=647/849
+case=671 N=32 family=random_spd rows=24 seconds=0.058 done=648/849
+case=674 N=32 family=random_spd rows=24 seconds=0.055 done=649/849
+case=675 N=32 family=random_spd rows=24 seconds=0.033 done=650/849
+case=676 N=32 family=random_spd rows=24 seconds=0.053 done=651/849
+case=677 N=32 family=random_spd rows=24 seconds=0.047 done=652/849
+case=678 N=32 family=random_spd rows=24 seconds=0.039 done=653/849
+case=679 N=32 family=random_spd rows=24 seconds=0.051 done=654/849
+case=680 N=32 family=random_spd rows=24 seconds=0.060 done=655/849
+case=681 N=32 family=random_spd rows=24 seconds=0.049 done=656/849
+case=682 N=32 family=random_spd rows=24 seconds=0.049 done=657/849
+case=683 N=32 family=random_spd rows=24 seconds=0.050 done=658/849
+case=267 N=512 family=fixed_band rows=24 seconds=12.859 done=659/849
+case=684 N=32 family=random_spd rows=24 seconds=0.059 done=660/849
+case=685 N=32 family=random_spd rows=24 seconds=0.064 done=661/849
+case=688 N=32 family=random_spd rows=24 seconds=0.056 done=662/849
+case=686 N=32 family=random_spd rows=24 seconds=0.080 done=663/849
+case=687 N=32 family=random_spd rows=24 seconds=0.086 done=664/849
+case=689 N=32 family=random_spd rows=24 seconds=0.079 done=665/849
+case=690 N=32 family=random_spd rows=24 seconds=0.079 done=666/849
+case=691 N=32 family=random_spd rows=24 seconds=0.056 done=667/849
+case=693 N=32 family=random_spd rows=24 seconds=0.069 done=668/849
+case=692 N=32 family=random_spd rows=24 seconds=0.080 done=669/849
+case=695 N=32 family=random_spd rows=24 seconds=0.071 done=670/849
+case=694 N=32 family=random_spd rows=24 seconds=0.086 done=671/849
+case=696 N=32 family=random_spd rows=24 seconds=0.084 done=672/849
+case=699 N=32 family=random_spd rows=24 seconds=0.057 done=673/849
+case=270 N=512 family=fixed_band rows=24 seconds=13.049 done=674/849
+case=697 N=32 family=random_spd rows=24 seconds=0.079 done=675/849
+case=698 N=32 family=random_spd rows=24 seconds=0.081 done=676/849
+case=701 N=64 family=random_spd rows=24 seconds=0.115 done=677/849
+case=702 N=64 family=random_spd rows=24 seconds=0.101 done=678/849
+case=700 N=64 family=random_spd rows=24 seconds=0.130 done=679/849
+case=703 N=64 family=random_spd rows=24 seconds=0.125 done=680/849
+case=705 N=64 family=random_spd rows=24 seconds=0.092 done=681/849
+case=706 N=64 family=random_spd rows=24 seconds=0.092 done=682/849
+case=704 N=64 family=random_spd rows=24 seconds=0.131 done=683/849
+case=707 N=64 family=random_spd rows=24 seconds=0.125 done=684/849
+case=708 N=64 family=random_spd rows=24 seconds=0.124 done=685/849
+case=711 N=64 family=random_spd rows=24 seconds=0.091 done=686/849
+case=712 N=64 family=random_spd rows=24 seconds=0.095 done=687/849
+case=709 N=64 family=random_spd rows=24 seconds=0.116 done=688/849
+case=710 N=64 family=random_spd rows=24 seconds=0.125 done=689/849
+case=714 N=64 family=random_spd rows=24 seconds=0.089 done=690/849
+case=713 N=64 family=random_spd rows=24 seconds=0.111 done=691/849
+case=715 N=64 family=random_spd rows=24 seconds=0.133 done=692/849
+case=716 N=64 family=random_spd rows=24 seconds=0.134 done=693/849
+case=717 N=64 family=random_spd rows=24 seconds=0.134 done=694/849
+case=718 N=64 family=random_spd rows=24 seconds=0.099 done=695/849
+case=719 N=64 family=random_spd rows=24 seconds=0.103 done=696/849
+case=720 N=64 family=random_spd rows=24 seconds=0.125 done=697/849
+case=721 N=64 family=random_spd rows=24 seconds=0.124 done=698/849
+case=723 N=64 family=random_spd rows=24 seconds=0.117 done=699/849
+case=722 N=64 family=random_spd rows=24 seconds=0.147 done=700/849
+case=724 N=64 family=random_spd rows=24 seconds=0.143 done=701/849
+case=725 N=64 family=random_spd rows=24 seconds=0.119 done=702/849
+case=728 N=64 family=random_spd rows=24 seconds=0.099 done=703/849
+case=727 N=64 family=random_spd rows=24 seconds=0.124 done=704/849
+case=726 N=64 family=random_spd rows=24 seconds=0.133 done=705/849
+case=729 N=64 family=random_spd rows=24 seconds=0.127 done=706/849
+case=730 N=64 family=random_spd rows=24 seconds=0.125 done=707/849
+case=731 N=64 family=random_spd rows=24 seconds=0.117 done=708/849
+case=732 N=64 family=random_spd rows=24 seconds=0.183 done=709/849
+case=735 N=64 family=random_spd rows=24 seconds=0.134 done=710/849
+case=734 N=64 family=random_spd rows=24 seconds=0.181 done=711/849
+case=736 N=64 family=random_spd rows=24 seconds=0.166 done=712/849
+case=733 N=64 family=random_spd rows=24 seconds=0.198 done=713/849
+case=737 N=64 family=random_spd rows=24 seconds=0.190 done=714/849
+case=740 N=64 family=random_spd rows=24 seconds=0.133 done=715/849
+case=738 N=64 family=random_spd rows=24 seconds=0.175 done=716/849
+case=739 N=64 family=random_spd rows=24 seconds=0.175 done=717/849
+case=742 N=64 family=random_spd rows=24 seconds=0.130 done=718/849
+case=741 N=64 family=random_spd rows=24 seconds=0.189 done=719/849
+case=744 N=64 family=random_spd rows=24 seconds=0.158 done=720/849
+case=743 N=64 family=random_spd rows=24 seconds=0.185 done=721/849
+case=271 N=512 family=fixed_band rows=24 seconds=13.889 done=722/849
+case=747 N=64 family=random_spd rows=24 seconds=0.153 done=723/849
+case=745 N=64 family=random_spd rows=24 seconds=0.198 done=724/849
+case=746 N=64 family=random_spd rows=24 seconds=0.178 done=725/849
+case=750 N=128 family=random_spd rows=24 seconds=0.406 done=726/849
+case=749 N=128 family=random_spd rows=24 seconds=0.473 done=727/849
+case=748 N=128 family=random_spd rows=24 seconds=0.496 done=728/849
+case=754 N=128 family=random_spd rows=24 seconds=0.395 done=729/849
+case=752 N=128 family=random_spd rows=24 seconds=0.483 done=730/849
+case=751 N=128 family=random_spd rows=24 seconds=0.526 done=731/849
+case=753 N=128 family=random_spd rows=24 seconds=0.504 done=732/849
+case=755 N=128 family=random_spd rows=24 seconds=0.483 done=733/849
+case=757 N=128 family=random_spd rows=24 seconds=0.530 done=734/849
+case=756 N=128 family=random_spd rows=24 seconds=0.575 done=735/849
+case=758 N=128 family=random_spd rows=24 seconds=0.399 done=736/849
+case=759 N=128 family=random_spd rows=24 seconds=0.399 done=737/849
+case=761 N=128 family=random_spd rows=24 seconds=0.400 done=738/849
+case=760 N=128 family=random_spd rows=24 seconds=0.498 done=739/849
+case=762 N=128 family=random_spd rows=24 seconds=0.402 done=740/849
+case=763 N=128 family=random_spd rows=24 seconds=0.541 done=741/849
+case=765 N=128 family=random_spd rows=24 seconds=0.539 done=742/849
+case=764 N=128 family=random_spd rows=24 seconds=0.548 done=743/849
+case=766 N=128 family=random_spd rows=24 seconds=0.551 done=744/849
+case=768 N=128 family=random_spd rows=24 seconds=0.424 done=745/849
+case=769 N=128 family=random_spd rows=24 seconds=0.437 done=746/849
+case=767 N=128 family=random_spd rows=24 seconds=0.626 done=747/849
+case=268 N=512 family=fixed_band rows=24 seconds=15.269 done=748/849
+case=772 N=128 family=random_spd rows=24 seconds=0.426 done=749/849
+case=771 N=128 family=random_spd rows=24 seconds=0.509 done=750/849
+case=770 N=128 family=random_spd rows=24 seconds=0.632 done=751/849
+case=269 N=512 family=fixed_band rows=24 seconds=15.429 done=752/849
+case=274 N=512 family=fixed_band rows=24 seconds=13.686 done=753/849
+case=776 N=128 family=random_spd rows=24 seconds=0.440 done=754/849
+case=777 N=128 family=random_spd rows=24 seconds=0.447 done=755/849
+case=773 N=128 family=random_spd rows=24 seconds=0.527 done=756/849
+case=778 N=128 family=random_spd rows=24 seconds=0.443 done=757/849
+case=272 N=512 family=fixed_band rows=24 seconds=14.180 done=758/849
+case=774 N=128 family=random_spd rows=24 seconds=0.544 done=759/849
+case=775 N=128 family=random_spd rows=24 seconds=0.549 done=760/849
+case=781 N=128 family=random_spd rows=24 seconds=0.515 done=761/849
+case=779 N=128 family=random_spd rows=24 seconds=0.634 done=762/849
+case=273 N=512 family=fixed_band rows=24 seconds=14.118 done=763/849
+case=783 N=128 family=random_spd rows=24 seconds=0.535 done=764/849
+case=780 N=128 family=random_spd rows=24 seconds=0.690 done=765/849
+case=782 N=128 family=random_spd rows=24 seconds=0.655 done=766/849
+case=786 N=128 family=random_spd rows=24 seconds=0.508 done=767/849
+case=788 N=128 family=random_spd rows=24 seconds=0.472 done=768/849
+case=787 N=128 family=random_spd rows=24 seconds=0.530 done=769/849
+case=784 N=128 family=random_spd rows=24 seconds=0.706 done=770/849
+case=789 N=128 family=random_spd rows=24 seconds=0.522 done=771/849
+case=785 N=128 family=random_spd rows=24 seconds=0.643 done=772/849
+case=793 N=128 family=random_spd rows=24 seconds=0.524 done=773/849
+case=792 N=128 family=random_spd rows=24 seconds=0.679 done=774/849
+case=791 N=128 family=random_spd rows=24 seconds=0.713 done=775/849
+case=790 N=128 family=random_spd rows=24 seconds=0.723 done=776/849
+case=795 N=128 family=random_spd rows=24 seconds=0.549 done=777/849
+case=794 N=128 family=random_spd rows=24 seconds=0.784 done=778/849
+case=799 N=256 family=random_spd rows=24 seconds=1.918 done=779/849
+case=800 N=256 family=random_spd rows=24 seconds=1.924 done=780/849
+case=801 N=256 family=random_spd rows=24 seconds=2.009 done=781/849
+case=803 N=256 family=random_spd rows=24 seconds=1.988 done=782/849
+case=797 N=256 family=random_spd rows=24 seconds=2.242 done=783/849
+case=805 N=256 family=random_spd rows=24 seconds=1.995 done=784/849
+case=802 N=256 family=random_spd rows=24 seconds=2.292 done=785/849
+case=798 N=256 family=random_spd rows=24 seconds=2.469 done=786/849
+case=807 N=256 family=random_spd rows=24 seconds=2.152 done=787/849
+case=809 N=256 family=random_spd rows=24 seconds=2.108 done=788/849
+case=804 N=256 family=random_spd rows=24 seconds=2.445 done=789/849
+case=796 N=256 family=random_spd rows=24 seconds=2.727 done=790/849
+case=808 N=256 family=random_spd rows=24 seconds=2.752 done=791/849
+case=806 N=256 family=random_spd rows=24 seconds=2.794 done=792/849
+case=546 N=512 family=random_matching rows=24 seconds=10.961 done=793/849
+case=275 N=512 family=fixed_band rows=24 seconds=17.545 done=794/849
+case=810 N=256 family=random_spd rows=24 seconds=3.027 done=795/849
+case=543 N=512 family=random_matching rows=24 seconds=11.703 done=796/849
+case=549 N=512 family=random_matching rows=24 seconds=11.560 done=797/849
+case=812 N=256 family=random_spd rows=24 seconds=2.477 done=798/849
+case=813 N=256 family=random_spd rows=24 seconds=2.468 done=799/849
+case=811 N=256 family=random_spd rows=24 seconds=2.634 done=800/849
+case=816 N=256 family=random_spd rows=24 seconds=2.427 done=801/849
+case=814 N=256 family=random_spd rows=24 seconds=2.866 done=802/849
+case=815 N=256 family=random_spd rows=24 seconds=3.055 done=803/849
+case=835 N=49 family=poisson_2d rows=24 seconds=0.078 done=804/849
+case=819 N=256 family=random_spd rows=24 seconds=2.953 done=805/849
+case=834 N=9 family=poisson_2d rows=24 seconds=0.430 done=806/849
+case=818 N=256 family=random_spd rows=24 seconds=2.985 done=807/849
+case=542 N=512 family=random_matching rows=24 seconds=13.413 done=808/849
+case=839 N=8 family=commuting rows=24 seconds=0.103 done=809/849
+case=817 N=256 family=random_spd rows=24 seconds=3.221 done=810/849
+case=840 N=64 family=commuting rows=24 seconds=0.084 done=811/849
+case=544 N=512 family=random_matching rows=24 seconds=13.563 done=812/849
+case=547 N=512 family=random_matching rows=24 seconds=13.655 done=813/849
+case=548 N=512 family=random_matching rows=24 seconds=13.357 done=814/849
+case=552 N=512 family=random_matching rows=24 seconds=12.853 done=815/849
+case=845 N=64 family=cancelling rows=24 seconds=0.067 done=816/849
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.6/concurrent/futures/process.py", line 175, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 136, in run_case
+    EU=opnorm(S-exact);BUraw=t*t*C/(2*r);BU=min(2.,BUraw)
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 41, in opnorm
+    value=la.eigh(gram,eigvals_only=True,subset_by_index=[len(a)-1,len(a)-1],check_finite=False)[0]
+  File "/global/u2/y/yuetu/proj/HHL/paper-revise/results/03-hhl-analysis/trotter-error/experiments/.venv/lib64/python3.6/site-packages/scipy/linalg/decomp.py", line 604, in eigh
+    raise LinAlgError(msg)
+numpy.linalg.LinAlgError: Internal Error.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 177, in main
+    cid,n,seconds=future.result();completed+=1
+  File "/usr/lib64/python3.6/concurrent/futures/_base.py", line 425, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.6/concurrent/futures/_base.py", line 384, in __get_result
+    raise self._exception
+numpy.linalg.LinAlgError: Internal Error.
+
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.6/concurrent/futures/process.py", line 175, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 136, in run_case
+    EU=opnorm(S-exact);BUraw=t*t*C/(2*r);BU=min(2.,BUraw)
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 41, in opnorm
+    value=la.eigh(gram,eigvals_only=True,subset_by_index=[len(a)-1,len(a)-1],check_finite=False)[0]
+  File "/global/u2/y/yuetu/proj/HHL/paper-revise/results/03-hhl-analysis/trotter-error/experiments/.venv/lib64/python3.6/site-packages/scipy/linalg/decomp.py", line 604, in eigh
+    raise LinAlgError(msg)
+numpy.linalg.LinAlgError: Internal Error.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 177, in main
+    cid,n,seconds=future.result();completed+=1
+  File "/usr/lib64/python3.6/concurrent/futures/_base.py", line 425, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.6/concurrent/futures/_base.py", line 384, in __get_result
+    raise self._exception
+numpy.linalg.LinAlgError: Internal Error.
+
+case=843 N=8 family=cancelling rows=24 seconds=0.396 done=817/849
+case=849 N=2 family=pauli rows=24 seconds=0.293 done=818/849
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.6/concurrent/futures/process.py", line 175, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 136, in run_case
+    EU=opnorm(S-exact);BUraw=t*t*C/(2*r);BU=min(2.,BUraw)
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 41, in opnorm
+    value=la.eigh(gram,eigvals_only=True,subset_by_index=[len(a)-1,len(a)-1],check_finite=False)[0]
+  File "/global/u2/y/yuetu/proj/HHL/paper-revise/results/03-hhl-analysis/trotter-error/experiments/.venv/lib64/python3.6/site-packages/scipy/linalg/decomp.py", line 604, in eigh
+    raise LinAlgError(msg)
+numpy.linalg.LinAlgError: Internal Error.
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 177, in main
+    cid,n,seconds=future.result();completed+=1
+  File "/usr/lib64/python3.6/concurrent/futures/_base.py", line 425, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.6/concurrent/futures/_base.py", line 384, in __get_result
+    raise self._exception
+numpy.linalg.LinAlgError: Internal Error.
+
+case=836 N=225 family=poisson_2d rows=24 seconds=1.804 done=819/849
+case=847 N=256 family=cancelling rows=24 seconds=1.470 done=820/849
+case=841 N=256 family=commuting rows=24 seconds=1.903 done=821/849
+case=545 N=512 family=random_matching rows=24 seconds=15.531 done=822/849
+case=550 N=512 family=random_matching rows=24 seconds=15.595 done=823/849
+case=551 N=512 family=random_matching rows=24 seconds=16.234 done=824/849
+case=553 N=512 family=random_matching rows=24 seconds=16.257 done=825/849
+case=822 N=512 family=random_spd rows=24 seconds=10.020 done=826/849
+case=825 N=512 family=random_spd rows=24 seconds=9.582 done=827/849
+case=820 N=512 family=random_spd rows=24 seconds=10.330 done=828/849
+case=821 N=512 family=random_spd rows=24 seconds=10.963 done=829/849
+case=826 N=512 family=random_spd rows=24 seconds=10.624 done=830/849
+case=827 N=512 family=random_spd rows=24 seconds=10.405 done=831/849
+case=824 N=512 family=random_spd rows=24 seconds=10.981 done=832/849
+case=823 N=512 family=random_spd rows=24 seconds=11.173 done=833/849
+case=828 N=512 family=random_spd rows=24 seconds=11.843 done=834/849
+case=830 N=512 family=random_spd rows=24 seconds=11.632 done=835/849
+case=829 N=512 family=random_spd rows=24 seconds=11.867 done=836/849
+case=831 N=512 family=random_spd rows=24 seconds=11.875 done=837/849
+case=837 N=529 family=poisson_2d rows=24 seconds=11.494 done=838/849
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.6/concurrent/futures/process.py", line 175, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 157, in run_case
+    shard=HERE/'shards'/('%04d.json'%c['case_id']);tmp=shard.with_suffix('.tmp');tmp.write_text(json.dumps(result,allow_nan=False));tmp.replace(shard)
+  File "/usr/lib64/python3.6/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/usr/lib64/python3.6/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib64/python3.6/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+ValueError: Out of range float values are not JSON compliant
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "paper-revise/results/03-hhl-analysis/trotter-error/experiments/run_experiments.py", line 177, in main
+    cid,n,seconds=future.result();completed+=1
+  File "/usr/lib64/python3.6/concurrent/futures/_base.py", line 425, in result
+    return self.__get_result()
+  File "/usr/lib64/python3.6/concurrent/futures/_base.py", line 384, in __get_result
+    raise self._exception
+ValueError: Out of range float values are not JSON compliant
+
+case=838 N=961 family=poisson_2d rows=24 seconds=46.947 done=839/849
+case=842 N=1024 family=commuting rows=24 seconds=47.365 done=840/849
+case=554 N=1024 family=random_matching rows=24 seconds=60.245 done=841/849
+case=555 N=1024 family=random_matching rows=24 seconds=60.163 done=842/849
+case=277 N=1024 family=fixed_band rows=24 seconds=71.539 done=843/849
+case=833 N=1024 family=random_spd rows=24 seconds=54.533 done=844/849
+case=832 N=1024 family=random_spd rows=24 seconds=55.159 done=845/849

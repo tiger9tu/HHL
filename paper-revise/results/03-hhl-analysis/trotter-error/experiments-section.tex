@@ -1,0 +1,70 @@
+\clearpage
+\section{Numerical experiments: actual errors versus bounds}
+\subsection{Protocol and numerical definitions}
+We evaluate both errors on 850 normalized Hermitian matrix decompositions, at 24 settings each (20,400 paired measurements). Every sum is normalized to $\norm H=1$, while retaining the actual decomposition coefficients $B$ and $\CC$. Each term is one-sparse. These are finite-dimensional simulation experiments; indefinite and singular synthetic inputs are not presented as SPD HHL instances.
+
+\begin{center}\small\input{experiments/experiment-tables.tex}\end{center}
+
+For each of the three synthetic families, $N=8,16,32,64,128,256,512$, and the number of off-diagonal matching terms is 2, 4 or 8. Each size/term-count cell has 16 samples through $N=128$, 8 at $N=256$ and 4 at $N=512$. Two additional samples per family have $N=1024$ and four matching terms. Edge weights are independent uniform draws on $[-1,1]$. Fixed-band matchings pair consecutive vertices after cyclic shifts (supports can repeat); random matchings independently permute the vertices. The SPD family adds $(\norm{H_{\rm off}}+0.25)I$ before normalization. Its scalar diagonal term commutes with the other terms.
+
+The Poisson family is the two-dimensional Dirichlet five-point stencil on $q\times q$ interior grids, $q=3,7,15,23,31$. The terms are $4I$ and four parity matchings. The physical grid-spacing factor cancels under normalization. Controls include commuting diagonal decompositions, block-Pauli cancelling decompositions $[aZ,aX,-aZ,-aX,I]$ for $a=1,4$, and $[Z,X]/\sqrt2$. The last case differs in normalization from the earlier illustrative table.
+
+The fixed-time sweep uses $\tau\in\{0.1,1,4\}$ and $r\in\{1,2,4,8,16,32\}$. A second sweep sets $\rho=hB\in\{0.025,0.1,0.25,0.5,0.75,1.25\}$, with $\tau=h$ and $r=1$. For every setting we measure
+\begin{align}
+ E_U&=\norm{P(h)^r-e^{\ii H\tau}},&
+ U_{\rm bound}&=\min\{2,\tau^2\CC/(2r)\},\\
+ E_H&=\norm{\operatorname{Log}P(h)/(\ii h)-H},&
+ H_{\rm bound}&=\frac{h\CC}{2(1-hB)}\quad(hB\leq1/2).
+\end{align}
+We also plot the coarser bound $h\CC$. Effective-H bounds are omitted outside the sufficient condition, rather than extrapolated. All logarithms used for $E_H$ are of the \emph{microstep}.
+
+\subsection{Computation and numerical checks}
+All norms are full spectral norms in complex double precision. Exact evolution uses a Hermitian eigendecomposition; one-sparse exponentials use diagonal phases or analytic $2\times2$ rotations. Operator norms use the largest eigenvalue of a Gram matrix, with full SVD as a fallback. The coefficient $\CC$ uses full eigendecompositions of the Hermitian matrices $\ii[H_a,H_b]$.
+
+For the effective matrix we compute
+\begin{equation}
+ K=-\ii(P+I)^{-1}(P-I),\quad
+ K=Q\operatorname{diag}(k_j)Q^\dagger,\quad
+ \widehat H=Q\operatorname{diag}\!\left(\frac{2\arctan k_j}{h}\right)Q^\dagger.
+\end{equation}
+For a unitary $P$ with no eigenvalue $-1$, $K$ is Hermitian and this is its principal logarithm divided by $\ii h$. Numerically we symmetrize $K$ and record the discarded skew part, the unitary residual, the reconstructed-$P$ residual and the distance of eigenphases from $\pm\pi$. Independent matrix-logarithm, SVD and dense-exponential calculations check selected cases, including a $256\times256$ matrix. The absolute bound-comparison tolerance is $5\times10^{-10}$; equality controls are subject to floating-point error.
+
+The computations ran on a Slurm CPU node with 32 processes and two BLAS threads per process. The first run completed 845 matrix cases, in addition to an initial small smoke check. Four implementation/library failures were rerun: three degenerate controls needed the SVD fallback, and one singular matrix needed a JSON null instead of an infinite condition number. These were not bound violations. The source versions, scheduler records, seeds, raw measurements and independent checks accompany this report.
+
+\input{experiments/measured-findings.tex}
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=\linewidth]{experiments/figures/actual_vs_bound.pdf}
+\caption{Actual spectral-norm error versus its deterministic bound across the complete sweep. Each dot is a matrix/setting pair; the dashed diagonal denotes equality. Left: the operator bound includes the universal cap of 2. Right: only $hB\leq1/2$ is included, using the refined effective-H bound. Cases with $\CC=0$ are omitted from logarithmic comparisons and reported separately. Many points overlap.}
+\end{figure}
+\begin{figure}[p]
+\centering\includegraphics[width=\linewidth]{experiments/figures/step_convergence.pdf}
+\caption{Increasing the number of steps at fixed $\tau=1$. Left: 16 random-matching matrices with $N=128$ and four matching terms; lines show medians, shaded areas the empirical 5th--95th percentiles. Right: the single $N=225$ Poisson matrix. Top: operator error and bound. Bottom: effective-H error, refined bound and coarse bound. Matrix bounds are drawn only when every sample at that point satisfies $hB\leq1/2$.}
+\end{figure}
+\clearpage
+\begin{figure}[p]
+\centering\includegraphics[width=\linewidth]{experiments/figures/branch_condition_sweep.pdf}
+\caption{One-microstep experiments approaching and crossing $hB=1/2$. Synthetic curves use medians of the 16 samples with $N=128$ and four matching terms; Poisson uses $N=225$, and Pauli uses $N=2$. Left: actual operator error divided by $h^2\CC/2$, which is a bound at every step size. Right: actual effective-H error divided by $h\CC$. The refined bound becomes $1/[2(1-hB)]$ on the stated domain; the coarse bound becomes 1. The grey region is outside the sufficient condition, so it carries no claimed effective-H guarantee.}
+\end{figure}
+\begin{figure}[p]
+\centering\includegraphics[width=\linewidth]{experiments/figures/dimension_sweep.pdf}
+\caption{Dependence on dimension at fixed $\tau=1$, $r=16$, and four matching terms (plus the diagonal term for SPD/Poisson). Solid lines show median actual errors, dashed lines median bounds, and shading empirical 5th--95th percentiles. The Poisson family has one matrix at each dimension. Synthetic sample counts decrease with dimension as specified in the protocol; the two $N=1024$ samples are exploratory. This figure does not establish a universal asymptotic law in $N$.}
+\end{figure}
+\clearpage
+\begin{figure}[ht]
+\centering\includegraphics[width=\linewidth]{experiments/figures/ratio_distributions.pdf}
+\caption{Error/bound ratios at a single setting ($\tau=1$, $r=16$), grouped by matching-term count and pooled over the three synthetic families and dimensions. Each matrix contributes once. Effective-H ratios include only the valid domain. These histograms describe the stated sampling design, not a universal distribution of sparse matrices.}
+\end{figure}
+
+\subsection{Branch wrapping is a different error}
+For $H=\operatorname{diag}(1/2,1)$ with one commuting term, $P(h)^r=e^{\ii H\tau}$ exactly. Take $\tau=4$. For $r\geq8$, $hB\leq1/2$ and the microstep effective matrix equals $H$. However,
+\begin{equation}
+ \frac{\operatorname{Log}(P(h)^r)}{\ii\tau}
+ =\operatorname{diag}(1/2,1-\pi/2),\qquad
+ \left\lVert\frac{\operatorname{Log}(P(h)^r)}{\ii\tau}-H\right\rVert=\pi/2.
+\end{equation}
+Thus the global principal logarithm can retain a large discrepancy even when Trotter error vanishes. The accompanying diagonal diagnostic reproduces this example for $r=1,2,4,8,16,32,64,128$; it is separate from the 20,400 measurements above.
+
+\subsection{Reproducibility and scope}
+The folder \texttt{trotter-error/experiments/} contains the run script, Slurm submission, configurations, raw CSV data, grouped summaries, independent checks and PDF/PNG figures. Matrix seeds equal 20260909 plus the case ID. Pointwise 95\% bootstrap intervals for means in the summary CSV use 2,000 resamples of matrices (seed 20261909). Plot shading instead denotes empirical percentiles. Settings of the same matrix are correlated, so pooled ratio percentiles are descriptive and are not treated as independent samples. The deterministic proofs, rather than these experiments, establish validity for arbitrary finite dimensions. The observed coefficients depend on the family and decomposition; normalization alone does not fix them.
+\clearpage

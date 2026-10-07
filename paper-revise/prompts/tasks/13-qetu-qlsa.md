@@ -1,0 +1,5 @@
+# task-13 qetu based qlsa
+* This task depends on a subtask of task2, the trotter error estimation
+In this QLSA resource estimation project, the use of block encoding adds a large prefactor to the end-to-end cost. However, many applications have A that can be decomposed into simple terms, e.g. Paulis for trotterization. QETU (https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.3.040305) shows us that with trotterized e^iHt, we could perform QSVT, which include QLSA as a subroutine. Thus, aside from the BE based algorithm with optimal scaling but a large prefactor. We also want to study the QETU based QLSA, which may have a suboptimal scaling because of the trotter error, but has a small prefactor because it does not have BE.
+
+In this task I want you to estimate the logical cost scaling of QETU based QLSA, feel free to search online for existing result if any. For the trotter error estimation, you should reuse the rsult in this project**

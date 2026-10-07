@@ -1,0 +1,165 @@
+\section{Completed HHL theorem and final analytical scaling}\label{sec:complete}
+\textbf{Correction to the preceding report version.} The earlier report proved a unitary-simulation bound but left general QPE/filter accuracy as an input. Its conditional $\widetilde O(L\C\kappa^3/\eps^3)$ per-attempt estimate is a conservative alternative, not the final scaling below. Here we give a fully specified QPE/filter construction and a stronger consistent-microstep analysis. This recovers a $\kappa^2/\eps^2$ leading dependence \emph{per attempt}, with explicit decomposition and success costs. No empirical extrapolation is used.
+
+\begin{theorem}[Consistent-microstep, first-order HHL]\label{thm:complete}
+Let $H=\sum_{a=1}^L H_a$ be Hermitian with spectrum in $[1/\kappa,1]$, $\kappa\geq1$, and let the $H_a$ be Hermitian one-sparse matrices whose controlled exponentials are available as costed primitives. Let $|b\rangle$ be normalized and $0<\eps\leq1/2$. Define
+\begin{equation}
+ B=\sum_a\norm{H_a},\qquad \C=\sum_{a<b}\norm{[H_a,H_b]}.
+\end{equation}
+There is an explicitly specified QPE-based reciprocal circuit whose normalized successful joint state is within $\eps$ of $|0_{\rm work}\rangle\otimes|x\rangle$, with $|x\rangle\propto H^{-1}|b\rangle$. With ideal term exponentials and exact reciprocal rotations, its success probability is at least $1/(256\kappa^2)$. It uses
+\begin{equation}\label{eq:final-attempt}
+ \boxed{\HS^{\rm attempt}=\widetilde O\!\left(
+ L\left[\frac{(1+B)\kappa}{\eps}+\frac{\C\kappa^2}{\eps^2}\right]\right)}
+\end{equation}
+controlled one-sparse exponentials, including inverse QPE. Without amplitude amplification, the expected number per successful state is
+\begin{equation}\label{eq:final-success}
+ \boxed{\mathbb E\HS^{\rm success}=\widetilde O\!\left(
+ L\left[\frac{(1+B)\kappa^3}{\eps}+\frac{\C\kappa^4}{\eps^2}\right]\right).}
+\end{equation}
+Here $\widetilde O$ suppresses logarithms in $\kappa/\eps$. A cap delivering one success with failure probability at most $\delta$ adds $O(\log(1/\delta))$ to the expected-order budget. These are invocation bounds, not numerical T-counts. State preparation and other gates are counted separately below. No fixed nonzero positions are assumed.
+\end{theorem}
+
+\subsection{Step 1: an exact, branch-controlled matrix perturbation}
+Set $P(h)=\prod_a e^{\ip H_ah}$ and suppose $0<hB\leq1/2$. Telescoping the product around identity gives
+\begin{equation}
+ \norm{P(h)-I}\leq\sum_a\norm{e^{\ip H_ah}-I}\leq hB,
+ \qquad\norm{e^{\ip Hh}-I}\leq hB.
+\end{equation}
+For matrices $X,Y$ with norms at most $\rho<1$, the convergent logarithm series and telescoping powers imply
+\begin{align}
+ \norm{\log(I+X)-\log(I+Y)}
+ &\leq\sum_{k=1}^{\infty}\frac{1}{k}\norm{X^k-Y^k}\\
+ &\leq\sum_{k=1}^{\infty}\rho^{k-1}\norm{X-Y}
+ =\frac{\norm{X-Y}}{1-\rho}.
+\end{align}
+These are exact convergent-series inequalities. Since $P(h)$ is unitary and stays within distance $1/2$ of identity, its principal logarithm is skew-Hermitian and defines a Hermitian matrix
+\begin{equation}
+ \widehat H=\frac{\operatorname{Log}P(h)}{\ip h},\qquad
+ P(h)=e^{\ip\widehat Hh}.
+\end{equation}
+Also $\operatorname{Log}(e^{\ip Hh})=\ip Hh$, since $h\norm H\leq1/2$. The first-order local bound proved in Theorem~\ref{thm:pf} now yields
+\begin{equation}\label{eq:corrected-matrix}
+ \boxed{\norm{\widehat H-H}\leq\frac{2}{h}\norm{P(h)-e^{\ip Hh}}
+ \leq h\C.}
+\end{equation}
+This is the corrected replacement for the original B19-type step. It has a stated branch condition and a decomposition-dependent coefficient; it is not obtained by equating truncated expansions.
+
+Choose $\tau_*=\pi/4$, $d_H=\eps/(16\kappa)$, and
+\begin{equation}\label{eq:microstep}
+ r_*=\left\lceil\max\left\{1,2B\tau_*,\frac{\C\tau_*}{d_H}\right\}\right\rceil,
+ \qquad h=\frac{\tau_*}{r_*}.
+\end{equation}
+Then $hB\leq1/2$ and $\norm{\widehat H-H}\leq d_H$. Crucially, every QPE power is implemented as
+\begin{equation}\label{eq:consistent}
+ V^{2^j}=P(h)^{r_*2^j}=e^{\ip\widehat H\tau_*2^j},\qquad V=P(h)^{r_*}.
+\end{equation}
+Thus all powers are \emph{exact evolutions of the same $\widehat H$}. Independently choosing a different microstep for each power would not justify this argument.
+
+The normalized perturbation lemma proved below gives
+\begin{equation}
+ \norm{\frac{\widehat H^{-1}b}{\norm{\widehat H^{-1}b}}-
+ \frac{H^{-1}b}{\norm{H^{-1}b}}}
+ \leq\frac{2\kappa d_H}{1-\kappa d_H}
+ =\frac{\eps}{8(1-\eps/16)}<\frac{\eps}{4}.
+\end{equation}
+Weyl's eigenvalue inequality gives spectrum of $\widehat H$ in $[1/(2\kappa),2]$. Put $J=\widehat H/2$ and $K=4\kappa$. Then $\operatorname{spec}(J)\subseteq[1/K,1]$, its normalized inverse state equals that of $\widehat H$, and $V=e^{\ip\pi J/2}$.
+
+\subsection{Step 2: a specified QPE accuracy and confidence guarantee}
+Write $e=\eps/2$, and choose an eigenvalue tolerance and tail probability
+\begin{equation}
+ d_\lambda=\frac{e}{8K},\qquad \beta=\left(\frac{e}{8K}\right)^2,
+ \qquad M=2^m\geq\frac{32}{d_\lambda},
+\end{equation}
+with $M$ the smallest such power of two. For an eigenvalue $\lambda\in[1/K,1]$ of $J$, QPE on $V$ estimates phase $\phi=\lambda/4$. One $m$-bit QPE register has probabilities
+\begin{equation}
+ p_k=\left|\frac{1}{M}\sum_{\ell=0}^{M-1}
+ e^{2\pi\ip\ell(\phi-k/M)}\right|^2.
+\end{equation}
+Let $d_k$ be the signed circular phase difference in $[-1/2,1/2]$. Away from $d_k=0$, $|\sin\pi d_k|\geq2|d_k|$ gives
+\begin{equation}
+ p_k\leq\frac{1}{4M^2d_k^2}.
+\end{equation}
+For $a=M d_\lambda/4\geq8$, there are at most two outcomes in each unit-width shell of scaled circular distance. Therefore
+\begin{equation}
+ \Pr(|d_k|>d_\lambda/4)
+ \leq\frac12\sum_{n=0}^{\infty}(a+n)^{-2}
+ \leq\frac{1}{2(a-1)}\leq\frac1{14}<\frac18.
+\end{equation}
+Interpret the phase estimate in $[-1/2,1/2)$ and multiply it by four to obtain a signed estimate $z\in[-2,2)$. On the good event this has $|z-\lambda|\leq d_\lambda$; the good interval lies strictly inside the unwrapped phase domain.
+
+Use an odd number $R$ of independent QPE registers conditional on each eigenstate, with
+\begin{equation}
+ R\geq\frac{32}{9}\log\frac1\beta,
+\end{equation}
+and compute the median of their signed estimates reversibly. If a majority are good, the median is good. For Bernoulli failures of mean at most $1/8$, the exponential-moment (Hoeffding) bound gives
+\begin{equation}
+ \Pr(\text{at least }R/2\text{ failures})
+ \leq\exp[-2R(1/2-1/8)^2]=e^{-9R/32}\leq\beta.
+\end{equation}
+For completeness, the exponential-moment step uses $\mathbb E e^{t(X-\mathbb EX)}\leq e^{t^2/8}$ for $X\in[0,1]$, followed by independence, Markov's inequality, and minimization in $t$. The moment inequality itself follows because the second derivative of the log moment-generating function is a tilted variance, at most $1/4$ for a variable in $[0,1]$, and its centered value and first derivative vanish at zero. Conditional eigenstate probabilities are independent even though the overall algorithm is coherent on a superposition of eigenstates.
+
+\subsection{Step 3: reciprocal filter, uncomputation, and success}
+On the median register use the bounded success amplitude
+\begin{equation}
+ f(z)=\frac{c}{\max\{z,1/(2K)\}},\qquad c=\frac1{2K}.
+\end{equation}
+It lies in $[0,1]$ for every signed estimate, including negative and near-zero values. Uncompute the median and all QPE registers after the controlled rotation. Let $a_0$ denote the hypothetical successful vector obtained with the exact function $c/\lambda$. It equals $|0_{\rm work}\rangle\otimes cJ^{-1}|b\rangle$, and
+\begin{equation}
+ p_0=\norm{a_0}^2=c^2\norm{J^{-1}b}^2\geq\frac1{4K^2}.
+\end{equation}
+On a good estimate, $z\geq\lambda-d_\lambda\geq\lambda/2\geq1/(2K)$, so
+\begin{equation}
+ |f(z)-c/\lambda|\leq 2K d_\lambda\,(c/\lambda).
+\end{equation}
+On the bad event the absolute difference is at most one. Squaring and averaging for each eigenstate, then summing over the orthogonal system eigenstates, gives for the actual successful vector $a$
+\begin{equation}
+ \norm{a-a_0}\leq2K d_\lambda\sqrt{p_0}+\sqrt\beta.
+\end{equation}
+Uncomputing the registers preserves this distance. Normalization hence gives
+\begin{align}
+ \norm{a/\norm a-a_0/\norm{a_0}}
+ &\leq4K d_\lambda+\frac{2\sqrt\beta}{\sqrt{p_0}}\\
+ &\leq4K d_\lambda+4K\sqrt\beta=e.
+\end{align}
+Moreover
+\begin{equation}
+ \norm a\geq\sqrt{p_0}(1-2K d_\lambda-2K\sqrt\beta)
+ =\sqrt{p_0}(1-e/2),\qquad
+ p=\norm a^2\geq\frac1{16K^2}=\frac1{256\kappa^2}.
+\end{equation}
+Adding the $<\eps/4$ matrix-perturbation contribution to $e=\eps/2$ proves error less than $3\eps/4$ and leaves margin for gate implementation.
+
+If the implemented attempted circuit differs from this reference by operator norm at most $\eta_{\rm impl}=\eps/(64K)$, the normalization bound adds at most $8K\eta_{\rm impl}=\eps/8$. Success remains at least $1/(25K^2)=1/(400\kappa^2)$. Thus synthesis, entry and arithmetic approximations can be budgeted explicitly while retaining error below $\eps$ and the same polynomial scaling. This is a precision requirement, not an assertion that the repository's fixed precision already meets it.
+
+\subsection{Step 4: counting the circuit and its repetitions}
+Each of the $R$ QPE registers uses $r_*(M-1)$ applications of the microstep $P(h)$, since $\sum_{j=0}^{m-1}2^j=M-1$. Each microstep uses $L$ controlled term exponentials. Inverse QPE doubles this:
+\begin{equation}\label{eq:exact-newcount}
+ \boxed{\HS^{\rm attempt}=2LRr_*(M-1).}
+\end{equation}
+Here $R=O(\log(\kappa/\eps))$, $M=O(\kappa/\eps)$ and
+$r_*=O(1+B+\C\kappa/\eps)$. Substitution proves equation~\eqref{eq:final-attempt}. Multiplication by $O(\kappa^2)$ expected independent attempts proves equation~\eqref{eq:final-success}. A sufficient implemented-circuit delivery cap is $\lceil400\kappa^2\log(1/\delta)\rceil$, using $(1-p)^r\leq e^{-pr}$.
+
+If $g_{\rm HS1}$ is a valid compiled T-count upper bound per controlled term, and $G_{\rm prep},G_{\rm other}$ are the remaining per-attempt T-counts, the resource statement is
+\begin{equation}\label{eq:final-gates}
+ \boxed{\mathbb E G_T^{\rm success}
+ \leq 400\kappa^2\left(G_{\rm prep}+G_{\rm other}
+       +g_{\rm HS1}\,\HS^{\rm attempt}\right).}
+\end{equation}
+The constant 400 uses the implementation allowance above; it is a conservative bound. $G_{\rm other}$ includes all QFTs, reversible median computation, reciprocal rotation, and heralding/control logic, under an exclusive gate convention. Oracle implementations and their uncomputation are included in $g_{\rm HS1}$ or charged separately, never omitted.
+
+One explicit finite implementation of the reciprocal uses a classical table of the $M$ possible median values and one controlled rotation per value. With multi-controlled operations decomposed using workspace, this requires $O(Mm)$ elementary controlled logic plus $M$ synthesized rotations, and classical angle-table construction. A reversible comparison-sort network for the median uses at most $O(R^2m)$ elementary operations; QFTs contribute $O(Rm^2)$ rotations/controlled gates. With the separately specified rotation-synthesis overhead included~\cite{synthesis}, these bounds make the non-HS overhead polynomial and explicit; they do not identify an optimal arithmetic implementation. Classical preprocessing and input preparation remain charged resources. Clock storage is $Rm$, not the single $m$-bit register of the earlier demonstration.
+
+\subsection{What this means for sparsity and the old claim}
+For the disjoint-entry greedy coloring construction, $L\leq2s$, $B\leq L$, and $\C\leq L(L-1)$. A conservative general sparse consequence is
+\begin{equation}
+ \HS^{\rm attempt}=\widetilde O(s^3\kappa^2/\eps^2),\qquad
+ \mathbb E\HS^{\rm success}=\widetilde O(s^3\kappa^4/\eps^2).
+\end{equation}
+These are upper bounds for this construction, not optimal QLSA complexities. For a structured family with $L=O(s)$ and a genuinely proved $\C=O(1)$, the leading per-attempt term is instead $\widetilde O(s\kappa^2/\eps^2)$, provided the $(1+B)\kappa/\eps$ term does not dominate. This is the restricted circumstance in which the earlier leading dependence can be recovered. It cannot be claimed for arbitrary sparse matrices merely by inspecting small samples.
+
+No amplitude amplification is included in this theorem. If a different implementation uses it, its coherent circuit and success accounting must replace the independent-retry model. Nor are the old prefactor $\sqrt{320/3}\pi$, a free fixed-position oracle, or a numerical hardware crossover established by this proof. The previously reported direct-unitary schedule remains a valid alternative; its example count 417852 and archived HHL figures are not measurements of the new median-QPE construction.
+
+\subsection{Explicit constants and validation status}
+The accompanying \texttt{completed\_schedule.py} evaluates all integer choices. For example, scale the archived two-dimensional test by $4/3$ so its spectrum is $[1/3,1]$. Its parameters are $L=3$, $B=17/15$, $\C=8/75$. At $\eps=0.25$, the theorem chooses $r_*=17$, $m=15$, $R=49$, and 163769466 controlled term invocations per attempt. This large sufficient count illustrates the conservatism of the explicit confidence and error constants. It is neither a measured requirement nor an optimized implementation, and cannot replace the old resource prefactor as an equally tight practical estimate.
+
+The logarithm, perturbation, and median-QPE lemmas are tested separately in the new validation subsection. The seven archived figures continue to describe their original circuits and matrix ensembles; they are not presented as a full simulation of the new coherent median-QPE circuit.

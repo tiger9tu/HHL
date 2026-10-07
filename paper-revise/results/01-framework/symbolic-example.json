@@ -1,0 +1,914 @@
+{
+  "schema_version": "1.0.0",
+  "record_id": "symbolic-observable-capped",
+  "status": "symbolic",
+  "pp": {
+    "instance_id": "symbolic invertible Hermitian A and nonzero b",
+    "matrix_class": "invertible Hermitian",
+    "matrix_representation": "declared sparse structure; no fixed-position shortcut",
+    "input_access": "A and b initially classical; oracle construction and loading charged to setup/preparation",
+    "input_location": "host memory on both branches",
+    "rhs": "b nonzero; input and solution normalization recorded",
+    "N": {
+      "unit": "1",
+      "status": "symbolic",
+      "expression": "N",
+      "note": "Uninstantiated symbolic parameter; see framework.md."
+    },
+    "s_row": {
+      "unit": "1",
+      "status": "symbolic",
+      "expression": "s_row",
+      "note": "Uninstantiated symbolic parameter; see framework.md."
+    },
+    "s_col": {
+      "unit": "1",
+      "status": "symbolic",
+      "expression": "s_col",
+      "note": "Uninstantiated symbolic parameter; see framework.md."
+    },
+    "kappa_2": {
+      "unit": "1",
+      "status": "symbolic",
+      "expression": "kappa_2",
+      "note": "Uninstantiated symbolic parameter; see framework.md."
+    },
+    "scaling": "A scaled reversibly; kappa is spectral singular-value ratio of original A",
+    "output": {
+      "definition": "mu=<x|O|x>, with normalized x and Hermitian O of norm at most one",
+      "unit": "1",
+      "metric": "absolute scalar error",
+      "epsilon": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "epsilon_out",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "normalization": "normalized solution observable; no norm recovery requested",
+      "delta_total": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "delta_total",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "reference_solution": "exact mathematical mu; downstream benchmark provides numerical reference",
+      "success_scope": "per_output"
+    },
+    "reuse": {
+      "outputs": {
+        "unit": "1",
+        "status": "known",
+        "value": 1,
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "groups": "one output and one setup",
+      "invalidation": "A, b, O, representation, precision or hardware changes"
+    },
+    "parameters": {}
+  },
+  "cq": {
+    "algorithm": "heralded QLSA; core excludes external retries",
+    "transformed_operator": "Original A; no transformation in this illustration",
+    "preconditioner": "none in illustration",
+    "precision": "logical error allocation pending",
+    "io_model": "Explicit setup, solve and observable extraction",
+    "hardware": "symbolic fault-tolerant device plus host",
+    "limits": {
+      "qubits": {
+        "unit": "physical_qubit",
+        "status": "symbolic",
+        "expression": "Q_cap",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      }
+    },
+    "parameters": {
+      "tau_cycle": {
+        "unit": "s/code_cycle",
+        "status": "symbolic",
+        "expression": "tau_cycle",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "P_run": {
+        "unit": "W",
+        "status": "symbolic",
+        "expression": "P_q",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      }
+    },
+    "optimization_policy": "fixed configuration",
+    "model_version": "symbolic-v1",
+    "compilation": "Clifford+T with all queried oracles expanded",
+    "qec": "schedule including factories, routing, storage and stalls"
+  },
+  "cc": {
+    "algorithm": "symbolic classical solver for same observable",
+    "transformed_operator": "Original A; no transformation in this illustration",
+    "preconditioner": "none in illustration",
+    "precision": "b_c bits; accuracy certificate pending",
+    "io_model": "Explicit setup, solve and observable extraction",
+    "hardware": "symbolic sustained-throughput host",
+    "limits": {
+      "memory_capacity": {
+        "unit": "byte",
+        "status": "symbolic",
+        "expression": "B_cap",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      }
+    },
+    "parameters": {
+      "f_eff": {
+        "unit": "operation/s",
+        "status": "symbolic",
+        "expression": "f_eff",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "b_eff": {
+        "unit": "byte/s",
+        "status": "symbolic",
+        "expression": "b_eff",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      }
+    },
+    "optimization_policy": "fixed configuration",
+    "model_version": "symbolic-v1"
+  },
+  "symbols": {
+    "M": {
+      "unit": "1",
+      "status": "symbolic",
+      "expression": "ceil(2*epsilon_stat^(-2)*log(2/delta_stat))",
+      "note": "Uninstantiated symbolic parameter; see framework.md."
+    },
+    "K": {
+      "unit": "1",
+      "status": "symbolic",
+      "expression": "least integer with Pr[Binomial(K,p)<M]<=delta_retry",
+      "note": "Uninstantiated symbolic parameter; see framework.md."
+    },
+    "p": {
+      "unit": "1",
+      "status": "symbolic",
+      "expression": "p",
+      "note": "Independent trial success probability in (0,1]."
+    },
+    "eta": {
+      "unit": "1",
+      "status": "symbolic",
+      "expression": "eta",
+      "note": "Trace-distance state error bound; 2*eta+epsilon_stat<=epsilon_out."
+    }
+  },
+  "budgets": [
+    {
+      "id": "delta_stat",
+      "kind": "failure_probability",
+      "value": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "delta_stat",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "scope": "per_output",
+      "conversion_or_event": "sample mean outside epsilon_stat",
+      "owner": "05",
+      "branch": "quantum"
+    },
+    {
+      "id": "delta_retry",
+      "kind": "failure_probability",
+      "value": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "delta_retry",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "scope": "per_output",
+      "conversion_or_event": "fewer than M successes within K trials",
+      "owner": "05",
+      "branch": "quantum"
+    },
+    {
+      "id": "delta_qec",
+      "kind": "failure_probability",
+      "value": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "delta_qec",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "scope": "per_output",
+      "conversion_or_event": "any malignant fault in capped quantum schedule",
+      "owner": "06",
+      "branch": "quantum"
+    },
+    {
+      "id": "delta_other",
+      "kind": "failure_probability",
+      "value": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "delta_other",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "scope": "per_output",
+      "conversion_or_event": "other failures, including setup; zero only if justified",
+      "owner": "05",
+      "branch": "quantum"
+    },
+    {
+      "id": "bias",
+      "kind": "output_error",
+      "value": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "2*eta",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "scope": "per_output",
+      "conversion_or_event": "trace distance converted to observable bias",
+      "owner": "05",
+      "branch": "quantum"
+    },
+    {
+      "id": "sampling",
+      "kind": "output_error",
+      "value": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "epsilon_stat",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "scope": "per_output",
+      "conversion_or_event": "scalar sampling tolerance",
+      "owner": "05",
+      "branch": "quantum"
+    }
+  ],
+  "boundary": {
+    "id": "operational-system",
+    "metric": "operational_gross",
+    "included": [
+      "quantum device cooling, control, decoder and host",
+      "classical compute, memory and network",
+      "attributed facility overhead"
+    ],
+    "excluded": [
+      "embodied energy"
+    ],
+    "allocation": "same allocation principle for both systems; constant attributed run power",
+    "window": "setup start to classical output available",
+    "facility_overhead": "already included in P_q, P_c and setup energies; do not multiply again"
+  },
+  "stages": [
+    {
+      "id": "q_setup",
+      "branch": "quantum",
+      "layer": "classical_work",
+      "owner": "05",
+      "scope": "setup",
+      "reuse_key": "same_A_and_O",
+      "multiplicity": {
+        "unit": "1",
+        "status": "known",
+        "value": 1,
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "q.setup"
+      ],
+      "derived_from": [],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "operations": [
+          {
+            "kind": "real_arithmetic",
+            "precision": "b_c bits; selected downstream",
+            "count": {
+              "unit": "operation",
+              "status": "symbolic",
+              "expression": "F_q_setup",
+              "note": "Uninstantiated symbolic parameter; see framework.md."
+            },
+            "convention": "FMA is two operations; no additional FMA counter"
+          }
+        ],
+        "memory_peak": {
+          "host": {
+            "unit": "byte",
+            "status": "symbolic",
+            "expression": "B_q_setup",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "data_movement": [
+          {
+            "interface": "host_DRAM_to_processor",
+            "direction": "read_plus_write",
+            "bytes": {
+              "unit": "byte",
+              "status": "symbolic",
+              "expression": "V_q_setup",
+              "note": "Uninstantiated symbolic parameter; see framework.md."
+            },
+            "accounting": "One named interface, aggregate traffic; excludes cache-level traffic"
+          }
+        ],
+        "synchronizations": {
+          "unit": "1",
+          "status": "symbolic",
+          "expression": "S_q_setup",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "schedule": "Serialized compute, transfer and synchronization for illustrative model."
+      }
+    },
+    {
+      "id": "q_try",
+      "branch": "quantum",
+      "layer": "logical",
+      "owner": "05",
+      "scope": "per_output",
+      "reuse_key": "none",
+      "multiplicity": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "K",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "q.prepare",
+        "q.core",
+        "q.herald"
+      ],
+      "derived_from": [],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "gate_basis": "compiled Clifford+T+measurement+reset; T includes T dagger",
+        "gates": {
+          "T": {
+            "unit": "gate",
+            "status": "symbolic",
+            "expression": "g_try_T",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          },
+          "Clifford": {
+            "unit": "gate",
+            "status": "symbolic",
+            "expression": "g_try_Clifford",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          },
+          "measurement": {
+            "unit": "gate",
+            "status": "symbolic",
+            "expression": "g_try_measurement",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          },
+          "reset": {
+            "unit": "gate",
+            "status": "symbolic",
+            "expression": "g_try_reset",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "oracle_queries": {
+          "A": {
+            "unit": "query",
+            "status": "symbolic",
+            "expression": "q_try_A",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "queries_expanded": true,
+        "depth": {
+          "unit": "layer",
+          "status": "symbolic",
+          "expression": "D_try",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "t_depth": {
+          "unit": "layer",
+          "status": "symbolic",
+          "expression": "DT_try",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "logical_qubits_peak": {
+          "unit": "logical_qubit",
+          "status": "symbolic",
+          "expression": "L_try",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "schedule": "Serial stage invocations; within-stage schedule supplied by logical model."
+      }
+    },
+    {
+      "id": "q_obs",
+      "branch": "quantum",
+      "layer": "logical",
+      "owner": "05",
+      "scope": "per_output",
+      "reuse_key": "none",
+      "multiplicity": {
+        "unit": "1",
+        "status": "symbolic",
+        "expression": "M",
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "q.observable",
+        "q.reset"
+      ],
+      "derived_from": [],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "gate_basis": "compiled Clifford+T+measurement+reset; T includes T dagger",
+        "gates": {
+          "T": {
+            "unit": "gate",
+            "status": "symbolic",
+            "expression": "g_obs_T",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          },
+          "Clifford": {
+            "unit": "gate",
+            "status": "symbolic",
+            "expression": "g_obs_Clifford",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          },
+          "measurement": {
+            "unit": "gate",
+            "status": "symbolic",
+            "expression": "g_obs_measurement",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          },
+          "reset": {
+            "unit": "gate",
+            "status": "symbolic",
+            "expression": "g_obs_reset",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "oracle_queries": {
+          "A": {
+            "unit": "query",
+            "status": "symbolic",
+            "expression": "q_obs_A",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "queries_expanded": true,
+        "depth": {
+          "unit": "layer",
+          "status": "symbolic",
+          "expression": "D_obs",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "t_depth": {
+          "unit": "layer",
+          "status": "symbolic",
+          "expression": "DT_obs",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "logical_qubits_peak": {
+          "unit": "logical_qubit",
+          "status": "symbolic",
+          "expression": "L_obs",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "schedule": "Serial stage invocations; within-stage schedule supplied by logical model."
+      }
+    },
+    {
+      "id": "q_host",
+      "branch": "quantum",
+      "layer": "classical_work",
+      "owner": "05",
+      "scope": "per_output",
+      "reuse_key": "none",
+      "multiplicity": {
+        "unit": "1",
+        "status": "known",
+        "value": 1,
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "q.host"
+      ],
+      "derived_from": [],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "operations": [
+          {
+            "kind": "real_arithmetic",
+            "precision": "b_c bits; selected downstream",
+            "count": {
+              "unit": "operation",
+              "status": "symbolic",
+              "expression": "F_q_host",
+              "note": "Uninstantiated symbolic parameter; see framework.md."
+            },
+            "convention": "FMA is two operations; no additional FMA counter"
+          }
+        ],
+        "memory_peak": {
+          "host": {
+            "unit": "byte",
+            "status": "symbolic",
+            "expression": "B_q_host",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "data_movement": [
+          {
+            "interface": "host_DRAM_to_processor",
+            "direction": "read_plus_write",
+            "bytes": {
+              "unit": "byte",
+              "status": "symbolic",
+              "expression": "V_q_host",
+              "note": "Uninstantiated symbolic parameter; see framework.md."
+            },
+            "accounting": "One named interface, aggregate traffic; excludes cache-level traffic"
+          }
+        ],
+        "synchronizations": {
+          "unit": "1",
+          "status": "symbolic",
+          "expression": "S_q_host",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "schedule": "Serialized compute, transfer and synchronization for illustrative model."
+      }
+    },
+    {
+      "id": "q_qec",
+      "branch": "quantum",
+      "layer": "qec",
+      "owner": "06",
+      "scope": "per_output",
+      "reuse_key": "none",
+      "multiplicity": {
+        "unit": "1",
+        "status": "known",
+        "value": 1,
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "q.prepare",
+        "q.core",
+        "q.herald",
+        "q.observable",
+        "q.reset"
+      ],
+      "derived_from": [
+        "q_try",
+        "q_obs"
+      ],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "code_cycles": {
+          "unit": "code_cycle",
+          "status": "symbolic",
+          "expression": "K*c_try+M*c_obs",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "physical_qubits_peak": {
+          "unit": "physical_qubit",
+          "status": "symbolic",
+          "expression": "Q_peak",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "distance": {
+          "unit": "1",
+          "status": "symbolic",
+          "expression": "d",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "factory_count": {
+          "unit": "1",
+          "status": "symbolic",
+          "expression": "n_factory",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "failure_bound": {
+          "unit": "1",
+          "status": "symbolic",
+          "expression": "delta_qec",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "schedule": "Includes both input multiplicities once; sequential reuse of device.",
+        "occupancy": "Data, syndrome, factories, storage and routing included in Q_peak."
+      }
+    },
+    {
+      "id": "c_setup",
+      "branch": "classical",
+      "layer": "classical_work",
+      "owner": "08",
+      "scope": "setup",
+      "reuse_key": "same_A_and_O",
+      "multiplicity": {
+        "unit": "1",
+        "status": "known",
+        "value": 1,
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "c.setup"
+      ],
+      "derived_from": [],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "operations": [
+          {
+            "kind": "real_arithmetic",
+            "precision": "b_c bits; selected downstream",
+            "count": {
+              "unit": "operation",
+              "status": "symbolic",
+              "expression": "F_c_setup",
+              "note": "Uninstantiated symbolic parameter; see framework.md."
+            },
+            "convention": "FMA is two operations; no additional FMA counter"
+          }
+        ],
+        "memory_peak": {
+          "host": {
+            "unit": "byte",
+            "status": "symbolic",
+            "expression": "B_c_setup",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "data_movement": [
+          {
+            "interface": "host_DRAM_to_processor",
+            "direction": "read_plus_write",
+            "bytes": {
+              "unit": "byte",
+              "status": "symbolic",
+              "expression": "V_c_setup",
+              "note": "Uninstantiated symbolic parameter; see framework.md."
+            },
+            "accounting": "One named interface, aggregate traffic; excludes cache-level traffic"
+          }
+        ],
+        "synchronizations": {
+          "unit": "1",
+          "status": "symbolic",
+          "expression": "S_c_setup",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "schedule": "Serialized compute, transfer and synchronization for illustrative model."
+      }
+    },
+    {
+      "id": "c_run",
+      "branch": "classical",
+      "layer": "classical_work",
+      "owner": "08",
+      "scope": "per_output",
+      "reuse_key": "none",
+      "multiplicity": {
+        "unit": "1",
+        "status": "known",
+        "value": 1,
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "c.solve",
+        "c.output"
+      ],
+      "derived_from": [],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "operations": [
+          {
+            "kind": "real_arithmetic",
+            "precision": "b_c bits; selected downstream",
+            "count": {
+              "unit": "operation",
+              "status": "symbolic",
+              "expression": "F_c_run",
+              "note": "Uninstantiated symbolic parameter; see framework.md."
+            },
+            "convention": "FMA is two operations; no additional FMA counter"
+          }
+        ],
+        "memory_peak": {
+          "host": {
+            "unit": "byte",
+            "status": "symbolic",
+            "expression": "B_c_run",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "data_movement": [
+          {
+            "interface": "host_DRAM_to_processor",
+            "direction": "read_plus_write",
+            "bytes": {
+              "unit": "byte",
+              "status": "symbolic",
+              "expression": "V_c_run",
+              "note": "Uninstantiated symbolic parameter; see framework.md."
+            },
+            "accounting": "One named interface, aggregate traffic; excludes cache-level traffic"
+          }
+        ],
+        "synchronizations": {
+          "unit": "1",
+          "status": "symbolic",
+          "expression": "S_c_run",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "schedule": "Serialized compute, transfer and synchronization for illustrative model."
+      }
+    },
+    {
+      "id": "q_total",
+      "branch": "quantum",
+      "layer": "hardware",
+      "owner": "07",
+      "scope": "batch",
+      "reuse_key": "none",
+      "multiplicity": {
+        "unit": "1",
+        "status": "known",
+        "value": 1,
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "q.setup",
+        "q.prepare",
+        "q.core",
+        "q.herald",
+        "q.observable",
+        "q.reset",
+        "q.host"
+      ],
+      "derived_from": [
+        "q_setup",
+        "q_qec",
+        "q_host"
+      ],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "time": {
+          "unit": "s",
+          "status": "symbolic",
+          "expression": "t_q_setup+t_q_run",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "energy": {
+          "unit": "J",
+          "status": "symbolic",
+          "expression": "E_q_setup+P_q*t_q_run",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "physical_qubits_peak": {
+          "unit": "physical_qubit",
+          "status": "symbolic",
+          "expression": "Q_peak",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "memory_peak": {
+          "host": {
+            "unit": "byte",
+            "status": "symbolic",
+            "expression": "B_q_peak",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "boundary_id": "operational-system",
+        "schedule": "One output following setup; serial example. Run includes all host/device phases.",
+        "energy_model": "Constant total attributed run power; setup energy disjoint from run."
+      }
+    },
+    {
+      "id": "c_total",
+      "branch": "classical",
+      "layer": "hardware",
+      "owner": "08",
+      "scope": "batch",
+      "reuse_key": "none",
+      "multiplicity": {
+        "unit": "1",
+        "status": "known",
+        "value": 1,
+        "note": "Uninstantiated symbolic parameter; see framework.md."
+      },
+      "statistic": "upper_bound",
+      "statistic_note": "Reserved capped schedule for quantum; conditional model bound for classical.",
+      "covers": [
+        "c.setup",
+        "c.solve",
+        "c.output"
+      ],
+      "derived_from": [
+        "c_setup",
+        "c_run"
+      ],
+      "assumptions": [
+        "A-symbolic"
+      ],
+      "resources": {
+        "time": {
+          "unit": "s",
+          "status": "symbolic",
+          "expression": "t_c_setup+t_c_run",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "energy": {
+          "unit": "J",
+          "status": "symbolic",
+          "expression": "E_c_setup+P_c*t_c_run",
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "physical_qubits_peak": {
+          "unit": "physical_qubit",
+          "status": "known",
+          "value": 0,
+          "note": "Uninstantiated symbolic parameter; see framework.md."
+        },
+        "memory_peak": {
+          "host": {
+            "unit": "byte",
+            "status": "symbolic",
+            "expression": "B_c_peak",
+            "note": "Uninstantiated symbolic parameter; see framework.md."
+          }
+        },
+        "boundary_id": "operational-system",
+        "schedule": "One output following setup; serial example. Run includes all host/device phases.",
+        "energy_model": "Constant total attributed run power; setup energy disjoint from run."
+      }
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A-symbolic",
+      "status": "assumed",
+      "statement": "Symbolic illustration only; no constants, schedule or accuracy certificate calibrated. Quantum attempts independent and bounded by K.",
+      "source": "framework.md symbolic calculation"
+    }
+  ],
+  "uncertainty": {
+    "method": "symbolic; no numerical distribution assumed",
+    "joint_parameters": "p, eta, gate resources, code distance, throughput and power correlated as models specify",
+    "discrete_policy": "fixed symbolic configuration; downstream may specify reoptimization",
+    "reporting": "no numerical result or feasibility assertion"
+  },
+  "provenance": {
+    "input_manifest": "input-manifest.json",
+    "model_versions": "framework contract 1.0.0; downstream physical models pending",
+    "commands": [
+      "python3 validate.py symbolic-example.json --self-test"
+    ],
+    "sources": [
+      "framework.md",
+      "references.md"
+    ]
+  },
+  "feasibility": {
+    "quantum": {
+      "status": "unresolved",
+      "reason": "No instantiated hardware capacity, schedule or accuracy certificate."
+    },
+    "classical": {
+      "status": "unresolved",
+      "reason": "No instantiated hardware capacity, schedule or accuracy certificate."
+    }
+  }
+}

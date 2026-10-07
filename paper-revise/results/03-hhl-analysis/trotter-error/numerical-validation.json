@@ -1,0 +1,27 @@
+{
+  "numpy": "1.19.5",
+  "scipy": "1.5.4",
+  "cases": [
+    {
+      "h": 0.1,
+      "B": 2.0,
+      "C_comm": 2.0,
+      "unitary_error": 0.009977800297338633,
+      "unitary_bound": 0.010000000000000002,
+      "matrix_error": 0.10011104862423681,
+      "matrix_bound_refined": 0.125,
+      "matrix_bound": 0.2
+    },
+    {
+      "h": 0.2,
+      "B": 2.0,
+      "C_comm": 2.0,
+      "unitary_error": 0.03964588352895139,
+      "unitary_bound": 0.04000000000000001,
+      "matrix_error": 0.200886815854269,
+      "matrix_bound_refined": 0.33333333333333337,
+      "matrix_bound": 0.4
+    }
+  ],
+  "passed": true
+}

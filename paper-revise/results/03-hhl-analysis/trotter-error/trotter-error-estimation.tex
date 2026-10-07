@@ -1,0 +1,250 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,microtype}
+\usepackage[colorlinks=true,linkcolor=blue!40!black,urlcolor=blue!40!black,citecolor=blue!40!black]{hyperref}
+\usepackage{xcolor,fancyhdr,graphicx}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{Trotter error estimation for HHL}\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\CC}{C_{\mathrm{comm}}}
+\newtheorem{theorem}{Theorem}
+\title{Trotter Error Estimation for HHL\\[4pt]\large Unitary error, effective-matrix error, and step selection}
+\author{HHL paper revision --- standalone derivation}
+\date{9 September 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+For a Hermitian decomposition $H=\sum_a H_a$, first-order Trotterization with $r$ steps over evolution time $\tau$ has operator error at most $\tau^2\CC/(2r)$, where $\CC=\sum_{a<b}\norm{[H_a,H_b]}$. If the microstep $h=\tau/r$ satisfies $h\sum_a\norm{H_a}\leq1/2$, a convergent matrix-logarithm argument also gives a Hermitian effective matrix with error at most $h\CC$. This note proves both bounds and explains the shared-microstep condition needed to use the second bound in HHL. A numerical study of 850 matrices (20,400 paired measurements) compares actual spectral-norm errors with both bounds, including step-size, dimension and branch-condition sweeps. The estimates are deterministic and do not extrapolate numerical histograms.
+\end{abstract}
+
+\section{Setup and the two different errors}
+Let $H_1,\ldots,H_L\in\mathbb C^{N\times N}$ be Hermitian, with
+\begin{equation}
+ H=\sum_{a=1}^L H_a,\qquad
+ B=\sum_{a=1}^L\norm{H_a},\qquad
+ \CC=\sum_{1\leq a<b\leq L}\norm{[H_a,H_b]}.
+\end{equation}
+Here $[A,B]=AB-BA$, and all matrix norms are spectral norms. No restriction on nonzero positions is needed; the result applies in particular to one-sparse decompositions used in HHL.
+
+Define one ordered microstep and the repeated formula by
+\begin{equation}
+ P(h)=e^{\ii H_1h}\cdots e^{\ii H_Lh},\qquad
+ S_r(\tau)=P(\tau/r)^r,\qquad r\in\mathbb N_{\geq1}.
+\end{equation}
+Two quantities must be distinguished:
+\begin{align}
+ E_U&=\norm{S_r(\tau)-e^{\ii H\tau}}
+ &&\text{(unitary or operator error)},\\
+ E_H&=\norm{\widehat H-H}
+ &&\text{(effective-matrix error)}.
+\end{align}
+$E_U$ is dimensionless. $E_H$ has the units of $H$; evolution time has inverse units of $H$. All quantities can be taken dimensionless after a declared matrix normalization. The second error requires a justified definition of $\widehat H$, not merely a small value of $E_U$.
+
+\section{The unitary-error bound}
+\begin{theorem}[First-order Trotter error]\label{thm:unitary}
+For every finite Hermitian decomposition, every real $\tau$, and every integer $r\geq1$,
+\begin{equation}\label{eq:unitary}
+ \boxed{\norm{S_r(\tau)-e^{\ii H\tau}}
+ \leq\min\left\{2,\frac{\tau^2\CC}{2r}\right\}.}
+\end{equation}
+\end{theorem}
+
+\subsection{One step with two terms}
+For two Hermitian matrices $A,D$, set
+\begin{equation}
+ V(t)=e^{\ii At}e^{\ii Dt},\qquad U(t)=e^{\ii(A+D)t}.
+\end{equation}
+Direct differentiation gives the exact differential equation
+\begin{align}
+ V'(t)&=\ii(A+D)V(t)+R(t),\\
+ R(t)&=\left(e^{\ii At}\ii D e^{-\ii At}-\ii D\right)V(t).
+\end{align}
+The conjugation difference is an integral of a commutator:
+\begin{equation}
+ e^{\ii At}\ii D e^{-\ii At}-\ii D
+ =\int_0^t e^{\ii Av}[\ii A,\ii D]e^{-\ii Av}\,dv.
+\end{equation}
+For $t\geq0$, unitary invariance of the spectral norm gives
+\begin{equation}
+ \norm{R(t)}\leq t\norm{[A,D]}.
+\end{equation}
+Variation of parameters then yields
+\begin{align}
+ V(t)-U(t)&=\int_0^t U(t-u)R(u)\,du,\\
+ \norm{V(t)-U(t)}&\leq\int_0^t u\norm{[A,D]}\,du
+ =\frac{t^2}{2}\norm{[A,D]}.
+\end{align}
+The factor $t^2/2$ is the area of the double-integral region. The proof is exact; no higher-order Taylor or Dyson terms have been discarded. Negative times follow by replacing $A,D$ with $-A,-D$.
+
+\subsection{One step with many terms}
+Successively split the first remaining term from the sum of all later terms. At split $a$, the two-term bound contributes at most
+\begin{equation}
+ \frac{h^2}{2}\norm{\left[H_a,\sum_{b>a}H_b\right]}
+ \leq\frac{h^2}{2}\sum_{b>a}\norm{[H_a,H_b]}.
+\end{equation}
+Telescoping the splits, with all surrounding factors unitary, gives
+\begin{equation}\label{eq:local}
+ \norm{P(h)-e^{\ii Hh}}\leq\frac{h^2}{2}\CC.
+\end{equation}
+The grouped-commutator version is Proposition 15 of Childs et al.~\cite{childs}; the pairwise sum used here follows by the triangle inequality.
+
+\subsection{Accumulation over repeated steps}
+For any unitaries $V,W$,
+\begin{equation}
+ V^r-W^r=\sum_{k=0}^{r-1}V^{r-1-k}(V-W)W^k,
+ \qquad \norm{V^r-W^r}\leq r\norm{V-W}.
+\end{equation}
+Taking $V=P(h)$, $W=e^{\ii Hh}$ and $h=\tau/r$ gives
+\begin{equation}
+ E_U\leq r\frac{h^2\CC}{2}=\frac{\tau^2\CC}{2r}.
+\end{equation}
+The independent ceiling two follows from the triangle inequality for two unitary matrices. This proves Theorem~\ref{thm:unitary}.
+
+\section{A rigorous effective-matrix bound}
+A small unitary error at one time does not alone imply a small matrix error: unitary eigenphases are defined modulo $2\pi$, and logarithms have branches. The following sufficient step-size condition fixes the branch explicitly.
+
+\begin{theorem}[Effective matrix of a microstep]\label{thm:matrix}
+Suppose $h>0$ and $hB\leq1/2$. Then
+\begin{equation}
+ \widehat H=\frac{\operatorname{Log}P(h)}{\ii h}
+\end{equation}
+is Hermitian, $P(h)=e^{\ii\widehat Hh}$, and
+\begin{equation}\label{eq:matrix}
+ \boxed{\norm{\widehat H-H}
+ \leq\frac{h\CC}{2(1-hB)}\leq h\CC.}
+\end{equation}
+Here $\operatorname{Log}$ is the principal matrix logarithm.
+\end{theorem}
+
+\subsection{Step-size control of the logarithm branch}
+Since $H_a$ is Hermitian,
+\begin{equation}
+ e^{\ii H_ah}-I=\int_0^h\ii H_a e^{\ii H_au}\,du,
+ \qquad\norm{e^{\ii H_ah}-I}\leq h\norm{H_a}.
+\end{equation}
+Telescoping the product around identity therefore gives
+\begin{equation}\label{eq:nearidentity}
+ \norm{P(h)-I}\leq hB,\qquad
+ \norm{e^{\ii Hh}-I}\leq h\norm H\leq hB.
+\end{equation}
+Consequently both matrices lie in the norm ball of radius $1/2$ around identity. The logarithm series converges there. Because $P(h)$ is unitary, its principal logarithm is skew-Hermitian, so $\widehat H$ is Hermitian. Also $h\norm H\leq1/2<\pi$, and hence
+\begin{equation}
+ \operatorname{Log}(e^{\ii Hh})=\ii Hh.
+\end{equation}
+
+\subsection{A logarithm difference inequality}
+For matrices $X,Y$ with $\norm X,\norm Y\leq\rho<1$,
+\begin{equation}
+ \log(I+X)=\sum_{k=1}^{\infty}\frac{(-1)^{k+1}}{k}X^k.
+\end{equation}
+No commutativity between $X$ and $Y$ is required: telescoping gives
+\begin{equation}
+ \norm{X^k-Y^k}\leq k\rho^{k-1}\norm{X-Y}.
+\end{equation}
+Absolute convergence then permits the bound
+\begin{align}
+ \norm{\log(I+X)-\log(I+Y)}
+ &\leq\sum_{k=1}^{\infty}\rho^{k-1}\norm{X-Y}\\
+ &=\frac{\norm{X-Y}}{1-\rho}.
+\end{align}
+Apply this with $X=P(h)-I$, $Y=e^{\ii Hh}-I$ and $\rho=hB$. Using equation~\eqref{eq:local},
+\begin{align}
+ \norm{\widehat H-H}
+ &=\frac1h\norm{\operatorname{Log}P(h)-\operatorname{Log}(e^{\ii Hh})}\\
+ &\leq\frac{1}{h(1-hB)}\norm{P(h)-e^{\ii Hh}}\\
+ &\leq\frac{h\CC}{2(1-hB)}\leq h\CC.
+\end{align}
+This proves Theorem~\ref{thm:matrix}. The logarithm inequality uses the entire convergent series, not an equality inferred from first-order truncations.
+
+\section{How the bound is used in HHL}
+\subsection{Use the same microstep for all QPE powers}
+Fix a base evolution time $\tau_0>0$, an integer $r_0$, and $h=\tau_0/r_0$ satisfying Theorem~\ref{thm:matrix}. Define the base unitary $V=P(h)^{r_0}$. Then every controlled power obeys
+\begin{equation}\label{eq:qpe}
+ \boxed{V^{2^j}=P(h)^{r_0 2^j}
+ =e^{\ii\widehat H\tau_0 2^j}.}
+\end{equation}
+All QPE powers therefore represent one and the same $\widehat H$. Inverse QPE uses their adjoints. There is no need to take the principal logarithm of a long-time evolution, whose eigenphases might wrap.
+
+If each QPE power instead uses a different microstep, it can have a different effective matrix; the common-matrix perturbation argument above no longer follows. The operator bound of Theorem~\ref{thm:unitary} still applies separately to each power, with errors accounted for at the circuit level.
+
+\subsection{Convert matrix error into solution-state error}
+For normalized $b$, write $x=H^{-1}b$ and $\widehat x=\widehat H^{-1}b$. Assume $H$ is invertible and let
+\begin{equation}
+ q=\norm{H^{-1}}\norm{\widehat H-H}<1.
+\end{equation}
+The resolvent identity and Neumann-series bound give
+\begin{equation}
+ \frac{\norm{\widehat x-x}}{\norm x}\leq\frac{q}{1-q}.
+\end{equation}
+For any nonzero vectors $x,y$, adding and subtracting $y/\norm x$ yields
+\begin{align}
+ \norm{\frac{y}{\norm y}-\frac{x}{\norm x}}
+ &\leq\frac{\norm{y-x}}{\norm x}
+       +\frac{|\norm x-\norm y|}{\norm x}\\
+ &\leq\frac{2\norm{y-x}}{\norm x}.
+\end{align}
+If $\operatorname{spec}(H)\subseteq[1/\kappa,1]$, Theorem~\ref{thm:matrix} thus implies
+\begin{equation}\label{eq:solution}
+ \boxed{\norm{\frac{\widehat x}{\norm{\widehat x}}-
+                   \frac{x}{\norm x}}
+ \leq\frac{2\kappa h\CC}{1-\kappa h\CC},
+ \qquad \kappa h\CC<1.}
+\end{equation}
+Here $\kappa$ is a justified normalized spectral-gap bound; it equals the spectral condition number when the matrix is scaled to norm one with a tight lower eigenvalue bound.
+
+To make the Trotter contribution to solution-state error at most $\varepsilon_{\rm T}>0$, it is sufficient that
+\begin{equation}
+ hB\leq\frac12,\qquad
+ h\CC\leq\frac{\varepsilon_{\rm T}}{\kappa(2+\varepsilon_{\rm T})}.
+\end{equation}
+For the chosen base time $\tau_0$, one explicit integer choice is
+\begin{equation}\label{eq:steps}
+ \boxed{r_0\geq\left\lceil\max\left\{
+ 1,\ 2B\tau_0,\
+ \frac{\kappa(2+\varepsilon_{\rm T})\tau_0\CC}{\varepsilon_{\rm T}}
+ \right\}\right\rceil.}
+\end{equation}
+This allocates only the Trotter contribution. Finite-QPE/filter error, gate synthesis, entry precision, input preparation and output estimation require their own budgets. Equation~\eqref{eq:solution} compares the exact inverse states of $H$ and $\widehat H$; it does not by itself certify an entire implemented HHL circuit.
+
+\section{Coefficient estimates, interpretation, and numerical check}
+The bound explicitly retains dependence on the decomposition:
+\begin{equation}
+ \CC\leq2\sum_{a<b}\norm{H_a}\norm{H_b}
+ \leq L(L-1)\Lambda^2,\qquad \Lambda=\max_a\norm{H_a}.
+\end{equation}
+Thus a family with uniformly bounded $L$ and $\Lambda$ has a dimension-uniform simulation coefficient. Normalizing $\norm H=1$ alone does not bound $B$ or $\CC$, because a decomposition may contain cancelling large terms. Fixed nonzero positions are not a hypothesis of either theorem. If all terms commute, $\CC=0$ and Trotterization is exact; no small-step condition is needed to establish that exactness directly.
+
+As a finite illustration, take $H_1=Z$, $H_2=X$ (Pauli matrices), $r=1$ and $\tau=h$. Then $B=2$ and $\CC=2$. Both displayed steps satisfy $hB\leq1/2$. The table uses the spectral norm and the principal microstep logarithm; values were evaluated with dense matrix exponentials and logarithms.
+\begin{center}
+\small
+\begin{tabular}{rrrrr}
+\toprule
+$h$ & Measured $E_U$ & Bound $h^2\CC/2$ & Measured $E_H$ & Bound $h\CC$\\
+\midrule
+0.1 & 0.0099778003 & 0.0100000000 & 0.1001110486 & 0.2000000000\\
+0.2 & 0.0396458835 & 0.0400000000 & 0.2008868159 & 0.4000000000\\
+\bottomrule
+\end{tabular}
+\end{center}
+This example checks the Trotter bounds; $X+Z$ is not an SPD HHL input. The numerical values illustrate conservatism of the bounds, while their validity at arbitrary finite dimension follows from the proofs.
+
+\textbf{Final estimate.} Over time $\tau$ with $r$ steps,
+\begin{equation}
+ \underbrace{E_U\leq\frac{\tau^2\CC}{2r}}_{\text{unitary error}},
+ \qquad
+ \underbrace{E_H\leq\frac{|\tau|\CC}{r}}_{\text{effective-matrix error, when }|\tau|B/r\leq1/2}.
+\end{equation}
+The second bound is the matrix-error estimate used for HHL with a shared microstep. It includes the decomposition coefficient and a sufficient step-size condition. It does not assert that the error equals $|\tau|/r$ or that the coefficient is universally one. For negative microsteps the same reasoning applies with $|h|$.
+
+\input{experiments-section.tex}
+\begin{thebibliography}{1}
+\bibitem{childs}
+A.~M.~Childs, Y.~Su, M.~C.~Tran, N.~Wiebe, and S.~Zhu,
+\emph{Theory of Trotter Error with Commutator Scaling},
+Physical Review X \textbf{11}, 011020 (2021).
+\href{https://doi.org/10.1103/PhysRevX.11.011020}{doi:10.1103/PhysRevX.11.011020}.
+\href{https://arxiv.org/html/1912.08854v3}{arXiv:1912.08854v3}, Section 5.1, Proposition 15.
+The pairwise first-order unitary estimate follows from that grouped-commutator bound. The logarithm-series and HHL perturbation arguments are derived explicitly in this note.
+\end{thebibliography}
+\end{document}

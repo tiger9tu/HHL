@@ -1,0 +1,26 @@
+{
+  "input": {
+    "kappa": 3,
+    "L": 3,
+    "B": 1.1333333333333333,
+    "C": 0.10666666666666667,
+    "epsilon": 0.25,
+    "delta": 0.01
+  },
+  "output": {
+    "scope": "completed consistent-microstep median-QPE theorem; not the earlier direct-unitary adapter",
+    "r_base": 17,
+    "h": 0.04619989196455578,
+    "clock_bits_per_register": 15,
+    "clock_registers": 49,
+    "phase_bins": 32768,
+    "hs1_calls_per_attempt": 163769466,
+    "ideal_success_lower_bound": 0.00043402777777777775,
+    "implemented_success_lower_bound": 0.0002777777777777778,
+    "expected_hs1_calls_upper_bound": 589570077600,
+    "attempt_cap": 16579,
+    "state_error_upper_bound_with_implementation_margin": 0.18799603174603174,
+    "implementation_operator_error_budget": 0.0003255208333333333,
+    "compiled_T_count": null
+  }
+}

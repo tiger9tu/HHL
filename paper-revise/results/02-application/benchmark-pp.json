@@ -1,0 +1,148 @@
+{
+  "instance_id": "02-smooth-diffusion-v1:m127:beta9:epsilon0.0001",
+  "matrix_class": "Real symmetric positive definite; original unscaled A",
+  "matrix_representation": "Analytic conservative five-point stencil; optional generated CSR",
+  "input_access": "Compact formulas equally available; charge construction, reversible oracles and preparation; no QRAM supplied",
+  "input_location": "Compact specification in host memory on both branches; arrays not prebuilt",
+  "rhs": "b_ij=f(ih,jh), polynomial source in specification.md; nonzero; no random seed",
+  "N": {
+    "unit": "1",
+    "status": "known",
+    "value": 16129,
+    "note": "Derived in specification.md; dimensionless."
+  },
+  "s_row": {
+    "unit": "1",
+    "status": "known",
+    "value": 5,
+    "note": "Derived in specification.md; dimensionless."
+  },
+  "s_col": {
+    "unit": "1",
+    "status": "known",
+    "value": 5,
+    "note": "Derived in specification.md; dimensionless."
+  },
+  "kappa_2": {
+    "unit": "1",
+    "status": "unknown",
+    "note": "Original kappa is bounded, not evaluated: see kappa_original_lower/upper."
+  },
+  "scaling": "Dimensionless A with h^-2 factors; B=h^2 A,d=h^2 b preserve x; pad B with 4C identity if needed",
+  "output": {
+    "definition": "J=integral_Omega u; discrete approximation c^T A^-1 b, c=h^2 ones",
+    "unit": "1",
+    "metric": "Absolute scalar error divided by fixed reference scale 1",
+    "epsilon": {
+      "unit": "1",
+      "status": "known",
+      "value": 0.0001,
+      "note": "Chosen common continuum tolerance"
+    },
+    "normalization": "Unnormalized temperature integral; norm and signed overlap recovery required for state solvers",
+    "delta_total": {
+      "unit": "1",
+      "status": "known",
+      "value": 0.01,
+      "note": "Requested per-output failure bound, not measured"
+    },
+    "reference_solution": "Exact continuum J=5/144; discrete references require original-residual certificate; known-answer shortcut must be allowed",
+    "success_scope": "per_output"
+  },
+  "reuse": {
+    "outputs": {
+      "unit": "1",
+      "status": "known",
+      "value": 1,
+      "note": "One scalar, one RHS"
+    },
+    "groups": "One cold setup and one output",
+    "invalidation": "m,beta,source,observable,access,precision or hardware changes; identical output can be cached"
+  },
+  "parameters": {
+    "m": {
+      "unit": "1",
+      "status": "known",
+      "value": 127,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "h": {
+      "unit": "1",
+      "status": "known",
+      "value": 0.0078125,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "beta": {
+      "unit": "1",
+      "status": "known",
+      "value": 9.0,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "contrast": {
+      "unit": "1",
+      "status": "known",
+      "value": 10.0,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "nnz": {
+      "unit": "1",
+      "status": "known",
+      "value": 80137,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "kappa_original_lower": {
+      "unit": "1",
+      "status": "known",
+      "value": 663.9518434557701,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "kappa_original_upper": {
+      "unit": "1",
+      "status": "known",
+      "value": 66395.18434557701,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "lambda_min_lower": {
+      "unit": "1",
+      "status": "known",
+      "value": 19.738217925560228,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "mesh_error_upper": {
+      "unit": "1",
+      "status": "known",
+      "value": 8.297229789465236e-06,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "epsilon_discretization": {
+      "unit": "1",
+      "status": "known",
+      "value": 2.5e-05,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "epsilon_solve": {
+      "unit": "1",
+      "status": "known",
+      "value": 2.5e-05,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "epsilon_representation": {
+      "unit": "1",
+      "status": "known",
+      "value": 1.25e-05,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "epsilon_readout": {
+      "unit": "1",
+      "status": "known",
+      "value": 2.5e-05,
+      "note": "Derived in specification.md; dimensionless."
+    },
+    "epsilon_arithmetic": {
+      "unit": "1",
+      "status": "known",
+      "value": 1.25e-05,
+      "note": "Derived in specification.md; dimensionless."
+    }
+  }
+}

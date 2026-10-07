@@ -1,0 +1,21 @@
+{
+  "regeneration": "python reproduce.py; python validate.py",
+  "sha256": {
+    "README.md": "13ccadc0b59f864b278b89faab725403e485f82894a7232cb10538962eabba68",
+    "application-input.json": "c85225b632ea676e85023c037f18deef6b363ab48f9e20eb37fcc51cbc7026b0",
+    "input-versions.json": "9dfd1c6aac05127ddf26dda541e3e09cdb474a30e4c5899f0d68433a6e49ed03",
+    "logical_model.py": "8460ae3bb6fe4df67ffdbbed5d5e0ea46f868912ff2aed1004a9335a0b0605ed",
+    "manuscript-text.md": "aa97f068bd131ad67591b8a91f45bff7af48af5d59c7ba92637962a185f28bf3",
+    "model.md": "c47b3a8b27aac82d9337519184ef4333f3ff2608c646a42532e8fb36e458844d",
+    "poisson-models.json": "3a4bfda61b32b8a2cdaee323d94d659bbf096237f238d11a11ff5c588247728f",
+    "references.md": "14b411f81583c9a1771b89ac3003b7a495c0ab9b50e9aea8bf0c21eaa16d48ec",
+    "reproduce.py": "6b744f3c3f8ed965a9048a55e633cc52d31e99f3be605732aa8f8a1c79c29bf7",
+    "reused-poisson-costs.csv": "3358acc16248a25eaf51106cf58c8349fe40c2fb50374221961c4dabe091d5a8",
+    "sources/1806.01838v1.pdf": "0326a3de56b10c9805074031a827b1ac4c5ee526c5ad362096adfbacc261c60d",
+    "sources/1806.01838v1.txt": "ce15a4200107ac8a03bdcf55a047cdefedb80aeae0ee8d51168ebd3998609dbd",
+    "sources/2204.05955v2.pdf": "ec93b1b96a5a1d94436bcba8abb830e391f5ff75347566061afcbba04c4471b5",
+    "sources/2204.05955v2.txt": "521268662270ce3ec2f6ce7f378e1db400621f0f0b1bafb2ce2ae82194bf1adc",
+    "validate.py": "82c38f69dd38776860fca7c1fc02c378e815a71f66a634b0b2da2bbf606331ba",
+    "validation.json": "b62286b08618a23572c91c19c51b69cc4637859331c36b71d8fc7136dd083e52"
+  }
+}

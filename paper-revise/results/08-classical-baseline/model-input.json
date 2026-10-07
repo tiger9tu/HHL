@@ -1,0 +1,8 @@
+{
+  "N": 1073741824,
+  "kappa": 100,
+  "s": 5,
+  "epsilon": 0.001,
+  "rounding": "ceil",
+  "note": "Generic scaling scenario, not task-02 measured application. epsilon is the paper's relative solution-error parameter."
+}

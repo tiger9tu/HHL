@@ -1,0 +1,138 @@
+[
+  {
+    "model_version": "04-table-v-1.1.0",
+    "parameters": {
+      "N": 1024,
+      "kappa": 100,
+      "epsilon_state": "0.01",
+      "delta": "0.01",
+      "effective_inverse_gap": 100
+    },
+    "N": 1024,
+    "padded_dimension": 1024,
+    "ell": 10,
+    "kappa": "100",
+    "frobenius_over_spectral": null,
+    "effective_inverse_gap": "100",
+    "adiabatic_constant": "2000",
+    "Q": 400000,
+    "d": 1382,
+    "precision": {
+      "epsilon_qsp": "0.002",
+      "epsilon_G": "2.4913922398114514352910693553771718711850556327887149897105500495787055722478836E-9",
+      "epsilon_h": "1.2456961199057257176455346776885859355925278163943574948552750247893527861239418E-9",
+      "epsilon_ar": "1.25E-9",
+      "epsilon_z": "7.2358900144717800289435600578871201157742402315484804630969609261939218523878437E-7"
+    },
+    "equation_64_error": "0.010000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "T_BE": "418319651.71013019577641657915946542422790586963355457813863604097999197484783017",
+    "T_controlled_BE": "418336019.71013019577641657915946542422790586963355457813863604097999197484783017",
+    "T_SP": "403888.99874159043490382105283850285290527401915468739330598638144389460960763919",
+    "matrix_calls": "802764",
+    "rhs_calls": "1605528",
+    "QLSS_terms": {
+      "controlled_block_encoding": "335825096526582.95648225927875236910181489062753051080736488402280126227769674354",
+      "rhs_preparation": "648455096371.58820777026200732169580841929878542538694119977370302685322477413373",
+      "adiabatic_rotations": "141962038.84367471415822026609239258275320952549214389550290264559933189542177121",
+      "adiabatic_other": "108400000",
+      "filter_rotations": "84571.460363218732738760751628910969764506509084755053997362640368285442283101798",
+      "filter_other": "439476"
+    },
+    "T_QLSS": "336473802509040.84872796243171871764164480364928996819553473435340429737062169853",
+    "T_per_attempt_ceiling": 336473802509041,
+    "retry_cap": 7,
+    "ideal_retry_failure_bound": "0.0078125",
+    "T_retry_budget": 2355316617563287,
+    "expected_T_upper_under_half_success_model": 672947605018082,
+    "statistic": "Table-V model, rounded per attempt and multiplied by a retry cap",
+    "certified_upper_bound": false,
+    "assumptions": [
+      "kappa denotes ordinary spectral condition bound; Frobenius normalization explicit",
+      "C=2000 by default is the paper numerical assumption for general matrices",
+      "Q=2CK drops the paper O(sqrt(K)) term",
+      "Tables III/IV omit double/triple logarithmic synthesis terms",
+      "R_T=3 log2(1/error) is the paper synthesis model, not a compiled certificate",
+      "five equal Eq.(64) error contributions and even degree ceiling are adapter choices",
+      "retry cap assumes independent attempts with success probability >=1/2; not recertified after circuit errors"
+    ],
+    "excludes": [
+      "tomography",
+      "interior point iterations",
+      "classical preprocessing",
+      "QEC"
+    ],
+    "include_readout": false,
+    "T_total": 2355316617563287,
+    "output_scope": "normalized quantum solution state",
+    "readout": null,
+    "scenario": "K_is_100"
+  },
+  {
+    "model_version": "04-table-v-1.1.0",
+    "parameters": {
+      "N": 1024,
+      "kappa": 100,
+      "epsilon_state": "0.01",
+      "delta": "0.01",
+      "adiabatic_constant": 15307
+    },
+    "N": 1024,
+    "padded_dimension": 1024,
+    "ell": 10,
+    "kappa": "100",
+    "frobenius_over_spectral": "32",
+    "effective_inverse_gap": "3200",
+    "adiabatic_constant": "15307",
+    "Q": 97964800,
+    "d": 44210,
+    "precision": {
+      "epsilon_qsp": "0.002",
+      "epsilon_G": "1.0203143568127052808716259862231033657007656745027829584239244942888414034587228E-11",
+      "epsilon_h": "5.1015717840635264043581299311155168285038283725139147921196224714442070172936141E-12",
+      "epsilon_ar": "5.1038740445547788593453975305415822826157966943228588227608283791729274188279872E-12",
+      "epsilon_z": "2.2619316896629721782402171454422076453291110608459624519339515946618412123953857E-8"
+    },
+    "equation_64_error": "0.0099999999999999999999999999999999999999999999999999999999999999999999999999999999",
+    "T_BE": "518124630.63824098470319067113246958330982858540165724407953434590818338714588309",
+    "T_controlled_BE": "518140998.63824098470319067113246958330982858540165724407953434590818338714588309",
+    "T_SP": "501259.70989096681434457626451948252030227179063576316495564326430066671916671520",
+    "matrix_calls": "196018020",
+    "rhs_calls": "392036040",
+    "QLSS_terms": {
+      "controlled_block_encoding": "101564972633890694.10436972303785784543061764584983375770312704500691720934522945",
+      "rhs_preparation": "196511871677203.46166706287422021043010852223580455367356707716098910674994191113",
+      "adiabatic_rotations": "44097731352.753740982865041880260211029748971779770425337187913506848276441234719",
+      "adiabatic_other": "26548460800",
+      "filter_rotations": "3368519.4183235212824536463926710700607890391149836945796234903561648840954669728",
+      "filter_other": "14058780"
+    },
+    "T_QLSS": "101761555169187349.73810129005957358251360826789539913026210315393544331329961268",
+    "T_per_attempt_ceiling": 101761555169187350,
+    "retry_cap": 7,
+    "ideal_retry_failure_bound": "0.0078125",
+    "T_retry_budget": 712330886184311450,
+    "expected_T_upper_under_half_success_model": 203523110338374700,
+    "statistic": "Table-V model, rounded per attempt and multiplied by a retry cap",
+    "certified_upper_bound": false,
+    "assumptions": [
+      "kappa denotes ordinary spectral condition bound; Frobenius normalization explicit",
+      "C=2000 by default is the paper numerical assumption for general matrices",
+      "Q=2CK drops the paper O(sqrt(K)) term",
+      "Tables III/IV omit double/triple logarithmic synthesis terms",
+      "R_T=3 log2(1/error) is the paper synthesis model, not a compiled certificate",
+      "five equal Eq.(64) error contributions and even degree ceiling are adapter choices",
+      "retry cap assumes independent attempts with success probability >=1/2; not recertified after circuit errors"
+    ],
+    "excludes": [
+      "tomography",
+      "interior point iterations",
+      "classical preprocessing",
+      "QEC"
+    ],
+    "include_readout": false,
+    "T_total": 712330886184311450,
+    "output_scope": "normalized quantum solution state",
+    "readout": null,
+    "scenario": "larger_analytic_C_only"
+  }
+]

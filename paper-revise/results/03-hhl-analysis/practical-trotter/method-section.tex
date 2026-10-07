@@ -1,0 +1,72 @@
+\section{Application-specific estimation of Trotter error}
+Let $H=A/\alpha=\sum_{a=1}^{L}H_a$ be the normalized Hermitian matrix supplied to HHL, with a specified decomposition and ordering. We use the positive-time convention of our implementation. One microstep of the first-order product formula is
+\begin{equation}
+ P_1(h)=e^{\mathrm{i}hH_1}\cdots e^{\mathrm{i}hH_L},\qquad h=\tau/r.
+\end{equation}
+For sufficiently small $h$, choose the logarithm branch continuous from $h=0$ and define
+\begin{equation}\label{eq:effective}
+ P_1(h)=e^{\mathrm{i}h\widehat H(h)},\qquad
+ \Delta H(h)=\widehat H(h)-H
+ =\frac{\operatorname{Log}P_1(h)}{\mathrm{i}h}-H,\qquad
+ \epsilon_H(h)=\norm{\Delta H(h)}_2.
+\end{equation}
+The Baker--Campbell--Hausdorff (BCH) expansion gives the compact expression
+\begin{equation}\label{eq:bch}
+ \boxed{\Delta H(h)=\frac{\mathrm{i}h}{2}\sum_{a<b}[H_a,H_b]
+       +h^2\mathcal K_2+h^3\mathcal K_3+\cdots.}
+\end{equation}
+Here each $\mathcal K_q$ is a weighted sum of nested commutators containing $q+1$ fragments, with coefficients fixed by the product formula and its ordering. This notation keeps the higher-order terms without expanding their many individual contributions. Maxwell et al.~\cite{maxwell}, Section III.2, develop compact BCH representations and software for evaluating these operators.
+
+For a fixed decomposition, the leading small-step error is
+\begin{equation}\label{eq:leading}
+ \epsilon_H(h)=|h|\left\lVert\frac{\mathrm{i}}2
+             \sum_{a<b}[H_a,H_b]\right\rVert_2+O(h^2).
+\end{equation}
+The norm acts on the \emph{sum} of commutators, retaining their cancellations. Bounding each commutator separately discards this information; replacing their norms by term-norm estimates loses further structure. The resulting conservatism depends on the matrix entries, decomposition, ordering and step size. Consequently, a simple expression in dimension, sparsity and maximum term norm need not tightly predict the error of an application. This is not an impossibility claim: structured cases can have simple, nearly tight bounds, as illustrated by our Poisson measurements.
+
+Our practical resource estimates therefore take the Trotter step count from numerical error studies of the specified application instances. We evaluate $\epsilon_H(h)$ directly on tractable instances and use successively higher BCH orders, checked against direct calculations and step refinement, when direct evaluation becomes costly. The empirical error curve, tested size range, normalization, decomposition, ordering and numerical uncertainty are reported with the selected step count. Dependence on matrix size is measured within the application family; no dimension-independent coefficient is inferred from generic small random matrices. Any extrapolation beyond tested sizes is stated as a model assumption.
+
+Software supports both numerical estimation and the evaluation of established bounds. PennyLane provides \texttt{bch\_expansion} and \texttt{effective\_hamiltonian} for BCH calculations~\cite{plbch,pleffective}; its \texttt{TrotterProduct.error} routine evaluates bounds on the \emph{evolution-operator} error~\cite{plbound}. A truncated BCH calculation estimates the effective-H error. Calling it an upper bound on the full error additionally requires control of the omitted terms and numerical error. Thus software-computed bounds can serve as supplementary checks, while the central practical estimates use the measured application errors.
+
+\section{Notation and resource-model details}
+For a general order-$p$ formula, write
+\begin{equation}
+ P_p(h)=\prod_{s=1}^{M}e^{\mathrm{i}h a_s H_{j_s}},\qquad
+ \sum_{s=1}^{M}a_sH_{j_s}=H.
+\end{equation}
+Let $\mathfrak C_{q+1,\beta}$ denote a nested commutator of $q+1$ fragments, with its bracketing and indices included in $\beta$. Then a shorthand for the full effective-H expansion is
+\begin{align}
+ \Delta H_p(h)&=\sum_{q=p}^{\infty}h^q\mathcal K_q,
+ &\mathcal K_q&=\mathrm{i}^{q}\sum_{\beta}c_{q,\beta}\,
+                         \mathfrak C_{q+1,\beta},\label{eq:general}\\
+ \Delta H_p(h)&=h^p\mathcal K_p+O(h^{p+1}).
+\end{align}
+The real coefficients $c_{q,\beta}$ incorporate the stage weights $a_s$ and ordering. The factors $\mathrm{i}^q$ ensure Hermitian coefficients. Equations~\eqref{eq:bch} and \eqref{eq:general} denote a convergent local expansion near zero for a fixed finite matrix, or its finite-order small-$h$ asymptotic expansion. They are not asserted to converge for arbitrary step sizes. For a symmetric order-$p$ formula ($p$ even), only even powers occur in $\Delta H_p$, so the remainder after the leading term is $O(h^{p+2})$. If the leading coefficient vanishes for a particular application, convergence can be faster than the nominal order.
+
+The leading expansion follows by writing
+\begin{equation}
+ \operatorname{Log}P_1(h)
+ =\mathrm{i}hH+\tfrac12\sum_{a<b}[\mathrm{i}hH_a,\mathrm{i}hH_b]
+   +O(h^3)
+ =\mathrm{i}hH-\tfrac{h^2}{2}\sum_{a<b}[H_a,H_b]+O(h^3)
+\end{equation}
+and dividing by $\mathrm{i}h$. This fixes the sign for the displayed positive-time convention. A BCH term containing $q+1$ fragments contributes order $h^q$ to the effective-H error because of this division.
+
+All QPE powers must use the same calibrated microstep to share one effective matrix. With $\tau_j=2^j\tau_0$ and $h=\tau_0/r_0$, set $r_j=2^jr_0$, giving
+\begin{equation}
+ P_p(h)^{r_j}=e^{\mathrm{i}\tau_j(H+\Delta H_p(h))}.
+\end{equation}
+The effective-H error is therefore computed from $P_p(h)$ itself. Taking the principal logarithm of the full long-time evolution can introduce phase wrapping unrelated to Trotter error.
+
+For first-order simulation, a forward/inverse QPE pair with $m$ controlled powers has the elementary one-sparse evolution count
+\begin{equation}
+ K_{\mathrm{HS1}}=2L\sum_{j=0}^{m-1}r_j
+                =2Lr_0(2^m-1).
+\end{equation}
+Here $r_0$ is selected from application-specific numerical calibration. Gate counts then use the compiled costs of those controlled evolutions; additional QPE repetitions, preparation, filtering, retries and readout are accounted for separately. This count does not assume $L=s$. For higher-order formulas the stage count and compiled stage costs must also change.
+
+If measurements establish $\epsilon_H(h)\simeq a_{\rm app}h^p$ over the relevant step range, an initial estimate is
+\begin{equation}
+ r_0\simeq\tau_0\left(\frac{a_{\rm app}}{\epsilon_{H,\rm target}}\right)^{1/p}.
+\end{equation}
+This expression guides a discrete step search; the selected integer schedule is checked numerically. The coefficient $a_{\rm app}$ retains its dependence on instance, normalization, decomposition and formula. The effective-H target is a separate error-budget input, not automatically the allowed error in the solution state or scalar output. Practical HHL validation must also specify the right-hand side, conditioning, QPE/filter accuracy, success probability and requested output. The BCH operator measures matrix perturbation; an eigenvalue-shift estimate alone need not capture its effect on inverse states.

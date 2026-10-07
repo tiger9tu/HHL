@@ -1,0 +1,74 @@
+{
+  "id": "q_shortcut_T_04",
+  "owner": "04",
+  "branch": "quantum",
+  "layer": "logical",
+  "scope": "per_output",
+  "reuse_key": "none",
+  "multiplicity": {
+    "unit": "1",
+    "status": "known",
+    "note": "One delivered-state model; external scientific readout absent.",
+    "value": 1
+  },
+  "statistic": "expected",
+  "statistic_note": "Modeled expected T cost using analytic upper bound on ideal queries; not a certified implemented expectation or full output guarantee.",
+  "covers": [
+    "q.core"
+  ],
+  "derived_from": [],
+  "assumptions": [
+    "A04T-access",
+    "A04T-query",
+    "A04T-controls",
+    "A04T-synthesis"
+  ],
+  "resources": {
+    "gate_basis": "Clifford+T; T includes adjoint; measurements/reset not counted as T",
+    "gates": {
+      "T": {
+        "unit": "gate",
+        "status": "known",
+        "note": "Analytic query bound times explicit T-cost envelope, with modeled synthesis.",
+        "value": 4.546294845349052e+16
+      },
+      "Clifford": {
+        "unit": "gate",
+        "status": "unknown",
+        "note": "Unresolved full compiled schedule."
+      }
+    },
+    "oracle_queries": {
+      "A": {
+        "unit": "query",
+        "status": "known",
+        "note": "Diagnostic, already expanded into T cost.",
+        "value": 253823053.6563747
+      },
+      "b": {
+        "unit": "query",
+        "status": "known",
+        "note": "Diagnostic, already expanded into T cost.",
+        "value": 507646107.3127494
+      }
+    },
+    "queries_expanded": true,
+    "depth": {
+      "unit": "layer",
+      "status": "unknown",
+      "note": "Unresolved full compiled schedule."
+    },
+    "t_depth": {
+      "unit": "layer",
+      "status": "unknown",
+      "note": "Unresolved full compiled schedule."
+    },
+    "logical_qubits_peak": {
+      "unit": "logical_qubit",
+      "status": "known",
+      "note": "Conservative allocation, no aggressive ancilla recycling; not QEC qubits.",
+      "value": 9289415
+    },
+    "schedule": "See t-count-model.md. Expected ideal Algorithm3 queries; Clifford counts and physical schedule unresolved."
+  }
+}

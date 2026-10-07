@@ -1,0 +1,11 @@
+{
+  "pp": {"instance_id": "task03-2x2-diagnostic-not-task02", "N": 2, "s_row": 2, "s_col": 2, "kappa_2": 3},
+  "cq": {
+    "mode": "certified_norm_core",
+    "operator_norm": 0.75,
+    "block_encoding_alpha": 1.0,
+    "epsilon_trace_algorithm": 0.01,
+    "norm_ratio_bound": 1.0,
+    "norm_certificate": "Diagnostic only: A=.5I+.15Z+.2X, b=(1,1)/sqrt(2); t=4/sqrt(5). Dense exact norm is not free benchmark input."
+  }
+}

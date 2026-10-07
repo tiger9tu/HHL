@@ -1,0 +1,9 @@
+{
+  "instance_id": "generic-real-matrix-stored-data-scenario",
+  "N": 1024,
+  "kappa": 100,
+  "epsilon_state": 0.01,
+  "delta_retry": 0.002,
+  "query_bound": "auto",
+  "rotation_synthesis_offset": 10
+}

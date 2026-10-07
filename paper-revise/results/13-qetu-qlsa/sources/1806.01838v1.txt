@@ -1,0 +1,6277 @@
+Quantum singular value transformation and beyond:
+exponential improvements for quantum matrix arithmetics
+András Gilyén∗
+Yuan Su†
+Guang Hao Low‡
+Nathan Wiebe§
+June 6, 2018
+Abstract
+Quantum computing is powerful because unitary operators describing the time-evolution
+of a quantum system have exponential size in terms of the number of qubits present in the
+system.
+We develop a new “Singular value transformation” algorithm capable of harnessing
+this exponential advantage, that can apply polynomial transformations to the singular values
+of a block of a unitary, generalizing the optimal Hamiltonian simulation results of Low and
+Chuang [LC17a]. The proposed quantum circuits have a very simple structure, often give rise
+to optimal algorithms and have appealing constant factors, while typically only use a constant
+number of ancilla qubits.
+We show that singular value transformation leads to novel algorithms. We give an eﬃcient so-
+lution to a “non-commutative” measurement problem used for eﬃcient ground-state-preparation
+of certain local Hamiltonians, and propose a new method for singular value estimation. We
+also show how to exponentially improve the complexity of implementing fractional queries to
+unitaries with a gapped spectrum. Finally, as a quantum machine learning application we show
+how to eﬃciently implement principal component regression.
+“Singular value transformation” is conceptually simple and eﬃcient, and leads to a uniﬁed
+framework of quantum algorithms incorporating a variety of quantum speed-ups. We illustrate
+this by showing how it generalizes a number of prominent quantum algorithms, and quickly
+derive the following algorithms: optimal Hamiltonian simulation, implementing the Moore-
+Penrose pseudoinverse with exponential precision, ﬁxed-point amplitude ampliﬁcation, robust
+oblivious amplitude ampliﬁcation, fast QMA ampliﬁcation, fast quantum OR lemma, certain
+quantum walk results and several quantum machine learning algorithms.
+In order to exploit the strengths of the presented method it is useful to know its limitations
+too, therefore we also prove a lower bound on the eﬃciency of singular value transformation,
+which often gives optimal bounds.
+∗QuSoft, CWI and University of Amsterdam, the Netherlands. Supported by ERC Consolidator Grant 615307-
+QPROGRESS. gilyen@cwi.nl
+†Department of Computer Science, Institute for Advanced Computer Studies, and Joint Center for Quantum
+Information and Computer Science, University of Maryland, USA. buptsuyuan@gmail.com
+‡Quantum Architectures and Computing group, Microsoft Research, USA. GuangHao.Low@microsoft.com
+§Quantum Architectures and Computing group, Microsoft Research, USA. nawiebe@microsoft.com
+1
+arXiv:1806.01838v1  [quant-ph]  5 Jun 2018
+
+Contents
+1
+Introduction
+3
+1.1
+Structure of the paper . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5
+2
+Preliminaries and notation
+6
+3
+Qubitization and Singular value transformations
+7
+3.1
+Parametrized SU(2) unitaries induced by Pauli rotations . . . . . . . . . . . . . . . .
+7
+3.2
+Singular value transformation by qubitization . . . . . . . . . . . . . . . . . . . . . .
+14
+3.3
+Robustness of singular value transformation . . . . . . . . . . . . . . . . . . . . . . .
+21
+3.4
+Singular vector transformation and singular value ampliﬁcation . . . . . . . . . . . .
+26
+3.5
+Singular value discrimination, quantum walks and the fast OR lemma
+. . . . . . . .
+29
+3.5.1
+Relationship to quantum walks . . . . . . . . . . . . . . . . . . . . . . . . . .
+31
+3.5.2
+Fast QMA ampliﬁcation and fast quantum OR lemma
+. . . . . . . . . . . . .
+34
+3.6
+“Non-commutative measurements” and singular value estimation
+. . . . . . . . . . .
+36
+3.7
+Direct implementation of the Moore-Penrose pseudoinverse . . . . . . . . . . . . . . .
+37
+3.8
+Applications in quantum machine learning . . . . . . . . . . . . . . . . . . . . . . . .
+38
+4
+Matrix Arithmetics using blocks of unitaries
+40
+4.1
+Block-encoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+4.2
+Constructing block-encodings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+41
+4.3
+Addition and subtraction: Linear combination of block-encoded matrices . . . . . . .
+46
+4.4
+Multiplication: Product of block-encoded matrices
+. . . . . . . . . . . . . . . . . . .
+46
+5
+Implementing smooth functions of Hermitian matrices
+48
+5.1
+Optimal Hamiltonian simulation
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+49
+5.2
+Bounded polynomial approximations of piecewise smooth functions . . . . . . . . . .
+53
+5.3
+Applications: fractional queries and Gibbs sampling
+. . . . . . . . . . . . . . . . . .
+58
+6
+Limitations of the smooth function techniques
+59
+7
+Conclusion
+61
+2
+
+1
+Introduction
+It is often said in quantum computing that there are only a few quantum algorithms that are
+known to give speed-ups over classical computers.
+While this is true, a remarkable number of
+applications stem from from these primitives. The ﬁrst class of quantum speedups is derived from
+quantum simulation which was originally proposed by Feynman [Fey82].
+Such algorithms yield
+exponential speedups over the best known classical methods for simulating quantum dynamics as
+well as probing electronic structure problems in material science and chemistry.
+The two most
+inﬂuential quantum algorithms developed later in the 90’s are Shor’s algorithm [Sho97] (based on
+quantum Fourier transform) and Grover’s search [Gro96]. Other examples have emerged over the
+years, but arguably quantum walks [Sze04] and the quantum linear systems algorithm of Harrow,
+Hassidim and Lloyd [HHL09] are the most common other primitives that provide speed-ups relative
+to classical computing. An important question that remains is whether “are these primitives truly
+independent or can they be seen as examples of a deeper underlying concept?” The aim of this work
+is to provide an argument that a wide array of techniques from these disparate ﬁelds can all be seen
+as manifestations of a single quantum idea that we call “singular value transformation” generalizing
+all the above mentioned techniques except for quantum Fourier transform.
+Of the aforementioned quantum algorithms, quantum simulation is arguably the most diverse
+and rapidly developing. Within the last few years a host of techniques have been developed that have
+led to ever more powerful methods [CMN+17]. The problem in quantum simulation fundamentally
+is to take an eﬃcient description of a Hamiltonian H, an evolution time t, and an error tolerance ε,
+and ﬁnd a quantum operation V such that
+e−iHt −V
+ ≤ε while the implementation of V should
+use as few resources as possible. The ﬁrst methods introduced to solve this problem were Trotter
+formula decompositions [Llo96, BACS07] and subsequently methods based on linear combinations
+of unitaries were developed [CW12] to provide better asymptotic scaling of the cost of simulation.
+An alternative strategy was also developed concurrent with these methods that used ideas from
+quantum walks. Asymptotically, this approach is perhaps the favored method for simulating time-
+independent Hamiltonians because it is capable of achieving near-optimal scaling with all relevant
+parameters. The main tool developed for this approach is a walk operator that has eigenvalues
+e−i arcsin(Ek/α) where Ek is the kth eigenvalue of H and α is a normalizing parameter. While early
+work adjusted the spectrum recovering the desired eigenvalues e−iEk by using phase estimation to
+invert the arcsin, subsequent work achieved better scaling using linear combination of quantum walk
+steps [BCK15]. Recently another approach, called qubitization [LC16], was introduced to transform
+the spectrum in a more eﬃcient manner.
+Quantum simulation is not the only ﬁeld that uses such spectral transformations. Quantum
+linear systems algorithms [HHL09], as well as algorithms for semi-deﬁnite programming [BS17,
+AGGW17], use these ideas extensively. Earlier work on linear systems used a strategy similar to
+the quantum walk simulation method: use phase estimation to estimate the eigenvalues of a matrix
+λj and then use quantum rejection sampling to rescale the amplitude of each eigenvector |λj⟩via
+the map |λj⟩7→λ−1
+j |λj⟩. This enacts the inverse of a matrix and generalizations to the pseudo-
+inverse are straightforward. More recent methods eschew the use of phase estimation in favor of
+linear-combination of unitary methods [CKS17] which typically approximate the inversion using a
+Fourier-series or Chebyshev series expansion. Similar ideas can be used to prepare Gibbs states
+eﬃciently [CS17, AGGW17].
+These improvements typically result in exponentially improved scaling in terms of precision
+in various important subroutines. However, since these techniques work on quantum states, and
+3
+
+usually one needs to learn certain properties of these states to a speciﬁed precision ε, a polynomial
+dependence on 1
+ε is unavoidable. Therefore these improvements typically “only” result in polynomial
+savings in the complexity. Nevertheless, for complex algorithms this can make a huge diﬀerence.
+These techniques played a crucial role in improving the complexity of quantum semi-deﬁnite program
+solvers [AG18] where the scaling with accuracy was improved from the initial O(1/ϵ32) to O(1/ϵ4).
+We provide a new generalization of qubitization that allows us to view all of the above mentioned
+applications as a manifestation of a single concept we call singular value transformation. The central
+object for this result is projected unitary encoding, which is deﬁned as follows. Suppose that eΠ,Π are
+orthogonal projectors and U is a unitary, then we say that the unitary U and the projectors eΠ,Π form
+a projected unitary encoding of the operator A := eΠUΠ. We deﬁne singular value transformation by
+a polynomial P ∈C[x] in the following way: if P is an odd polynomial and A = WΣV † is a singular
+value decomposition (SVD), then P (SV )(A) := WP(Σ)V †, where the polynomial P is applied to
+the diagonal entries of Σ. Our main result is that for any degree-d odd polynomial P ∈R[x], that
+is bounded by 1 in absolute value on [−1, 1], we can implement a unitary UΦ with a simple circuit
+using U and its inverse a total number of d times such that
+A = eΠUΠ =⇒P (SV )(A) = eΠUΦΠ.
+We prove a similar result for even polynomials as well, but with replacing eΠ by Π in the above
+equation, and deﬁning P (SV )(A) := V P(Σ)V † for even polynomials. One can view these results as
+generalizations of the quantum walk techniques introduced by Szegedy [Sze04].
+In order to illustrate the power of this technique we brieﬂy explain some corollaries of this result.
+For example suppose that U is a quantum algorithm that on the initial state |0⟩⊗n succeeds with
+probability at least p, and indicates success by setting the ﬁrst qubit to |1⟩. Then we can take
+eΠ := |1⟩⟨1| ⊗In−1 and Π := |0⟩⟨0|⊗n. Observe that A = eΠUΠ is a rank-1 matrix having a single
+non-trivial singular value being the square root of the success probability. If P is an odd polynomial
+bounded by 1 in absolute value such that P is ε
+2-close to 1 on the interval [√p, 1], then by applying
+singular value transformation we get an algorithm UΦ that succeeds with probability at least 1 −ε.
+Such a polynomial can be constructed with degree O
+
+1
+√p log
+  1
+ε
+
+providing a conceptually simple
+and eﬃcient implementation of ﬁxed-point amplitude ampliﬁcation.
+It also becomes straightforward to implement the Moore-Penrose pseudoinverse directly. Sup-
+pose that A = WΣV † is an SVD, then the pseudoinverse is simply A+ = V Σ−1W †, where we take
+the inverse of each non-zero diagonal element of Σ. If we have A represented as a projected unitary
+encoding, then simply ﬁnding an appropriately scaled approximation polynomial of 1
+x and applying
+singular value transformation to it implements an approximation of the Moore-Penrose pseudoin-
+verse directly. As an application in quantum machine learning, we design a quantum algorithm
+for principal component regression, and argue that singular value transformation could become a
+central tool in designing quantum machine learning algorithms.
+Based on singular value transformation we develop two main general results: singular vec-
+tor transformation, which maps right singular vectors to left singular vectors, and singular value
+threshold projectors, which project out singular vectors with singular value below a certain threshold.
+These threshold projectors play a major role in quantum algorithms recently proposed by Kerenidis
+et al. [KP17b, KL18], and our work ﬁlls a minor gap that was present in earlier implementation
+proposals. Our implementation is also simpler and applies in greater generality than the algorithm
+of Kerenidis and Prakash [KP17b]. As a useful application of singular value threshold projectors we
+develop singular value discrimination, which decides whether a given quantum state has singular
+4
+
+value below or above a certain threshold. As another application we show that using singular vector
+transformation one can eﬃciently implement a form of “non-commutative measurement” which is
+used for preparing ground states of local Hamiltonians. Also we propose a new method for quantum
+singular value estimation introduced by [KP17b].
+Other algorithms can also be cast in the singular value transformation framework, including
+optimal Hamiltonian simulation, robust oblivious amplitude ampliﬁcation, fast QMA ampliﬁcation,
+fast quantum OR lemma and certain quantum walk results. Based on these techniques we also
+show how to exponentially improve the complexity of implementing fractional queries to unitaries
+with a gapped spectrum. We summarize in Table 1 the various types of quantum speed-ups that
+are inherently incorporated in our singular value transformation framework.
+Speed-up
+Source of speed-up
+Examples of algorithms
+Exponential
+Dimensionality of the Hilbert space
+Hamiltonian simulation [Llo96]
+Precise polynomial approximations
+Improved HHL algorithm [CKS17]
+Quadratic
+Singular value = square root of probability
+Grover search [Gro96]
+Distinguishability of singular values
+Amplitude estimation [BHMT02]
+Singular values close to 1 are more useful
+Quantum walks [Sze04]
+Table 1: This table gives an intuitive summary of the diﬀerent types of speed-ups that our singular
+value transformation framework inherently incorporates. The explanations, examples and the cited
+papers are far from being complete or representative, the table only intends to give some intuition
+and illustrate the diﬀerent sources of speed-ups.
+In order to harness the power of singular value transformation one needs to construct projected
+unitary encodings. A special case of projected unitary encoding is called block-encoding, when eΠ =
+Π = |0⟩⟨0|⊗a⊗I. In this case A is literally the top-left block of the unitary U. In the paper we provide
+a versatile toolbox for eﬃciently constructing block-encodings, summarizing recent developments in
+the ﬁeld. In particular we demonstrate how to construct block-encodings of unitary matrices, density
+operators, POVM operators, sparse-access matrices and matrices stored in a QROM1. Furthermore,
+we show how to form linear combinations and products of block-encodings.
+1.1
+Structure of the paper
+In Section 3 we derive a new formalization of qubitization that allows us to view all of the aforemen-
+tioned applications as a manifestation of a single concept we call “singular value transformation”.
+In Subsection 3.1 we develop a slightly improved version of the quantum signal processing result of
+Low et al. [LYC16]. In Subsection 3.2 we develop our singular value transformation result based
+on qubitization ideas of Low and Chuang [LC16]. In Subsection 3.3 we prove bounds about the
+robustness of singular value transformation. We then introduce singular vector transformation and
+singular value ampliﬁcation in Subsection 3.4, from which we provide elementary derivations of
+ﬁxed-point amplitude ampliﬁcation and robust oblivious amplitude ampliﬁcation. We then extend
+these ideas in Subsection 3.5 to solve the problem of singular value threshold projection and singular
+value discrimination which as we show allow us to detect and ﬁnd marked elements in a reversible
+Markov chain. These ideas then allow us to provide an easy derivation of the quantum linear-systems
+algorithm, and more generally the quantum least-squares ﬁtting algorithm, in Subsection 3.6. In
+1By QROM we mean quantum read-only memory, which stores classical data that can be accessed in superposition.
+5
+
+Subsection 3.7 we show how to implement a form of “non-commutative measurement” which is used
+for preparing ground states of local Hamiltonians, and propose a new method for quantum singular
+value estimation. Finally, in Subsection 3.8, we design a quantum algorithm for principal compo-
+nent regression, and show how various other machine learning problems can be solved within our
+framework.
+Section 4 shows how to eﬃciently construct block-encodings and contains a discussion of how
+these techniques can be employed to perform matrix arithmetic on a quantum computer. In partic-
+ular we show how to perform basic linear algebra operations on Hamiltonians using block-encodings;
+we discuss matrix addition and multiplication in Subsections 4.3 and 4.4. We follow this up with
+a discussion of how arbitrary smooth functions of Hermitian matrices can be performed. We then
+give an elementary proof of the complexity of block-Hamiltonian simulation in Subsection 5.1 and
+discuss approximating piecewise smooth functions of Hamiltonians in Subsection 5.2 and present the
+special cases of Gibbs state preparation and fractional queries in Subsection 5.3. We then conclude
+by proving lower bounds for implementing functions of Hermitian matrices in Section 6, which in
+turn implies lower bounds on singular value transformation.
+2
+Preliminaries and notation
+It is well known that for every A ∈Cm×n matrix there exists a pair of unitaries W ∈Cm×m,
+V ∈Cn×n and Σ ∈Rm×n such that Σ is a diagonal matrix with non-negative non-increasing entries
+on the diagonal, and A = WΣV †. Such a decomposition is called singular value decomposition. Let
+k := min[m, n], then we use ςi := Σii for i ∈[k] to denote the singular values of A, which are the
+diagonal elements of Σ. The columns of V are called right singular vectors, and the columns of
+W are called the left singular vectors. In this paper we often deﬁne the matrix A as the product
+of two orthogonal projectors eΠ, Π and unitary U such that A = eΠUΠ. In such a case we will
+assume without loss of generality that the ﬁrst rank(eΠ) left singular vectors span img(eΠ) and the
+ﬁrst rank(Π) right singular vectors span img(Π).
+The singular value decomposition is not unique if there are multiple singular values with the
+same value. However, the singular value projectors are uniquely determined, see, e.g., Gilyén and
+Sattath [GS17].
+Deﬁnition 1 (Singular value projectors). Let A = WΣV † be a singular value decomposition. Let Σς
+be the matrix that we get from Σ by replacing all singular values that have value = ς by 1 and replacing
+all̸ = ς singular values by 0. Then we deﬁne the right singular value projector to singular value ς
+as V ΣςV †, and deﬁne the left singular value projector to singular value ς as WΣςW † projecting
+orthogonally to the subspace spanned by the corresponding singular vectors. For a set S ⊂R we
+similarly deﬁne the right and left singular value projectors V ΣSV †, WΣSW † projecting orthogonally
+to the subspace spanned by the singular vectors having singular value in S.
+In this paper we will work with polynomial approximations, and therefore we introduce some
+related notation. For a function f : I →C and a subset I′ ⊆I we use the notation ∥f∥I′ :=
+supx∈I′ |f(x)| to denote the sup-norm of the function f on the domain I′. We say that a function
+f : R →C is even if for all x ∈R we have f(−x) = f(x), and that it is odd if for all x ∈R we have
+f(−x) = −f(x).
+Let P ∈C[x] be a complex polynomial P(x) = Pk
+j=0 ajxj, then we denote by P ∗(x) :=
+Pk
+j=0 a∗
+jxj the polynomial with conjugated coeﬃcients, and let ℜ[P](x) := Pk
+j=0 ℜ[aj]xj denote
+6
+
+the real polynomial we get by taking the real part of the coeﬃcients. We say that P is even if
+all coeﬃcients corresponding to odd powers of x are 0, and similarly we say that P is odd if all
+coeﬃcients corresponding to even powers of x are 0. For an integer number z ∈Z we say that P
+has parity z if z is even and P is even or z is odd and P is odd. We will denote by Td ∈R[x] the
+d-th Chebyshev polynomial of the ﬁrst kind, deﬁned by Td(x) := cos(d arccos(x)).
+Whenever we present a matrix and put a . in some place we mean a matrix with arbitrary values
+of the elements in the unspeciﬁed block. For example [.] just denotes a matrix with completely
+arbitrary elements, similarly
+U =
+ A
+.
+.
+.
+
+denotes an arbitrary matrix whose top-left block is A.
+For an orthogonal projector Π we will frequently use the Π-controlled NOT gate, denoted by
+CΠNOT, which implements a coherent measurement operator by ﬂipping the value of a qubit based
+on whether the state of a register is in the image of Π or not. For example if Π = |1⟩⟨1|, then we
+just get back the usual CNOT gate controlled by the second qubit.
+Deﬁnition 2 (CΠNOT gate). For an orthogonal projector Π let us deﬁne the Π-controlled NOT
+gate as the unitary operator
+CΠNOT := X ⊗Π + I ⊗(I −Π).
+3
+Qubitization and Singular value transformations
+The methods in this section are based on the so called “Quantum Signal Processing” techniques
+introduced by Low, Yoder and Chuang [LYC16]. In Section 3.1 we present a self-contained treatment
+of these techniques, signiﬁcantly streamline the formalism, and develop slightly improved versions
+of the results presented in [LYC16]. As a corollary of the results we also develop Corollary 8-10,
+which will be the only results that we need in the rest of the paper. We suggest the ﬁrst-time reader
+to skip the proofs in Section 3.1, as they are not necessary in order to understand the main ideas
+of Sections 3.2-3.6.
+In Sections 3.2 we show how to leverage the results of Section 3.1 to perform singular value trans-
+formation of projected unitary matrices, with ideas coming from “qubitization” [LC16]. Singular
+value transformation is a common generalization of the techniques developed around qubitization,
+based on which we can quickly derive a host of well-optimized applications in Sections 3.4-3.8.
+3.1
+Parametrized SU(2) unitaries induced by Pauli rotations
+In this section we review the results of Low, Yoder and Chuang [LYC16], who show how to build 2×2
+unitary matrices whose entries are trigonometric polynomials by taking products of various rotation
+and phase gates. They consider essentially the following problem, which they call “Quantum Signal
+Processing”: suppose one can apply a gate sequence
+eiφ0σzeiθσxeiφ1σzeiθσxeiφ2σz · . . . · eiθσxeiφkσz,
+(1)
+where θ is unknown (they call eiθσx the signal unitary) but one has control over the angles ϕ0, ϕ1, . . . , ϕk;
+which unitary operators can we build this way? They give a characterization of the unitary opera-
+tors that can be constructed this way, and ﬁnd that the set of achievable unitary operators is quite
+rich.
+7
+
+We ﬁnd it more useful to work with the above matrices using a slightly modiﬁed parametrization.
+For x ∈[−1, 1] let us deﬁne
+W(x) :=
+
+x
+i
+√
+1 −x2
+i
+√
+1 −x2
+x
+
+= ei arccos(x)σx.
+It is easy to see that if θ ∈[0, π], then by setting x := cos(θ) Eq. (1) can be rewritten as
+eiφ0σzW(x)eiφ1σzW(x)eiφ2σz · . . . · W(x)eiφkσz.
+(2)
+Now we present the characterization of Low et al. [LYC16] using the above formalism. Our
+formulation makes the statement simpler and reduces the number of cases.
+We also present a
+succinct simpliﬁed proof which can be conveniently described using our formalism.
+Theorem 3. Let k ∈N; there exists Φ = {φ0, φ1, . . . , φk} ∈Rk+1 such that for all x ∈[−1, 1]:
+eiφ0σz
+k
+Y
+j=1
+
+W(x)eiφjσz
+=
+
+P(x)
+iQ(x)
+√
+1 −x2
+iQ∗(x)
+√
+1 −x2
+P ∗(x)
+
+(3)
+if and only if P, Q ∈C[x] such2 that
+(i) deg(P) ≤k and deg(Q) ≤k −1
+(ii) P has parity-(k mod 2) and Q has parity-(k −1 mod 2)
+(iii) ∀x ∈[−1, 1]: |P(x)|2 + (1 −x2)|Q(x)|2 = 1.
+Proof. “=⇒”: For the k = 0 case the unitary on the left hand side of (3) is eiφ0σz, so that P ≡eiφ0
+and Q ≡0 satisfy the properties (i)-(iii). Now we prove (i)-(ii) by induction. The induction step
+can be shown as follows: suppose we have proved for k −1 that
+eiφ0σz
+k−1
+Y
+j=1
+
+W(x)eiφjσz
+=
+
+˜P(x)
+i ˜Q(x)
+√
+1 −x2
+i ˜Q∗(x)
+√
+1 −x2
+˜P ∗(x)
+
+,
+where ˜P, ˜Q ∈C[x] satisfy (i)-(ii). Then
+eiφ0σz
+k
+Y
+j=1
+
+W(x)eiφjσz
+=
+
+˜P(x)
+i ˜Q(x)
+√
+1 −x2
+i ˜Q∗(x)
+√
+1 −x2
+˜P ∗(x)
+
+eiφkx
+ie−iφk√
+1 −x2
+ieiφk√
+1 −x2
+e−iφkx
+
+=
+"
+P(x):=
+z
+}|
+{
+eiφk
+
+x ˜P(x) + (x2 −1) ˜Q(x)
+
+ie−iφk
+
+x ˜Q(x) + ˜P(x)
+√
+1 −x2
+ieiφk
+
+x ˜Q∗(x) + ˜P ∗(x)
+
+|
+{z
+}
+Q∗(x):=
+√
+1 −x2
+e−iφk
+
+x ˜P ∗(x) + (x2 −1) ˜Q∗(x)
+
+#
+,
+(4)
+2Note that the value of P(x) is only determined for x ∈[−1, 1] and Q(x) for x ∈(−1, 1); thus more precisely we
+should talk about the polynomial functions induced by P(x)|[−1,1] ∈C[x] and Q(x)|(−1,1) ∈C[x].
+8
+
+and it is easy to see that P, Q satisfy (i)-(ii). Finally note that the left hand side of (3) is a product
+of unitaries, therefore the right hand side is unitary too, which implies (iii).
+“⇐=”: Suppose P, Q satisfy (i)-(iii). First we handle a trivial case: suppose that deg(P) =
+0, then due to (iii) we must have that |P(1)| = 1 and thus P ≡eiφ0 for some φ0 ∈R.
+This
+again using (iii) implies that Q ≡0.
+Due to (ii) we must have that k is even, and thus Φ =
+(φ0, π
+2 , −π
+2 , . . . , π
+2 , −π
+2 ) ∈Rk+1 is a solution, since
+eiφ0σz
+k/2
+Y
+j=1
+
+W(x)ei π
+2 σzW(x)e−i π
+2 σz
+= eiφ0σz =
+ eiφ0
+0
+0
+e−iφ0
+
+.
+This special case also covers the k = 0 case, providing the base of our induction.
+Now we show the induction step, assuming that we proved the claim for k −1. Note that (iii)
+can be rewritten as
+∀x ∈[−1, 1]: P(x)P ∗(x) + (1 −x2)Q(x)Q∗(x) = 1.
+(5)
+Since this equation holds for inﬁnitely many points, the polynomial on the right hand side of (5)
+must be the constant ≡1 polynomial. Assume without loss of generality that 1 ≤deg(P) = ℓ≤k,
+then we must have that deg(Q) = ℓ−1, and |pℓ| = |qℓ−1|, since the highest order terms cancel each
+other in (5). Let φk ∈R be such that e2iφk =
+pℓ
+qℓ−1 , and let us deﬁne
+
+˜P(x)
+i ˜Q(x)
+√
+1 −x2
+i ˜Q∗(x)
+√
+1 −x2
+˜P ∗(x)
+
+:=
+
+P(x)
+iQ(x)
+√
+1 −x2
+iQ∗(x)
+√
+1 −x2
+P ∗(x)
+
+e−iφkσzW †(x)
+=
+
+P(x)
+iQ(x)
+√
+1 −x2
+iQ∗(x)
+√
+1 −x2
+P ∗(x)
+
+e−iφkx
+−ie−iφk√
+1 −x2
+−ieiφk√
+1 −x2
+eiφkx
+
+=
+"
+˜P(x):=
+z
+}|
+{
+e−iφkxP(x) + eiφk(1 −x2)Q(x)
+i ˜Q(x)
+√
+1 −x2
+i
+
+e−iφkxQ∗(x) −eiφkP ∗(x)
+
+|
+{z
+}
+˜Q∗(x):=
+√
+1 −x2
+˜P ∗(x)
+#
+(6)
+where
+˜P(x) = e−iφkxP(x) + eiφk(1 −x2)Q(x) = e−iφk
+
+xP(x) + pℓ
+qℓ−1
+(1 −x2)Q(x)
+
+(7)
+and
+˜Q(x) = eiφkxQ(x) −e−iφkP(x) = e−iφk
+ pℓ
+qℓ−1
+xQ(x) −P(x)
+
+.
+(8)
+It is easy to see that the highest order terms in (7)-(8) cancel out, and therefore deg( ˜P) ≤ℓ−1 ≤
+k−1, deg( ˜Q) ≤ℓ−2 ≤k−2. Using (7)-(8) we can also verify that ˜P, ˜Q satisfy (i)-(ii) regarding k−1,
+moreover property (iii) is preserved due to unitarity. So by the induction hypothesis we get that (6)
+equals ei˜φ0σz
+Qk−1
+j=1 W(x)ei˜φjσz
+
+for some ˜Φ ∈Rk, therefore Φ := (˜φ0, ˜φ1, ˜φ2, . . . , ˜φk−1, φk) ∈Rk+1
+is a solution.
+9
+
+Note that the above proof also gives an algorithm that ﬁnds Φ using O
+ k2
+arithmetic operations.
+The following two characterizations and their proofs also follow a constructive approach which can
+be translated to a polynomial time algorithm. However, they have the drawback that they rely on
+ﬁnding roots of high-degree polynomials,3 which makes it harder in practice to execute the resulting
+protocols.
+Theorem 4. Let k ∈N be ﬁxed. Let P ∈C[x], there exists some Q ∈C[x] such that P, Q satisfy
+properties (i)-(iii) of Theorem 3 if and only if P satisﬁes properties (i)-(ii) of Theorem 3 and
+(iv.a) ∀x ∈[−1, 1]: |P(x)| ≤1
+(iv.b) ∀x ∈(−∞, −1] ∪[1, ∞): |P(x)| ≥1
+(iv.c) if k is even, then ∀x ∈R: P(ix)P ∗(ix) ≥1.
+Similarly, let Q ∈C[x], there exists some P ∈C[x] such that P, Q satisfy properties (i)-(iii) of
+Theorem 3 if and only if Q satisﬁes properties (i)-(ii) of Theorem 3 and
+(v.a) ∀x ∈[−1, 1]:
+√
+1 −x2|Q(x)| ≤1
+(v.b) if k is odd, then ∀x ∈R: (1 + x2)Q(ix)Q∗(ix) ≥1.
+Proof. “=⇒”: Trivially follows from (iii):
+∀x ∈C: P(x)P ∗(x) + (1 −x2)Q(x)Q∗(x) = 1.
+“⇐=”: First consider the case when k is odd, and consider the polynomial A(x) := 1 −P(x)P ∗(x).
+Note that A ∈R[x] and A is even, therefore A is in fact a polynomial in x2. Let y = x2 and
+consider the real polynomial ˜A(y) := A(√y).
+Observe that ∀y ≥1: ˜A(y) ≤0 due to (iv.b),
+∀y ∈[0, 1]: ˜A(y) ≥0 due to (iv.a) and ∀y ≤0: ˜A(y) ≥1 since
+˜A(y) = A(i√−y)
+(y ≤0)
+= 1 −P(i√−y)P ∗(i√−y) = 1 + P(i√−y)P ∗(−i√−y)
+(P is odd)
+= 1 + P(i√−y)(P(i√−y))∗= 1 + |P(i√−y)|2 ≥1.
+Therefore all real roots have even multiplicity except for 1, moreover all complex roots come in pairs.
+Thus ˜A(y) = (1−y)K2 Q
+s∈S(y−s)(y−s∗) for some K ∈R and S ⊆C multiset of roots. Let W(y) :=
+K Q
+s∈S(y −s) ∈C[y], then ˜A(y) = (1 −y)W(y)W ∗(y), and thus A(x) = (1 −x2)W(x2)W ∗(x2),
+i.e., 1 = P(x)P ∗(x) + (1 −x2)W(x2)W ∗(x2). Setting Q(x) := W(x2) concludes this case.
+The other cases can be proven similarly, by examining the polynomial 1−P(x)P ∗(x) or 1−(1−
+x2)Q(x)Q∗(x) respectively.
+The original proof of the next theorem in [LYC16] used the Weierstrass substitution, which
+made it diﬃcult to understand, and made it hard to analyze the numerical stability of the induced
+algorithm. Also the theorem was stated in a slightly less general form requiring ℜ[ ˜P](1) = 1. We
+roughly follow the approach of [LYC16], but improve all of the mentioned aspects of the theorem
+and its proof, while making the statement and the proof conceptually simpler.
+3For a good bound on the complexity of approximate root ﬁnding see, e.g., the work of Neﬀand Reif [NR96].
+10
+
+Theorem 5. Let k ∈N be ﬁxed. Let ˜P, ˜Q ∈R[x], there exists some P, Q ∈C[x] satisfying properties
+(i)-(iii) of Theorem 3 such that ˜P = ℜ[P], ˜Q = ℜ[Q], if and only if ˜P, ˜Q satisfy properties (i)-(ii)
+of Theorem 3 and
+(vi) ∀x ∈[−1, 1]: ˜P(x)2 + (1 −x2) ˜Q2 ≤1.
+(Note that the same holds if we replace ℜ[P] by ℑ[P] and/or ℜ[Q] by ℑ[Q] in the statement. More-
+over we may set ˜Q ≡0 or ˜P ≡0 if we are only interested in ˜P or ˜Q.)
+Proof. “=⇒”: Trivial.
+“⇐=”: Apply Lemma 6 to the polynomial 1 −˜P(x)2 −(1 −x2) ˜Q(x)2, and set P := ˜P + iB,
+Q := ˜Q + iC.
+Lemma 6. Suppose that A ∈R[x] is an even polynomial such that deg(A) ≤2k and for all
+x ∈[−1, 1] we have A(x) ≥0.
+Then there exist polynomials B, C ∈R[x] such that A(x) =
+B2(x) + (1 −x2)C2(x), moreover deg(B) ≤k, deg(C) ≤k −1, B has parity-(k mod 2) and C has
+parity-(k −1 mod 2).
+Proof. If A = 0 the statement is trivial, so we assume in the rest that A̸ = 0.
+Let S be the
+multiset of roots, containing the roots of A with their algebraic multiplicity. Note that if s ∈S
+then also −s ∈S and s∗∈S since A is an even real polynomial. (This statement holds considering
+multiplicities.) Let us introduce the following subsets of S (these are again multisets):
+S0 := {s ∈S : s = 0}
+S(0,1) := {s ∈S : s ∈(0, 1)}
+S[1,∞) := {s ∈S : s ∈[1, ∞)}
+SI := {s ∈S : Re(s) = 0 & Im(s) > 0}
+SC := {s ∈S : Re(s) > 0 & Im(s) > 0}.
+Using the roots in S and some scaling factor K ∈R+ we can write
+A(x) = K2x|S0|
+Y
+s∈S(0,1)
+(x2 −s2)
+Y
+s∈S[1,∞)
+(s2 −x2)
+Y
+s∈SI
+(x2 + |s|2)
+Y
+(a+bi)∈SC
+ x4 + 2x2(b2 −a2) + (a2 + b2)2
+.
+(9)
+Consider the following rearrangement of the above terms corresponding to the roots in S[1,∞), SI, SC:
+s2 −x2 = (s2 −1)x2 + s2(1 −x2) =
+p
+(s2 −1)x + is
+p
+1 −x2
+
+|
+{z
+}
+R(s)(x):=
+R∗
+(s)(x)
+(10)
+x2 + |s|2 = (|s|2 + 1)x2 + |s|2(1 −x2) =
+p
+(|s|2 + 1)x + i|s|
+p
+1 −x2
+
+|
+{z
+}
+P(s)(x):=
+P ∗
+(s)(x)
+(11)
+x4 + 2x2(b2 −a2) + (a2 + b2)2 =
+ cx2 −(a2 + b2)
+
++ i
+p
+c2 −1x
+p
+1 −x2
+
+|
+{z
+}
+Q(a,b)(x):=
+Q∗
+(a,b)(x), (12)
+where4 c = a2 + b2 +
+q
+2(a2 + 1)b2 + (a2 −1)2 + b4.
+11
+
+Let us deﬁne
+W(x) := Kx|S0|/2
+Y
+s∈S(0,1)
+p
+(x2 −s2)
+Y
+s∈S[1,∞)
+Rs(x)
+Y
+s∈SI
+Ps(x)
+Y
+(a+bi)∈SC
+Q(a,b)(x).
+Note that the factor x|S0|/2 Q
+s∈S(0,1)
+p
+(x2 −s2) is a polynomial, since every root in S0 and S(0,1) has
+even multiplicity as A(x) ≥0 for all x ∈(−1, 1). Also note that W(x) is a product of expressions of
+the form B′(x) + i
+√
+1 −x2C′(x) where B′, C′ ∈R[x] are polynomials having opposite parities (n.b.
+the zero polynomial is both even and odd, thus it has opposite parity to any even/odd polynomial).
+Since the product of expressions of such form can again be written in such a form, we have that
+W(x) = B(x) + i
+√
+1 −x2C(x) for some B, C ∈R[x] having opposite parities.
+Also note that
+deg(B) ≤|S|/2 and deg(C) ≤|S|/2 −1.
+Finally observe that by (9)-(12) we have that A(x) = W(x) · W ∗(x), thus A(x) = B(x)2 +
+(1 −x2)C(x)2. Since deg(B) ≤|S|/2 ≤k and deg(C) ≤|S|/2 −1 ≤k −1, in case deg(A) =
+2k, we must have that B has parity-(k mod 2) and C has parity-(k −1 mod 2). If deg(A) ≤
+2k −2 and B has parity-(k −1 mod 2), then consider ˜W(x) := W(x) ·
+
+x + i
+√
+1 −x2
+
+. Since
+
+x + i
+√
+1 −x2
+
+x + i
+√
+1 −x2
+∗
+= 1 we still have that ˜W(x) ˜W ∗(x) = A(x). Now let us denote
+˜W(x) = ˜B(x)+i
+√
+1 −x2 ˜C(x), then we get that A(x) = ˜B(x)2+(1−x2) ˜C(x)2, moreover deg( ˜B) ≤k,
+deg( ˜C) ≤k −1, ˜B has parity-(k mod 2) and ˜C has parity-(k −1 mod 2).
+Note that the proofs of Theorems 3-5 are constructive, therefore they also give algorithms to ﬁnd
+P, Q and Φ. The most diﬃcult step in the proofs is to ﬁnd the roots of a given degree-d univariate
+complex polynomial. This problem is fortunately well studied, and can be solved up to ε precision
+on a classical computer in time O(poly(d, log(1/ε))).
+Now we prove a corollary of the above result where we replace the W(x) rotation operators with
+the following R(x) reﬂection gates, which ﬁt the block-encoding formalism nicer.
+Deﬁnition
+7
+(Parametrized family of single qubit reﬂections). We deﬁne a parametrized
+family of single qubit reﬂection operators for all x ∈[−1, 1] such that
+R(x) :=
+
+x
+√
+1 −x2
+√
+1 −x2
+−x
+
+.
+(13)
+Corollary 8 (Quantum signal processing using reﬂections). Let P ∈C[x] be a degree-d polynomial,
+such that
+• P has parity-(d mod 2),
+• ∀x ∈[−1, 1]: |P(x)| ≤1,
+• ∀x ∈(−∞, −1] ∪[1, ∞): |P(x)| ≥1,
+• if d is even, then ∀x ∈R: P(ix)P ∗(ix) ≥1.
+4Observe that c ≥1 for all a, b ≥0 and thus
+√
+c2 −1 ∈R.
+12
+
+Then there exists Φ ∈Rd such that5
+d
+Y
+j=1
+
+eiφjσzR(x)
+
+=
+ P(x)
+.
+.
+.
+
+.
+(14)
+Moreover for x ∈{−1, 1} we have that P(x) = xd Qd
+j=1 eiφj, and for d even P(0) = e−i Pd
+j=1(−1)jφj.
+Proof. By Theorem 4 we have that there exists Φ′ ∈Rd+1 for some d ≥1 such that
+eiφ′
+0σz
+
+
+d
+Y
+j=1
+W(x)eiφ′
+jσz
+
+=
+ P(x)
+.
+.
+.
+
+.
+(15)
+Observe that
+W(x) = ie−i π
+4 σzR(x)ei π
+4 σz,
+(16)
+thus the left-hand-side of (14) equals
+eiφ′
+0σz
+
+
+d
+Y
+j=2
+eiφjσzie−i π
+4 σzR(x)ei π
+4 σz
+
+= idei(φ′
+0−π
+4 )σzR(x)
+
+
+d
+Y
+j=2
+ei(φ′
+j−1−π
+2 )σzR(x)
+
+ei(φ′
+d−π
+4 ).
+Therefore
+ei(φ′
+0+φ′
+d+(d−1) π
+2 )R(x)
+
+
+d
+Y
+j=2
+ei(φ′
+j−1−π
+2 )σzR(x)
+
+=
+ P(x)
+.
+.
+.
+
+.
+So choosing φ1 := φ′
+0 + φ′
+d + (d −1)π
+2 and for all j ∈{2, 3, . . . , d} setting φj := φ′
+j−1 −π
+2 , results in
+a Φ ∈Rd that clearly satisﬁes (14). The additional result for x ∈{−1, 1} follows from the fact that
+for x ∈{−1, 1} every matrix in (14) becomes diagonal.
+The claim about P(0) follows from the observation that
+eiφ1σzR(0)eiφ2σzR(0) = ei(φ1−φ2)σz.
+The above requirements on P are not very intuitive, but fortunately we have a good understand-
+ing of the polynomials that can emerge by taking the real part of the above complex polynomials.
+Before stating the corresponding corollary, we note that Chebyshev polynomials satisfy the above
+requirements. One can prove it directly, but instead of doing so we just explicitly describe6 the
+corresponding Φ.
+Lemma 9 (Constructing Chebyshev polynomials via quantum signal processing). Let Td ∈R[x] be
+the d-th Chebyshev polynomial of the ﬁrst kind. Let Φ ∈Rd be such that φ1 = (1 −d)π
+2 , and for all
+i ∈[d] \ {1} let φi := π
+2 . Using this Φ in equation (14) we get that P = Td.
+Proof. One can prove this, e.g., by induction using the substitution x := cos(θ).
+5Note that the eiφ1σz gate can in fact be replaced by a simple phase gate eiφ1.
+6By Theorem 4 it actually proves that the conditions of Corollary 8 hold for Chebyshev polynomials.
+13
+
+Corollary 10. (Real quantum signal processing) Let Pℜ(x) ∈R[x] be a degree-d polynomial for
+some d ≥1, such that
+• Pℜhas parity-(d mod 2), and
+• for all x ∈[−1, 1]: |Pℜ(x)| ≤1.
+Then there exists P ∈C[x] that satisﬁes the requirements of Corollary 8.
+Moreover, given Pℜ(x) and δ ≥0 we can ﬁnd a P and a corresponding Φ, such that |ℜ[P]−Pℜ| ≤
+δ for all x ∈[−1, 1], using a classical computer in time O(poly(d, log(1/δ))).
+Proof. The existence of such P follows directly from Theorem 3-5.
+The complexity statement follows from the fact that we can ﬁnd P and Φ′ using the procedures
+of Theorems 3-5 on a classical computer in time O(poly(d, log(1/ε))) as noted above. Computing
+Φ from Φ′ as in the proof of Corollary 8 only yields a small overhead.
+3.2
+Singular value transformation by qubitization
+Qubitization is a technique introduced by Low and Chuang [LC16] in order to apply polynomial
+transformations to the spectrum of a Hermitian (or normal) operator, which is represented as the
+top-left block of a unitary matrix. They also showed how to use their techniques in order to develop
+advanced amplitude ampliﬁcation techniques. In this section we generalize their results, and develop
+the technique of singular value transformation, which applies to any operator as opposed to only
+normal operators.
+It turns out that by applying a unitary U back and forth interleaved with some simple phase
+operators one can induce polynomial transformations to the singular values of a particular (not
+necessarily rectangular) block-matrix of the unitary U.
+The main idea behind the qubitization
+approach is to lift the quantum signal processing results presented in the previous section. One can
+do so by deﬁning some two-dimensional invariant subspaces within which the results of quantum
+signal processing apply, thereby “qubitizing”7 the problem. Then by understanding how the two-
+dimensional subspaces behave, one can infer the higher-dimensional behavior.
+The original qubitization approach can be understood along the lines of C. Jordan’s Lemma [Jor75]
+about the common invariant subspaces of two reﬂections.8 Jordan’s result is most often presented
+stating that the product of two reﬂections decomposes to one- and two-dimensional invariant sub-
+spaces, such that the operator has eigenvalue ±1 on the one-dimensional subspaces, and the operator
+acts as a rotation on the two-dimensional subspaces. This higher dimensional insight lies at the
+heart of Szegedy’s quantum walk results [Sze04] as well as Marriott and Watrous’ QMA ampliﬁcation
+scheme [MW05].
+Motivated by a series of prior work on quantum search algorithms [Gro05, Hø00, YLC14] the
+original qubitization approach of Low and Chuang [LC16] replaced one of the reﬂections in Jordan’s
+Lemma by a phase-gate, such as in Figure 1b. They examined the operators arising by iterative
+application of the reﬂection- and phase-operator with applying possibly diﬀerent phases in each
+step. In this paper we go one step further and replace the other reﬂection9 by an arbitrary unitary
+7Another justiﬁcation for the term “qubitization” is that the involved higher-dimensional phase operations reduce
+to carefully choosing a single qubit phase gate, see Figure 1b.
+8By reﬂection we mean a Hermitian operator having only ±1 eigenvalues, possibly having multiple −1 eigenvalues.
+9One could also merge U into one of the projectors, leading to a product of reﬂections as in Jordan’s Lemma [Jor75].
+14
+
+operator U, and analyze the procedure with carefully chosen one- and two-dimensional subspaces
+coming from singular value decomposition.
+Deﬁnition 11 (Singular value decomposition of a projected unitary). Let HU be a ﬁnite-dimensional
+Hilbert space and let U, Π, eΠ ∈End(HU) be linear operators on HU such that U is a unitary, and
+Π, eΠ are orthogonal projectors, and let
+A = eΠUΠ.
+Let d := rank(Π), ˜d := rank
+
+eΠ
+
+, dmin := min(d, ˜d). By singular value decomposition we know that
+there exist orthonormal bases (|ψi⟩: i ∈[d]),
+
+| ˜ψi⟩: i ∈[ ˜d]
+
+of the subspaces img(Π) and img
+
+eΠ
+
+respectively, such that
+A =
+dmin
+X
+i=1
+ςi| ˜ψi⟩⟨ψi|,
+(17)
+and10 for all i ∈[dmin]: ςi ∈R+
+0 . Moreover, ςi ≥ςj for all i ≤j ∈[dmin].
+Deﬁnition
+12
+(Invariant
+subspaces
+associated
+to
+a
+singular
+value
+decomposition).
+Let U, Π, eΠ, A be as in Deﬁnition 11, and let us use its notation. Let k ∈[dmin] be the largest
+index for which ςk = 1, and let r = rank(A). For
+i ∈[k] let
+Hi := Span(|ψi⟩) and
+˜Hi := Span
+
+| ˜ψi⟩
+
+,
+i ∈[r] \ [k] let
+Hi := Span
+
+|ψi⟩, |ψ⊥
+i ⟩
+
+where
+|ψ⊥
+i ⟩:=
+(I −Π)U†| ˜ψi⟩
+(I −Π)U†| ˜ψi⟩
+
+= (I −Π)U†| ˜ψi⟩
+q
+1 −ς2
+i
+,
+i ∈[r] \ [k] let
+˜Hi := Span
+
+| ˜ψi⟩, | ˜ψ⊥
+i ⟩
+
+where
+| ˜ψ⊥
+i ⟩:=
+(I −eΠ)U|ψi⟩
+(I −eΠ)U|ψi⟩
+
+= (I −eΠ)U|ψi⟩
+q
+1 −ς2
+i
+,
+i ∈[d] \ [r] let
+HR
+i := Span(|ψi⟩) and
+˜HR
+i := Span(U|ψi⟩),
+i ∈[ ˜d] \ [r] let
+HL
+i := Span
+
+U†| ˜ψi⟩
+
+and
+˜HL
+i := Span
+
+| ˜ψi⟩
+
+.
+Finally let
+H⊥:=
+
+M
+i∈[r]
+Hi ⊕
+M
+i∈[d]\[r]
+HR
+i
+⊕
+M
+i∈[ ˜d ]\[r]
+HL
+i
+
+
+⊥
+and
+˜H⊥:=
+
+M
+i∈[r]
+˜Hi ⊕
+M
+i∈[d]\[r]
+˜HR
+i
+⊕
+M
+i∈[ ˜d ]\[r]
+˜HL
+i
+
+
+⊥
+.
+Now we show that the subspaces Hi : i ∈[k], Hi : i ∈[r]\[k], HR
+i : i ∈[d]\[r] and HL
+i : i ∈[ ˜d]\[r]
+are indeed pairwise orthogonal, by proving that their spanning bases described in Deﬁnition 12 form
+an orthonormal system of vectors. (By symmetry it also implies that the spanning bases of the ˜H
+subspaces form also an orthonormal system of vectors.) The proof is summarized in Table 2, relying
+10In singular value decomposition one usually requires that the diagonal elements of Σ are non-negative. Here
+we could also allow negative reals, all the proofs of this section would go through with minor modiﬁcations, mostly
+deﬁning the ordering of the singular values with decreasing absolute value. This would enable one to treat spectral
+decompositions of Hermitian matrices also as singular value decompositions.
+15
+
+on the following observations:
+∀i, j ∈[d]
+⟨ψi|ψj⟩= δij
+(18)
+∀i ∈[d], j ∈[r] \ [k]
+⟨ψi|ψ⊥
+j ⟩∝⟨ψi|(I −Π)U†| ˜ψj⟩∝⟨ψi|(I −Π) = 0
+(19)
+∀i ∈[d], j ∈[ ˜d] \ [r]
+⟨ψi|U†| ˜ψj⟩= ⟨ψi|ΠU†eΠ| ˜ψj⟩= ⟨ψi|A†| ˜ψj⟩∝A†| ˜ψj⟩= 0
+(20)
+∀i, j ∈[r] \ [k]
+⟨ψ⊥
+i |ψ⊥
+j ⟩= ⟨˜ψi|U(I −Π)U†| ˜ψj⟩
+q
+(1 −ς2
+i )(1 −ς2
+j )
+= δij −⟨˜ψi|AA†| ˜ψj⟩
+q
+(1 −ς2
+i )(1 −ς2
+j )
+= δij
+(21)
+∀i ∈[r] \ [k], j ∈[ ˜d] \ [r]
+⟨ψ⊥
+i |U†| ˜ψj⟩= ⟨˜ψi|U(I −Π)U†| ˜ψj⟩
+q
+(1 −ς2
+i )
+= δij −⟨˜ψi|AA†| ˜ψj⟩
+q
+(1 −ς2
+i )
+= 0
+(22)
+∀i, j ∈[ ˜d]
+⟨˜ψi| ˜ψj⟩= δij
+(23)
+Hi ⊥Hj
+|ψj⟩∈Hj
+|ψj⟩∈Hj
+|ψ⊥
+j ⟩∈Hj
+|ψj⟩∈HR
+j
+U†| ˜ψj⟩∈HL
+j
+j ∈[k]
+j ∈[r] \ [k]
+j ∈[r] \ [k]
+j ∈[d] \ [r]
+j ∈[ ˜d] \ [r]
+|ψi⟩∈Hi
+by (18)
+by (18)
+by (19)
+by (18)
+by (20)
+i ∈[k]
+⟨ψi|ψj⟩= δij
+⟨ψi|ψj⟩= 0
+⟨ψi|ψ⊥
+j ⟩= 0
+⟨ψi|ψj⟩= 0
+⟨ψi|U†| ˜ψj⟩= 0
+|ψi⟩∈Hi
+by (18)
+by (19)
+by (18)
+by (20)
+i ∈[r] \ [k]
+⟨ψi|ψj⟩= δij
+⟨ψi|ψ⊥
+j ⟩= 0
+⟨ψi|ψj⟩= 0
+⟨ψi|U†| ˜ψj⟩= 0
+|ψ⊥
+i ⟩∈Hi
+by (21)
+by (19)
+by (22)
+i ∈[r] \ [k]
+⟨ψ⊥
+i |ψ⊥
+j ⟩= δij
+⟨ψ⊥
+i |ψj⟩= 0
+⟨ψ⊥
+i |U†| ˜ψj⟩= 0
+|ψi⟩∈HR
+i
+by (18)
+by (20)
+i ∈[d] \ [r]
+⟨ψi|ψj⟩= δij
+⟨ψi|U†| ˜ψj⟩= 0
+U†| ˜ψi⟩∈HL
+i
+by (23)
+i ∈[ ˜d] \ [r]
+⟨˜ψi|UU†| ˜ψj⟩= δij
+Table 2: Proof of the orthonormality of the spanning bases described in Deﬁnition 12.
+Now we introduce some notation for matrices that represent linear maps acting between diﬀerent
+subspaces. This will enable us to conveniently express matrices in a block-diagonal form. We will
+use the subspaces of Deﬁnition 12, because they enable us to block-diagonalize the unitaries used
+for implementing singular value transformation.
+Deﬁnition 13 (Notation for matrices of linear maps between diﬀerent vector spaces).
+For two
+vector (sub)spaces H, H′ let us denote by [ · ]H
+H′ the matrix of a linear map that maps H 7→H′.
+Moreover, if the subspaces are as in Deﬁnition 12 and we explicitly write down matrix elements,
+they are meant to be interpreted in the spanning bases we used for deﬁning H, H′ in Deﬁnition 12.
+16
+
+Lemma 14 (Invariant subspace decomposition of a projected unitary). Let HU be a ﬁnite-dimensional
+Hilbert-space and U, Π, eΠ ∈End(HU) be as in Deﬁnition 11. Then using the singular value decom-
+position of Deﬁnition 12 we have that
+U =
+M
+i∈[k]
+[ςi]Hi
+˜
+Hi ⊕
+M
+i∈[r]\[k]
+
+
+ςi
+q
+1 −ς2
+i
+q
+1 −ς2
+i
+−ςi
+
+
+Hi
+˜
+Hi
+⊕
+M
+i∈[d]\[r]
+[1]HR
+i
+˜
+HR
+i ⊕
+M
+i∈[ ˜d]\[r]
+[1]HL
+i
+˜
+HL
+i ⊕[ · ]H⊥
+˜
+H⊥.
+(24)
+Moreover,
+2Π −I =
+M
+i∈[k]
+[1]Hi
+Hi ⊕
+M
+i∈[r]\[k]
+ 1
+0
+0
+−1
+Hi
+Hi
+⊕
+M
+i∈[d]\[r]
+[1]HR
+i
+HR
+i ⊕
+M
+i∈[d]\[r]
+[−1]HL
+i
+HL
+i ⊕[ · ]H⊥
+H⊥,
+(25)
+eiφ(2Π−I) =
+M
+i∈[k]
+h
+eiφiHi
+Hi
+⊕
+M
+i∈[r]\[k]
+ eiφ
+0
+0
+e−iφ
+Hi
+Hi
+⊕
+M
+i∈[d]\[r]
+h
+eiφiHR
+i
+HR
+i
+⊕
+M
+i∈[d]\[r]
+h
+e−iφiHL
+i
+HL
+i
+⊕[ · ]H⊥
+H⊥,
+(26)
+and
+2eΠ −I =
+M
+i∈[k]
+[1]
+˜
+Hi
+˜
+Hi ⊕
+M
+i∈[r]\[k]
+ 1
+0
+0
+−1
+ ˜
+Hi
+˜
+Hi
+⊕
+M
+i∈[d]\[r]
+[−1]
+˜
+HR
+i
+˜
+HR
+i ⊕
+M
+i∈[d]\[r]
+[1]
+˜
+HL
+i
+˜
+HL
+i ⊕[ · ]
+˜
+H⊥
+˜
+H⊥,
+(27)
+eiφ(2eΠ−I) =
+M
+i∈[k]
+h
+eiφi ˜
+Hi
+˜
+Hi
+⊕
+M
+i∈[r]\[k]
+ eiφ
+0
+0
+e−iφ
+ ˜
+Hi
+˜
+Hi
+⊕
+M
+i∈[d]\[r]
+h
+e−iφi ˜
+HR
+i
+˜
+HR
+i
+⊕
+M
+i∈[d]\[r]
+h
+eiφi ˜
+HL
+i
+˜
+HL
+i
+⊕[ · ]
+˜
+H⊥
+˜
+H⊥.
+(28)
+Proof. For all i ∈[r] \ [k] we can verify that
+U|ψi⟩= eΠU|ψi⟩+ (I −eΠ)U|ψi⟩= eΠUΠ
+| {z }
+A
+|ψi⟩+ (I −eΠ)U|ψi⟩= ςi| ˜ψi⟩+
+q
+1 −ς2
+i | ˜ψ⊥
+i ⟩,
+(29)
+and
+q
+1 −ς2
+i U|ψ⊥
+i ⟩= U(I −Π)U†| ˜ψi⟩= | ˜ψi⟩−UΠU†| ˜ψi⟩= | ˜ψi⟩−UΠU†eΠ
+| {z }
+A†
+| ˜ψi⟩= | ˜ψi⟩−Uςi|ψi⟩
+= (1 −ς2
+i )| ˜ψi⟩−ςi
+q
+1 −ς2
+i | ˜ψ⊥
+i ⟩,
+(30)
+where in the last equality we used (29). Since U is unitary, it preserves the inner product and there-
+fore maps H⊥onto ˜H⊥. Now equation (24) directly follows from (29)-(30). The other statements
+trivially follow from Deﬁnition 11.
+Deﬁnition
+15
+(Alternating phase modulation sequence). Let HU
+be a ﬁnite-dimensional
+Hilbert space and let U, Π, eΠ ∈End(HU) be linear operators on HU such that U is a unitary,
+and Π, eΠ are orthogonal projectors. Let Φ ∈Rn, then we deﬁne the phased alternating sequence UΦ
+as follows
+UΦ :=
+
+
+
+eiφ1(2eΠ−I)U Q(n−1)/2
+j=1
+
+eiφ2j(2Π−I)U†eiφ2j+1(2eΠ−I)U
+
+if n is odd, and
+Qn/2
+j=1
+
+eiφ2j−1(2Π−I)U†eiφ2j(2eΠ−I)U
+
+if n is even.
+(31)
+17
+
+Deﬁnition 16 (Singular value transformation by even/odd functions). Let f : R →C be an even
+or odd function. Let A ∈C ˜d×d, let dmin := min(d, ˜d) and let
+A =
+dmin
+X
+i=1
+ςi| ˜ψi⟩⟨ψi|
+be a singular value decomposition of A.
+We deﬁne the polynomial singular value transformation of A, for odd function f as
+f(SV )(A) :=
+dmin
+X
+i=1
+f(ςi)| ˜ψi⟩⟨ψi|,
+and for even f as
+f(SV )(A) :=
+d
+X
+i=1
+f(ςi)|ψi⟩⟨ψi|,
+where for i ∈[d] \ [dmin] we deﬁne ςi := 0.
+The following theorem is a generalized and improved version of the “Flexible quantum signal
+processing” result of Low and Chuang [LC17a, Theorem 4]. Our result is more general because
+it works for arbitrary matrices as opposed to only working for Hermitian (or normal) matrices.
+Another improvement is that we remove the constraint Pℜ(0) = 0 for even d, which stems from our
+improved treatment of Theorem 5 and Corollary 8. Also note that the following theorem can be
+viewed as a generalization of the quantum walk techniques introduced by Szegedy [Sze04].
+Theorem 17 (Singular value transformation by alternating phase modulation). Let HU be a ﬁnite-
+dimensional Hilbert space and let U, Π, eΠ ∈End(HU) be linear operators on HU such that U is a
+unitary, and Π, eΠ are orthogonal projectors. Let P ∈C[x] and Φ ∈Rn is as in Corollary 8, then
+P (SV )(eΠUΠ) =
+ eΠUΦΠ
+if n is odd, and
+ΠUΦΠ
+if n is even.
+(32)
+Proof. We ﬁrst prove the odd case. Observe that P(1) = Qn
+j=1 eiφj, and let eiφ0 := ei Pn
+j=1(−1)nφj
+UΦ = eiφ1(2eΠ−I)U
+n/2
+Y
+j=1
+
+eiφ2j(2Π−I)U†eiφ2j+1(2eΠ−I)U
+
+=
+M
+i∈[k]
+[ςn
+k P(1)]Hi
+˜
+Hi ⊕
+M
+i∈[r]\[k]
+
+
+n
+Y
+j=1
+
+eiφjσzR(ςℓ)
+
+
+
+Hi
+˜
+Hi
+⊕
+M
+i∈[d]\[r]
+h
+eiφ0iHR
+i
+˜
+HR
+i
+⊕
+M
+i∈[ ˜d]\[r]
+h
+e−iφ0iHL
+i
+˜
+HL
+i
+⊕[ · ]H⊥
+˜
+H⊥
+(by Lemma 14)
+=
+M
+i∈[k]
+[P(ςi)]Hi
+˜
+Hi ⊕
+M
+i∈[r]\[k]
+ P(ςi)
+.
+.
+.
+Hi
+˜
+Hi
+⊕
+M
+i∈[d]\[r]
+h
+eiφ0iHR
+i
+˜
+HR
+i
+⊕
+M
+i∈[ ˜d]\[r]
+h
+e−iφ0iHL
+i
+˜
+HL
+i
+⊕[ · ]H⊥
+˜
+H⊥.
+(by Corollary 8)
+18
+
+Finally equation (32) follows from the fact that Π = Pd
+i=1 |ψi⟩⟨ψi| and eΠ = P ˜d
+i=1 | ˜ψi⟩⟨˜ψi|, therefore
+eΠUΦΠ =
+M
+i∈[k]
+[P(ςi)]Hi
+˜
+Hi ⊕
+M
+i∈[r]\[k]
+ P(ςi)
+0
+0
+0
+Hi
+˜
+Hi
+⊕
+M
+i∈[d]\[r]
+[0]HR
+i
+˜
+HR
+i ⊕
+M
+i∈[ ˜d]\[r]
+[0]HL
+i
+˜
+HL
+i ⊕[0]H⊥
+˜
+H⊥
+=
+dmin
+X
+i=1
+P(ςi)| ˜ψi⟩⟨ψi|.
+The last equality follows from the observation that for n odd P is odd, therefore P(0) = 0.
+For the even case we can similarly derive that
+UΦ =
+M
+i∈[k]
+[P(ςi)]Hi
+Hi ⊕
+M
+i∈[r]\[k]
+ P(ςi)
+.
+.
+.
+Hi
+Hi
+⊕
+M
+i∈[d]\[r]
+h
+e−iφ0iHR
+i
+HR
+i
+⊕
+M
+i∈[ ˜d]\[r]
+h
+eiφ0iHL
+i
+HL
+i
+⊕[ · ]H⊥
+H⊥.
+(by Corollary 8)
+Finally equation (32) follows from the fact that Π = Pd
+i=1 |ψi⟩⟨ψi|, and therefore
+ΠUΦΠ =
+M
+i∈[k]
+[P(ςi)]Hi
+Hi ⊕
+M
+i∈[r]\[k]
+ P(ςi)
+0
+0
+0
+Hi
+Hi
+⊕
+M
+i∈[d]\[r]
+h
+e−iφ0iHR
+i
+HR
+i
+⊕
+M
+i∈[ ˜d]\[r]
+[0]HL
+i
+HL
+i ⊕[0]H⊥
+H⊥
+=
+d
+X
+i=1
+P(ςi)|ψi⟩⟨ψi|.
+The last equality uses the observation that for n even P(0) = e−iφ0, as shown by Corollary 8.
+Corollary
+18
+(Singular value transformation by real polynomials). Let U, Π, eΠ be as in
+Theorem 17. Suppose that Pℜ∈R[x] is a degree-n polynomial satisfying that
+• Pℜhas parity-(n mod 2) and
+• for all x ∈[−1, 1]: |Pℜ(x)| ≤1.
+Then there exist Φ ∈Rn, such that
+P (SV )
+ℜ
+
+eΠUΠ
+
+=
+
+
+
+
+⟨+| ⊗eΠ
+
+|0⟩⟨0|⊗UΦ + |1⟩⟨1|⊗U−Φ
+
+|+⟩⊗Π
+
+if n is odd, and
+
+⟨+| ⊗Π
+
+|0⟩⟨0|⊗UΦ + |1⟩⟨1|⊗U−Φ
+
+|+⟩⊗Π
+
+if n is even.
+(33)
+Proof. By Corollary 10 we can ﬁnd a Φ ∈Rn such that ℜ[P] = Pℜ. Observe that −Φ gives rise to
+P ∗in Corollary 8 as can be seen from equation (14). Let Π′ = eΠ for n odd and let Π′ = Π for n
+even. Then by Theorem 17 we get that P (SV )
+eΠUΠ
+
+= Π′UΦΠ, and P ∗(SV )
+eΠUΠ
+
+= Π′U−ΦΠ.
+Therefore
+ ⟨+| ⊗Π′
+(|0⟩⟨0| ⊗UΦ)(|+⟩⊗Π) = P (SV )
+eΠUΠ
+
+/2
+ ⟨+| ⊗Π′
+(|1⟩⟨1| ⊗U−Φ)(|+⟩⊗Π) = P ∗(SV )
+eΠUΠ
+
+/2.
+19
+
+We can conclude by observing that Pℜ= (P + P ∗)/2, and therefore
+P (SV )
+ℜ
+
+eΠUΠ
+
+=
+
+P (SV )
+eΠUΠ
+
++ P ∗(SV )
+eΠUΠ
+
+/2.
+Note that the above result is essentially optimal in the sense that the requirements are necessary.
+It is obvious that the polynomial needs to be bounded within [−1, 1] since the matrix must have norm
+at most 1 as it is a projected unitary. Also one cannot implement a degree d Chebyshev polynomial
+with d−1 uses of the unitary U, since Td(x) takes value 1 at 1 with derivative d2. Substituting y := 1
+and x := 1 −δ for some small δ to equation (68) in Theorem 73 shows that exactly implementing
+Td(x) requires at least d uses of U. Finally, about the parity constraint, note that every result in this
+subsection would stay valid if we would extend the concept of singular values by allowing negative
+values as well. But then by changing a singular vector/singular value term ς|φ⟩⟨ψ| to −ς| −φ⟩⟨ψ|
+would be again a valid decomposition, where singular value transformation could be applied with a
+polynomial P. It would require that P(ς)|ψ⟩⟨ψ| = P(−ς)|ψ⟩⟨ψ|, and P(ς)|φ⟩⟨ψ| = −P(−ς)| −φ⟩⟨ψ|
+for consistency, showing the necessity of the even/odd constraint. Equations (34)-(35) in the proof
+of Corollary 21 also show that the even/odd case separation for singular value transformation is
+quite natural.
+What remains is to discuss how to eﬃciently implement an alternating phase modulation se-
+quences. Observe that with a single ancilla qubit, two uses of CΠNOT, and a single-qubit phase
+gate e−iφσz we can implement the operator eiφ(2Π−I)=CΠNOT
+ I ⊗e−iφσz
+CΠNOT, which leads to
+an eﬃcient implementation of UΦ, see Figure 1b.
+Lemma
+19
+(Eﬃcient
+implementation
+of
+alternating
+phase
+modulation
+sequences).
+Let Φ ∈Rn, then the alternating phased sequence UΦ of Deﬁnition 15 can implemented using a
+single ancilla qubit with n uses of U and U†, n uses of CΠNOT and n uses of CeΠNOT gates and
+n single qubit gates.
+A controlled version of UΦ can be built similarly just replacing the n sin-
+gle qubit gates by controlled gates, and in case n is odd replacing one U gate with a controlled U
+gate. For a set of vectors {Φ(k) ∈Rn : k ∈{0, 1}m} a multi-controlled alternating phased sequence
+P
+k∈{0,1}m |k⟩⟨k|⊗UΦ(k) can be implemented similarly by replacing the single qubit gates with multiply
+controlled single qubit gates of the form P
+k∈{0,1}m |k⟩⟨k| ⊗eiφ(k).
+Proof. See the constructions of Figure 1.
+Note that Figure 1 also explains the term “qubitization”: the ﬁne-tuned driving of the circuit
+giving rise to the required polynomial transformation is achieved by cleverly chosen Pauli-z rotations
+of a single ancilla qubit. The rotations of the single ancilla qubit induce rotations on the common
+two-dimensional invariant subspaces of U, Π, eΠ cf. Lemma 14.
+20
+
+Π
+...
+...
+(a) CΠNOT
+|b⟩
+e−iφσz
+Π
+Π
+...
+...
+...
+(b) |b⟩⟨b| ⊗e(−1)biφ(2Π−I)
+|c⟩
+•
+|b⟩
+e−iφ(0)σz
+e−iφ(1)σz
+Π
+Π
+...
+...
+...
+(c) |cb⟩⟨cb| ⊗e(−1)biφ(c)(2Π−I)
+U
+eiφn(2eΠ−I)
+U†
+eiφn−1(2Π−I)
+U
+· · ·
+U
+eiφ1(2eΠ−I)
+...
+...
+· · ·
+(d) UΦ = eiφ1(2eΠ−I)U Q(n−1)/2
+j=1
+
+eiφ2j(2Π−I)U †eiφ2j+1(2eΠ−I)U
+
+(for odd n)
+Figure 1: Gates and gate sequences used for singular value transformation in Theorem 17. Figure 1a
+shows how to implement a CΠNOT gate, and Figure 1b shows how to implement eiφ(2Π−I) using
+a single ancilla qubit, two CΠNOT gates and an e−iφσz gate.
+Figure 1c demonstrates how to
+implement a controlled version of the gate eiφ(c)(2Π−I), by only controlling the single qubit gate
+e−iφ(c)σz. Finally, Figure 1d summarizes the complete circuit used in Theorem 17.
+3.3
+Robustness of singular value transformation
+In this subsection we will prove results about the robustness of singular value transformation. More
+precisely we prove bounds on how big can be diﬀerence
+P (SV )(A) −P (SV )( ˜A)
+ in terms of the
+magnitude of “perturbation”
+A −˜A
+.
+First consider the generalization of ordinary R →C functions to Hermitian matrices. One is
+tempted to think that if such a function is Lipschitz-continuous, then the induced operator function
+is also Lipschitz-continuous, however it turns out to be false. For a recent survey on the topic see
+the work of Aleksandrov and Peller [AP16].
+Although the Lipschitz property cannot be saved directly, one may not lose more than some
+logarithmic factors. We invoke a nice result form the theory of operator functions, quantifying this
+claim. The following theorem is due to Farforovskaya and Nikolskaya [FN09, Theorem 10].
+Theorem 20 (Robustness of eigenvalue transformation). Suppose that f : [−1, 1] →C is a function
+such that ω: [0, 2] →[0, ∞] is a modulus of continuity, i.e., for all x, x′ ∈[−1, 1]
+|f(x) −f(x′)| ≤ω(|x −x′|).
+21
+
+Then for all A, B Hermitian matrices such that ∥A∥, ∥B∥≤1, we have that
+∥f(A) −f(B)∥≤4
+
+ln
+
+2
+∥A −B∥+ 1
+
++ 1
+2
+ω(∥A −B∥).
+Now we show how this general theorem implies a general robustness result for singular value
+transformation.
+Corollary 21 (Robustness of singular value transformation 1). If f : [−1, 1] →C is an even or odd
+function such that ω: [0, 2] →[0, ∞] is a modulus of continuity, and A, ˜A ∈C ˜d×d are matrices of
+operator norm at most 1, then we have that
+f(SV )(A) −f(SV )( ˜A)
+ ≤4
+
+ln
+
+
+2
+A −˜A
+
++ 1
+
++ 1
+
+
+2
+ω
+A −˜A
+
+
+.
+Proof. Let us assume that f is an even function and that ˜d ≤d.
+Then, using singular value
+decomposition, we can rewrite A as
+A = W
+
+Σ
+0
+
+V †,
+where W ∈C ˜d× ˜d, V ∈Cd×d are unitaries and Σ ∈R ˜d× ˜d is a diagonal matrix with nonnegative
+diagonal entries. Let A :=
+ 0
+A
+A†
+0
+
+∈C( ˜d+d)×( ˜d+d) be the Hermitian matrix obtained from A. We
+claim that
+f(A) =
+f(SV )(A†)
+0
+0
+f(SV )(A)
+
+.
+(34)
+To prove this claim, ﬁrst note that
+A =
+ 0
+A
+A†
+0
+
+=
+
+
+0
+W
+
+Σ
+0
+
+V †
+V
+Σ
+0
+
+W †
+0
+0
+0
+0
+
+
+=
+W
+0
+0
+V
+
+
+0
+Σ
+0
+Σ
+0
+0
+0
+0
+0
+
+
+W †
+0
+0
+V †
+
+and that
+0
+Σ
+Σ
+0
+
+=
+1
+√
+2
+I
+I
+I
+−I
+Σ
+0
+0
+−Σ
+ 1
+√
+2
+I
+I
+I
+−I
+
+.
+Therefore, if we denote
+U =
+W
+0
+0
+V
+
+
+1
+√
+2
+I
+I
+I
+−I
+
+0
+0
+0
+0
+I
+
+,
+we get
+A = U
+
+
+Σ
+0
+0
+0
+−Σ
+0
+0
+0
+0
+
+U†,
+which implies that
+f(A) =U
+
+
+f(Σ)
+0
+0
+0
+f(−Σ)
+0
+0
+0
+f(0)I
+
+U† = U
+
+
+f(Σ)
+0
+0
+0
+f(Σ)
+0
+0
+0
+f(0)I
+
+U†
+=
+
+
+Wf(Σ)W †
+0
+0
+0
+0
+V
+f(Σ)
+0
+0
+f(0)I
+
+V †
+
+=
+f(SV )(A†)
+0
+0
+f(SV )(A)
+
+.
+22
+
+Thus, using Theorem 20 we get that
+f(SV )(A) −f(SV )( ˜A)
+ ≤
+f(A) −f( ˜A)
+
+≤4
+
+ln
+
+
+2
+A −˜A
+
++ 1
+
++ 1
+
+
+2
+ω
+A −˜A
+
+
+= 4
+
+ln
+
+
+2
+A −˜A
+
++ 1
+
++ 1
+
+
+2
+ω
+A −˜A
+
+
+,
+which completes the proof for the case where f is an even function and that ˜d ≤d. The case ˜d ≥d
+can be handled by symmetry. Finally, the remaining case where f is odd can be handled similarly
+by observing that
+f(A) =
+
+0
+f(SV )(A)
+f(SV )(A†)
+0
+
+.
+(35)
+We can also prove robustness results by bootstrapping our exact (non-robust) results, enabling
+us to remove the log factor from the above corollary under certain circumstances. We study two
+cases. First we make no extra assumptions, and establish error bounds that scale with the square
+root of the initial error. Then we improve the dependence to linear under the assumption that the
+singular values are bounded away from 1 in absolute value.
+Lemma 22 (Robustness of singular value transformation 2). If P ∈C[x] is a degree-n polynomial
+satisfying the requirements of Corollary 8, moreover A, ˜A ∈C ˜d×d are matrices of operator norm at
+most 1, then we have11 that
+P (SV )(A) −P (SV )( ˜A)
+ ≤4n
+rA −˜A
+.
+Proof. Let ε =
+ ˜A −A
+, and let B, ˜B ∈C(d+ ˜d)×(d+ ˜d) be the matrices such that
+B :=
+ A
+0
+0
+0
+
+,
+˜B :=
+"
+˜
+A−A
+ε
+0
+0
+0
+#
+,
+and let U ∈C4(d+ ˜d)×4(d+ ˜d) be a unitary such that12
+U =
+
+
+B
+0
+.
+.
+0
+˜B
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+11Let us do a sanity check for d = ˜d = 1. For large d we have that Td(1) −Td(1 −
+1
+2d2 ) ≈1 −cos(1) ≈0.46, whereas
+our upper bound gives 2
+√
+2, showing that the upper bound is tight up to a constant factor, for arbitrary large d and
+for arbitrary small ε. (However, the joint dependence on d and ε might not be optimal.)
+12We denote by · arbitrary matrix blocks and elements that are irrelevant for our presentation.
+23
+
+Such U must exist because ∥B∥≤1 and
+ ˜B
+ ≤1. Let Π be the orthogonal projector projecting to
+the ﬁrst d coordinates, and let eΠ be the orthogonal projector projecting to the ﬁrst ˜d coordinates.
+Observe that eΠUΠ = A. Let W ∈C4(d+ ˜d)×4(d+ ˜d) be the unitary
+W :=
+
+
+q
+1
+1+εI
+−
+q
+ε
+1+εI
+0
+0
+q
+ε
+1+εI
+q
+1
+1+εI
+0
+0
+0
+0
+I
+0
+0
+0
+0
+I
+
+
+.
+Let ¯U := W †UW, and observe that eΠ ¯UΠ = ˜A/(1 + ε). Also observe that
+∥W −I∥=
+q
+2 −2/
+√
+1 + ε ≤√ε,
+therefore
+U −¯U
+ ≤2√ε. Let Π′ = eΠ if n is odd, and let Π′ = Π for n even. Let Φ be as in
+Corollary 8, then Theorem 17 implies that
+P (SV )(A) −P (SV )( ˜A/(1 + ε))
+ =
+Π′UΦΠ −Π′ ¯UΦΠ
+ ≤
+UΦ −¯UΦ
+ ≤n
+U −¯U
+ ≤2n
+rA −˜A
+.
+Let B′ ∈C(d+ ˜d)×(d+ ˜d) be the matrix such that
+B′ :=
+ ˜A
+0
+0
+0
+
+,
+and let U′ ∈C4(d+ ˜d)×4(d+ ˜d) be a unitary such that
+U′ =
+
+
+B′
+0
+.
+.
+0
+0
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+Observe that eΠU′Π = ˜A, and ¯U′ := W † ˜V W is such that eΠ ¯U′Π = ˜A/(1+ε). By the same argument
+as before we get that
+P (SV )( ˜A) −P (SV )( ˜A/(1 + ε))
+ ≤2n
+rA −˜A
+.
+We can conclude using the triangle inequality.
+Now we establish another lemma which improves on the previous results for example in the case
+when the singular values are bounded away from 1 in absolute value.
+Lemma 23 (Robustness of singular value transformation 3). If P ∈C[x] is a degree-n polynomial
+satisfying the requirements of Corollary 8, moreover A, ˜A ∈C ˜d×d are matrices of operator norm at
+most 1, such that
+A −˜A
+ +
+
+A + ˜A
+2
+
+2
+≤1,
+24
+
+then we have that
+P (SV )(A) −P (SV )( ˜A)
+ ≤n
+v
+u
+u
+t
+2
+1 −
+A+ ˜
+A
+2
+
+2
+A −˜A
+.
+Proof. Let B, ˜B ∈C(d+ ˜d)×(d+ ˜d) be the matrices such that
+B :=
+"
+A+ ˜
+A
+∥A+ ˜
+A∥
+0
+0
+0
+#
+,
+˜B :=
+"
+A−˜
+A
+∥A−˜
+A∥
+0
+0
+0
+#
+.
+Let x > 1 and let U ∈C4(d+ ˜d)×4(d+ ˜d) be a unitary such that
+U =
+
+
+q
+x−1
+x B
+q
+1
+x ˜B
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+Let C :=
+q
+x−1
+x B ⊕
+q
+1
+x ˜B be top-left block of U. It is easy to see that
+∥C∥2 ≤x −1
+x
+∥B∥2 + 1
+x
+ ˜B
+
+2
+= x −1
+x
++ 1
+x = 1,
+therefore a unitary U must exist with C being the top-left block. Suppose that
+x
+x −1
+A + ˜A
+
+2
+4
++ x
+A −˜A
+
+2
+4
+= 1.
+(36)
+Let W± ∈C4(d+ ˜d)×4(d+ ˜d) be the unitary
+W± :=
+
+
+q
+x
+x−1
+∥A+ ˜
+A∥
+2
+I
+∓√x∥A−˜
+A∥
+2
+I
+0
+0
+±√x∥A−˜
+A∥
+2
+I
+q
+x
+x−1
+∥A+ ˜
+A∥
+2
+I
+0
+0
+0
+0
+I
+0
+0
+0
+0
+I
+
+
+.
+Let Π be the orthogonal projector projecting to the ﬁrst d coordinates, and let eΠ be the orthog-
+onal projector projecting to the ﬁrst ˜d coordinates. Observe that eΠUW+Π = A and eΠUW−Π = ˜A.
+Also observe that ∥W+ −W−∥= √x
+A −˜A
+, thus ∥UW+ −UW−∥= √x
+A −˜A
+.
+Let ε :=
+A −˜A
+
+2
+and let δ := 4 −
+A + ˜A
+
+2
+. We can rewrite (36) as
+x
+x −1
+4 −δ
+4
++ xε
+4 = 1,
+(37)
+which has a solution
+x =
+4
+δ + ε
+
+1 +
+
+1 −
+8ε
+(δ+ε)2
+
+−
+q
+1 −
+16ε
+(δ+ε)2
+8ε
+(δ+ε)2
+
+.
+(38)
+25
+
+Now let y := 8ε/(δ + ε)2, it is easy to see that for y ≤1
+2 we have that (1−y)−√1−2y
+y
+≤1. It is also
+easy to see that if ε ≤δ2/16, then y ≤1
+2. Thus for ε ≤δ2/16 we get that x ≤8/(δ + ε), and
+therefore ∥UW+ −UW−∥=
+p
+8/(δ + ε)
+A −˜A
+ ≤
+p
+8/δ
+A −˜A
+.
+Now we proceed similarly to the proof of Lemma 22. Let Π′ = eΠ if n is odd, and let Π′ = Π for
+n even. Let Φ be as in Corollary 8 and let U(±) := UW±, then Theorem 17 implies that
+P (SV )(A) −P (SV )( ˜A)
+ =
+Π′U+
+Φ Π −Π′U−
+Φ Π
+ ≤
+U+
+Φ −U−
+Φ
+ ≤n
+U+ −U− = n
+r
+8
+δ
+A −˜A
+.
+Finally note that ε ≤δ2/16 is equivalent to 4√ε ≤δ, which by deﬁnition is equivalent to
+A −˜A
+ +
+
+A + ˜A
+2
+
+2
+≤1.
+3.4
+Singular vector transformation and singular value ampliﬁcation
+In this subsection we derive some corollaries of singular value transformation. We call the ﬁrst
+corollary projected singular vector transformation, because it implements a unitary that transforms
+the right singular vectors to the left singular vectors above some singular value threshold. Then we
+show how to quickly derive advanced amplitude ampliﬁcation results using this general technique.
+Finally, we develop a corollary called singular value ampliﬁcation, which shows how to uniformly
+amplify the singular values of a matrix represented as a projected unitary.
+First we deﬁne singular value threshold projectors which are slight modiﬁcations of the singular
+value projectors of Deﬁnition 1.
+Deﬁnition 24 (Singular value threshold projectors). Let A = eΠUΠ = WΣV † be a singular value
+decomposition of a projected unitary.
+For S ⊆R we deﬁne ΠS := ΠV ΣSV †Π, and similarly
+eΠS := eΠWΣSW †eΠ. For δ ∈R we deﬁne Π≥δ := Π[δ,∞), also we deﬁne Π>δ, Π≤δ, Π<δ, Π=δ and
+eΠ>δ, eΠ≤δ, eΠ<δ, eΠ=δ analogously.
+Then we invoke a result of Low and Chuang [LC17a, Corollary 6] about constructive polynomial
+approximations of the sign function – the error of the optimal approximation, studied by Eremenko
+and Yuditskii [EY07], achieves similar scaling but is non-constructive.
+Lemma 25 (Polynomial approximations of the sign function). For all δ > 0 , ε ∈(0, 1/2) there
+exists an eﬃciently computable odd polynomial P ∈R[x] of degree n = O
+
+log(1/ε)
+δ
+
+, such that
+• for all x ∈[−2, 2]: |P(x)| ≤1, and
+• for all x ∈[−2, 2] \ (−δ, δ): |P(x) −sign(x)| ≤ε.
+Now we are ready to prove our result about singular value transformation. Our singular vector
+transformation implements a unitary which maps a right singular vector having singular value at
+least δ to the corresponding left singular vector.
+26
+
+Theorem 26 (Singular vector transformation). Let U, Π, eΠ be as in Theorem 17 and let δ > 0.
+Suppose that eΠUΠ = WΣV † is a singular value decomposition. Then there is an m = O
+
+log(1/ε)
+δ
+
+and a Φ ∈Rm such that
+eΠ≥δUΦΠ≥δ −eΠ≥δ(WV †)Π≥δ
+ ≤ε. Moreover, UΦ can be implemented
+using a single ancilla qubit with m uses of U and U†, m uses of CΠNOT and m uses of CeΠNOT
+gates and m single qubit gates.
+Proof. By Lemma 25 we can construct an odd polynomial Pℜ∈R[x] of degree m = O
+
+log(1/ε2)
+δ
+
+that approximates the sign function with ε2/2 precision on the domain [−1, 1] \ (−δ, δ). By Corol-
+lary 10 we know that there exists a polynomial P of the same degree as Pℜsuch that ℜ[P] = Pℜ,
+moreover P satisﬁes the conditions of Corollary 8. Use singular value transformation Theorem 17
+to construct a Φ ∈Rm such that eΠUΦΠ = P (SV )
+eΠUΠ
+
+up to precision ε and observe that
+eΠ≥δP (SV )
+eΠUΠ
+
+Π≥δ −eΠ≥δ(WV †)Π≥δ
+ ≤ε. Conclude the gate complexity using Lemma 19.
+As an easy corollary we recover and improve upon ﬁxed-point amplitude ampliﬁcation results [Hø00,
+Gro05, AC12, YLC14] by combining the advantages of prior art. On one hand, the query complexity
+of O(1
+δ poly(1/ε)) by [AC12] is optimal with respect to target state overlap δ, but converges slowly
+with respect to error ε. On the other hand, the query complexity of O(1
+δ log (1/ε)) by [YLC14] is
+optimal and exhibits exponentially fast convergence with respect to the error, but it introduces an
+unknown phase on the ampliﬁed state. Our presented approach has the same optimal asymptotic
+scaling and also ensures that this phase error is ϵ-close to 0.
+Theorem 27 (Fixed-point amplitude ampliﬁcation). Let U be a unitary and Π be an orthogonal
+projector such that a|ψG⟩= ΠU|ψ0⟩, and a > δ > 0.
+There is a unitary circuit ˜U such that
+|ψG⟩−˜U|ψ0⟩
+ ≤ε, which uses a single ancilla qubit and consists of O
+
+log(1/ε)
+δ
+
+U, U†, CΠNOT,
+C|ψ0⟩⟨ψ0|NOT and eiφσz gates.
+Proof. Set eΠ := Π and Π′ := |ψ0⟩⟨ψ0| and observe that
+eΠUΠ′ = a|ψG⟩⟨ψ0|.
+Now use Theorem 26 in order to get an algorithm ˜U that satisﬁes
+|ψG⟩⟨ψG| ˜U|ψ0⟩⟨ψ0| −|ψG⟩⟨ψ0|
+ ≤ε.
+Another easy to derive corollary of our machinery is robust oblivious amplitude ampliﬁcation.13
+Theorem 28 (Robust oblivious amplitude ampliﬁcation). Let n ∈N+ be odd, let ε ∈R+, let U be
+a unitary, let eΠ, Π be orthogonal projectors, and let W : img(Π) 7→img
+
+eΠ
+
+be an isometry, such
+that
+sin
+ π
+2n
+
+W|ψ⟩−eΠU|ψ⟩
+ ≤ε
+(39)
+13Note that we could also easily derive a ﬁxed-point version of oblivious amplitude ampliﬁcation based on Theo-
+rem 26, but we state the usual version instead for readability.
+27
+
+for all |ψ⟩∈img(Π). Then we can construct a unitary ˜U such that for all |ψ⟩∈img(Π)
+W|ψ⟩−eΠ ˜U|ψ⟩
+ ≤2nε,
+which uses a single ancilla qubit, with n uses of U and U†, n uses of CΠNOT and n uses of CeΠNOT
+gates and n single qubit gates.
+Proof. First we prove the ε = 0 case. We prove this case by reproducing the polynomials stemming
+from ordinary amplitude ampliﬁcation. Let Tn ∈R[x] be the degree-n Chebyshev polynomial of the
+ﬁrst kind. As discussed after Corollary 8 there is an easy to describe Φ ∈Rn which corresponds to
+Tn in equation (14).
+Now observe that by (39) we have that eΠUΠ = sin
+  π
+2n
+
+W. We can apply singular value trans-
+formation using Tn to obtain UΦ such that
+eΠUΦΠ = Tn
+
+sin
+ π
+2n
+
+W = Tn
+
+cos
+π
+2 −π
+2n
+
+W = cos
+n −1
+2
+π
+
+W = ±W.
+After correcting the global phase ±1 (which depends on the parity of (n −1)/2) we get ˜U := ±UΦ
+such that for all |ψ⟩∈img(Π) we have ˜U|ψ⟩= W|ψ⟩. The complexity statement follows from
+Lemma 19.
+In the ε̸ = 0 case we ﬁrst handle some trivial cases. If n = 1 or ε > 1
+3 we simply take ˜U := U.
+Otherwise if n ≥3 and ε ∈[0, 1
+3] the error bounds follow from Lemma 23, in the following way: Let
+A := sin
+  π
+2n
+
+W and let ˜A := eΠUΠ, by (39) we have that
+A −˜A
+ ≤ε. Then
+A + ˜A
+ ≤∥A∥+ ∥A∥+
+ ˜A −A
+ = 2 sin
+ π
+2n
+
++ ε ≤2 sin
+π
+6
+
++ 1
+3 = 4
+3,
+thus
+A+ ˜
+A
+2
+
+2
+≤4
+9 and
+A −˜A
+ +
+A+ ˜
+A
+2
+
+2
+≤7
+9 < 1. This also implies that
+r
+2
+1−
+ A+ ˜
+A
+2
+
+2 ≤
+q
+2
+1−4
+9 =
+q
+18
+5 < 2, and therefore by Lemma 23 we get that
+W −eΠ ˜UΠ
+ ≤2nε.
+Now we turn to solving the linear singular value ampliﬁcation problem. That is, given a matrix
+in a projected encoding form, construct a projected encoding of a matrix which have singular values
+that are γ times larger than the original singular values.
+In order to proceed we ﬁrst construct some polynomials similarly that can be used in combination
+with our singular value transformation results.
+Lemma 29 (Polynomial approximations of the rectangle function). Let δ′, ε′ ∈(0, 1
+2) and t ∈
+[−1, 1]. There exist an even polynomial P ′ ∈R[x] of degree O
+ log( 1
+ε′ )/δ′
+, such that |P ′(x)| ≤1 for
+all x ∈[−1, 1], and
+ P ′(x) ∈
+[0, ε′]
+for all x ∈[−1, −t −δ′] ∪[t + δ′, 1], and
+P ′(x) ∈
+[1 −ε′, 1]
+for all x ∈[−t + δ′, t −δ′].
+(40)
+Proof. First let us take a real polynomial P which ε′
+2 -approximates the sign function on the interval
+[−2, 2]\(−δ′, δ′), moreover for all x ∈[−2, 2]: |P(x)| ≤1. Such a polynomial of degree O
+  1
+δ′ log
+  1
+ε′
+
+can be eﬃciently constructed by Lemma 25. Now take the polynomial
+P ′(x) := (1 −ε′)P(x + t) + P(−x + t)
+2
++ ε′.
+28
+
+It is easy to see that by construction P ′(x) is an even polynomial of degree O
+  1
+δ′ log
+  1
+ε′
+
+. Moreover
+|P ′(x)| ≤1 for all x ∈[−1, 1] and (40) also holds.
+Now we prove our result about uniform singular value ampliﬁcation, which is a common gener-
+alization of the results of Low and Chuang [LC17a, Theroems 2,8].
+Theorem 30 (Uniform singular value ampliﬁcation). Let U, Π, eΠ be as in Theorem 17, let γ > 1
+and let δ, ε ∈(0, 1
+2). Suppose that eΠUΠ = WΣV † = P
+i ςi|wi⟩⟨vi| is a singular value decomposition.
+Then there is an m = O
+  γ
+δ log
+  γ
+ε
+
+and an eﬃciently computable Φ ∈Rm such that14
+
+⟨+| ⊗eΠ≤1−δ
+γ
+
+UΦ
+
+|+⟩⊗Π≤1−δ
+γ
+
+=
+X
+i: ςi≤1−δ
+γ
+˜ςi|wi⟩⟨vi|, where
+
+˜ςi
+γςi
+−1
+ ≤ε.
+(41)
+Moreover, UΦ can be implemented using a single ancilla qubit with m uses of U and U†, m uses of
+CΠNOT and m uses of CeΠNOT gates and m single qubit gates.
+Proof. Let us set in Lemma 29 t := 1−δ/2
+γ
+, δ′ :=
+δ
+2γ and ε′ := ε
+γ in order to get an even polynomial P
+of degree O
+  γ
+δ log
+  γ
+ε
+
+that is an ε
+γ -approximation of the rectangle function. Let Pℜ(x) := γ·x·P(x),
+which is an odd polynomial of degree m = O
+  γ
+δ log
+  γ
+ε
+
+. It is easy to see that Pℜapproximates the
+linear function γ · x with ε-multiplicative-precision on the domain
+h
+−1+δ
+γ
+, 1−δ
+γ
+i
+, and observe that
+|Pℜ(x)| ≤1 for all x ∈[−1, 1], thereby it satisﬁes the requirements of Corollary 18. We use singular
+value transformation Corollary 18 to construct a Φ ∈Rm such that
+(⟨+| ⊗eΠ)UΦ(|+⟩⊗Π) = P (SV )
+ℜ
+
+eΠUΠ
+
+=
+X
+i
+Pℜ(σi)|wi⟩⟨vi|
+which shows that equation (41) is satisﬁed because Pℜ(x)
+γ·x
+is ε-close to 1 on the domain
+h
+−1+δ
+γ
+, 1−δ
+γ
+i
+.
+We conclude the gate complexity using Lemma 19.
+Finally, note that if ∥Σ∥≤1−δ
+γ
+in the above theorem then we get that
+γ eΠUΠ −(⟨+| ⊗eΠ)UΦ(|+⟩⊗Π)
+ ≤ε,
+thereby this procedure gives an eﬃcient way to magnify a projected unitary encoding.
+3.5
+Singular value discrimination, quantum walks and the fast OR lemma
+First we show how to eﬃciently implement approximate singular value threshold projectors, which
+will be the main tool of this section.
+Theorem 31 (Implementing singular value threshold projectors). Let U, Π, eΠ be as in Theorem 17
+and let t, δ > 0.
+Suppose that eΠUΠ = WΣV † is a singular value decomposition.
+Then there
+is an m = O
+
+log(1/ε)
+δ
+
+and a Φ ∈Rm such that we have ∥Π≥t+δUΦΠ≥t+δ −Π≥t+δ∥≤ε, and14
+∥(⟨+| ⊗Π≤t−δ)UΦ(|+⟩⊗Π≤t−δ)∥≤ε. Moreover, UΦ can be implemented using a single ancilla
+qubit with m uses of U and U†, m uses of CΠNOT and m uses of CeΠNOT gates and m single qubit
+gates.
+14Here we implicitly assumed that UΦ is implemented as in Figure 1, with the phase gates as in Figure 1b and the
+the |+⟩ancilla state corresponds to the ancilla qubit in Figure 1b.
+29
+
+Proof. By Lemma 29 we can construct an even polynomial Pℜ∈R[x] of degree m = O
+
+log(1/ε2)
+δ
+
+that approximates the rectangle function with ε2/2 precision on the domain [−1, 1] \ (−t −δ, −t +
+δ) ∪(t −δ, t + δ). By Corollary 10 we know that there exists a polynomial P of the same degree
+as Pℜsuch that ℜ[P] = Pℜ, moreover P satisﬁes the conditions of Corollary 8. Use singular value
+transformation Theorem 17 to construct a Φ ∈Rm such that eΠUΦΠ = P (SV )
+eΠUΠ
+
+up to precision
+ε and observe that ∥Π≥t+δUΦΠ≥t+δ −Π≥t+δ∥≤ε, and ∥(⟨+| ⊗Π≤t−δ)UΦ(|+⟩⊗Π≤t−δ)∥≤ε.
+Conclude the gate complexity using Lemma 19.
+Note that the above complexity can be improved up to quadratically in terms of scaling with
+δ, when the threshold t is close to 1, see, e.g., Lemma 35. For the error of the optimal polynomial
+approximation of the step function see the results of Eremenko and Yuditskii [EY11].
+We deﬁne the singular value discrimination problem as to ﬁnd out whether a given quantum
+state has singular value at most a or it at least b. As we indicated above whenever a and b are
+O(|a −b|) close to 1 we can get a quadratic improvement. A simple way to achieve this quadratic
+improvement is to perform singular value projection on the complementary singular values rather
+than on the original ones, by replacing the matrix eΠUΠ by the complementary projection (I−eΠ)UΠ.
+Theorem 32 (Eﬃcient singular value discrimination). Let 0 ≤a < b ≤1, and let A = eΠUΠ be a
+projected unitary encoding. Let |ψ⟩be a given unknown quantum state, with the promise that |ψ⟩is
+a right singular vector of A with singular value at most a or at least b. Then we can distinguish the
+two cases with error probability at most ε using singular value transformation of degree
+O
+
+1
+max[b −a,
+√
+1 −a2 −
+√
+1 −b2]
+log
+1
+ε
+
+.
+Moreover, if a = 0 or b = 1 we can make the error one sided.
+Proof. Let us assume that b −a ≥
+√
+1 −a2 −
+√
+1 −b2. First we apply an √ε-approximate singular
+value projector on |ψ⟩using Theorem 31, with choosing t := a+b
+2
+and δ := b−a
+2 , at the end measuring
+the projector |+⟩⟨+|⊗Π. If we ﬁnd the state in the image of |+⟩⟨+|⊗Π we conclude that the singular
+value is at least b, otherwise we conclude that it is at most a. The correctness and the complexity
+follows from Theorem 31.
+If a = 0 then we make the error one-sided by using singular vector
+transformation Theorem 26 with setting δ := b, and measuring eΠ at the end. Similarly as before if
+we ﬁnd the state in the image of eΠ we conclude that the singular value is at lest b, otherwise we
+conclude that it is 0. The error becomes one-sided because Theorem 26 uses an odd-degree singular
+value transformation which always preserves 0 singular values.
+The proof of the b−a <
+√
+1 −a2−
+√
+1 −b2 case works analogously just changing eΠ to Π′ := I−eΠ
+in the proof, which leads to A′ := Π′UΠ. It is easy to see by Lemma 12 that |ψ⟩is a singular vector
+of A′ with singular value at least
+√
+1 −a2 in the ﬁrst case or with singular value at most
+√
+1 −b2
+in the second case. Also if b = 1 we can make the error one sided since then the corresponding
+singular value of |ψ⟩with respect to A′ is 0.
+Finally note that if a = 0, then b −a = b ≥1 −
+√
+1 −b2 =
+√
+1 −a2 −
+√
+1 −b2, and if b = 1, then
+b −a = 1 −a ≤
+√
+1 −a2 =
+√
+1 −a2 −
+√
+1 −b2, therefore we covered all cases.
+The above result can also be used when the input state is promised to be a superposition of
+singular values, with the promised bounds. Also in order to distinguish the two cases with constant
+30
+
+success probability it is enough if most of the amplitude is on singular vectors with singular vectors
+satisfying the promise.
+3.5.1
+Relationship to quantum walks
+Now we show how to quickly derive the quadratic speed-ups of Markov chain based search algorithms
+using our singular value transformation and discrimination results. Before doing so we introduce
+some deﬁnitions and notation for Markov Chains.
+Let P ∈Rn×n be a time-independent Markov chain on discrete state space X with |X| = n,
+which sends an element x ∈X to y ∈X with probability pxy, thereby P is a row-stochastic matrix.
+We say that P is ergodic if for a large enough t ∈N all elements of Pt are non-zero. For an ergodic
+P there exists a unique stationary distribution π such that πP = π, and we deﬁne the time-reversed
+Markov chain as P∗:= diag(π)−1 · PT · diag(π). We say that P is reversible if it is ergodic and
+P∗= P. For an ergodic Markov chain P we deﬁne the discriminant matrix D(P) such that its xy
+entry is ppxyp∗yx, where p∗
+yx stands for entries of the time-reversed chain. It is easy to see that
+D(P) = diag(π)
+1
+2 · P · diag(π)−1
+2 .
+This form has several important consequences. First of all the spectrum of P and D(P) coincide,
+moreover the vector √π, that we get from π by taking the square root element-wise, is a left
+eigenvector of D(P) with eigenvalue 1. Also from the deﬁnition ppxyp∗yx of the xy entry it follows
+that for reversible Markov chains D(P) is a symmetric matrix, therefore its singular values and
+eigenvalues coincide after taking their absolute value.
+In the literature [Sze04, MNRS11, KMOR16] quantum walk based search methods are usually
+analyzed with the help of this discriminant matrix. Here we directly use the discriminant matrix
+as opposed to the associated quantum walk, signiﬁcantly simplifying the analysis. Before deriving
+our versions of the Markov chain speed-up results we introduce some deﬁnitions regarding sets of
+marked elements.
+For a set of marked element M ⊆X, we denote by DM(P) the matrix that we get after setting to
+zero the rows and columns of D(P) corresponding to the marked elements. For an ergodic Markov
+chain P we deﬁne the hitting time HT(P, M) as the expected number of step of the Markov chain
+before reaching the ﬁrst marked element, if started from the stationary15 distribution π. We denote
+the probability that an element is marked in the stationary distribution by pM := P
+x∈M πx. Now
+we invoke some results about the connection between the hitting time and the discriminant matrix,
+which are proven for example in [KMOR16, Proposition 2] and [Gil14, Lemma 10].
+Lemma 33 (Relationship between the hitting time and the discriminant matrix). Let P be a
+reversible Markov chain and M a set of marked elements. Let (vi, λi) be the eigenvector-eigenvalue
+pairs of DM(P), then
+HT(P, M) =
+n
+X
+i=1
+|⟨vi, √π⟩|2
+1 −λi
+−pM,
+and
+n
+X
+i=1
+|⟨vi, √π⟩|2
+1 −|λi|
+≤2
+n
+X
+i=1
+|⟨vi, √π⟩|2
+1 −λi
+(42)
+The following result shows how the presence of marked elements can be detected quadratically
+faster using singular value discrimination compared to using the corresponding classical Markov
+chain. A slightly less general version of this result was proven by Szegedy [Sze04].
+15Here we follow the convention of Szegedy [Sze04, Equation (15)], and deﬁne hitting time without conditioning
+on the stationary distribution to unmarked vertices.
+31
+
+Corollary 34 (Detecting marked elements in a reversible Markov chain). Let P be a reversible
+Markov chain, and M ⊆X a set of marked elements. Let U be a unitary and ˜Π, Π orthogonal
+projectors. Suppose that B, ˜B are orthogonal bases, such that representing the matrix of ˜ΠUΠ in
+the bases B →˜B we have that
+˜ΠUΠ =
+ DM(P)
+0
+0
+.
+
+.
+Suppose that we are given a copy of |π⟩:= P
+x∈X
+√πx|x⟩, where |x⟩: x ∈X are the ﬁrst n basis
+elements in B. Then we can distinguish with constant one sided error the case HT(P, M) ≤K from
+the case M = ∅(i.e., HT(P, M) = ∞) with singular value transformation of degree O
+ √
+K + 1
+
+.
+Proof. Suppose that M̸ = ∅. Let (|vi⟩, λi): i ∈[n] be the eigenvector and eigenvalue pairs of the
+DM(P) block of ˜ΠUΠ. By Lemma 33 we have that
+n
+X
+i=1
+|⟨vi|π⟩|2
+1 −|λi| ≤2HT(P, M) + 2pM ≤2(K + 1).
+By Markov’s inequality we have that
+X
+i: |λi|≥1−
+1
+12(K+1)
+|⟨vi|π⟩|2 ≤1
+6,
+and so
+Π≤1−
+1
+12(K+1) |π⟩
+
+2
+≥
+5
+6.
+On the other hand if M = ∅, then DM(P) = D(P), and
+∥D(P)|π⟩∥= 1.
+Therefore we can apply our singular value discrimination result Theorem 32
+to distinguish the two cases M = ∅and HT(P, M) ≤K using singular value transformation of
+degree O
+ √
+K + 1
+
+.
+The above result shows how to detect the presence of marked elements quadratically faster than
+the classical hitting time. In practice one usually also wants to ﬁnd a marked element, and quantum
+walks are also good at solving this problem. In order to show the connection to the literature of
+quantum walk based search algorithms we deﬁne some additional notation.
+First we deﬁne the standard implementation procedures for Markov chains together with their
+associated costs following Magniez et al. [MNRS11].
+We slightly generalize the usual approach
+ﬁtting our singular value transformation framework. Let us ﬁx an orthogonal basis B, such that
+the ﬁrst n elements of B are labeled by |x⟩d : x ∈X. We deﬁne the following costs an operations
+with their matrices represented in the basis B.
+U : Update cost U. The cost of implementing CΠNOT and U gates such that
+ΠUΠ =
+ D(P)
+0
+0
+.
+
+.
+(43)
+C :
+Checking cost C.
+The cost of implementing a CΠM NOT gate such that for all x ∈
+M : ΠM|x⟩d = |x⟩d and for all x ∈X \ M : ΠM|x⟩d = 0. This implies that
+(I −ΠM)ΠUΠ(I −ΠM) =
+ DM(P)
+0
+0
+.
+
+.
+32
+
+S : Setup cost S. The cost of preparing the stationary state in basis B: |π⟩:= P
+x∈X
+√πx|x⟩d.
+First we would like to describe how these operators are usually implemented in the literature.
+Usually P is represented using basis elements |x⟩d = |0⟩|x⟩|dx⟩, where the |dx⟩register stores some
+data associated with the vertex x, which enables eﬃcient implementation of the update procedure.
+The unitary U is usually implemented using a product of state preparation unitaries U = U†
+LUR:
+UR : |0⟩|x⟩|dx⟩→
+X
+y∈[n]
+√pxy|x⟩|y⟩|dxy⟩
+∀x ∈X
+(44)
+UL : |0⟩|y⟩|dy⟩→
+X
+x∈[n]
+q
+p∗yx|x⟩|y⟩|dxy⟩
+∀y ∈X
+(45)
+We assume for simplicity that 0 /∈X, resulting in a helpful “free” label, and also let us assume that
+the ﬁrst register is n + 1 dimensional and the second register is n dimensional. If the third register
+is one-dimensional (i.e., we can just trivially omit it), by equations (44)-(45) we get that
+(|0⟩⟨0| ⊗I)U(|0⟩⟨0| ⊗I) =
+ D(P)
+0
+0
+0
+
+.
+If the data structure register is non-trivial, we can still conclude that
+(|0⟩⟨0| ⊗I)U(|0⟩⟨0| ⊗I) =
+ D(P)
+.
+.
+.
+
+,
+however we need a slightly stronger assumption about U.
+We assume that UL, UR are imple-
+mented such that the block-matrices next to D(P) are 0 as in (43). This is implicitly assumed16
+in [MNRS11], and a suﬃcient condition is presented in the work of Childs et al. [CJKM13].
+Before solving the above problem, we invoke a useful polynomial approximation result due to
+Dolph [Dol46].
+Lemma 35 (Optimal polynomial approximation of a windowing function on a bounded interval).
+For all ε ∈(0, 1] and n ∈N we have that17
+argmax
+P∈R[x]
+
+max
+
+λ: ∥P(x)∥[−λ,λ] ≤ε
+	
+= Tn(xT1/n(1/ε)),
+where argmax is over all real degree-n polynomials satisfying ∥P∥[−1,1] ≤1, and P(±1) = (±1)n.
+Moreover, for any δ ∈(0, 1) for some n = O
+
+1
+√
+δ log(1
+ε)
+
+we have that
+Tn(xT1/n(1/ϵ))
+
+[−1+δ,1−δ] ≤ε.
+Notably, the phase sequence required to implement this polynomial using quantum signal pro-
+cessing is expressed in closed-form in the work of Yoder et al. [YLC14].
+16This assumption is necessary for the correctness of the analysis in [MNRS11], however it is not explicitly stated.
+17The standard generalization of Chebyshev polynomials to non-integer degree y is Ty(x) ≡cosh(y arccosh(x)) ≡
+cos(y arccos(x)).
+33
+
+Theorem 36 (Quadratic speed-up for ﬁnding marked elements of a Markov chain). Let P be a
+reversible Markov chain, such that the singular value gap18 of D(P) is at least δ, and the set of
+marked elements M is such that pM ≥ε. Then we can ﬁnd a marked element with high probability
+in complexity of order S +
+1
+√ε
+
+C +
+q
+1
+δ log
+  1
+ε
+
+U
+
+.
+Proof. First we apply singular value transform on ΠUΠ using an ε-approximation of the zero-
+function given by Lemma 35 in order to get UΦ with all̸ = 1 singular values of D(P) shrunk below
+a level of O(ε). Then the top-left block of ΠUΦΠ is O(ε)-close to |π⟩⟨π|, and the implementation of
+UΦ has complexity O
+q
+1
+δ log
+  1
+ε
+
+U
+
+. We pretend that the top-left block is |π⟩⟨π|, in which case we
+seem to have that ΠMΠUΦΠ = √pM|πM⟩⟨π|, where |πM⟩:=
+P
+x∈M
+√πx|x⟩d
+√pM
+. Then we apply singular
+vector transform to get a constant approximation of |πM⟩⟨π| in the top-left block, and apply it to the
+state |π⟩in order to ﬁnd a marked element with high probability. Finally, we use the robustness of
+singular value transformation Lemma 22 to show that we can indeed dismiss the O(ε) discrepancy
+between ΠUΦΠ and |π⟩⟨π|.
+Note that the above algorithm is simpler and more eﬃcient than the phase estimation based
+algorithm of [MNRS11]. However note, that Magniez et al. [MNRS11] showed how to remove the
+log(1
+ε) factor completely using a more involved procedure.
+Finally note that it is known that a unique marked element can be found using a quantum walk
+quadratically faster than the hitting time. However, it is an open question whether in the presence
+of multiple marked elements the quadratic advantage can be retained.19 For more details see the
+work of Krovi et al. [KMOR16]. They use an interpolated matrix between D(P) and DM(P) –
+which is an idea very naturally ﬁtting our framework, see for example Lemma 52. We believe that
+the algorithms of Krovi et al. [KMOR16] for ﬁnding marked elements can also be cast in our singular
+value transformation framework, but we leave the discussion of these algorithms for future work.
+3.5.2
+Fast QMA ampliﬁcation and fast quantum OR lemma
+We show how the fast QMA ampliﬁcation result of Nagaj et al. [NWZ09] follows directly from our
+singular value discrimination results. In order to state the result we invoke the deﬁnition of the
+language class QMA.
+Deﬁnition 37 (The language class QMA). Let L ⊆{0, 1}∗be a language of yes and no instances
+L = Lyes
+.∪Lyes. The language L belongs to the class QMA if there exists a uniform family of
+quantum veriﬁer circuits V working on n = poly(|x|) qubits using m = poly(|x|) ancillae and two
+numbers 0 ≤b < a ≤1 satisfying
+1
+a−b = O(poly(|x|)) such that for all x in
+Lyes : there exists an n-qubit witness |ψ⟩such that upon measuring the state V |ψ⟩|0⟩m the probability
+of ﬁnding the ﬁrst qubit in state |1⟩has probability at least a.
+18We deﬁne the singular value gap as the diﬀerence between the two largest singular values. For a reversible Markov
+chain the singular values of D(P) are the same as the absolute values of the eigenvalues of P. Note however, that
+this is not strictly necessary, we could work with the eigenvalues too using eigenvalue transformation results, such as
+Theorem 56.
+19One can show that pM = Ω
+
+1
+HT (P,M)
+
+, therefore using amplitude ampliﬁcation one can ﬁnd a marked element
+quadratically faster, however with a large S cost. The appeal of the quantum walk algorithms is that they only use
+the setup procedure a very few times.
+34
+
+Lno : for any n-qubit state |φ⟩upon measuring the state V |φ⟩|0⟩m the probability of ﬁnding the ﬁrst
+qubit in state |1⟩has probability at most b.
+Now we are ready to reprove the result of Nagaj et al. [NWZ09]:
+Theorem 38 (Fast QMA ampliﬁcation). Suppose that we have a language in QMA as in Deﬁni-
+tion 37. We can modify the veriﬁer circuit V such that the acceptance probabilities become a′ := 1−ε
+and b′ := ε using singular value transformation of degree O
+
+1
+max[√a−
+√
+b,
+√
+1−b−√1−a] log
+  1
+ε
+
+.
+Proof. Observe that by Deﬁnition 37 for all x ∈Lyes we have that
+(|1⟩⟨1| ⊗In+m−1)V
+ In ⊗|0⟩⟨0|⊗m ≥√a,
+and for all x ∈Lno we have that
+(|1⟩⟨1| ⊗In+m−1)V
+ In ⊗|0⟩⟨0|⊗m ≤
+√
+b.
+After applying a singular value discrimination circuit for discriminating singular values below
+√
+b
+and above √a we get a circuit that in the former case accepts some witness |ψ⟩with probability at
+least 1 −ε and in the latter case rejects every state |φ⟩with probability at least 1 −ε.
+Finally we show how to quickly derive a slightly improved version of the fast quantum OR lemma
+of Brandão et al. [BKL+17]. We use the main ideas of the proof of the original quantum OR lemma
+of Harrow et al. [HLM17] in a way similar to the approach of Brandão et al. [BKL+17].
+Theorem 39 (Fast quantum OR lemma). Let m ∈N, let Πi : i ∈[m] be orthogonal projectors and
+let η, ν ∈(0, 1
+2]. Suppose we are given one copy of a quantum state ρ with the promise that either
+(i) there exists some i ∈[m] such Tr[ρΠi] ≥1 −η, or
+(ii)
+1
+m
+Pm
+j=1 Tr[ρΠj] ≤ν.
+Suppose that we have access20 to an operator V such that (⟨i|⊗I)V (|i⟩⊗I) =CΠiNOT for all i ∈[m].
+Then for all ε ∈(0, 1
+2] we can construct an algorithm which, in case (i) accepts ρ with probability at
+least (1−η)2
+4
+−ε, and in case (ii) it accepts ρ with probability at most 5mν+ε. Moreover, the algorithm
+uses V and its inverse a total number of O
+ √m log
+  1
+ε
+
+times and uses O
+ √m log(m) log
+  1
+ε
+
+other
+gates and O(log(m)) ancilla qubits.
+Proof. Let us deﬁne A := 1
+m
+Pm
+i=1(I−Πi). First observe that I−Πi = (|0⟩⟨0| ⊗I)CΠiNOT(|0⟩⟨0| ⊗I).
+Let a := ⌈log2(m + 1)⌉+ 1 and let U be a unitary that implements the map |0⟩a−1 →
+1
+√m
+Pm
+i=1|i⟩,
+and let us deﬁne ˜V :=
+ U† ⊗I
+
+V (U ⊗I) and Π := |0⟩⟨0|a⊗I. Then it is easy to see that A = Π ˜V Π.
+Now let λ := 1−η
+2m , in case (i) Harrow et al. [HLM17, Corollary 11] proved that
+Tr[ρΠ≤1−λ] ≥(1 −η)2/4.
+(46)
+20Brandão et al. [BKL+17] assumes access to a multiply-controlled reﬂection operator instead of V , but it is easy
+to see that such an operator can be easily transformed to the operator required here using a single qubit by applying
+phase-kickback.
+35
+
+On the other hand in case (ii) we have that Tr[ρA] ≥1 −ν. Using Markov’s inequality we get
+Tr
+h
+ρΠ≤1−4
+5 λ
+i
+≤ν
+4
+5λ =
+5mν
+2(1 −η) ≤5mν.
+(47)
+Finally, we apply ε-precise singular value discrimination on ρ with a := 1 −λ and b := 1 −4
+5λ.
+The correctness follows from (46)-(47) and Theorem 32. The complexity statement follows from
+Theorem 32, Lemma 19 and the fact that U can be implemented using O(log(m)) one- and two-qubit
+gates.
+3.6
+“Non-commutative measurements” and singular value estimation
+Preparing ground states of local Hamiltonians is a notoriously hard problem.
+However, under
+the conditions of the quantum Lovász Local Lemma, the local Hamiltonian is guaranteed to be
+frustration-free as shown by Ambainis et al. [AKS12]. As shown by Sattath and Arad [SA15] and
+Schwarz et al. [SCV13] under same conditions the problem becomes eﬃciently solvable when the
+local Hamiltonian terms commute. The non-commuting case is more diﬃcult, but under a gap-
+promise Gilyén and Sattath [GS17] showed that a ground state can be eﬃciently prepared.
+Gilyén and Sattath [GS17] essentially reduced the state preparation problem to solving the fol-
+lowing task: Given two (non-commuting) orthogonal projectors ΠF and Πc and quantum state
+|ψ⟩∈img
+ ΠF 
+perform a “non-commutative” measurement in the following sense.
+If |ψ⟩∈
+img
+ ΠF 
+∩ker(Πc) then output 0 and leave the state intact, otherwise if |ψ⟩is a right singular
+vector of ΠcΠF with singular value greater than 0, then output 1 and “rotate” the state |ψ⟩to the
+corresponding left singular vector of ΠcΠF which in turn lies in img(Πc). They showed how to
+implement such a quantum channel using a combination of weak measurements and the quantum
+Zeno eﬀect, however their quantum channel does not preserve coherence between singular vectors
+with diﬀerent singular values. The complexity of their implementation is essentially O
+
+log(1/ε)
+ες2
+
+,
+where ς is the smallest non-zero singular value of ΠcΠF , and ε is the desired maximum failure
+probability.
+Gilyén and Sattath [GS17] called exact quantum channel the procedure which solves the above
+problem, but also preserves coherence between singular vectors with diﬀerent singular values. In
+their paper it was unclear how to eﬃciently implement such a “non-commutative” measurement.
+However note, that the techniques developed in this paper result in an eﬃcient implementation. In-
+deed, by setting A := ΠcΠF this task can be solved with maximal failure probability ε using singular
+value transformation Theorem 26, with O
+
+log(1/ε)
+ς
+
+uses of CΠF NOT, CΠcNOT and other two-qubit
+gates. This improves the ε dependence exponentially and improves the ς dependence quadratically,
+while solves a qualitatively stronger problem. These improvements also greatly improve the ﬁnal
+complexity of the main algorithm presented in [GS17].
+Finally, we turn to the singular value estimation results of Kerenidis an Prakash [KP17b].
+Kerenidis and Prakash mostly use singular value estimation in order to implement singular vec-
+tor projectors, with similar complexity to that of Theorem 31. However, to our knowledge, there is
+an unresolved issue in their implementation procedure, stemming from the ambiguity of the phase
+labels produced by phase estimation. Using our techniques combined with ideas of Chakraborty et
+al. [CGJ18], we show an alternative approach to singular value estimation.
+Suppose that A = eΠUΠ, and we would like to perform singular value estimation of A. The main
+idea is to ﬁrst implement an operator V such that (I ⊗Π)V (I ⊗Π) = P2n−1
+t=0 |t⟩⟨t| ⊗T (SV )
+2t
+(A).
+36
+
+This can be done by using controlled quantum walk steps, i.e., using controlled alternating phase
+modulation sequences with phases as in Lemma 9. Suppose that |ψj⟩∈img(Π) is a right singular
+vector of A with singular value cos(θj), then
+(I ⊗Π)V
+ H⊗n ⊗I
+
+|0⟩n|ψj⟩= (I ⊗Π)V
+1
+√
+2n
+2n−1
+X
+t=0
+|t⟩|ψj⟩=
+1
+√
+2n
+2n−1
+X
+t=0
+cos(2tθj)|t⟩|ψj⟩.
+One can show that the norm of this state Nj is always bigger than some constant c. However, the
+problem is that the norm Nj depends on the singular value cos(θj). Fortunately we can use singular
+vector transformation using the projected unitary encoding (I ⊗Π)V (H⊗n ⊗I)(|0⟩⟨0|⊗n ⊗Π) by
+Theorem 26 in order to ε-approximate the map |0⟩n|ψj⟩→
+1
+√
+2n
+P2n−1
+j=0
+cos(2tθj)
+Nj
+|t⟩|ψj⟩. Applying a
+Fourier transform on the ﬁrst (time) register, and taking half of the absolute value of the resulting
+estimation solves the singular value estimation problem. The correctness can be seen using the
+usual analysis of quantum phase estimation [CEMM98] by utilizing the identity cos(x) = eix+e−ix
+2
+.
+For more details see [CGJ18, version 2].
+3.7
+Direct implementation of the Moore-Penrose pseudoinverse
+Suppose eΠUΠ = A and A = WΣV † is a singular value decomposition. Then the pseudo-inverse
+of A is A+ = V Σ+W †, where Σ+ contains the inverses of the diagonal elements of Σ, except for 0
+entries which remain 0.
+Now it is pretty straightforward to proceed using our singular value transformation methods.
+Suppose that all non-zero singular values are at least δ. Let Pℜbe an odd real polynomial that
+ε-approximates the function δ/(2x) on the domain [−1, 1] \ (−δ, δ), then P (SV )
+ℜ
+(A†) = ΠU†
+ΦeΠ
+ε-approximates δ
+2A+. The only thing remaining is to construct a relatively low-degree odd polyno-
+mial Pℜthat achieves the desired approximation, and which is bounded by 1 in absolute value on
+[−1, 1], in order to be able to apply Corollary 18. Childs et al. [CKS17, Lemmas 17-19] constructed
+a useful polynomial for improving the HHL algorithm, which we can use after some adjustments.
+Lemma 40. (Polynomial approximations of 1/x, [CKS17, Lemmas 17-19]) Let κ > 1 and ε ∈(0, 1
+2).
+For b =
+
+κ2 log(κ/ε)
+
+the odd function
+f(x) := 1 −(1 −x2)b
+x
+is ε-close to 1/x on the domain [−1, 1] \ (−1
+κ, 1
+κ). Let J :=
+lp
+b log(4b/ε)
+m
+, then the O
+ κ log(κ
+ε )
+
+-
+degree odd real polynomial
+g(x) := 4
+J
+X
+j=0
+(−1)j
+"Pb
+i=j+1
+  2b
+b+i
+
+22b
+#
+T2j+1(x)
+is ε-close to f(x) on the interval [−1, 1], moreover |P(x)| ≤4J = O
+ κ log(κ
+ε )
+
+on this interval.
+Theorem 41 (Implementing the Moore-Penrose pseudoinverse). Let U, Π, eΠ be as in Theorem 17
+and let 0 < ε ≤δ ≤1
+2. Suppose that A = eΠUΠ = WΣV † is a singular value decomposition. Let
+37
+
+Π0,≥δ := Π=0 + Π≥δ and similarly eΠ0,≥δ := eΠ=0 + eΠ≥δ. Then there is an m = O
+  1
+δ log(1
+ε)
+
+and an
+eﬃciently computable Φ ∈Rm such that14
+
+
+⟨+| ⊗Π0,≥δ
+
+UΦ
+
+|+⟩⊗eΠ0,≥δ
+
+−Π0,≥δ
+δ
+2 · A+
+
+eΠ0,≥δ
+ ≤ε.
+(48)
+Moreover, UΦ can be implemented using a single ancilla qubit with m uses of U and U†, m uses of
+CΠNOT and m uses of CeΠNOT gates and m single qubit gates.
+Proof. Using Lemma 40 we can construct an odd polynomial P(x) of degree O(log(1/ε)/δ) that
+ε
+3-approximates the function
+δ
+2x on the domain [−1, 1] \ (−δ
+2, δ
+2), and is less than 1 on this domain.
+Let us deﬁne Pmax := maxx∈[−1,1] |P(x)| and observe that Pmax = O
+ log(1
+ε)
+
+. Let us also construct
+an even polynomial P ′ of degree O(log(1/ε)/δ) using Lemma 29 setting t :=
+3
+4δ, δ′ :=
+δ
+4 and
+ε′ := min
+
+ε
+3,
+1
+Pmax
+
+that ε′-approximates the rectangle function. Finally let Pℜ:= P · (1 −P ′),
+which is and odd real polynomial of degree m = O(log(1/ε)/δ).
+It is easy to see that Pℜε-
+approximates
+δ
+2x on the domain [−1, 1] \ (−δ
+2, δ
+2), moreover Pℜis bounded by 1 in absolute value on
+[−1, 1]. Finally, we apply real singular value transformation on A† = ΠU†eΠ using the polynomial
+Pℜby Corollary 18, and conclude the gate complexity using Lemma 19.
+Note that the ε ≤δ assumption in the above statement is quite natural, but it is not necessary,
+and can be removed by using our general polynomial approximation results, see Corollary 69.
+3.8
+Applications in quantum machine learning
+The ability to transform singular values is central to the operation of many popular machine learning
+methods. Quantum machine learning methods such as quantum support vector machines [RML14],
+principal component analysis [LMR14, WK17], regression [HHL09, WBL12, CKS17, CGJ18], slow
+feature analysis [KL18], Gibbs sampling [CS17, AGGW17] and in turn training Boltzmann ma-
+chines [AAR+18, KW17] all hinge upon this idea. These results are among the most celebrated in
+quantum machine learning, showing that singular value transformation has substantial impact on
+this ﬁeld of quantum computing.
+Many quantum algorithms for basic machine learning problems, such as ordinary least squares,
+weighted least squares, generalized least squares, were studied in a series of works [HHL09, WBL12,
+CKS17, CGJ18]. We do not examine these problems case-by-case, but point out that they can all
+be reduced to implementing the Moore-Penrose pseudoinverse and matrix multiplication, therefore
+they can be straightforwardly implemented by Theorem 41 and Lemma 53 (to be discussed in
+Subsection 4.4) within our framework.
+We demonstrate how to apply our singular value transformation techniques to quantum machine
+learning by developing a new quantum algorithm for principal component regression. This machine
+learning algorithm is closely related to principal component analysis (PCA), which is a tool that is
+commonly used to reduce the eﬀective dimension of a model by excising irrelevant features from it.
+The PCA method is quite intuitive, it simply involves computing the covariance matrix for a data set
+and then diagonalizing it. The eigenvectors of the covariance matrix then represent the independent
+directions of least or greatest variation in the data. Dimension reduction can be achieved by culling
+out any components that have negligibly small variation over them.
+This technique has many
+applications ranging from anomaly detection to quantitative ﬁnance.
+Quantum algorithms are
+38
+
+known for this task and can lead to substantial speed-ups under appropriate assumptions about the
+data and the oracles used to provide it to the algorithm [LMR14, KLL+17].
+Principal component regression is identical in spirit to principal component analysis. Rather
+than simply truncating small eigenvalues of the covariance matrix for a data set, principal component
+regression aims to approximately reconstruct a target vector on a domain/range that is spanned
+by the right or left singular vectors with large singular values. A least-squares type estimation of
+the target vector within this subspace of the data can be found by performing a singular vector
+transformation. This can provide a more ﬂexible and powerful approach to dimensionality reduction
+than ordinary principal component analysis permits.
+The problem of principal component regression can be formally stated as follows [FMMS16]:
+given a matrix A ∈Rn×d, a vector b ∈Rn and a threshold value 0 < ς, ﬁnd x ∈Rd such that
+x = argminx∈Rd
+eΠ≥ςAΠ≥ςx −b
+,
+(49)
+where eΠ≥ς, Π≥ς denote left and right singular value threshold projectors. A closed-form expression
+for the optimal solution of (49) is given by x = Π≥ςA+eΠ≥ςb = A+eΠ≥ςb.
+As the following corollary shows, our singular value transformation techniques give rise to an
+eﬃcient quantum algorithm for implementing Π≥ςA+eΠ≥ς, and thus principal component regression.
+Corollary 42 (Implementing the threshold pseudoinverse). Let U, Π, eΠ form a projected unitary
+encoding of the matrix A, and let ε, δ ∈(0, 1
+2] and 0 < ς < 1. Suppose that A = eΠUΠ = WΣV †
+is a singular value decomposition of the projected unitary encoding of A. Then there is an m =
+O
+  1
+δ log(1
+ε)
+
+and an eﬃciently computable Φ ∈Rm such that14
+
+
+⟨+| ⊗
+ Π −Π[ς−δ,ς+δ]
+
+UΦ
+
+|+⟩⊗
+ eΠ −eΠ[ς−δ,ς+δ]
+
+−Π≥ς
+ς
+2A+
+eΠ≥ς
+ ≤ε.
+(50)
+Moreover, UΦ can be implemented using a single ancilla qubit with m uses of U and U†, m uses of
+CΠNOT and m uses of CeΠNOT gates and m single qubit gates.
+Proof. We can implement this operator by ﬁrst applying a singular value threshold projector eΠ≥ς
+according to Theorem 31, followed by performing the Moore-Penrose pseudoinverse A+ as in The-
+orem 41.
+Implementing these two operations separately is actually suboptimal. In order to get the stated
+result we simply take the polynomials used for singular value transformation in Theorem 31 and
+Theorem 41, then take their product and implement singular value transformation according to the
+product polynomial. The complexity statement can be proven similarly to the proofs of Theorem 31
+and Theorem 41.
+Given a unitary preparing a quantum state |b⟩we can approximately solve principal component
+regression by applying an approximation of Π≥ς
+  ς
+2A+eΠ≥ς to |b⟩, and then applying amplitude
+ampliﬁcation to get |x⟩. Strictly speaking, in order for this to work as required by (49), we would
+need to have the promise that |b⟩does not have an overlap with left singular vectors that have
+eigenvalues in [ς −δ, ς + δ], while it does have a non-negligible overlap with left singular vectors
+having singular value > ς + δ. In fact, due to the nature of singular value transformation, for
+a left singular vector |wj⟩with singular value ςj ∈[ς −δ, ς + δ] the procedure still performs a
+meaningful operation: it maps |wj⟩→f(ςj)|vj⟩, such that f(ςj) ∈[−1, 1].
+It is plausible to
+39
+
+believe that the transition behavior on [ς −δ, ς + δ] would in practice not signiﬁcantly degrade the
+performance of typical machine learning applications, therefore the promise of not having singular
+values in [ς −δ, ς + δ] is probably not crucial. Also note that an essentially quadratic improvement
+to the runtime of the above procedure can be achieved using variable-time amplitude ampliﬁcation
+techniques [Amb12, CKS17, CGJ18].
+Finally, we brieﬂy discuss a recently developed quantum machine learning algorithm which is sig-
+niﬁcantly more complex then the previous algorithm, but can still be easily ﬁtted to our framework.
+Kerenidis and Luongo recently proposed a quantum algorithm for slow feature analysis [KL18]. The
+main ingredient of their algorithm is to apply a threshold projection on some input state, i.e., to
+project onto the subspace spanned by the singular vectors of a matrix with singular values smaller
+than a certain threshold. Their algorithm is based on singular value estimation, whereas our The-
+orem 31 approaches the same problem in a more direct way, by transforming the singular values
+according to a threshold function.
+In the ﬁrst step of the quantum algorithm of Kerenidis and Luongo, the task is to implement
+Y := V Σ−1V † for a given input matrix X = WΣV †. In our framework this can be performed
+analogously to Theorem 41 using singular value transformation; the only diﬀerence is that one
+needs to use an even polynomial approximation of 1
+x, for example given by Corollary 67. In the
+next step, one needs to implement singular value threshold projection using the matrix ˙XY for a
+given “derivative” matrix ˙X. Taking the product21 of the two matrices can be implemented using
+Lemma 53, after which we can use our Theorem 31 to implement singular value threshold projection.
+4
+Matrix Arithmetics using blocks of unitaries
+In this section we describe a generic toolbox for implementing matrix calculations on a quantum
+computer in an operational way, representing the vectors as quantum states. The matrix arithmetics
+methodology we propose carries out all calculations in an operational way, such that the matrices
+are represented by blocks of unitary operators of the quantum system, thereby can in principle result
+in exponential speed-ups in terms of the dimension of the matrices. The methodology we describe
+is a distilled version of the results of a series of works on quantum algorithms [HHL09, BCC+15,
+CKS17, LC16, AGGW17, CGJ18].
+We present the results in an intuitively structured way. First we deﬁne how to represent arbitrary
+matrices as blocks of unitaries, and show how to eﬃciently encode various matrices this way. Then
+we show how to implement addition and subtraction of these matrices, and ﬁnally show how to
+eﬃciently obtain products of block-encoded matrices.
+In order to make the results maximally
+reusable we also give bounds on the propagation of errors arising from inaccurate encodings.
+4.1
+Block-encoding
+We introduce a deﬁnition of block-encoding which we are going to work with in the rest of the
+paper. The main idea is to represents a subnormalized matrix as the upper-left block of a unitary.
+U =
+ A/α
+.
+.
+.
+
+=⇒
+A = α(⟨0| ⊗I)U(|0⟩⊗I)
+21In case we would have a subnormalized version of ˙X, in order to get maximal eﬃciency, it usually worth amplifying
+˙X using Theorem 30 before taking the product ˙XY .
+40
+
+Deﬁnition 43 (Block-encoding). Suppose that A is an s-qubit operator, α, ε ∈R+ and a ∈N, then
+we say that the (s + a)-qubit unitary U is an (α, a, ε)-block-encoding of A, if
+A −α(⟨0|⊗a ⊗I)U(|0⟩⊗a ⊗I)
+ ≤ε.
+Note that since ∥U∥= 1 we necessarily have ∥A∥≤α + ε. Also note that using the above
+deﬁnition it seems that we can only represent square matrices of size 2s × 2s. However, this is not
+really a restriction. Suppose that A ∈Cn×m, where n, m ≤2s. Then we can deﬁne an embedding
+matrix denoted by Ae ∈C2s×2s such that the top-left block of Ae is A and all other elements
+are 0. This embedding is a faithful representation of the matrices. Suppose that A, B ∈Cn×m
+are matrices, then Ae + Be = (A + B)e. Moreover, suppose C ∈Cm×k for some k ≤2s, then
+Ae · Ce = (A · C)e.
+The above deﬁned block-encoding is a special case of the projected-encoding of Deﬁnition 11,
+therefore we can later apply our singular value transformation results for block-encoded matrices.
+In this manner the advantage of block-encoding is that the CΠNOT gate which is required in order
+to implement the gates of Figure 1 is just a Toﬀoli gate on a + 1 qubits, which can be implemented
+by O(a + 1) two-qubit gates and using a single additional ancilla qubit [HLZ+17].
+4.2
+Constructing block-encodings
+Deﬁnition 44 (Trivial block-encoding). A unitary matrix is a (1, 0, 0)-block-encoding of itself.
+If we ε-approximately implement a unitary U using a ancilla qubits via a unitary ˜U acting
+jointly on the system and the ancilla qubits, then ˜U is an (1, a, ε)-block-encoding of U. This is also
+a rather trivial encoding. Note that we make a slight distinction between ancilla qubits that are
+exactly returned to their original state after the computation and the ones that might pick up some
+error. The latter qubits we will treat as part of the encoding, and the former qubits we usually
+treat separately as purely ancillary qubits.
+Now we present some non-trivial ways for constructing block-encodings, which will serve as a
+toolbox for eﬃciently inputting and representing matrices for arithmetic computations on a quantum
+computer. We will denote by Iw a w-qubit identity operator, and let SWAPw denote the swap
+operation of two w-qubit register. We denote by CNOT the controlled not gate that targets the
+ﬁrst qubit. When clear from the context we use simply notation |0⟩to denote |0⟩⊗w.
+First we show following Low and Chuang [LC16], how to create a block-encoding of a puriﬁed
+density operator. This technique can be used in combination with the optimal block-Hamiltonian
+simulation result Theorem 58, in order to get much better simulation performance, compared to
+density matrix exponentiation techniques [LMR14, KLL+17] which does not use puriﬁcation. This
+result can be generalized for subnormalized density operators too, for more details see [AG18].
+Lemma 45 (Block-encoding of density operators). Suppose that ρ is an s-qubit density operator
+and G is an (a + s)-qubit unitary that on the |0⟩|0⟩input state prepares a puriﬁcation |0⟩|0⟩→|ρ⟩,
+s.t. Tra|ρ⟩⟨ρ| = ρ. Then (G† ⊗Is)(Ia ⊗SWAPs)(G ⊗Is) is a (1, a + s, 0)-block-encoding of ρ.
+Proof. Let r be the Schmidt-rank of ρ, let {|ψk⟩: k ∈[2s]} be an orthonormal basis, let {|φk⟩: k ∈
+[r]} be an orthonormal system and let p ∈[0, 1]2s be such that |ρ⟩= Pr
+k=1
+√pk|φk⟩|ψk⟩and pℓ= 0
+41
+
+for all ℓ∈[2s] \ [r]. Then for all i, j ∈[2s] we have that
+⟨0|⊗a+s⟨ψi|(G† ⊗Is)(Ia ⊗SWAPs)(G† ⊗Is)|0⟩⊗a+s|ψj⟩=
+= ⟨ρ|⟨ψi|(Ia ⊗SWAPs)|ρ⟩|ψj⟩
+=
+ r
+X
+k=1
+√pk⟨φk|⟨ψk|
+!
+⟨ψi|(Ia ⊗SWAPs)
+ r
+X
+ℓ=1
+√pℓ|φℓ⟩|ψℓ⟩
+!
+|ψj⟩
+=
+ r
+X
+k=1
+√pk⟨φk|⟨ψk|⟨ψi|
+! r
+X
+ℓ=1
+√pℓ|φℓ⟩|ψj⟩|ψℓ⟩
+!
+= √pjpiδij
+= ⟨ψi|ρ|ψj⟩.
+Apeldoorn and Gilyén [AG18] recently also showed that an implementation scheme for a POVM
+operator can also be easily transformed to block-encoding of the POVM operators. By an imple-
+mentation scheme we mean a quantum circuit U that given input ρ and a ancilla qubits, it sets a
+ﬂag qubit to 0 with probability Tr[ρM].
+Lemma 46 (Block-encoding of POVM operators). Suppose that U is an a + s qubit unitary, which
+implements a POVM operator M with ε-precision such that for all s-qubit density operator ρ
+Tr[ρM] −Tr
+h
+U
+ |0⟩⟨0|⊗a ⊗ρ
+
+U† |0⟩⟨0|⊗1 ⊗Ia+s−1
+i ≤ε.
+(51)
+Then (I1 ⊗U†)(CNOT ⊗Ia+s−1)(I1 ⊗U) is a (1, 1 + a, ε)-block-encoding of the matrix M.
+Proof. First observe that by the cyclicity of trace we have that
+Tr
+h
+U
+ |0⟩⟨0|⊗a ⊗ρ
+
+U†(|0⟩⟨0| ⊗Ia+s−1)
+i
+= Tr
+h
+U
+ |0⟩⊗a ⊗I
+
+ρ
+ ⟨0|⊗a ⊗I
+
+U†(|0⟩⟨0| ⊗Ia+s−1)
+i
+= Tr
+h
+ρ
+ ⟨0|⊗a ⊗I
+
+U†(|0⟩⟨0| ⊗Ia+s−1)U
+ |0⟩⊗a ⊗I
+i
+.
+Together with (51) this implies that for all ρ density operator
+Tr
+h
+ρ
+
+M −
+ ⟨0|⊗a ⊗I
+
+U†(|0⟩⟨0| ⊗Ia+s−1)U
+ |0⟩⊗a ⊗I
+i ≤ε,
+which is equivalent to saying that
+M −
+ ⟨0|⊗a ⊗I
+
+U†(|0⟩⟨0| ⊗Ia+s−1)U
+ |0⟩⊗a ⊗I
+ ≤ε. We can
+conclude by observing that
+ ⟨0|⊗a ⊗I
+
+U†(|0⟩⟨0| ⊗Ia+s−1)U
+ |0⟩⊗a ⊗I
+
+=
+=
+
+⟨0|⊗1+a ⊗I
+
+I1 ⊗U†
+(CNOT ⊗Ia+s−1)
+
+I1 ⊗U
+
+|0⟩⊗1+a ⊗I
+
+.
+Now we turn to a more traditional way of constructing block-encodings via state preparation.
+This is a common technique for example to implement quantum walks. Note that we introduce the
+notation [n] −1 to denote the set {0, 1, . . . , n −1}.
+42
+
+Lemma 47 (Block-encoding of Gram matrices by state preparation unitaries). Let UL and UR
+be “state preparation” unitaries acting on a + s qubits preparing the vectors {|ψi⟩: i ∈[2s] −1},
+{|φj⟩: j ∈[2s] −1}, s.t.
+UL : |0⟩|i⟩→|ψi⟩
+UR : |0⟩|j⟩→|φj⟩.
+Then U = U†
+LUR is an (1, a, 0)-block-encoding of the Gram matrix A such that Aij = ⟨ψi|φj⟩.
+Based on the above idea one can eﬃciently implement block-encodings of sparse-access matrices.
+Lemma 48 (Block-encoding of sparse-access matrices). Let A ∈C2w×2w be a matrix that is sr-row-
+sparse and sc-column-sparse, and each element of A has absolute value at most 1. Suppose that we
+have access to the following sparse-access oracles acting on two (w + 1) qubit registers
+Or : |i⟩|k⟩→|i⟩|rik⟩
+∀i ∈[2w] −1, k ∈[sr], and
+Oc : |ℓ⟩|j⟩→|cℓj⟩|j⟩
+∀ℓ∈[sc], j ∈[2w] −1, where
+rij is the index for the j-th non-zero entry of the i-th row of A, or if there are less than i non-zero
+entries, then it is j +2w, and similarly cij is the index for the i-th non-zero entry of the j-th column
+of A, or if there are less than j non-zero entries, then it is i+2w. Additionally assume that we have
+access to an oracle OA that returns the entries of A in a binary description
+OA : |i⟩|j⟩|0⟩⊗b →|i⟩|j⟩|aij⟩
+∀i, j ∈[2w] −1, where
+aij is a b-bit binary description22 of the ij-matrix element of A.
+Then we can implement a
+(√srsc, w + 3, ε)-block-encoding of A with a single use of Or, Oc, two uses of OA and addition-
+ally using O
+ w + log2.5(srsc
+ε )
+
+one and two qubit gates while using O
+ b, log2.5(srsc
+ε )
+
+ancilla qubits.
+Proof. We proceed by constructing state preparation unitaries in the spirit of Lemma 47. We will
+work with 3-registers the ﬁrst of which is a single qubit register, and the other two registers have
+(w + 1) qubits. Let Ds be a (w + 1)-qubit unitary that implements the map |0⟩→Ps
+k=1
+|k⟩
+√s, it
+is known that this operator Ds can be implemented with O(w) quantum gates using O(1) ancilla
+qubits. Then we deﬁne the 2(w + 1) qubit unitary VL := Or(Iw+2 ⊗Dsr)SWAPw+1 such that
+VL : |0⟩w+2|i⟩→
+sr
+X
+k=1
+|i⟩|rik⟩
+√sr
+∀i ∈[2w] −1.
+We implement the operator VR := Oc(Dsc ⊗Iw+1) in a similar way acting as
+VR : |0⟩w+2|j⟩→
+sc
+X
+ℓ=1
+|cℓj⟩|j⟩
+√sc
+∀j ∈[2w] −1.
+It is easy to see that the above unitaries are such that
+⟨0|w+2⟨i|V †
+LVR|0⟩w+2|j⟩=
+1
+√srsc
+if aij̸ = 0 and 0 otherwise.
+22For simplicity we assume here that the binary representation is exact.
+43
+
+Now we deﬁne UL := I1 ⊗VL and deﬁne UR as performing the unitary I1 ⊗VR followed by some
+extra computation. After performing VR we get a superposition of index pairs |i⟩|j⟩. Given an index
+pair |i⟩|j⟩we query the matrix element |aij⟩using the oracle OA. Then we do some elementary
+computations in order to implement a single qubit gate |0⟩→aij|0⟩+
+p
+1 −|aij|2|1⟩on the ﬁrst
+qubit, with precision O
+
+poly
+
+ε
+srsc
+
+. This can be executed with the stated complexity, for more
+details see, e.g., the work of Berry et al. [BCK15]. Finally we also need to uncompute everything
+which requires one more use of OA. This way we get a good approximation of
+UR : |0⟩w+3|j⟩→
+sc
+X
+ℓ=1
+
+acℓjj|0⟩+
+q
+1 −|acℓjj|2|1⟩
+
+|cℓj⟩|j⟩
+√sc
+∀j ∈[2w] −1.
+Note that in the above method the matrix gets subnormalized by a factor of
+1
+√srsc . If we would
+know that for example ∥A∥≤1
+2, then we could amplify the block-encoding in order to remove this
+unwanted subnormalization using singular value ampliﬁcation Theorem 30 using the block-encoding
+roughly √srsc times. However, under some circumstances one can defeat the subnormalization more
+eﬃciently by doing an ampliﬁcation at the level of the state preparation unitaries. The idea comes
+from Low and Chuang [LC17a], who called this technique “Uniform spectral gap ampliﬁcation”. We
+generalize their results combining with ideas of Kerenidis and Prakash [KP17a] and Chakraborty
+et al. [CGJ18], who used similar ideas but assumed QROM-access to matrices rather than sparse-
+access.
+Lemma 49 (Preampliﬁed block-encoding of sparse-access matrices). Let A ∈C2w×2w be a matrix
+that is sr-row-sparse and sc-column-sparse, and is given using the input oracles deﬁned in Lemma 48.
+Let ai. denote the i-th row of A and similarly a.j the j-th column. Let q ∈[0, 2] and suppose that
+nr ∈[1, sr] is an upper bound on ∥ai.∥q
+q and nc ∈[1, sc] is an upper bound on ∥a.j∥2−q
+2−q.
+Let m = max[ sr
+nr , sc
+nc ]. Then we can implement a
+ q
+1
+2nrnc , w + 6, ε
+
+-block-encoding of A with
+O
+q
+sr
+nr log(srsc
+ε )
+
+uses of Or, O
+q
+sc
+nc log(srsc
+ε )
+
+uses of Oc, O
+ √m log(srsc
+ε )
+
+uses of OA, and ad-
+ditionally using O
+ √m
+ w log(srsc
+ε ) + log3.5(srsc
+ε )
+
+one and two qubit gates while using O
+ b, log2.5(srsc
+ε )
+
+ancilla qubits.
+Proof. The idea is very similar to the proof of Lemma 48, we implement the unitaries VL, VR the
+same way. However, we deﬁne UR, UL slightly diﬀerently. Using a similar method than in Lemma 48,
+we implement O
+
+poly
+
+ε
+srsc
+
+-approximations of the maps
+UL : |0⟩w+4|i⟩→
+sr
+X
+k=1
+
+|airik|
+q
+2 |0⟩+
+p
+1 −|airik|q|1⟩
+
+|0⟩|i⟩|rik⟩
+√sr
+∀i ∈[2w] −1,
+UR : |0⟩w+4|j⟩→
+sc
+X
+ℓ=1
+acℓjj
+|acℓjj||0⟩
+
+|acℓjj|1−q
+2 |0⟩+
+q
+1 −|acℓjj|2−q|1⟩
+
+|cℓj⟩|j⟩
+√sc
+∀j ∈[2w] −1.
+It is easy to see that the above unitaries are such that
+⟨0|w+4⟨i|U†
+LUR|0⟩w+4|j⟩=
+aij
+√srsc
+∀i, j ∈[2w] −1.
+44
+
+We can see that for all i ∈[2w] −1 the modiﬁed row vector Psr
+k=1
+|airik|
+q
+2 |0⟩|0⟩|i⟩|rik⟩
+√sr
+has squared
+norm at most nr
+sr , and a similar nc
+sc upper bound holds for the squared norm of the modiﬁed column
+vector. Also observe that
+(|0⟩⟨0| ⊗I2w+3)UL(|0⟩⟨0|w+4 ⊗Iw) =
+2w−1
+X
+j=0
+ sr
+X
+k=1
+|airik|
+q
+2 |0⟩|0⟩|i⟩|rik⟩
+√sr
+!
+⟨0|w+4⟨j|,
+which is a singular value decomposition with the singular values being the modiﬁed row norms.
+Therefore we can apply singular value ampliﬁcation Theorem 30 to with ampliﬁcation γr =
+q
+sr
+√
+2nr
+and precision O
+
+poly
+
+ε
+srsc
+
+resulting in an O
+
+poly
+
+ε
+srsc
+
+approximation of ˜UL such that
+(⟨+| ⊗|0⟩⟨0| ⊗I2w+3) ˜UL(|+⟩⊗|0⟩⟨0|w+4 ⊗Iw) = γr
+2w−1
+X
+j=0
+ sr
+X
+k=1
+|airik|
+q
+2 |0⟩|0⟩|i⟩|rik⟩
+√sr
+!
+⟨0|w+4⟨j|.
+Similarly we apply singular value ampliﬁcation with ampliﬁcation γc =
+q
+sc
+√
+2nc and precision
+O
+
+poly
+
+ε
+srsc
+
+resulting in a O
+
+poly
+
+ε
+srsc
+
+approximation of ˜UR such that
+⟨++|⟨0|w+4⟨i| ˜U†
+L ˜UR|++⟩|0⟩w+4|j⟩= γrγc
+aij
+√srsc
+=
+aij
+√2nrnc
+∀i, j ∈[2w] −1.
+Finally adding 4 Hadamard gates we can change the |+⟩states above to |0⟩states, resulting in
+the
+ q
+1
+2nrnc , w + 6, ε
+
+-block-encoding of A. The complexity statement follows similarly as in the
+proof of Lemma 48, with the extra observation that the singular value ampliﬁcations of UL and UR
+can be performed using degree O
+ γr log(srsc
+ε )
+
+and O
+ γc log(srsc
+ε )
+
+singular value transformations
+respectively.
+Finally, for completeness we invoke the results of Kerenidis and Prakash [KP17a] and Chakraborty
+et al. [CGJ18], who showed how to eﬃciently implement block-encodings of matrices that are stored
+in a clever quantum data structures in a quantum accessible RAM.
+For q ∈[0, 2] let us deﬁne µq(A) =
+q
+nq(A)n(2−q)(AT ), where nq(A) := maxi∥ai.∥q
+q is the q-th
+power of the maximum q-norm of the rows of A. Let A(q) denote the matrix of the same dimensions
+as A, with23 A(q)
+ij =
+q
+aq
+ij. The following was proven in [KP17a], although not in the language of
+block-encodings, and was stated in this form by Chakraborty et al. [CGJ18].
+Lemma 50 (Block-encodings of matrices stored in quantum data structures). Let A ∈C2w×2w.
+1. Fix q ∈[0, 2]. If A(q) and (A(2−q))† are both stored in quantum accessible data structures24,
+then there exist unitaries UR and UL that can be implemented in time O(poly(w log(1/ε)))
+such that U†
+RUL is a (µq(A), w + 2, ε)-block-encoding of A.
+2. On the other hand, if A is stored in a quantum accessible data structure24, then there exist
+unitaries UR and UL that can be implemented in time O(poly(w log(1/ε))) such that U†
+RUL is
+an (∥A∥F , w + 2, ε)-block-encoding of A.
+23For complex values we deﬁne these non-integer powers using the principal value of the complex logarithm function.
+24Here we assume that the data-structure stores the matrices with suﬃcient precision, cf. [CGJ18].
+45
+
+4.3
+Addition and subtraction: Linear combination of block-encoded matrices
+We use a simple but powerful method for implementing linear combinations of unitary operators on
+a quantum computer. This technique was introduced by Berry et al. [BCC+15] for exponentially
+improving the precision of Hamiltonian simulation. Later it was adapted by Childs et al. [CKS17]
+for exponentially improving the precision of quantum linear equation solving. Here we present this
+method from the perspective of block-encoded matrices.
+First we deﬁne state preparation unitaries in order to conveniently state our the result in the
+following lemma.
+Deﬁnition 51 (State preparation pair). Let y ∈Cm and ∥y∥1 ≤β, the pair of unitaries (PL, PR)
+is called a (β, b, ε)-state-preparation-pair if PL|0⟩⊗b = P2b−1
+j=0 cj|j⟩and PR|0⟩⊗b = P2b−1
+j=1 dj|j⟩such
+that Pm−1
+j=0 |β(c∗
+jdj) −yj| ≤ε and for all j ∈m, . . . , 2b −1 we have c∗
+jdj = 0.
+Now we show how to implement a block-encoding of a linear combination of block-encoded
+operators.
+Lemma 52 (Linear combination of block-encoded matrices). Let A = Pm
+j=1 yjAj be an s-qubit
+operator and ε ∈R+.
+Suppose that (PL, PR) is a (β, b, ε1)-state-preparation-pair for y, W =
+Pm−1
+j=0 |j⟩⟨j| ⊗Uj + ((I −Pm−1
+j=0 |j⟩⟨j|) ⊗Ia ⊗Is) is an s + a + b qubit unitary such that for all
+j ∈0, . . . , m we have that Uj is an (α, a, ε2)-block-encoding of Aj.
+Then we can implement a
+(αβ, a + b, αε1 + αβε2)-block-encoding of A, with a single use of W, PR and P †
+L.
+Proof. Observe that f
+W = (P †
+L ⊗Ia ⊗Is)W(PR ⊗Ia ⊗Is) is a (αβ, a+b, αε1 +αβε2)-block-encoding
+of A:
+A −αβ(⟨0|⊗b ⊗⟨0|⊗a ⊗I)f
+W(|0⟩⊗b ⊗|0⟩⊗a ⊗I)
+ =
+
+A −α
+m−1
+X
+j=0
+β(c∗
+jdj)(⟨0|⊗a ⊗I)Uj(|0⟩⊗a ⊗I)
+
+≤αε1 +
+
+A −α
+m−1
+X
+j=0
+yj(⟨0|⊗a ⊗I)Uj(|0⟩⊗a ⊗I)
+
+≤αε1 + α
+m−1
+X
+j=0
+yj
+Aj −(⟨0|⊗a ⊗I)Uj(|0⟩⊗a ⊗I)
+
+≤αε1 + α
+m−1
+X
+j=0
+yjε2
+≤αε1 + αβε2.
+4.4
+Multiplication: Product of block-encoded matrices
+In general if we want to take the product of two block encoded matrices we need to treat their
+ancilla qubits separately. In this case as the following lemma shows the errors simply add up and
+the block encoding does not introduce any additional errors.
+46
+
+Lemma 53 (Product of block-encoded matrices). If U is an (α, a, δ)-block-encoding of an s-qubit
+operator A, and V is an (β, b, ε)-block-encoding of an s-qubit operator B then25 (Ib ⊗U)(Ia ⊗V ) is
+an (αβ, a + b, αε + βδ)-block-encoding of AB.
+Proof.
+AB −αβ(⟨0|⊗a+b ⊗I)(Ib ⊗U)(Ia ⊗V )(|0⟩⊗a+b ⊗I)
+
+=
+AB −α(⟨0|⊗a ⊗I)U(|0⟩⊗a ⊗I)
+|
+{z
+}
+˜
+A
+β(⟨0|⊗b ⊗I)V (|0⟩⊗b ⊗I)
+|
+{z
+}
+˜B
+
+=
+AB −˜AB + ˜AB −˜A ˜B
+
+=
+(A −˜A)B + ˜A(B −˜B)
+
+≤
+A −˜A
+β + α
+B −˜B
+
+≤αε + βδ.
+In the special case when the encoded matrices are unitaries and their block-encoding does not
+use any extra scaling factor, then we might reuse the ancilla qubits, however it introduces an extra
+error term, which can be bounded by the geometrical mean of the two input error bounds.
+Lemma 54 (Product of two block-encoded unitaries). If U is an (1, a, δ)-block-encoding of an s-
+qubit unitary operator A, and V is an (1, a, ε)-block-encoding of an s-qubit unitary operator B then
+UV is a (1, a, δ + ε + 2
+√
+δε)-block-encoding of the unitary operator AB.
+Proof. It is enough to show that for all s-qubit pure states |φ⟩, |ψ⟩we have that
+⟨φ|AB|ψ⟩−⟨φ|(⟨0|⊗a ⊗I)UV (|0⟩⊗a ⊗I)|ψ⟩
+ ≤δ + ε + 2
+√
+δε.
+Observe that
+⟨φ|(⟨0|⊗a ⊗I)UV (|0⟩⊗a ⊗I)|ψ⟩
+=⟨φ|(⟨0|⊗a ⊗I)U
+ (|0⟩⟨0|⊗a ⊗I) +
+  I −|0⟩⟨0|⊗a
+⊗I
+
+V (|0⟩⊗a ⊗I)|ψ⟩
+=⟨φ|(⟨0|⊗a ⊗I)U(|0⟩⊗a ⊗I)(⟨0|⊗a ⊗I)V (|0⟩⊗a ⊗I)|ψ⟩
++ ⟨φ|(⟨0|⊗a ⊗I)U
+  I −|0⟩⟨0|⊗a
+⊗I
+
+V (|0⟩⊗a ⊗I)|ψ⟩
+Now we can see that similarly to the proof of Lemma 53 we have
+⟨φ|AB|ψ⟩−⟨φ|(⟨0|⊗a ⊗I)U(|0⟩⊗a ⊗I)(⟨0|⊗a ⊗I)V (|0⟩⊗a ⊗I)|ψ⟩
+
+=
+⟨φ|
+ AB −(⟨0|⊗a ⊗I)U(|0⟩⊗a ⊗I)(⟨0|⊗a ⊗I)V (|0⟩⊗a ⊗I)
+
+|ψ⟩
+
+≤
+AB −(⟨0|⊗a ⊗I)U(|0⟩⊗a ⊗I)(⟨0|⊗a ⊗I)V (|0⟩⊗a ⊗I)
+
+≤δ + ε.
+25The identity operators act on each others ancilla qubits, which is hard to express properly using simple tensor
+notation, but the reader should read this tensor product this way.
+47
+
+Finally note that
+⟨φ|(⟨0|⊗a ⊗I)U
+  I −|0⟩⟨0|⊗a
+⊗I
+
+V (|0⟩⊗a ⊗I)|ψ⟩
+
+=
+⟨φ|(⟨0|⊗a ⊗I)U
+  I −|0⟩⟨0|⊗a
+⊗I
+2V (|0⟩⊗a ⊗I)|ψ⟩
+
+≤
+  I −|0⟩⟨0|⊗a
+⊗I
+
+U(|0⟩⊗a ⊗I)|φ⟩
+ ·
+  I −|0⟩⟨0|⊗a
+⊗I
+
+V (|0⟩⊗a ⊗I)|ψ⟩
+
+=
+q
+1 −
+(|0⟩⟨0|⊗a ⊗I)U(|0⟩⊗a ⊗I)|φ⟩
+2 ·
+q
+1 −
+(|0⟩⟨0|⊗a ⊗I)V (|0⟩⊗a ⊗I)|ψ⟩
+2
+≤
+p
+1 −(1 −δ)2 ·
+p
+1 −(1 −ε)2
+≤2
+√
+δε.
+The following corollary suggest that if we multiply together multiple block-encoded unitaries,
+the error may grow super-linearly, but it increases at most quadratically with the number of factors
+in the product.
+Corollary 55 (Product of multiple block-encoded unitaries). Suppose that Uj is an (1, a, ε)-block-
+encoding of an s-qubit unitary operator Wj for all j ∈[K]. Then QK
+j=1 Uj is an (1, a, 4K2ε)-block-
+encoding of QK
+j=1 Wj.
+Proof. First observe that for the product of two matrices we get the precision bound 4ε by the
+above lemma. If K = 2k for some k ∈N. Then we can apply the above observation in a recursive
+fashion in a binary tree structure, to get the upper bound 4kε on the precision, and observe that
+4k = K2.
+If 2k−1 ≤K < 2k we can just add identity operators so that we have 2k matrices to multiply,
+which gives the precision bound 4kε ≤41+log2 Kε = 4K2ε.
+5
+Implementing smooth functions of Hermitian matrices
+In the previous section we developed an eﬃcient methodology to perform basic matrix arithmetics,
+such as addition and multiplication. In principle all smooth functions of matrices can be approxi-
+mated arbitrarily precisely using such basic arithmetic operations. In this section we show how to
+more eﬃciently transform Hermitian matrices according to smooth functions using singular value
+transformation techniques. The key observation is that for a Hermitian matrix A we have that
+P (SV )(A) = P(A), i.e., singular value transformation and eigenvalue transformation coincide.
+The following theorem is our improvement of Corollary 18 removing the counter-intuitive par-
+ity constraint at the expense of a subnormalization factor 1/2, which is not a problem in most
+applications.
+Theorem 56 (Polynomial eigenvalue transformation of arbitrary parity). Suppose that U is an
+(α, a, ε)-encoding of a Hermitian matrix A.
+If δ ≥0 and Pℜ∈R[x] is a degree-d polynomial
+satisfying that
+• for all x ∈[−1, 1]: |Pℜ(x)| ≤1
+2.
+Then there is a quantum circuit ˜U, which is an (1, a + 2, 4d
+p
+ε/α + δ)-encoding of Pℜ(A/α), and
+consists of d applications of U and U† gates, a single application of controlled-U and O((a + 1)d)
+other one- and two-qubit gates. Moreover we can compute a description of such a circuit with a
+classical computer in time O(poly(d, log(1/δ))).
+48
+
+Proof. First note that for a Hermitian matrix A and for any even/odd polynomial P ∈C[x] we
+have that P (SV )(A) = P(A). Now let P (even)
+ℜ
+(x) := Pℜ(x) + Pℜ(−x) ≤1, and let P (odd)
+ℜ
+(x) :=
+Pℜ(x) −Pℜ(−x) ≤1. Then we can implements both P (even)
+ℜ
+(x) and P (odd)
+ℜ
+(x) using Corollary 18
+and we can take an equal 1
+2 linear combination of them by Lemma 22. Using the notation of Figure 1
+the ﬁnal circuit is simply (H ⊗H ⊗I)UΦ(c)(H ⊗H ⊗I), where H denotes the Hadamard gate.
+Note that a similar statement can be proven for arbitrary P ∈C[x] that satisfy |P(x)| ≤1
+4 for
+all x ∈[−1, 1]. The only diﬀerence is that for implementing the complex part one needs to add a
+(controlled) phase ei π
+2 . The ≤1
+4 constraint comes form the fact that the implementation is a sum
+of 4 diﬀerent terms (even/odd component of the real/imaginary part).
+5.1
+Optimal Hamiltonian simulation
+Let us deﬁne for t ∈R+ and ε ∈(0, 1) the number r(t, ε) ≥t as the solution to the equation
+ε =
+ t
+r
+r
+: r ∈(t, ∞).
+(52)
+This equation is closely related to the Lambert-W function, and unfortunately we cannot give the
+solution in terms of elementary functions. However, one can see that the function
+  t
+r
+r is strictly
+monotone decreasing for r ∈[t, ∞) and in the limit r →∞it tends to 0. Since for r = t the function
+value is 1, therefore the equation (52) has a unique solution. In particular for any r, R ∈[t, ∞) such
+that
+  t
+r
+r ≥ε ≥
+  t
+R
+R we have that r ≤r(t, ε) ≤R. This is an important expression for this section,
+since Low and Chuang proved [LC17b, LC16] that the complexity of Hamiltonian simulation for
+time t with precision ε is Θ(r(|t|, ε)).
+Low and Chuang also claimed [LC17b] that for all t ≥1 one gets r(t, ε) = Θ
+
+t +
+log(1/ε)
+log(log(1/ε))
+
+,
+which led to their complexity statement. Note that we found a subtle issue in their calculations
+making this formula invalid for some range of values of t. We show in Lemma 59 how to correct the
+formula by a slight modiﬁcation of the log(log(1/ε)) term. This is the reason why we need to give
+more complicated expressions for the complexity of block-Hamiltonian simulation. First we show
+what is the connection between equation (52) and the complexity of Hamiltonian simulation by
+constructing polynomials of degree O(r(|t|, ε)), which ε-approximate trigonometric functions with
+t-times rescaled argument.
+Lemma 57 (Polynomial approximations of trigonometric functions). Let t ∈R \ {0}, ε ∈(0, 1
+e),
+and let R =
+j
+r
+
+e|t|
+2 , 5
+4ε
+
+/2
+k
+, then the following 2R and 2R + 1 degree polynomials satisfy
+cos(tx) −J0(t) + 2
+R
+X
+k=1
+(−1)kJ2k(t)T2k(x)
+
+[−1,1]
+≤ε, and
+sin(tx) −2
+R
+X
+k=0
+(−1)kJ2k+1(t)T2k+1(x)
+
+[−1,1]
+≤ε,
+where Jm(t): m ∈N denote Bessel functions of the ﬁrst kind.
+49
+
+Proof. We use the Fourier-Chebyshev series of the trigonometric functions given by the Jacobi-Anger
+expansion [AS74, 9.1.44-45]:
+cos(tx) = J0(t) + 2
+∞
+X
+k=1
+(−1)kJ2k(t)T2k(x)
+sin(tx) = 2
+∞
+X
+k=0
+(−1)kJ2k+1(t)T2k+1(x).
+The Jacobi-Anger expansion implies that
+cos(tx) −J0(t) + 2
+R
+X
+k=1
+(−1)kJ2k(t)T2k(x)
+
+[−1,1]
+=
+2
+∞
+X
+k=R+1
+(−1)kJ2k(t)T2k(x)
+
+[−1,1]
+≤2
+∞
+X
+k=R+1
+(−1)k|J2k|
+= 2
+∞
+X
+ℓ=0
+(−1)k|J2R+2+2ℓ|,
+(53)
+and similarly we can derive that
+sin(tx) −2
+R
+X
+k=0
+(−1)kJ2k+1(t)T2k+1(x)
+
+[−1,1]
+≤2
+∞
+X
+ℓ=0
+(−1)k|J2R+3+2ℓ|.
+(54)
+It is known [AS74, 9.1.62] that for all m ∈N+ and t ∈R we have
+|Jm(t)| ≤1
+m!
+
+t
+2
+
+m
+.
+(55)
+Following [BCK15] we show that it implies that for any positive integer q ≥|t| −1 we have that
+2
+∞
+X
+ℓ=0
+|J(q+2ℓ)(t)|
+(55)
+≤2
+∞
+X
+ℓ=0
+|t/2|(q+2ℓ)
+(q + 2ℓ)! ≤2|t/2|q
+q!
+∞
+X
+ℓ=0
+1
+4
+ℓ
+= 8
+3
+|t/2|q
+q!
+≤1.07
+√q
+e|t|
+2q
+q
+,
+(56)
+where in the last inequality we used that by Stirling’s approximation q! ≥√2πq
+  q
+e
+q.
+In the
+inequalities (53)-(54) we can apply the bound of (56) with q ≥2(R + 1) ≥r
+
+e|t|
+2 , ε
+
+, so we get the
+upper bound
+1.07
+√q
+e|t|
+2q
+q
+≤1.07
+√
+2
+e|t|
+2q
+q
+≤5
+4
+e|t|
+2q
+q
+≤ε.
+Now we are ready to prove the optimal block-Hamiltonian simulation result of Low and Chuang.
+The optimality is discussed in an earlier work of the same authors [LC17b].
+50
+
+Theorem 58. (Optimal block-Hamiltonian simulation [LC16]) Let t ∈R \ {0}, ε ∈(0, 1) and
+let U be an (α, a, 0)-block-encoding of the Hamiltonian H. Then we can implement an ε-precise
+Hamiltonian simulation unitary V which is an (1, a + 2, ε)-block-encoding of eitH, with 3r
+
+eα|t|
+2 , ε
+6
+
+uses of U or its inverse, 3 uses of controlled-U or its inverse and with O
+
+ar
+
+eα|t|
+2 , ε
+6
+
+two-qubit
+gates and using O(1) ancilla qubits.
+Proof. Use the polynomials of Lemma 57 and combine the even real polynomial ε
+6-approximating
+cos(αt) with the odd imaginary polynomial ε
+6-approximating i · sin(αt) using the same method as
+Theorem 56 in order to get an (1, a + 2, ε
+6)-block-encoding of eitH/2. Then use robust oblivious
+amplitude ampliﬁcation Corollary 28 in order get an (1, a + 2, ε)-block-encoding of eitH.
+Now we prove some bounds on r(t, ε), in order to make the above result more accessible.
+Lemma 59 (Bounds on r(t, ε)). For t ∈R+ and ε ∈(0, 1)
+r(t, ε) = Θ
+
+t +
+ln(1/ε)
+ln(e + ln(1/ε)/t)
+
+.
+Moreover, for all q ∈R+ we have that
+r(t, ε) < eqt + ln(1/ε)
+q
+.
+Proof. First consider the case t ≥ln(1/ε)
+e
+and set r := et, then we get that
+∀t ≥ln(1/ε)
+e
+:
+ t
+et
+et
+=
+1
+e
+et
+≤ε
+=⇒
+∀t ≥ln(1/ε)
+e
+: r(t, ε) ≤et.
+(57)
+Now we turn to the case t ≤ln(1/ε)
+e
+, and try to ﬁnd r = r(t, ε).
+ t
+r
+r
+= ε
+⇐⇒
+r
+t
+r
+t =
+1
+ε
+1
+t
+⇐⇒
+r
+t ln
+r
+t
+
+= ln
+1
+ε
+1
+t .
+(58)
+Let us deﬁne x := r
+t ≥1 and c := ln
+  1
+ε
+ 1
+t ≥e. We will examine the solution of the equation
+x ln(x) = c for c ≥e. We see that the function x ln(x) is monotone increasing on [1, ∞), takes
+value 0 at 1 and in the x →∞limit it tends to inﬁnity, therefore the equation x ln(x) = c has a
+unique solution for all c ∈R+. Moreover, if b, B ∈[1, ∞) are such that b ln(b) ≤c ≤B ln(B), then
+b ≤x ≤B. Therefore we can see that
+c
+ln(c) ≤x since
+c
+ln(c) ln
+
+c
+ln(c)
+
+=
+c
+ln(c)(ln(c) −ln(ln(c))) = c
+
+1 −ln(ln(c))
+ln(c)
+
+≤c.
+51
+
+By a similar argument we can see that x ≤5
+3
+e+c
+log(e+c) ≤
+4c
+log(e+c), since
+5
+3
+e + c
+ln(e + c) ln
+5
+3
+e + c
+ln(e + c)
+
+> 5
+3
+e + c
+ln(e + c) ln
+
+e + c
+ln(e + c)
+
+= 5
+3
+e + c
+ln(e + c)(ln(e + c) −ln(ln(e + c)))
+= 5
+3(e + c)
+
+1 −ln(ln(e + c))
+ln(e + c)
+
+≥5
+3(e + c)
+
+1 −1
+e
+
+
+∀y ∈R+ : ln(y)
+y
+≤1
+e
+
+> e + c
+> c.
+Thus for x ≥1, c ≥e we get that the solution of the equation x log(x) = c satisﬁes
+c
+log(e + c) ≤
+c
+ln(c) ≤x ≤
+4c
+log(e + c).
+(59)
+Using x = r
+t ⇒r = tx and c = ln
+  1
+ε
+ 1
+t from (58)-(59) we get that
+∀t ≤ln(1/ε)
+e
+:
+ln(1/ε)
+ln(e + ln(1/ε)/t) ≤r(t, ε) ≤
+4 ln(1/ε)
+ln(e + ln(1/ε)/t).
+(60)
+Combining (57) and (60) while observing t ≤r(t, ε) and
+ln(1/ε)
+ln(e+ln(1/ε)/t) ≤ln(1/ε), we get that
+∀ε ∈(0, 1)∀t ∈R+ : r(t, ε) = Θ
+
+t +
+ln(1/ε)
+ln(e + ln(1/ε)/t)
+
+.
+(61)
+Finally note that for rq := eqt + ln(1/ε)/q, then we get
+ t
+r1
+rq
+≤
+ e−qrq ≤e−ln(1/ε) = ε
+=⇒
+r(t, ε) ≤rq.
+This enables us to conclude the complexity of block-Hamiltonian simulation.
+Note that for
+t ≤ε Hamiltonian simulation with ε-precision is trivial if ∥H∥≤1, therefore we should assume that
+t = Ω(ε) in order to avoid this trivial situation. Apart from this we can conclude the complexity of
+block-Hamiltonian simulation for entire range of interesting parameters.
+Corollary 60 (Complexity of block-Hamiltonian simulation). Let ε ∈(0, 1
+2), t ∈R and α ∈R+.
+Let U be an (α, a, 0)-block-encoding of the unknown Hamiltonian H. In order to implement an
+ε-precise Hamiltonian simulation unitary V which is an (1, a + 2, ε)-block-encoding of eitH, it is
+necessary and suﬃcient to use the unitary U a total number of times
+Θ
+
+α|t| +
+log(1/ε)
+log(e + log(1/ε)/(α|t|))
+
+.
+52
+
+Proof. The upper bound follows from Theorem 58 and Lemma 59. The lower bound follows from
+the argument laid out in [LC17b] using Lemma 59.
+Note that the above corollary also covers the range t ≪1, unlike the result of Low and
+Chuang [LC16] who assumed t = Ω(1). Also note that this result does not entirely match the
+complexity stated by Low and Chuang [LC17b, LC16]. For example in the case t =
+log(1/ε)
+log(log(1/ε))
+the above corollary shows that the complexity is Θ
+
+log(1/ε)
+log(log(log(1/ε)))
+
+, whereas the expression of
+[LC17b, LC16] claims complexity O
+
+log(1/ε)
+log(log(1/ε))
+
+.
+The following lemma of Chakraborty et al. [CGJ18, Appendix A] helps us to understand error
+accumulation in Hamiltonian simulation, which enables us to present a slightly improved claim in
+Theorem 62.
+Lemma 61. Let t ∈R and H, H′ ∈Cn×n Hermitian operators, then
+eitH −eitH′ ≤|t|
+H −H′.
+Now we prove a robust version of Theorem 58 using Lemma 61, and also substitute a simple
+expression of Lemma 59 bounding r(t, ε) in order to get explicit constants.
+Corollary 62. (Robust block-Hamiltonian simulation) Let t ∈R, ε ∈(0, 1) and let U be an
+(α, a, ε/|2t|)-block-encoding of the Hamiltonian H. Then we can implement an ε-precise Hamiltonian
+simulation unitary V which is an (1, a + 2, ε)-block-encoding of eitH, with 6α|t| + 9 log(12/ε) uses of
+U or its inverse, 3 uses of controlled-U or its inverse, using O(a(α|t| + log(2/ε))) two-qubit gates
+and using O(1) ancilla qubits.
+Proof. Let H′ = α(⟨0|⊗a ⊗I)U(|0⟩⊗a ⊗I), then ∥H′ −H∥≤ε/|2t|.
+By Theorem 58 we can
+implement V an (1, a + 2, ε/2)-block-encoding of eitH′, with 3r
+
+eα|t|
+2 , ε
+12
+
+uses of U or its inverse, 3
+uses of controlled-U or its inverse and with O
+
+ar
+
+eα|t|
+2 , ε
+12
+
+two-qubit gates and using O(1) ancilla
+qubits. By Lemma 61 we get that V is an (1, a + 2, ε)-block-encoding of eitH. Finally by Lemma 59
+choosing q := 1
+3 we get that
+r
+eα|t|
+2
+, ε
+12
+
+≤eq eα|t|
+2
++ ln(12/ε)
+q
+≤2α|t| + 3 ln(12/ε).
+5.2
+Bounded polynomial approximations of piecewise smooth functions
+We begin by invoking a slightly surprising result showing how to eﬃciently approximate monomials
+on the interval [−1, 1] with essentially quadratically smaller degree polynomials than the monomial
+itself. The following theorem can be found in the survey of Sachdeva and Vishnoi [SV14, Theorem
+3.3].
+Theorem 63 (Eﬃcient approximation of monomials on [−1, 1]). For any positive integers s and d,
+there exists an eﬃciently computable degree-d polynomial Ps,d ∈R[x] that satisﬁes
+∥Ps,d(x) −xs∥[−1,1] ≤2e−d2/(2s).
+53
+
+If one wants to approximate smooth functions on the entire [−1, 1] interval this result gives
+essentially quadratic savings. For example one can easily derive Corollary 64 using the above result
+as shown in [SV14].
+Corollary 64 (Polynomial approximations of the exponential function). Let β ∈R+ and ε ∈(0, 1
+2].
+There exists an eﬃciently constructable polynomial P ∈R[x] such that
+e−β(1−x) −P(x)
+
+[−1,1] ≤ε,
+and the degree of P is O
+q
+max
+
+β, log(1
+ε)
+
+log(1
+ε)
+
+.
+However, we often want to implement functions that are smooth only on some compact subset
+of C ⊆[−1, 1], which requires diﬀerent techniques. The main diﬃculty is to achieve a good ap-
+proximation on C, while keeping the norm of the approximating polynomial bounded on the whole
+[−1, 1] interval. We overcome this diﬃculty by using Fourier approximations on C, which give rise to
+bounded functions naturally. Later we convert these Fourier series to a polynomial using Lemma 57
+from the previous subsection.
+Apeldoorn et al [AGGW17, Appendix B] developed techniques that make it possible to imple-
+ment smooth-functions of a Hamiltonian H, based on Fourier series decompositions and using the
+Linear Combinations of Unitaries (LCU) Lemma [BCK15]. The techniques developed in [AGGW17,
+Appendix B] access H only through controlled-Hamiltonian simulation, which step can be omitted
+using singular value transformation techniques by constructing the corresponding bounded low-
+degree polynomials.
+Now we invoke one of the main technical results of [AGGW17, Lemma 37] about approximating
+smooth functions by low-weight Fourier series. By low weight we mean that the 1-norm of the
+coeﬃcients is small. A notable property of the following result is that the bounds on the Fourier
+series do not depend on the degrees of the polynomials terms.
+This can however be expected
+since the terms that have large degree make negligible contribution due to the restricted domain
+x ∈[−1 + δ, 1 −δ], and therefore we can drop them without loss of generality.
+Lemma 65 (Low weight approximation by Fourier series). Let δ, ε ∈(0, 1) and f : R →C s.t.
+f(x)−PK
+k=0 akxk ≤ε/4 for all x ∈[−1 + δ, 1 −δ]. Then ∃c ∈C2M+1 such that
+f(x) −
+M
+X
+m=−M
+cme
+iπm
+2 x
+ ≤ε
+for all x ∈[−1 + δ, 1 −δ], where M = max
+
+2
+l
+ln
+ 4∥a∥1
+ε
+
+1
+δ
+m
+, 0
+
+and ∥c∥1 ≤∥a∥1. Moreover c can be
+eﬃciently calculated on a classical computer in time poly(K, M, log(1/ε)).
+Our main idea is to combine this result with the polynomial approximations of the trigonometric
+functions as in Lemma 57. The low weights are useful because they let us reduce the precision
+required for approximating the Fourier terms.
+Corollary 66 (Bonded polynomial approximations based on a local Taylor series). Let x0 ∈[−1, 1],
+r ∈(0, 2], δ ∈(0, r] and let f : [−x0 −r −δ, x0 + r + δ] →C and be such that f(x0 + x) = P∞
+ℓ=0 aℓxℓ
+54
+
+for all x ∈[−r −δ, r + δ]. Suppose B > 0 is such that P∞
+ℓ=0(r + δ)ℓ|aℓ| ≤B. Let ε ∈
+ 0,
+1
+2B
+
+, then
+there is an eﬃciently computable polynomial P ∈C[x] of degree O
+  1
+δ log
+  B
+ε
+
+such that
+∥f(x) −P(x)∥[x0−r,x0+r] ≤ε
+(62)
+∥P(x)∥[−1,1] ≤ε + ∥f(x)∥[x0−r−δ/2,x0+r+δ/2] ≤ε + B
+(63)
+∥P(x)∥[−1,1]\[x0−r−δ/2,x0+r+δ/2] ≤ε.
+(64)
+Proof. We proceed similarly to the proof of [AGGW17, Theorem 40]. Let L(x) := x−x0
+r+δ be the linear
+transformation taking [x0 −r −δ, x0 + r + δ] to [−1, 1]. Let g(y) := f(L−1(y)), and bℓ:= aℓ(r + δ)ℓ
+such that g(y) = P∞
+ℓ=0 bℓyℓ. Let δ′ :=
+δ
+2(r+δ) and let J =
+ 1
+δ′ log(12B
+ε )
+
+, then for all y ∈[−1, 1] we
+have that
+
+g(y) −
+J−1
+X
+j=0
+bjyj
+
+=
+
+∞
+X
+j=J
+bjyj
+
+≤
+∞
+X
+j=J
+bj(1 −δ′)j ≤(1 −δ′)J
+∞
+X
+j=J
+|bj| ≤
+ 1 −δ′JB ≤e−δ′JB ≤ε
+12.
+Now we construct a Fourier-approximation of g for all y ∈[−1 + δ′, 1 −δ′], with precision ε
+3. Let
+b′ := (b0, b1, . . . , bJ−1) and observe that ∥b′∥1 ≤∥b∥1 ≤B. We apply Lemma 65 to the function
+g, using the polynomial approximation corresponding to the truncation to the ﬁrst J terms, i.e.,
+using the coeﬃcients in b′. Then we obtain a Fourier ε
+3-approximation ˜g(y) := PM
+m=−M ˜cme
+iπm
+2 y of
+g, with
+M = O
+ 1
+δ′ log
+∥b′∥1
+ε′
+
+= O
+r
+δ log
+B
+ε
+
+,
+such that the vector of coeﬃcients ˜c ∈C2M+1 satisﬁes ∥˜c∥1 ≤∥b′∥1 ≤∥b∥1 ≤B. Let
+˜f(x) := ˜g(L(x)) = ˜g
+x −x0
+r + δ
+
+=
+M
+X
+m=−M
+˜cme
+iπm
+2(r+δ)(x−x0) =
+M
+X
+m=−M
+˜cme−
+iπm
+2(r+δ)x0e
+iπm
+2(r+δ)x.
+Since g(y) = f(L−1(y)) we have that f(x) = g(L(x)) thus we can see that ˜f is an ε
+3-precise Fourier
+approximation of f on the interval [x0 −r −δ
+2, x0 + r + δ
+2]. Now we deﬁne ˜P as the polynomial
+that we get by replacing each of the Fourier terms e
+iπm
+2(r+δ)x by
+ε
+3B-approximating polynomials given
+by Lemma 57. Using a tiny rescaling we can assure that the polynomial approximations of e
+iπm
+2(r+δ)x
+have absolute value at most 1 on [−1, 1]. Moreover by Lemma 59 we know that the degree of these
+polynomials are O
+
+M
+r+δ + log
+  B
+ε
+
+= O
+  1
+δ log
+  B
+ε
+
+. Since ∥˜c∥≤B, we get that the absolute value
+of the polynomial ˜P is bounded by B on the interval [−1, 1]. Finally we deﬁne P as the product of
+˜P and an approximation polynomial of the rectangle function that is
+ε
+3B-close to 1 on the interval
+[x0 −r, x0 + r], and is
+ε
+3B-close to 0 on the interval [−1, 1] \ [x0 −r −δ
+2, x0 + r + δ
+2], ﬁnally which
+is bounded by 1 on the interval [−1, 1] in absolute value. By Lemma 29 we can construct such a
+polynomial of degree O
+  1
+δ log
+  B
+ε
+
+. As we can see P has degree O
+  1
+δ log
+  B
+ε
+
+, and by construction
+satisﬁes the required properties (62)-(64).
+Combining this polynomial approximation result with Theorem 56 we can eﬃciently implement
+smooth functions of Hermitian matrices. As an application, motivated by the work of Chakraborty
+et al. [CGJ18] we show how to construct low-degree polynomial approximations of power functions.
+55
+
+Corollary 67 (Polynomial approximations of negative power functions). Let δ, ε ∈(0, 1
+2], c > 0 and
+let f(x) := δc
+2 x−c, then there exist even/odd polynomials P, P ′ ∈R[x], such that ∥P −f∥[δ,1] ≤ε,
+∥P∥[−1,1] ≤1 and similarly ∥P ′ −f∥[δ,1] ≤ε, ∥P ′∥[−1,1] ≤1, moreover the degree of the polynomials
+are O
+
+max[1,c]
+δ
+log
+  1
+ε
+
+.
+Proof. First note that for all y ∈(−1, 1) we have that (1 + y)−c = P∞
+k=0
+ −c
+k
+
+yk. We ﬁrst ﬁnd a
+polynomial ˜P ∈C[x] such that
+ ˜P −f
+
+[δ,1] ≤ε
+2,
+ ˜P
+
+[−1,0] ≤ε
+2 and
+ ˜P
+
+[−1,1] ≤1. We construct
+such a polynomial of degree O
+
+max[1,c]
+δ
+log
+  1
+ε
+
+using Corollary 66, with choosing x0 := 0, r := 1−δ,
+δ′ :=
+δ
+2 max[1,c] and B := 1. The choice of B is justiﬁed by the observation that
+δc
+2
+∞
+X
+k=0
+
+−c
+k
+(r + δ′)k = δc
+2
+∞
+X
+k=0
+−c
+k
+
+(−r −δ′)k = δc
+2 (1 −r −δ′)−c
+= δc
+2 (δ −δ′)−c = 1
+2
+
+1 −δ′
+δ
+−c
+= 1
+2
+
+1 −
+1
+2 max[1, c]
+−c
+≤1.
+Finally, we deﬁne P as the even real part of ˜P, and deﬁne P ′ as the odd real part of ˜P.
+Given a (1, a, 0)-block-encoding of A, with the promise that the spectrum of A lies in [δ, 1], using
+the above polynomials and Theorem 56 we can implement a (1, a + 2, ε)-block-encoding of δc
+2 A−c
+with O
+
+max[1,c]
+δ
+log
+  1
+ε
+
+uses of the block-encoding of A. Since the derivative of the function δc
+2 x−c
+at x = δ is −c
+2δ, we get by Theorem 73 that the δ and c dependence of the complexity of this
+procedure is optimal.
+Finally we develop a theorem that is analogous to [AGGW17, Corollary 42], and shows that
+any function that has quickly converging local Taylor-series can in principle be ε-approximated with
+complexity ∝log
+  1
+ε
+
+.
+Theorem 68 (Bounded polynomial approximation based on multiple local Taylor series). Let J ∈
+N, (xj, rj, δj) ∈[−1, 1]J ×(0, 2]J ×(0, 1]J, such that xj : j ∈[J] is monotone increasing, and δj ≤rj
+for all j ∈[J]. Let I := S
+j∈[J][xj −rj, xj + rj] be the union of the intervals [xj −rj, xj + rj],
+and suppose that for all i < j ∈[J] such that j −i ≥2 we have that rj + rj < xj −xj. Let
+δ = min
+
+minj∈[J] δj, minj∈[J−1] |xj+1 −xj −(rj+1 + rj)|
+
+. Let f : I + [−δ
+2, δ
+2] →C, B ∈R+ be
+such that for all j ∈[J] we have f(xj + x) = P∞
+k=0 a(j)
+k xk for all x ∈[xj −rj −δj
+2 , xj + rj + δj
+2 ]
+and P∞
+k=0(rj + δj)k|a(j)
+k | ≤B. Let ε ∈
+ 0,
+1
+2BJ
+
+, then there is an eﬃciently computable polynomial
+P ∈C[x] of degree O
+  J
+δ log
+  BJ
+ε
+
+such that
+∥f(x) −P(x)∥I ≤ε
+∥P(x)∥[−1,1] ≤∥f(x)∥I+[−δ/2,δ/2]
+∥P(x)∥[−1,1]\(I+[−δ/2,δ/2]) ≤ε.
+56
+
+Proof. Use Corollary 66 to construct polynomials fj : j ∈[J] of degree O
+  1
+δ log
+  BJ
+ε
+
+such that
+∥f(x) −fj(x)∥[xj−rj,xj+rj] ≤ε
+4J
+∥fj(x)∥[−1,1] ≤∥f(x)∥I+[−δ/2,δ/2]
+∥fj(x)∥[−1,1]\([xj−rj,xj+rj]+[−δ/2,δ/2]) ≤ε.
+Let us introduce a notation for the union of the intervals [xi −ri, xi + ri]: i ∈{j, j + 1, . . . , k} as
+I[j,k] :=
+[
+i∈{j,j+1,...,k}
+[xi −ri, xi + ri].
+We show inductively how to construct polynomials f[j,k] of degree O
+
+k−j+1
+δ
+log
+  BJ
+ε
+
+such that
+f(x) −f[j,k](x)
+
+I[j,k] ≤2(k −j + 1)ε
+2J
+(65)
+f[j,k](x)
+
+[−1,1] ≤∥f(x)∥I+[−δ/2,δ/2]
+(66)
+f[j,k](x)
+
+[−1,1]\(I[j,k]+[−δ/2,δ/2]) ≤ε.
+(67)
+We already showed how to construct f[j,j] := fj : j ∈[J]. Suppose that we already constructed
+f[1,j], then we construct f[1,j+1] as follows. We take a polynomial S(x) of degree O
+  1
+δ log
+  BJ
+ε
+
+that
+approximates the shifted sign function s.t.
+S(x) −sign
+
+x −xi+xj
+2
+
+[−1,1]\
+h xi+xj−δ
+2
+,
+xi+xj+δ
+2
+i ≤
+ε
+8BJ ,
+moreover ∥S∥[−1,1] ≤1. Then we deﬁne f[1,j+1] := 1−S(x)
+2
+f[1,j] + 1+S(x)
+2
+f[j+1,j+1]. It satisﬁes (66)-
+(67), since f[1,j+1] is a point-wise convex combination of f[1,j] and f[j+1,j+1]. Similarly (65) is also
+easy to verify. Therefore by induction we can ﬁnally construct P := f[1,J], which satisﬁes (65)-(67)
+and therefore also the requirements of the theorem.26
+A direct corollary of this theorem is for example that for all ε ∈(0, 1
+2] the function δ
+x can be
+ε-approximated on the domain [−1, 1] \ [−δ, δ] with a polynomial of degree O
+  1
+δ log
+  1
+ε
+
+. Although
+this also follows from Corollary 67, we prove it directly using Theorem 68, in order to illustrate its
+usefulness.
+Corollary 69 (Polynomial approximations of 1
+x). Let ε, δ ∈(0, 1
+2], then there is an odd polynomial
+P ∈R[x] of degree O
+  1
+δ log
+  1
+ε
+
+that is ε-approximating f(x) = 3
+4
+δ
+x on the domain I = [−1, 1] \
+[−δ, δ], moreover it is bounded 1 in absolute value.
+Proof. Take J := 2, (x1 := −1, r1 := 1 −δ, δ1 := δ
+2), (x2 := 1, r2 := 1 −δ, δ2 := δ
+2) and B = 1 in
+Theorem 68, observing that f(1 + x) = 3δ
+4
+P∞
+k=0 −(1)kxk = −f(−1 + x). Deﬁne P as the odd real
+part of the polynomial given by Theorem 68.
+26Note that this approach could be further improved to produce a degree O
+
+log(J)
+δ
+log
+
+B log(J)
+ε
+
+approximating
+polynomial by combining the polynomial approximations on the diﬀerent intervals in a binary tree structure. Since
+J = O
+  1
+δ
+
+, log(J) = log
+  1
+δ
+
+and then this gives at most a logarithmic overhead.
+57
+
+5.3
+Applications: fractional queries and Gibbs sampling
+Scott Aaronson listed as one of “The ten most annoying questions in quantum computing” [Aar06]
+the following problem: given a unitary U, can we implement
+√
+U? This was positively answered by
+Sheridan et al. [SMM09]. We show how to improve the complexity of the result of Sheridan et al.
+exponentially in terms of the error dependence. We proceed follow ideas of Low and Chuang [LC17a].
+Suppose that we have access to a unitary U = eiH, where H is a Hamiltonian of norm at most
+1
+2. Low and Chuang [LC17a] showed how to get a (1, 2, ε)-block-encoding of H with O
+ log
+  1
+ε
+
+uses
+of U. We reprove this result; our proof becomes quite simple thanks to Corollary 66.
+Lemma 70 (Polynomial approximations of arcsin(x)). Let δ, ε ∈(0, 1
+2], there is an eﬃciently
+computable odd real polynomial P ∈R[x] of degree O
+  1
+δ log
+  1
+ε
+
+such that ∥P∥[−1,1] ≤1 and
+P(x) −2
+π arcsin(x)
+
+[−1+δ,1−δ]
+≤ε.
+Proof. Observe that 2
+π arcsin(x) = P∞
+ℓ=0
+ 2ℓ
+ℓ
+ 2−2ℓ
+2ℓ+1
+2
+πx2ℓ+1 for all x ∈[−1, 1]. Therefore we also have
+P∞
+ℓ=0
+
+ 2ℓ
+ℓ
+ 2−2ℓ
+2ℓ+1
+2
+π
+ = 1. The result immediately follows by taking the odd real part of the polynomial
+given by Corollary 66.
+Corollary 71 (Implementing the logarithm of unitaries). Suppose that U = eiH, where H is a
+Hamiltonian of norm at most 1
+2. Let ε ∈(0, 1
+2], then we can implement a ( 2
+π, 2, ε)-block-encoding of
+H with O
+ log
+  1
+ε
+
+uses of controlled-U and its inverse, using O
+ log
+  1
+ε
+
+two-qubit gates and using
+a single ancilla qubit.
+Proof. Let cU denote the controlled version of U controlled by the ﬁrst qubit. Then
+sin(H) = −i(⟨+| ⊗I)cU†(ZX ⊗I)cU(|+⟩⊗I).
+Now we apply singular value transformation Corollary 18 using an ε-approximating polynomial of
+2
+π arcsin(x) on the domain [−1
+2, 1
+2].
+Combining the above result with block-Hamiltonian simulation techniques Corollary 62 we can
+implement fractional queries of unitaries with complexity O
+ log2  1
+ε
+
+. As we show in the following
+corollary this complexity can be reduced to O
+ log
+  1
+ε
+
+by directly implementing27 Hamiltonian
+simulation using a block-encoding of sin(H) rather than H.
+Corollary 72 (Implementing fractional queries). Suppose that U = eiH, where H is a Hamiltonian
+of norm at most 1
+2. Let ε ∈(0, 1
+2] and t ∈[−1, 1], then we can implement an ε-approximation of
+Ut = eitH with O
+ log
+  1
+ε
+
+uses of controlled-U and its inverse, using O
+ log
+  1
+ε
+
+two-qubit gates and
+using O(1) ancilla qubits.
+Proof. As we have shown in the proof of Corollary 71, one can implement a block-encoding of
+sin(H) with a constant number of queries to U. Let us look at the Taylor series of eit arcsin(x). One
+can see that the 1-norm of the coeﬃcients of the Taylor series of t arcsin(x) is |t| arcsin(1) = |t|π
+2 .
+Therefore, for t ∈[−2
+π, 2
+π] we get that the 1-norm of the Taylor series of eit arcsin(x) is at most e1 = e.
+27The method we describe uses block-encoding formalism, but in fact one could implement it more directly using
+a Fourier series based approach similarly to the one used for Hamiltonian simulation by Low and Chuang [LC17b].
+58
+
+Thereby, using Theorem 68 we can construct polynomial O(ε)-approximations of sin(t arcsin(x))
+and cos(t arcsin(x)) of degree O
+ log
+  1
+ε
+
+, which are bounded by 1 in absolute value on the interval
+[−1, 1]. We can combine these polynomials in a similar way as in the proof of Theorem 58. This
+way we can implement an ε-approximation of Ut for all t ∈[−2
+π, 2
+π] with complexity O
+ log
+  1
+ε
+
+.
+Implementing Ut for all t ∈[−1, 1] can be achieved by implementing U
+t
+2 twice an taking their
+product.
+Note that the above technique can be combined with an initial phase estimation in order to
+implement fractional queries under the weaker promise ∥H∥≤π −δ.
+It suﬃces to perform a
+δ-precise phase estimation with success probability 1 −poly(ε), then implement fractional queries
+using Corollary 72 and then undo the initial phase estimation. This leads to complexity O
+  1
+δ log
+  1
+ε
+
+,
+which exponentially improves the complexity O
+ max[1
+δ, 1
+ε] log
+  1
+ε
+
+of Sheridan et al. [SMM09] in the
+case of δ = Θ(1). Note that Sheridan et al. [SMM09] also proved a lower bound on this problem,
+which shows that the δ dependence of this algorithm is actually optimal. We believe that the log(1
+ε)
+dependence in the runtime is also necessary, therefore this algorithm is probably fairly close to
+optimal.
+After implementing a fractional query, such that ∥H∥≤1
+2 is satisﬁed, one can use Corollary 72
+to implement the logarithm of the unitary. Also note the gap promise on the spectrum of U is
+necessary for implementing the fractional queries, but it is not important that the gap is exactly at
+eiπ, one can just add a phase gate for example to U in order to rotate the spectrum.
+Finally, we brieﬂy describe how these techniques can be used for Gibbs sampling. If one ﬁrst
+prepares a maximally entangled state on two registers and applies the map e−β
+2 (H+I) on the ﬁrst
+register, then one gets a subnormalized Gibbs state eβ(H+I) on the ﬁrst register.
+Then, using
+(ﬁxed-point) amplitude ampliﬁcation one gets a puriﬁcation of a Gibbs-state. Each of these steps
+can be compactly performed using singular value transformation techniques, providing an eﬃcient
+implementation.
+An ε-approximation of the map e−β
+2 (H+I) can be implemented using Theorem 56 and Corol-
+lary 64 with query complexity O
+ √β log (1/ϵ)
+
+, and it suﬃces to use O
+ p n
+Z
+
+amplitude ampli-
+ﬁcation steps in order to prepare the Gibbs-state with constant success probability, where n is
+dimension of H and Z := Tr
+
+e−β(H+I)
+is the partition function. In the case when H does not have
+an eigenvalue close to −1, but say λmin is the smallest eigenvalue, then one should implement an
+approximation of e−β(H−λminI) on the domain [λmin, 1] in order to avoid unnecessary subnormaliza-
+tion. However note, that this in general increases to complexity and gives a linear dependence on
+β. For more details see, e.g., the work of Appeldoorn et al. [AGGW17, AG18].
+In the special case when one has access to the square root of H, and H has an eigenvalue close
+to 0, then one can still achieve quadratically improved scaling with β as shown by Chowdhury and
+Somma [CS17]. This can be easily shown using our techniques observing that e−βH = e−β(
+√
+H)
+2
+, and
+that the function e−βx2 can be ε-approximated on the interval [0, 1] using a polynomial of degree
+O
+ √β log
+  1
+ε
+
+as follows from Theorem 63 or Corollary 64.
+6
+Limitations of the smooth function techniques
+In the classical literature there are many good techniques for lower bounding the degrees of ap-
+proximation polynomials [SV14]. There is a intimate relationship between the degrees of approx-
+imation polynomials quantum query complexity [BBC+01].
+In a recent result Arunachalam et
+59
+
+al. [ABP17] showed that for discrete problems certain polynomial approximations characterize the
+quantum query complexity. There are also some result about lower bounds for continuous prob-
+lems [Aar09, Bel15, GAW17], however the literature to this end is much more sparse.
+To advance the knowledge on lower bounds in the continuous regime, we prove a conceptually
+simple lower bound on eigenvalue transformations, which guides our intuition about what sort of
+transformations are possible. Intuitively speaking if a function has derivative d on the domain of
+interest then we need to use the block-encoding Ω(d)-times in order to implement the eigenvalue
+transformation corresponding to f. This suggests that Theorem 68 applied together with Theo-
+rem 56 often gives optimal results, since the δ parameter usually turns out to be ∝1
+d, where d is
+the maximal derivative of the function on the domain of interest.
+Theorem 73 (Lower bound for eigenvalue transformation). Let I ⊆[−1, 1], a ≥1 and suppose U is
+a (1, a, 0)-block-encoding of an unknown Hermitian matrix H with the only promise that the spectrum
+of H lies in I. Let f : I →R, and suppose that we have a quantum circuit V that implements a
+(1, b, ε)-block-encoding of f(H) using T applications of U, for all U fulﬁlling the promise. Then for
+all x̸ = y ∈I ∩[−1
+2, 1
+2] we have that
+T = Ω
+|f(x) −f(y)| −2ε
+|x −y|
+
+.
+More precisely for all x, y ∈I we have that
+T ≥
+max
+h
+f(x) −f(y) −2ε,
+p
+1 −(f(y) −ε)2 −
+p
+1 −(f(x) + ε)2
+i
+√
+2
+q
+1 −xy −
+p
+(1 −x2)(1 −y2)
+(68)
+≥
+max
+h
+f(x) −f(y) −2ε,
+p
+1 −(f(y) −ε)2 −
+p
+1 −(f(x) + ε)2
+i
+√
+2 max
+h
+|x −y|,
+
+√
+1 −x2 −
+p
+1 −y2
+
+i
+.
+(69)
+Proof. First let us examine the case when H is a d×d matrix, a = 1 and U is of size 2d×2d. Recall
+that in (13) we deﬁned the two-dimensional reﬂection operator
+R(x) =
+
+x
+√
+1 −x2
+√
+1 −x2
+−x
+
+,
+and note, that for all x, y ∈[0, 1] we have that
+∥R(x) −R(y)∥=
+√
+2
+q
+1 −xy −
+p
+(1 −x2)(1 −y2) ≤
+√
+2 max
+h
+|x −y|,
+
+p
+1 −x2 −
+p
+1 −y2
+
+i
+.
+(70)
+For all z ∈[0, 1] let Uz := Ld
+i=1 R(z), where the direct sum structure is arranged in such a way that
+Uz is a (1, 1, 0)-block-encoding of Hz := zI. Let V [Uz] denote the circuit V when using the input
+unitary Uz. Since V [Uz] uses Uz a total number of T times we have that
+∥V [Ux] −V [Uy]∥≤T∥Ux −Uy∥= T∥R(x) −R(y)∥.
+(71)
+By the promise on V we get that V [Uz] is a (1, b, ε)-block-encoding of f(Hz) = f(z)I. Let ςmax / min
+denote the maximal/minimal singular value of a matrix. Using this notation we get that
+ςmax
+h
+(⟨0|⊗b⊗I)V [Uy](|0⟩⊗b⊗I)
+i
+≤f(y) + ε,
+(72)
+ςmin
+h
+(⟨0|⊗b⊗I)V [Ux](|0⟩⊗b⊗I)
+i
+≥f(x) −ε.
+(73)
+60
+
+Let use introduce the notation Π|0⟩⟨0| :=
+  Ib −|0⟩⟨0|⊗b
+⊗I
+
+, then by (72)-(73) we have that
+∥V [Ux] −V [Uy]∥≥
+(|0⟩⟨0|⊗b ⊗I)V [Ux](|0⟩⟨0|⊗b ⊗I) −(|0⟩⟨0|⊗b ⊗I)V [Uy](|0⟩⟨0|⊗b ⊗I)
+
+≥ςmin
+h
+(⟨0|⊗b⊗I)V [Ux](|0⟩⊗b⊗I)
+i
+−ςmax
+h
+(⟨0|⊗b⊗I)V [Uy](|0⟩⊗b⊗I)
+i
+≥f(x) −f(y) −2ε, and
+(74)
+∥V [Uy] −V [Ux]∥≥
+Π|0⟩⟨0|V [Uy](|0⟩⟨0|⊗b ⊗I) −Π|0⟩⟨0|V [Ux](|0⟩⟨0|⊗b ⊗I)
+
+≥ςmin
+h
+Π|0⟩⟨0|V [Uy](|0⟩⊗b⊗I)
+i
+−ςmax
+h
+Π|0⟩⟨0|V [Ux](|0⟩⊗b⊗I)
+i
+=
+r
+1−ς2max
+h
+(⟨0|⊗b⊗I)V [Uy](|0⟩⊗b⊗I)
+i
+−
+r
+1−ς2
+min
+h
+(⟨0|⊗b⊗I)V [Ux](|0⟩⊗b⊗I)
+i
+≥
+p
+1 −(f(y) −ε)2 −
+p
+1 −(f(x) + ε)2.
+(75)
+By combining (71) and (74)-(75) we get that
+T ≥
+max
+h
+f(x) −f(y) −2ε,
+p
+1 −(f(y) −ε)2 −
+p
+1 −(f(x) + ε)2
+i
+∥R(x) −R(y)∥
+.
+Combining this inequality with (70) proves (68)-(69). Finally note, that if a > 1 essentially the
+same argument can be used to prove (68)-(69), just one needs to deﬁne Uz with additional tensor
+products of identity matrices acting on the new ancilla qubits.
+The above lower bound suggests that the spectrum of H lying closea to 1 is more ﬂexible than
+the spectrum lying below say 1
+2 in absolute value. Indeed it turns out that the spectrum of H
+lying close to 1 is quadratically more useful than the spectrum I ⊆[−1
+2, 1
+2], cf. Corollary 64 and
+Lemma 22. This lower bound also explains why is it so diﬃcult to amplify the spectrum close to
+1, cf. Theorem 30. Finally note, that since eigenvalue transformation is a special case of singular
+value transformation it also gives a lower bound in singular value transformation.
+7
+Conclusion
+Our main contribution in this paper is to provide a paradigm that uniﬁes a host of quantum
+algorithms ranging from singular value estimation, linear equation solving, quantum simulation
+to quantum walks.
+Prior to our contribution each of these ﬁelds would have to be understood
+independently, which makes mastering all of them a challenge. By presenting them all within the
+framework of quantum singular value transformation, many of the most popular techniques in these
+ﬁelds follow as a direct consequence. This greatly simpliﬁes the learning process while also revealing
+algorithms that were hitherto unknown.
+The main result of this paper is an eﬃcient method for implement singular value transformation,
+extending earlier qubitization techniques. The paper describes several novel applications to this
+general result, including an algorithm for performing certain “non-commutative” measurements, an
+exponentially improved algorithm for simulating fractional queries to an unknown unitary oracle,
+and an improved algorithm for principal component regression.
+61
+
+We also give a novel view on quantum matrix arithmetics by summarizing known results about
+block-encoded matrices, showing that they enable performing matrix arithmetic on quantum com-
+puters in a simple and eﬃcient manner. The described method in principle can give exponential
+savings in terms of the dimension of the matrices, and perfectly ﬁts into our framework.
+An interesting question for future work involves the recent work by Catalin Dohotaru and Peter
+Høyer which shows that a wide range of quantum walk algorithms can be uniﬁed within a single
+paradigm called controlled quantum ampliﬁcation [DH17]. While the structure of the quantum
+circuits introduced by them bears a strong resemblance to those used in qubitization, it is diﬃcult
+to place this work within the framework we present here.
+The question of how to unify their
+approach with our techniques therefore remains open.
+Acknowledgments
+A.G. thanks Ronald de Wolf, Robin Kothari, Joran van Apeldoorn, Shantanav Chakraborty, Stacey
+Jeﬀrey, Vedran Dunjko and Yimin Ge for inspiring discussions. Y.S. was supported in part by the
+Army Research Oﬃce (MURI award W911NF-16-1-0349); the U.S. Department of Energy, Oﬃce
+of Science, Oﬃce of Advanced Scientiﬁc Computing Research, Quantum Algorithms Teams pro-
+gram; and the National Science Foundation (grant 1526380). He thanks Andrew Childs, Guoming
+Wang, Cedric Lin, John Watrous, Ben Reichardt, Guojing Tian and Aaron Ostrander for helpful
+discussions.
+References
+[Aar06]
+Scott Aaronson. The ten most annoying questions in quantum computing, 2006. https:
+//www.scottaaronson.com/blog/?p=112.
+[Aar09]
+Scott Aaronson.
+Quantum copy-protection and quantum money.
+In Proceedings of
+the 24th IEEE Conference on Computational Complexity (CCC), pages 229–242, 2009.
+arXiv: 1110.5353
+[AAR+18]
+Mohammad H. Amin, Evgeny Andriyash, Jason Rolfe, Bohdan Kulchytskyy, and Roger
+Melko. Quantum Boltzmann machine. Physical Review X, 8(2):021050, 2018. arXiv:
+1601.02036
+[ABP17]
+Srinivasan Arunachalam, Jop Briët, and Carlos Palazuelos. Quantum query algorithms
+are completely bounded forms. arXiv: 1711.07285, 2017.
+[AC12]
+Scott Aaronson and Paul Christiano.
+Quantum money from hidden subspaces.
+In
+Proceedings of the 44th ACM Symposium on Theory of Computing (STOC), pages 41–
+60. ACM, 2012. arXiv: 1203.4740
+[AG18]
+Joran van Apeldoorn and András Gilyén. Improvements in quantum SDP-solving with
+applications. arXiv: 1804.05058, 2018.
+[AGGW17] Joran van Apeldoorn, András Gilyén, Sander Gribling, and Ronald de Wolf. Quan-
+tum SDP-solvers: Better upper and lower bounds. In Proceedings of the 58th IEEE
+Symposium on Foundations of Computer Science (FOCS), pages 403–414, 2017. arXiv:
+1705.01843
+62
+
+[AKS12]
+Andris Ambainis, Julia Kempe, and Or Sattath.
+A quantum Lovász local lemma.
+Journal of the ACM, 59(5):24, 2012. arXiv: 0911.1696
+[Amb12]
+Andris Ambainis. Variable time amplitude ampliﬁcation and quantum algorithms for
+linear algebra problems. In Symposium on Theoretical Aspects of Computer Science
+STACS, pages 636–647, 2012. arXiv: 1010.4458
+[AP16]
+Alexei B. Aleksandrov and Vladimir V. Peller. Operator Lipschitz functions. Russian
+Mathematical Surveys, 71(4):605–702, 2016. arXiv: 1611.01593
+[AS74]
+Milton Abramowitz and Irene A. Stegun. Handbook of Mathematical Functions, with
+Formulas, Graphs, and Mathematical Tables. Dover Publications Inc., New York, NY,
+USA, 1974.
+[BACS07]
+Dominic W. Berry, Graeme Ahokas, Richard Cleve, and Barry C. Sanders. Eﬃcient
+quantum algorithms for simulating sparse Hamiltonians. Communications in Mathe-
+matical Physics, 270(2):359–371, 2007. arXiv: quant-ph/0508139
+[BBC+01]
+Robert Beals, Harry Buhrman, Richard Cleve, Michele Mosca, and Ronald de Wolf.
+Quantum lower bounds by polynomials.
+Journal of the ACM, 48(4):778–797, 2001.
+Earlier version in FOCS’98. arXiv: quant-ph/9802049
+[BCC+15]
+Dominic W. Berry, Andrew M. Childs, Richard Cleve, Robin Kothari, and Rolando D.
+Somma.
+Simulating hamiltonian dynamics with a truncated taylor series.
+Physical
+Review Letters, 114(9):090502, 2015. arXiv: 1412.4687
+[BCK15]
+Dominic W. Berry, Andrew M. Childs, and Robin Kothari. Hamiltonian simulation
+with nearly optimal dependence on all parameters. In Proceedings of the 56th IEEE
+Symposium on Foundations of Computer Science (FOCS), pages 792–809, 2015. arXiv:
+1501.01715
+[Bel15]
+Aleksandrs Belovs. Variations on quantum adversary. arXiv: 1504.06943, 2015.
+[BHMT02] Gilles Brassard, Peter Høyer, Michele Mosca, and Alain Tapp. Quantum amplitude
+ampliﬁcation and estimation. In Quantum Computation and Quantum Information:
+A Millennium Volume, volume 305 of Contemporary Mathematics Series, pages 53–74.
+AMS, 2002. arXiv: quant-ph/0005055
+[BKL+17]
+Fernando G. S. L. Brandão, Amir Kalev, Tongyang Li, Cedric Yen-Yu Lin, Krysta M.
+Svore, and Xiaodi Wu. Quantum sdp solvers: Large speed-ups, optimality, and appli-
+cations to quantum learning. arXiv: 1710.02581, 2017.
+[BS17]
+Fernando G. S. L. Brandão and Krysta M. Svore.
+Quantum speed-ups for solving
+semideﬁnite programs. In Proceedings of the 58th IEEE Symposium on Foundations of
+Computer Science (FOCS), pages 415–426, 2017. arXiv: 1609.05537
+[CEMM98] Richard Cleve, Artur Ekert, Chiara Macchiavello, and Michele Mosca. Quantum algo-
+rithms revisited. Proceedings of the Royal Society A, 454(1969):339–354, 1998. arXiv:
+quant-ph/9708016
+63
+
+[CGJ18]
+Shantanav Chakraborty, András Gilyén, and Stacey Jeﬀery.
+The power of block-
+encoded matrix powers: improved regression techniques via faster Hamiltonian sim-
+ulation. arXiv: 1804.01973, 2018.
+[CJKM13]
+Andrew M. Childs, Stacey Jeﬀery, Robin Kothari, and Frédéric Magniez.
+A time-
+eﬃcient quantum walk for 3-distinctness using nested updates. arXiv: 1302.7316, 2013.
+[CKS17]
+Andrew M. Childs, Robin Kothari, and Rolando D. Somma. Quantum algorithm for
+systems of linear equations with exponentially improved dependence on precision. SIAM
+Journal on Computing, 46(6):1920–1950, 2017. arXiv: 1511.02306
+[CMN+17] Andrew M. Childs, Dmitri Maslov, Yunseong Nam, Neil J. Ross, and Yuan Su. Toward
+the ﬁrst quantum simulation with quantum speedup. arXiv: 1711.10980, 2017.
+[CS17]
+Anirban Narayan Chowdhury and Rolando D. Somma.
+Quantum algorithms for
+Gibbs sampling and hitting-time estimation. Quantum Information and Computation,
+17(1&2):41–64, 2017. arXiv: 1603.02940
+[CW12]
+Andrew M. Childs and Nathan Wiebe. Hamiltonian simulation using linear combina-
+tions of unitary operations. Quantum Information and Computation, 12(11&12):901–
+924, 2012. arXiv: 1202.5822
+[DH17]
+Cˇatˇalin Dohotaru and Peter Høyer. Controlled quantum ampliﬁcation. In Proceed-
+ings of the 44th International Colloquium on Automata, Languages, and Programming
+(ICALP), volume 80, pages 18:1–18:13, 2017.
+[Dol46]
+C. L. Dolph. A current distribution for broadside arrays which optimizes the relationship
+between beam width and side-lobe level. Proceedings of the IRE, 34(6):335–348, 1946.
+[EY07]
+Alexandre Eremenko and Peter Yuditskii. Uniform approximation of sgn(x) by poly-
+nomials and entire functions. Journal d’Analyse Mathématique, 101(1):313–324, 2007.
+arXiv: math/0604324
+[EY11]
+Alexandre Eremenko and Peter Yuditskii. Polynomials of the best uniform approxi-
+mation to sgn(x) on two intervals. Journal d’Analyse Mathématique, 114(1):285, 2011.
+arXiv: 1008.3765
+[Fey82]
+Richard P. Feynman.
+Simulating physics with computers.
+International Journal of
+Theoretical Physics, 21(6-7):467–488, 1982.
+[FMMS16] Roy Frostig, Cameron Musco, Christopher Musco, and Aaron Sidford. Principal com-
+ponent projection without principal component analysis. In Proceedings of the 33rd
+International Conference on Machine Learning (ICML), pages 2349–2357, 2016. arXiv:
+1602.06872
+[FN09]
+Yuliya B. Farforovskaya and Ludmila N. Nikolskaya. Modulus of continuity of operator
+functions. St. Petersburg Math. J. – Algebra i Analiz, 20(3):493–506, 2009.
+[GAW17]
+András P. Gilyén, Srinivasan Arunachalam, and Nathan Wiebe. Optimizing quantum
+optimization algorithms via faster quantum gradient computation. arXiv: 1711.00465,
+2017.
+64
+
+[Gil14]
+András P. Gilyén. Quantum walk based search methods and algorithmic applications.
+Master’s thesis, Eötvös Loránd University, 2014.
+[Gro96]
+Lov K. Grover. A fast quantum mechanical algorithm for database search. In Proceed-
+ings of the 28th ACM Symposium on Theory of Computing (STOC), pages 212–219,
+1996. arXiv: quant-ph/9605043
+[Gro05]
+Lov K. Grover. Fixed-point quantum search. Physical Review Letters, 95(15):150501,
+2005. arXiv: quant-ph/0503205
+[GS17]
+András P. Gilyén and Or Sattath. On preparing ground states of gapped Hamiltonians:
+An eﬃcient quantum Lovász local lemma. In Proceedings of the 58th IEEE Symposium
+on Foundations of Computer Science (FOCS), pages 439–450, 2017. arXiv: 1611.08571
+[HHL09]
+Aram W. Harrow, Avinatan Hassidim, and Seth Lloyd. Quantum algorithm for linear
+systems of equations. Physical Review Letters, 103(15):150502, 2009. arXiv: 0811.3171
+[HLM17]
+Aram W. Harrow, Cedric Yen-Yu Lin, and Ashley Montanaro. Sequential measure-
+ments, disturbance and property testing. In Proceedings of the 28th ACM-SIAM Sym-
+posium on Discrete Algorithms (SODA), pages 1598–1611, 2017. arXiv: 1607.03236
+[HLZ+17]
+Yong He, Ming-Xing Luo, E. Zhang, Hong-Ke Wang, and Xiao-Feng Wang. Decompo-
+sitions of n-qubit Toﬀoli gates with linear circuit complexity. International Journal of
+Theoretical Physics, 56(7):2350–2361, 2017.
+[Hø00]
+Peter Høyer. Arbitrary phases in quantum amplitude ampliﬁcation. Physical Review
+A, 62(5):052304, 2000. arXiv: quant-ph/0006031
+[Jor75]
+Camille Jordan. Essai sur la géométrie à n dimensions. Bulletin de la Société Mathé-
+matique de France, 3:103–174, 1875.
+[KL18]
+Iordanis Kerenidis and Alessandro Luongo.
+Quantum classiﬁcation of the MNIST
+dataset via slow feature analysis. arXiv: 1805.08837, 2018.
+[KLL+17]
+Shelby Kimmel, Cedric Yen-Yu Lin, Guang Hao Low, Maris Ozols, and Theodore J.
+Yoder. Hamiltonian simulation with optimal sample complexity. npj Quantum Infor-
+mation, 3(1):13, 2017. arXiv: 1608.00281
+[KMOR16] Hari Krovi, Frédéric Magniez, Maris Ozols, and Jérémie Roland.
+Quantum walks
+can ﬁnd a marked element on any graph. Algorithmica, 74(2):851–907, 2016. arXiv:
+1002.2419
+[KP17a]
+Iordanis Kerenidis and Anupam Prakash. Quantum gradient descent for linear systems
+and least squares. arXiv: 1704.04992, 2017.
+[KP17b]
+Iordanis Kerenidis and Anupam Prakash. Quantum recommendation systems. In Pro-
+ceedings of the 8th Innovations in Theoretical Computer Science Conference (ITCS),
+pages 49:1–49:21, 2017. arXiv: 1603.08675
+[KW17]
+Mária Kieferová and Nathan Wiebe. Tomography and generative training with quantum
+Boltzmann machines. Physical Review A, 96(6):062327, 2017. arXiv: 1612.05204
+65
+
+[LC16]
+Guang Hao Low and Isaac L. Chuang. Hamiltonian simulation by qubitization. arXiv:
+1610.06546, 2016.
+[LC17a]
+Guang Hao Low and Isaac L. Chuang. Hamiltonian simulation by uniform spectral
+ampliﬁcation. arXiv: 1707.05391, 2017.
+[LC17b]
+Guang Hao Low and Isaac L. Chuang. Optimal Hamiltonian simulation by quantum
+signal processing. Physical Review Letters, 118(1):010501, 2017. arXiv: 1606.02685
+[Llo96]
+Seth Lloyd. Universal quantum simulators. Science, 273(5278):1073–1078, 1996.
+[LMR14]
+Seth Lloyd, Masoud Mohseni, and Patrick Rebentrost. Quantum principal component
+analysis. Nature Physics, 10:631–633, 2014. arXiv: 1307.0401
+[LYC16]
+Guang Hao Low, Theodore J. Yoder, and Isaac L. Chuang. Methodology of resonant
+equiangular composite quantum gates. Physical Review X, 6(4):041067, 2016. arXiv:
+1603.03996
+[MNRS11]
+Frédéric Magniez, Ashwin Nayak, Jérémie Roland, and Miklos Santha.
+Search via
+quantum walk.
+SIAM Journal on Computing, 40(1):142–164, 2011.
+arXiv: quant-
+ph/0608026
+[MW05]
+Chris Marriott and John Watrous. Quantum Arthur–Merlin games. Computational
+Complexity, 14(2):122–152, 2005. arXiv: cs/0506068
+[NR96]
+C. Andrew Neﬀand John H. Reif. An eﬃcient algorithm for the complex roots problem.
+Journal of Complexity, 12(2):81 – 115, 1996.
+[NWZ09]
+Daniel Nagaj, Pawel Wocjan, and Yong Zhang. Fast ampliﬁcation of qma. Quantum
+Information and Computation, 9(11&12):1053–1068, 2009. arXiv: 0904.1549
+[RML14]
+Patrick Rebentrost, Masoud Mohseni, and Seth Lloyd. Quantum support vector ma-
+chine for big data classiﬁcation. Physical Review Letters, 113(13):130503, 2014. arXiv:
+1307.0471
+[SA15]
+Or Sattath and Itai Arad. A constructive quantum Lovász local lemma for commuting
+projectors. Quantum Information and Computation, 15(11&12):987–996, 2015. arXiv:
+1310.7766
+[SCV13]
+Martin Schwarz, Toby S. Cubitt, and Frank Verstraete. Quantum information-theoretic
+proof of the commutative quantum Lovász local lemma. arXiv: 1311.6474, 2013.
+[Sho97]
+Peter W. Shor. Polynomial-time algorithms for prime factorization and discrete loga-
+rithms on a quantum computer. SIAM Journal on Computing, 26(5):1484–1509, 1997.
+Earlier version in FOCS’94. arXiv: quant-ph/9508027
+[SMM09]
+Lana Sheridan, Dmitri Maslov, and Michele Mosca.
+Approximating fractional time
+quantum evolution. Journal of Physics A: Mathematical and Theoretical, 42(18):185302,
+2009. arXiv: 0810.3843
+66
+
+[SV14]
+Sushant Sachdeva and Nisheeth K. Vishnoi. Faster algorithms via approximation the-
+ory. Found. Trends Theor. Comput. Sci., 9(2):125–210, 2014.
+[Sze04]
+Mario Szegedy. Quantum speed-up of Markov chain based algorithms. In Proceedings of
+the 45th IEEE Symposium on Foundations of Computer Science (FOCS), pages 32–41,
+2004. arXiv: quant-ph/0401053
+[WBL12]
+Nathan Wiebe, Daniel Braun, and Seth Lloyd. Quantum algorithm for data ﬁtting.
+Physical Review Letters, 109(5):050505, 2012. arXiv: 1204.5242
+[WK17]
+Nathan Wiebe and Ram Shankar Siva Kumar. Hardening quantum machine learning
+against adversaries. arXiv: 1711.06652, 2017.
+[YLC14]
+Theodore J. Yoder, Guang Hao Low, and Isaac L. Chuang.
+Fixed-point quantum
+search with an optimal number of queries. Physical Review Letters, 113(21):210501,
+2014. arXiv: 1409.3305
+67

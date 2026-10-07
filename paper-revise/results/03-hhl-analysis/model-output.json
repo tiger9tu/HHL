@@ -1,0 +1,24 @@
+{
+  "status": "partial_model_application_and_compilation_pending",
+  "scope": "per_attempt_including_QPE_and_inverse_QPE; PF_error_only",
+  "evolution_time_units": "inverse units of normalized H; not seconds",
+  "steps_by_clock_bit": [
+    9949,
+    19898,
+    39795
+  ],
+  "hs1_controlled_calls": 417852,
+  "full_circuit_pf_error_bound": 0.0016666170956428474,
+  "conditioned_state_pf_error_bound": 0.009999702573857084,
+  "success_lower_bound_after_pf": 0.11000281065989267,
+  "expected_attempts_per_success_upper_bound": 9.09067681090264,
+  "gate_counts": null,
+  "logical_depth": null,
+  "logical_qubits": null,
+  "qec_included": false,
+  "physical_resources_included": false,
+  "state_preparation_included": false,
+  "output_measurement_included": false,
+  "repetitions_applied": false,
+  "qpe_accuracy_certified": false
+}

@@ -1,0 +1,92 @@
+{
+  "model_version": "04-T-count-v1.0.0",
+  "parameters": {
+    "instance_id": "generic-real-matrix-stored-data-scenario",
+    "N": 1024,
+    "kappa": 100,
+    "epsilon_state": 0.01,
+    "delta_retry": 0.002,
+    "query_bound": "auto",
+    "rotation_synthesis_offset": 10
+  },
+  "statistic": "modeled expected logical T count per delivered normalized solution state",
+  "T_count": 1477088576213.547,
+  "T_count_ceiling": 1477088576214,
+  "per_query_slot_T": 7679848,
+  "components": {
+    "matrix_queries_T": 400240072824.02075,
+    "rhs_queries_T": 398652555843.46765,
+    "system_tests_T": 153481772.53227025,
+    "qsvt_projectors_T": 677902062648.2776,
+    "wrapper_and_qsvt_rotations_T": 140403125.24881864
+  },
+  "block_encoding": {
+    "dimension": 1024,
+    "index_qubits": 10,
+    "angle_bits": 40,
+    "rotation_T": 146,
+    "data_tree_bits": 41944,
+    "A_uncontrolled_T": 906472,
+    "b_uncontrolled_T": 449144,
+    "A_controlled_T": 2080974,
+    "b_controlled_T": 1036360,
+    "A_control_allowance_T": 1174502,
+    "b_control_allowance_T": 587216,
+    "published_uncontrolled_BE_qubits": 41975
+  },
+  "query_model": {
+    "K": 3200.0,
+    "epsilon_algorithm": 0.005,
+    "eta_KR": 0.041171636917633765,
+    "eta_KP": 0.01936515879703497,
+    "degree_KR": 12428,
+    "degree_KP": 14840,
+    "expected_KR_attempts_bound": 10.695807633007155,
+    "expected_KP_attempts_bound": 1.0666666666666667,
+    "cycle_success_lower_bound": 0.09349457603500741,
+    "eq118_expected_A_queries_bound": 148756.83059634626,
+    "eq19_expected_A_queries_bound": 192333.04828605294,
+    "expected_A_queries_bound": 192333.04828605294,
+    "bound_used": "Costa Eq19"
+  },
+  "normalization": {
+    "original_N": 1024,
+    "padded_dimension": 1024,
+    "kappa_bound": 100.0,
+    "frobenius_over_spectral_bound": 32.0,
+    "rho_source": "sqrt(D) worst case",
+    "effective_inverse_gap": 3200.0
+  },
+  "precision": {
+    "epsilon_state_requested": 0.01,
+    "epsilon_algorithm": 0.005,
+    "implementation_allowance": 0.005,
+    "delta_retry": 0.002,
+    "ideal_cycle_cap": 64,
+    "query_slots_cap": 1745152,
+    "unitary_tolerance_per_component": 8.935468085301453e-11,
+    "angle_rounding_bound": 2.857261873568671e-11,
+    "rotation_tolerance": 2.792333776656704e-14,
+    "BE_unitary_error_design_bound": 7.324995916219398e-11,
+    "rotation_synthesis_model": "modeled ceil(3 log2(1/delta_rotation) + offset); not a certified synthesis bound",
+    "rotation_synthesis_offset": 10
+  },
+  "capped_T_allocation_model": 13402502096896,
+  "conservative_logical_qubit_allocation": 377685,
+  "logical_depth": null,
+  "T_depth": null,
+  "qec_ready": false,
+  "certified_end_to_end": false,
+  "excludes": [
+    "classical table/phase generation and storage",
+    "scientific scalar readout and norm recovery",
+    "QEC and physical overhead"
+  ],
+  "notes": [
+    "Internal ideal solver retries included once in Q; no extra 1/p factor.",
+    "Clader minimum-count Frobenius BE; does not exploit sparse/PDE structure.",
+    "Expected query bound is rigorous under ideal access; total T is a resource model.",
+    "Norm-guess discretization, phase generation, and implemented adaptive success require certification.",
+    "Ceiling of an expectation is not a high-probability resource cap."
+  ]
+}

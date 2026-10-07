@@ -1,0 +1,17 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,microtype,xcolor}
+\usepackage[colorlinks=true,urlcolor=blue!50!black,citecolor=blue!50!black,linkcolor=blue!50!black]{hyperref}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\title{Practical Trotter Error Estimation for HHL\\\large Proposed manuscript replacement}
+\author{HHL paper revision}\date{9 September 2026}
+\begin{document}\maketitle
+\input{method-section.tex}
+\begin{thebibliography}{4}
+\bibitem{maxwell} W.~Maxwell et al., \emph{Practical Estimation of Trotter Error for Hamiltonian Simulation}, arXiv:2606.30738v1 (2026), Section III.2. \href{https://arxiv.org/html/2606.30738v1}{Primary manuscript}.
+\bibitem{plbch} PennyLane documentation, \texttt{bch\_expansion}. \href{https://docs.pennylane.ai/en/stable/code/api/api/pennylane.labs.trotter_error.bch_expansion.html}{API reference}, accessed 9 September 2026.
+\bibitem{pleffective} PennyLane documentation, \texttt{effective\_hamiltonian}. \href{https://docs.pennylane.ai/en/stable/code/api/api/pennylane.labs.trotter_error.effective_hamiltonian.html}{API reference}, accessed 9 September 2026.
+\bibitem{plbound} PennyLane documentation, \texttt{TrotterProduct.error}. \href{https://docs.pennylane.ai/en/stable/code/api/pennylane.TrotterProduct.html}{API reference}, accessed 9 September 2026.
+\end{thebibliography}
+\end{document}

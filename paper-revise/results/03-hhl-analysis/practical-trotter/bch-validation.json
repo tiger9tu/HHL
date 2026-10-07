@@ -1,0 +1,34 @@
+{
+  "seed": 20260909,
+  "N": 4,
+  "fragments": 3,
+  "convention": "ordered product exp(+i h Ha)",
+  "rows": [
+    {
+      "h": 0.04,
+      "coefficient_difference": 0.013576978033512667,
+      "leading_remainder": 0.0005430791213405065
+    },
+    {
+      "h": 0.02,
+      "coefficient_difference": 0.006768454993973173,
+      "leading_remainder": 0.00013536909987946335
+    },
+    {
+      "h": 0.01,
+      "coefficient_difference": 0.003379386697316966,
+      "leading_remainder": 3.379386697316958e-05
+    },
+    {
+      "h": 0.005,
+      "coefficient_difference": 0.001688504151292829,
+      "leading_remainder": 8.442520756464104e-06
+    }
+  ],
+  "remainder_orders": [
+    2.004263941244416,
+    2.002065108585187,
+    2.0010157187156556
+  ],
+  "passed": true
+}

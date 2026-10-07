@@ -1,0 +1,104 @@
+{
+  "model_version": "04-T-count-v1.0.0",
+  "parameters": {
+    "instance_id": "02-smooth-diffusion-v1-stored-data-state-budget-proxy",
+    "N": 16129,
+    "kappa": 66405.18434557703,
+    "effective_inverse_gap": 2909653.569867071,
+    "epsilon_state": 1.0108869015081302e-05,
+    "delta_retry": 0.002,
+    "query_bound": "auto",
+    "rotation_synthesis_offset": 10
+  },
+  "statistic": "modeled expected logical T count per delivered normalized solution state",
+  "T_count": 4.546294845349052e+16,
+  "T_count_ceiling": 45462948453490520,
+  "per_query_slot_T": 179112763,
+  "components": {
+    "matrix_queries_T": 1.1744523157730036e+16,
+    "rhs_queries_T": 1.171123121836636e+16,
+    "system_tests_T": 287835342846.3289,
+    "qsvt_projectors_T": 2.200663592049914e+16,
+    "wrapper_and_qsvt_rotations_T": 270321552144.03906
+  },
+  "block_encoding": {
+    "dimension": 16384,
+    "index_qubits": 14,
+    "angle_bits": 62,
+    "rotation_T": 213,
+    "data_tree_bits": 1032130,
+    "A_uncontrolled_T": 17370776,
+    "b_uncontrolled_T": 8619856,
+    "A_controlled_T": 46270514,
+    "b_controlled_T": 23069676,
+    "A_control_allowance_T": 28899738,
+    "b_control_allowance_T": 14449820,
+    "published_uncontrolled_BE_qubits": 1032173
+  },
+  "query_model": {
+    "K": 2909653.569867071,
+    "epsilon_algorithm": 5.054434507540651e-06,
+    "eta_KR": 0.03098004282577344,
+    "eta_KP": 1.9575740672451084e-05,
+    "degree_KR": 12126154,
+    "degree_KP": 33561012,
+    "expected_KR_attempts_bound": 17.979702456061066,
+    "expected_KP_attempts_bound": 1.0666666666666667,
+    "cycle_success_lower_bound": 0.05561827301891161,
+    "eq118_expected_A_queries_bound": 253823053.6563747,
+    "eq19_expected_A_queries_bound": null,
+    "expected_A_queries_bound": 253823053.6563747,
+    "bound_used": "Dalzell Eq118"
+  },
+  "normalization": {
+    "original_N": 16129,
+    "padded_dimension": 16384,
+    "kappa_bound": 66405.18434557703,
+    "frobenius_over_spectral_bound": null,
+    "rho_source": "bypassed by certified direct inverse-gap input",
+    "effective_inverse_gap": 2909653.569867071
+  },
+  "precision": {
+    "epsilon_state_requested": 1.0108869015081302e-05,
+    "epsilon_algorithm": 5.054434507540651e-06,
+    "implementation_allowance": 5.054434507540651e-06,
+    "delta_retry": 0.002,
+    "ideal_cycle_cap": 109,
+    "query_slots_cap": 4979901094,
+    "unitary_tolerance_per_component": 3.165427851445679e-17,
+    "angle_rounding_bound": 9.537140424242352e-18,
+    "rotation_tolerance": 4.558507850584215e-21,
+    "BE_unitary_error_design_bound": 2.536427968147075e-17,
+    "rotation_synthesis_model": "modeled ceil(3 log2(1/delta_rotation) + offset); not a certified synthesis bound",
+    "rotation_synthesis_offset": 10
+  },
+  "capped_T_allocation_model": 891963844413062722,
+  "conservative_logical_qubit_allocation": 9289415,
+  "logical_depth": null,
+  "T_depth": null,
+  "qec_ready": false,
+  "certified_end_to_end": false,
+  "excludes": [
+    "classical table/phase generation and storage",
+    "scientific scalar readout and norm recovery",
+    "QEC and physical overhead"
+  ],
+  "notes": [
+    "Internal ideal solver retries included once in Q; no extra 1/p factor.",
+    "Clader minimum-count Frobenius BE; does not exploit sparse/PDE structure.",
+    "Expected query bound is rigorous under ideal access; total T is a resource model.",
+    "Norm-guess discretization, phase generation, and implemented adaptive success require certification.",
+    "Ceiling of an expectation is not a high-probability resource cap."
+  ],
+  "application_provenance": {
+    "benchmark": "02-smooth-diffusion-v1",
+    "m": 127,
+    "beta": 9,
+    "padded_dimension": 16384,
+    "frobenius_norm_scaled_padded": 3505.3330230664387,
+    "scaled_gap_lower": 0.0012047252151831194,
+    "spectrum_norm_upper": 80,
+    "scalar_cost_complete": false,
+    "state_budget_note": "Phase-aligned vector allowance / sqrt(2); global-phase/readout certificate still required."
+  }
+}

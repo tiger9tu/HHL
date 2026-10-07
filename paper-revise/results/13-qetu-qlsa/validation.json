@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "numpy": "1.19.5",
+  "scipy": "1.5.4",
+  "polynomial_checks": [
+    {
+      "K": 1.0,
+      "degree": 258,
+      "global_grid_max": 0.6385444647301499,
+      "spectral_grid_error": 3.92777977170633e-06,
+      "analytic_error_bound": 1.7567046093201995e-05,
+      "correction_tail": 3.479446741838643e-08
+    },
+    {
+      "K": 3.0,
+      "degree": 758,
+      "global_grid_max": 0.6382102186124149,
+      "spectral_grid_error": 1.8004322713260912e-06,
+      "analytic_error_bound": 5.644712631308057e-06,
+      "correction_tail": 1.0478054757179223e-08
+    },
+    {
+      "K": 8.0,
+      "degree": 2126,
+      "global_grid_max": 0.638160319346183,
+      "spectral_grid_error": 6.743797680286434e-07,
+      "analytic_error_bound": 2.037041148073534e-06,
+      "correction_tail": 3.1876742356828913e-09
+    }
+  ],
+  "inverse_checks": [
+    {
+      "N": 9,
+      "r": 26,
+      "matrix_error": 0.00041243488715098493,
+      "matrix_state_error": 0.0005779214539718798,
+      "perturbation_bound": 0.004819278172777184,
+      "inverse_filter_state_error": 0.0005779214538989097,
+      "success": 0.018232027263605892,
+      "shared_effective_signal_error": 1.356107761265244e-14
+    },
+    {
+      "N": 49,
+      "r": 139,
+      "matrix_error": 9.828044670239117e-05,
+      "matrix_state_error": 9.432711914516528e-05,
+      "perturbation_bound": 0.004980278787533258,
+      "inverse_filter_state_error": 9.43271191416593e-05,
+      "success": 0.01416168519067085,
+      "shared_effective_signal_error": 2.701326404815109e-13
+    }
+  ],
+  "rejected_invalid_inputs": 4,
+  "limitations": "Dense grid/matrix FP64 diagnostics; no synthesized phase circuit or scalar readout validation"
+}

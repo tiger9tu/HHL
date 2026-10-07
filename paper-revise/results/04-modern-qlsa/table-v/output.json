@@ -1,0 +1,66 @@
+{
+  "model_version": "04-table-v-1.1.0",
+  "parameters": {
+    "N": 1024,
+    "kappa": 100,
+    "epsilon_state": "0.01",
+    "delta": "0.01"
+  },
+  "N": 1024,
+  "padded_dimension": 1024,
+  "ell": 10,
+  "kappa": "100",
+  "frobenius_over_spectral": "32",
+  "effective_inverse_gap": "3200",
+  "adiabatic_constant": "2000",
+  "Q": 12800000,
+  "d": 44210,
+  "precision": {
+    "epsilon_qsp": "0.002",
+    "epsilon_G": "7.7856092356010996394484362993130756971429149788114644653116073312410806114194645E-11",
+    "epsilon_h": "3.8928046178005498197242181496565378485714574894057322326558036656205403057097322E-11",
+    "epsilon_ar": "3.90625E-11",
+    "epsilon_z": "2.2619316896629721782402171454422076453291110608459624519339515946618412123953857E-8"
+  },
+  "equation_64_error": "0.010000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "T_BE": "481234131.92332466142196826312837548438813512393882403569872621895848553142523246",
+  "T_controlled_BE": "481250499.92332466142196826312837548438813512393882403569872621895848553142523246",
+  "T_SP": "465268.97943738991358240806158865900915915621847690149824265972581315661602461704",
+  "matrix_calls": "25688420",
+  "rhs_calls": "51376840",
+  "QLSS_terms": {
+    "controlled_block_encoding": "12362564967240331.698965317969912223360665858080492566135123872577617538895174570",
+    "rhs_preparation": "23904049913518.071607737205794950679728128503571692811970973409907546417356438186",
+    "adiabatic_rotations": "5310785242.9975908530630485149565626481027048157486046560928846591786206534966787",
+    "adiabatic_other": "3468800000",
+    "filter_rotations": "3368519.4183235212824536463926710700607890391149836945796234903561648840954669728",
+    "filter_other": "14058780"
+  },
+  "T_QLSS": "12386477814166392.186487429521209335389627704747558113810683196660033234847316545",
+  "T_per_attempt_ceiling": 12386477814166393,
+  "retry_cap": 7,
+  "ideal_retry_failure_bound": "0.0078125",
+  "T_retry_budget": 86705344699164751,
+  "expected_T_upper_under_half_success_model": 24772955628332786,
+  "statistic": "Table-V model, rounded per attempt and multiplied by a retry cap",
+  "certified_upper_bound": false,
+  "assumptions": [
+    "kappa denotes ordinary spectral condition bound; Frobenius normalization explicit",
+    "C=2000 by default is the paper numerical assumption for general matrices",
+    "Q=2CK drops the paper O(sqrt(K)) term",
+    "Tables III/IV omit double/triple logarithmic synthesis terms",
+    "R_T=3 log2(1/error) is the paper synthesis model, not a compiled certificate",
+    "five equal Eq.(64) error contributions and even degree ceiling are adapter choices",
+    "retry cap assumes independent attempts with success probability >=1/2; not recertified after circuit errors"
+  ],
+  "excludes": [
+    "tomography",
+    "interior point iterations",
+    "classical preprocessing",
+    "QEC"
+  ],
+  "include_readout": false,
+  "T_total": 86705344699164751,
+  "output_scope": "normalized quantum solution state",
+  "readout": null
+}

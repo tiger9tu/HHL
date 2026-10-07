@@ -1,0 +1,11 @@
+{
+  "pp": {"N": 2, "s": 2, "kappa": 3, "epsilon_state_pf": 0.01},
+  "cq": {
+    "decomposition_terms": 3,
+    "commutator_bound": 0.06,
+    "clock_qubits": 3,
+    "base_evolution_time": 6.283185307179586,
+    "reference_success_lower_bound": 0.1111111111111111,
+    "controlled_hs1_cost": null
+  }
+}
